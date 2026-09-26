@@ -1,0 +1,40 @@
+name: ci
+on: [push, pull_request]
+
+jobs:
+  app:
+    name: app lint and build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_DATA_SOURCE: mock
+      - run: npm test --if-present
+
+  gates:
+    name: gates (gitleaks, tracked files, mock contract)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: no secrets or personal files tracked
+        run: |
+          if git ls-files | grep -E '(^|/)\.env$|(^|/)CLAUDE\.md$'; then
+            echo "::error::.env or CLAUDE.md is tracked"; exit 1
+          fi
+      - name: mock JSON parses
+        run: |
+          for f in mock/*.json; do
+            node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))" || { echo "::error file=$f::invalid JSON"; exit 1; }
+          done

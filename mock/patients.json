@@ -1,0 +1,93 @@
+{
+  "_comment": "Fictional test records. No PHI. These are the only two patients that ever appear on screen. Patient names, chart, insurance detail and fill status live on the PRACTICE side only.",
+
+  "patients": [
+    {
+      "id": "pt_maria",
+      "name": "Maria Lopez",
+      "display_short": "Maria",
+      "age": 42,
+      "insurance": { "type": "commercial", "plan_label": "Commercial PPO, high-deductible (demo)", "copay_card_eligible": true },
+      "state": "GA",
+      "condition_label": "Plaque psoriasis (demo)",
+      "phone_label": "judge 2's phone via QR"
+    },
+    {
+      "id": "pt_james",
+      "name": "James Carter",
+      "display_short": "James",
+      "age": 58,
+      "insurance": { "type": "commercial", "plan_label": "Commercial HMO (demo)", "copay_card_eligible": true },
+      "state": "GA",
+      "condition_label": "Rheumatoid arthritis (demo)",
+      "phone_label": "spare phone"
+    }
+  ],
+
+  "drugs": [
+    {
+      "id": "drug_otezla",
+      "brand": "Otezla",
+      "generic": "apremilast",
+      "strength": "30 mg tablet",
+      "qty_label": "60 tablets",
+      "channel": "retail",
+      "rxcui": "TODO_VIHN",
+      "dailymed_setid": "f6b1f516-4972-4d82-bced-113e47b41cc5",
+      "manufacturer": "Amgen",
+      "wac_usd": 5589.89,
+      "wac_source": "Amgen list price, as of Sep 8 2026",
+      "copay_program": { "name": "Otezla copay card (stand-in)", "patient_pays_label": "as little as $0", "max_benefit_label": "not published", "excludes": ["medicare", "medicaid", "other_government"] },
+      "demo_quote_usd": 410,
+      "demo_quote_label": "demo quote (high-deductible plan)",
+      "has_boxed_warning": false
+    },
+    {
+      "id": "drug_humira",
+      "brand": "Humira",
+      "generic": "adalimumab",
+      "strength": "40 mg/0.4 mL pen",
+      "qty_label": "2 pens",
+      "channel": "specialty",
+      "rxcui": "TODO_VIHN",
+      "dailymed_setid": "608d4f0d-b19f-46d3-749a-7159aa5f933d",
+      "manufacturer": "AbbVie",
+      "wac_usd": 6922.62,
+      "wac_source": "AbbVie list price, effective 9/17/2026",
+      "copay_program": { "name": "HUMIRA Complete Savings Card (stand-in)", "patient_pays_label": "as little as $0 per month", "max_benefit_label": "up to $14,000 per calendar year", "excludes": ["medicare", "medicaid", "tricare", "other_government"] },
+      "demo_quote_usd": null,
+      "demo_quote_label": null,
+      "has_boxed_warning": true,
+      "boxed_warning_title": "WARNING: SERIOUS INFECTIONS AND MALIGNANCY"
+    }
+  ],
+
+  "cases": [
+    {
+      "id": "rx_001",
+      "patient_id": "pt_maria",
+      "drug_id": "drug_otezla",
+      "prescriber_label": "Dr. Demo (judge 1)",
+      "prescribed_at": "2026-09-27T09:40:00-04:00",
+      "status": "prescribed",
+      "reason": null,
+      "fix": null,
+      "started_at": null,
+      "followup_at": "2026-11-08T10:00:00-04:00"
+    },
+    {
+      "id": "rx_002",
+      "patient_id": "pt_james",
+      "drug_id": "drug_humira",
+      "prescriber_label": "Dr. Demo (judge 1)",
+      "prescribed_at": "2026-09-20T14:15:00-04:00",
+      "status": "prescribed",
+      "reason": null,
+      "fix": null,
+      "started_at": null,
+      "followup_at": "2026-09-27T10:30:00-04:00"
+    }
+  ],
+
+  "case_status_enum": ["prescribed", "stuck", "handed_off", "fix_sent", "dispensed", "started", "never_started"]
+}

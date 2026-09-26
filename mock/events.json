@@ -1,0 +1,48 @@
+{
+  "_comment": "The full demo loop as an ordered event stream. /sim fires these one at a time; /board and every other screen replay them if the network dies. Shape = the fill_events table. `at` is relative seconds from demo start so the replay works any day.",
+
+  "event_shape": {
+    "id": "string",
+    "case_id": "rx_*",
+    "at": "number (seconds from demo start) | ISO string in Supabase",
+    "actor": "pharmacy | hub | system | doctor | coordinator | patient | ascend",
+    "type": "prescribed | label_shown | copay_card_sent | claim_run | status | reason_classified | alert_sent | handoff | fix_chosen | fix_sent | copay_card_used | dispensed | started | before_visit_card | recovered",
+    "status_text": "verbatim RxFill/hub status or null",
+    "reject_code": "NCPDP code or null",
+    "note": "free text from the simulated pharmacy/hub; Gemini classifies THIS into reason",
+    "reason": "key from reasons.json or null",
+    "fix": "key from reasons.json or null",
+    "amount_usd": "number or null; always labelled demo on screen",
+    "wrist": "string <= 200 chars sent to ntfy, or null",
+    "side": "practice | ascend  (which side of the who-sees-what line this event lives on)"
+  },
+
+  "events": [
+    { "id": "ev_01", "case_id": "rx_001", "at": 0,   "actor": "doctor",      "type": "prescribed",        "status_text": null, "reject_code": null, "note": "Otezla 30 mg, #60", "reason": null, "fix": null, "amount_usd": null, "wrist": null, "side": "practice" },
+    { "id": "ev_02", "case_id": "rx_001", "at": 1,   "actor": "system",      "type": "label_shown",       "status_text": null, "reject_code": null, "note": "DailyMed SPL f6b1f516 rendered, byte-exact OK", "reason": null, "fix": null, "amount_usd": null, "wrist": null, "side": "ascend" },
+    { "id": "ev_03", "case_id": "rx_001", "at": 2,   "actor": "ascend",      "type": "copay_card_sent",   "status_text": null, "reject_code": null, "note": "Wallet card issued (stand-in). Commercial: eligible.", "reason": null, "fix": null, "amount_usd": null, "wrist": null, "side": "ascend" },
+
+    { "id": "ev_04", "case_id": "rx_001", "at": 20,  "actor": "pharmacy",    "type": "claim_run",         "status_text": "Not dispensed / returned to stock", "reject_code": null, "note": "pt came in, saw 410.00 OOP on HDHP, said she'd think about it. copay card not presented.", "reason": null, "fix": null, "amount_usd": 410, "wrist": null, "side": "practice" },
+    { "id": "ev_05", "case_id": "rx_001", "at": 21,  "actor": "system",      "type": "reason_classified", "status_text": null, "reject_code": null, "note": "Gemini -> enum", "reason": "DECLINED_AT_PRICE", "fix": null, "amount_usd": null, "wrist": null, "side": "practice" },
+    { "id": "ev_06", "case_id": "rx_001", "at": 22,  "actor": "system",      "type": "alert_sent",        "status_text": null, "reject_code": null, "note": "ntfy priority high", "reason": "DECLINED_AT_PRICE", "fix": null, "amount_usd": null, "wrist": "Maria: Otezla not started. Declined at price ($410 demo). Say: send to my coordinator.", "side": "practice" },
+
+    { "id": "ev_07", "case_id": "rx_001", "at": 40,  "actor": "doctor",      "type": "handoff",           "status_text": null, "reject_code": null, "note": "Grok STT: 'Send Maria to my coordinator' -> intent SEND_TO_COORDINATOR (keyterms: Maria, Otezla)", "reason": "DECLINED_AT_PRICE", "fix": null, "amount_usd": null, "wrist": null, "side": "practice" },
+    { "id": "ev_08", "case_id": "rx_001", "at": 41,  "actor": "system",      "type": "fix_chosen",        "status_text": null, "reject_code": null, "note": "router: commercial + DECLINED_AT_PRICE", "reason": "DECLINED_AT_PRICE", "fix": "RESEND_COPAY_CARD", "amount_usd": null, "wrist": null, "side": "practice" },
+    { "id": "ev_09", "case_id": "rx_001", "at": 55,  "actor": "coordinator", "type": "fix_sent",          "status_text": null, "reject_code": null, "note": "Wallet link re-sent to patient phone (stand-in)", "reason": "DECLINED_AT_PRICE", "fix": "RESEND_COPAY_CARD", "amount_usd": null, "wrist": null, "side": "ascend" },
+
+    { "id": "ev_10", "case_id": "rx_001", "at": 75,  "actor": "patient",     "type": "copay_card_used",   "status_text": null, "reject_code": null, "note": "judge 2 tapped 'Use at pharmacy'", "reason": null, "fix": "RESEND_COPAY_CARD", "amount_usd": null, "wrist": null, "side": "practice" },
+    { "id": "ev_11", "case_id": "rx_001", "at": 80,  "actor": "pharmacy",    "type": "claim_run",         "status_text": "Dispensed", "reject_code": null, "note": "re-run; copay card as secondary payer (demo). pt pays 0.00", "reason": null, "fix": null, "amount_usd": 0, "wrist": null, "side": "practice" },
+    { "id": "ev_12", "case_id": "rx_001", "at": 81,  "actor": "system",      "type": "started",           "status_text": null, "reject_code": null, "note": "chime + ElevenLabs line", "reason": null, "fix": null, "amount_usd": null, "wrist": "Maria started Otezla. $0 with copay card.", "side": "practice" },
+    { "id": "ev_13", "case_id": "rx_001", "at": 82,  "actor": "system",      "type": "recovered",         "status_text": null, "reject_code": null, "note": "aggregate only: recovered +1, ttff 80s (demo clock)", "reason": "DECLINED_AT_PRICE", "fix": "RESEND_COPAY_CARD", "amount_usd": null, "wrist": null, "side": "ascend" },
+
+    { "id": "ev_14", "case_id": "rx_002", "at": 100, "actor": "doctor",      "type": "prescribed",        "status_text": null, "reject_code": null, "note": "Humira 40 mg pen, #2 (prescribed 7 days ago in demo clock)", "reason": null, "fix": null, "amount_usd": null, "wrist": null, "side": "practice" },
+    { "id": "ev_15", "case_id": "rx_002", "at": 101, "actor": "system",      "type": "label_shown",       "status_text": null, "reject_code": null, "note": "DailyMed SPL 608d4f0d rendered incl. boxed warning, byte-exact OK", "reason": null, "fix": null, "amount_usd": null, "wrist": null, "side": "ascend" },
+    { "id": "ev_16", "case_id": "rx_002", "at": 105, "actor": "pharmacy",    "type": "claim_run",         "status_text": "Not dispensed / returned to stock", "reject_code": "75", "note": "75 Prior Authorization Required", "reason": null, "fix": null, "amount_usd": null, "wrist": null, "side": "practice" },
+    { "id": "ev_17", "case_id": "rx_002", "at": 110, "actor": "hub",         "type": "status",            "status_text": "Unable to Reach Patient", "reject_code": null, "note": "3 attempts, no callback, VM full", "reason": null, "fix": null, "amount_usd": null, "wrist": null, "side": "practice" },
+    { "id": "ev_18", "case_id": "rx_002", "at": 111, "actor": "system",      "type": "reason_classified", "status_text": null, "reject_code": null, "note": "Gemini -> enum", "reason": "UNABLE_TO_REACH", "fix": null, "amount_usd": null, "wrist": null, "side": "practice" },
+    { "id": "ev_19", "case_id": "rx_002", "at": 112, "actor": "system",      "type": "alert_sent",        "status_text": null, "reject_code": null, "note": "ntfy", "reason": "UNABLE_TO_REACH", "fix": null, "amount_usd": null, "wrist": "James: Humira not started. Hub can't reach him (3 calls).", "side": "practice" },
+    { "id": "ev_20", "case_id": "rx_002", "at": 120, "actor": "doctor",      "type": "handoff",           "status_text": null, "reject_code": null, "note": "tap on ntfy action", "reason": "UNABLE_TO_REACH", "fix": null, "amount_usd": null, "wrist": null, "side": "practice" },
+    { "id": "ev_21", "case_id": "rx_002", "at": 121, "actor": "system",      "type": "fix_chosen",        "status_text": null, "reject_code": null, "note": "router: commercial + UNABLE_TO_REACH", "reason": "UNABLE_TO_REACH", "fix": "BRIDGE_SAMPLE", "amount_usd": null, "wrist": null, "side": "practice" },
+    { "id": "ev_22", "case_id": "rx_002", "at": 130, "actor": "system",      "type": "before_visit_card", "status_text": null, "reject_code": null, "note": "template: '{name} never started {drug}. Consider this before escalating.'", "reason": "UNABLE_TO_REACH", "fix": "BRIDGE_SAMPLE", "amount_usd": null, "wrist": null, "side": "practice" }
+  ]
+}

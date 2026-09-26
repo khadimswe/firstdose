@@ -1,0 +1,38 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# personal agent config (each dev keeps their own)
+CLAUDE.md
+.claude/
+.cursor/
+.cursorrules
+
+# node / next
+node_modules/
+.next/
+out/
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+
+# logs & OS
+npm-debug.log*
+yarn-error.log*
+.DS_Store
+Thumbs.db
+
+# editor
+.vscode/
+.idea/
+
+# demo media (large; keep in Drive)
+media/raw/
+*.mov
+*.mp4
+
+# garmin build output
+*.prg
+bin/
+notes/

@@ -1,0 +1,38 @@
+{
+  "_comment": "The reason enum, the fix enum, and the deterministic router. Gemini may only output a `reason` value from this file. The router picks the fix; no AI involved. Frozen once Vihn and Deem agree.",
+
+  "reasons": {
+    "DECLINED_AT_PRICE":   { "label": "Patient declined at quoted price",        "channel": ["retail", "specialty"], "source": "hub",      "standard": false },
+    "COPAY_NOT_APPLIED":   { "label": "Copay card not applied at claim",         "channel": ["retail", "specialty"], "source": "pharmacy", "standard": false },
+    "UNABLE_TO_REACH":     { "label": "Unable to reach patient after 3 calls",   "channel": ["specialty"],           "source": "hub",      "standard": true  },
+    "PA_REQUIRED":         { "label": "Prior authorization required",            "channel": ["retail", "specialty"], "source": "pharmacy", "standard": true, "reject_code": "75" },
+    "NOT_COVERED":         { "label": "Product not covered / not on formulary",  "channel": ["retail", "specialty"], "source": "pharmacy", "standard": true, "reject_code": "70" },
+    "NOT_PICKED_UP_48H":   { "label": "Not picked up within 48 hours",           "channel": ["retail"],              "source": "pharmacy", "standard": false }
+  },
+
+  "fixes": {
+    "RESEND_COPAY_CARD": { "label": "Re-send copay card",        "via": "Impiricus Wallet (stand-in)",           "needs_commercial_insurance": true },
+    "BRIDGE_SAMPLE":     { "label": "Request bridge sample",     "via": "QPharma / Medvantx (stand-in)",         "needs_commercial_insurance": false },
+    "ACCESS_SUPPORT":    { "label": "Connect to access support", "via": "Manufacturer access team via Ascend (stand-in)", "needs_commercial_insurance": false }
+  },
+
+  "router": {
+    "_rule": "First match wins. Medicare/Medicaid/other government coverage never gets RESEND_COPAY_CARD (OIG guidance on manufacturer copay programs).",
+    "rows": [
+      { "insurance": ["medicare", "medicaid", "tricare", "other_government"], "reason": "*",                   "fix": "ACCESS_SUPPORT" },
+      { "insurance": ["commercial"], "reason": "DECLINED_AT_PRICE",  "fix": "RESEND_COPAY_CARD" },
+      { "insurance": ["commercial"], "reason": "COPAY_NOT_APPLIED",  "fix": "RESEND_COPAY_CARD" },
+      { "insurance": ["commercial"], "reason": "NOT_PICKED_UP_48H",  "fix": "RESEND_COPAY_CARD" },
+      { "insurance": ["commercial"], "reason": "UNABLE_TO_REACH",    "fix": "BRIDGE_SAMPLE" },
+      { "insurance": ["commercial"], "reason": "PA_REQUIRED",        "fix": "ACCESS_SUPPORT" },
+      { "insurance": ["commercial"], "reason": "NOT_COVERED",        "fix": "ACCESS_SUPPORT" },
+      { "insurance": ["uninsured"],  "reason": "*",                  "fix": "ACCESS_SUPPORT" }
+    ]
+  },
+
+  "status_vocabulary": {
+    "rxfill":  ["Dispensed", "Partially dispensed", "Not dispensed / returned to stock", "Transferred"],
+    "hub":     ["Benefits Investigation", "PA Pending", "PA Approved", "PA Denied", "Copay Assistance Enrollment", "Unable to Reach Patient", "Patient Declined at Price", "Shipped"],
+    "ncpdp_reject_codes": { "70": "Product/Service Not Covered", "75": "Prior Authorization Required", "76": "Plan Limitations Exceeded", "MR": "Product Not On Formulary", "41": "Submit Bill To Other Processor Or Primary" }
+  }
+}

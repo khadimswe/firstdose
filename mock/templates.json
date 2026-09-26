@@ -1,0 +1,71 @@
+{
+  "_comment": "Every sentence the product generates about a patient comes from here. Fixed templates, variables only. No model writes any of this at runtime.",
+
+  "wrist": {
+    "stuck":   "{patient_short}: {drug} not started. {reason_short}.",
+    "started": "{patient_short} started {drug}. {price_line}",
+    "max_chars": 200
+  },
+
+  "reason_short": {
+    "DECLINED_AT_PRICE": "Declined at price ({quote} demo)",
+    "COPAY_NOT_APPLIED": "Copay card not applied",
+    "UNABLE_TO_REACH":   "Hub can't reach patient (3 calls)",
+    "PA_REQUIRED":       "Prior auth required (reject 75)",
+    "NOT_COVERED":       "Not covered (reject 70)",
+    "NOT_PICKED_UP_48H": "Not picked up in 48 h"
+  },
+
+  "doctor_alert": {
+    "title": "{patient_name} hasn't started {drug}",
+    "body":  "{reason_label}.",
+    "action": "Send to my coordinator"
+  },
+
+  "coordinator_card": {
+    "title": "{patient_name} · {drug} {strength}",
+    "reason_line": "{reason_label}",
+    "fix_line": "Suggested fix: {fix_label} ({fix_via})",
+    "eligibility_line": "{insurance_plan_label}: {eligibility}",
+    "eligibility": { "eligible": "copay card eligible", "ineligible": "no manufacturer copay card (government coverage)" }
+  },
+
+  "patient_card": {
+    "title": "{drug} savings card",
+    "standin": "Impiricus Wallet (stand-in)",
+    "pays_line": "You pay: {patient_pays_label}",
+    "action": "Use at pharmacy"
+  },
+
+  "before_visit_card": {
+    "text": "{patient_name} never started {drug}. Consider this before escalating.",
+    "sub":  "Prescribed {days_ago} days ago · {reason_label} · {fix_label} in progress"
+  },
+
+  "board": {
+    "stops": ["Doctor", "Pharmacy", "Patient", "Started"],
+    "stuck_label": "STUCK · {reason_short}",
+    "price_from_label": "{quote} demo quote (high-deductible plan)",
+    "price_to_label": "$0 with copay card (as little as $0, per {manufacturer})",
+    "wac_context": "List price {wac} ({wac_source})"
+  },
+
+  "access_screen": {
+    "title": "Market Access · aggregate only",
+    "recovered": "Patients recovered",
+    "ttff": "Median time to first fill",
+    "reason_tally": "Stuck reasons",
+    "footer": "No names. No prescription counts. Paid per patient recovered, never per prescription."
+  },
+
+  "standin_labels": {
+    "pharmacy": "Simulated pharmacy · real RxFill vocabulary",
+    "hub":      "Simulated hub · real hub vocabulary",
+    "ascend":   "Impiricus Ascend (stand-in)",
+    "wallet":   "Impiricus Wallet (stand-in)",
+    "samples":  "QPharma / Medvantx (stand-in)",
+    "price":    "demo",
+    "patients": "Fictional test records · no PHI",
+    "label":    "Verbatim from DailyMed · no AI-written drug claims"
+  }
+}
