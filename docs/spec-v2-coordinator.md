@@ -75,6 +75,26 @@ The core loop is unchanged: prescribe → stuck → alert → handoff → fix �
 
 Not in scope for the weekend: real logins, multiple practices, a live DocUpdate integration. DocUpdate, Ascend, Wallet, QPharma, Medvantx and the pharmacy stay labelled stand-ins.
 
+## Integration and sponsor tech
+
+**Their own roadmap asks for this.** DocUpdate's FAQ: *"Staff accounts and practice-level profiles aren't live yet, but they're on our roadmap."* Line to say: "Your FAQ says staff accounts are on the roadmap. FirstDose is what the first staff account does."
+
+**The pipe already exists.** DocUpdate's FAQ: *"Every prescription routes through Surescripts."* Surescripts carries the NCPDP **RxFill** message (Dispensed, Partially dispensed, Not dispensed, Transferred), switched on per script with `RxFillIndicator`. Line to say: "Turn on RxFill on the network you already use, and every 'Not dispensed' becomes a fix in the coordinator's queue."
+
+**Quote with context.** The FAQ line "we currently don't receive confirmation on whether it's been filled" is about cancellation requests. Paraphrase it: "DocUpdate's FAQ says it doesn't currently receive fill confirmation." Don't present it as a quote about fills.
+
+| Piece | Job in FirstDose v2 | Owner | Status |
+|---|---|---|---|
+| RxFill-shaped `/sim` events | Pharmacy events use RxFill statuses; a "raw message" toggle shows `NotDispensed` and `RxFillIndicator`. Labelled simulated | Vinh | Build first (mostly relabeling) |
+| NPPES NPI Registry (free, no key) | Coordinator screen: "Likely colleagues at this practice → Invite." NPPES has no practice roster and no street-address search, so search by ZIP + taxonomy and match the address line. Show real records as "public NPPES record, not users," names hidden. Cache for the demo | Vinh or Minh (`/api/npi`), Deem (UI) | After the queue changes |
+| ElevenLabs | Coordinator approves a templated patient message ("Your copay card is ready, show this at the pharmacy"), voiced in the patient's language (Spanish for Maria). Sent from the practice. Never medical advice. Pairs with DocUpdate's translator | Deem | After NPPES |
+| Tiger Data | Fill history, time to first fill, plus a "coordinators active per day" rollup (retention proof) | Minh | Keep |
+| Gemini | Messy pharmacy/hub note → reason code only | Minh | Keep |
+| Grok | "Send Maria to my coordinator" | Vinh | Cut first if behind |
+| Medicare Part D prescribers (CMS) | Future rollout targeting only ("practices that start biologics"). Not on the demo path | — | Mention only |
+| Solana | Skip. Crypto reads badly to pharma judges and adds a money flow to explain | — | Skip |
+| CMS Open Payments | Don't touch. Clashes with "never paid per prescription" | — | Never |
+
 ## The 4-minute demo
 
 Judge 1 = coordinator. Judge 2 = doctor (wears the watch), then becomes Maria via QR. Vinh runs `/sim` and the pharmacy. One judge only: they play the coordinator, Vinh wears the watch, a spare phone plays Maria.
@@ -123,6 +143,8 @@ Judge 1 = coordinator. Judge 2 = doctor (wears the watch), then becomes Maria vi
 3. "If you built this, would it live inside DocUpdate, or in Ascend as a skill?" DocUpdate → header "FirstDose for DocUpdate · Access queue." Ascend → "An Ascend skill for the practice." Demo and code unchanged either way.
 4. "What do doctors open DocUpdate for today, and what makes them stop?"
 5. "For Market Access, which matters more: patients recovered, or time to first fill?"
+6. "Your FAQ says staff accounts are on the roadmap. What should a staff account do first?"
+7. "DocUpdate is on Surescripts. Is RxFill turned on, and could a partner skill consume it?"
 
 **Keomaria (10 minutes, with permission):**
 1. "Who in your office finds out when a patient never starts a new medicine, and how?"
@@ -150,10 +172,11 @@ Judge 1 = coordinator. Judge 2 = doctor (wears the watch), then becomes Maria vi
 
 ## Sources
 
-- [DocUpdate](https://www.docupdate.io/) · [App Store](https://apps.apple.com/us/app/docupdate/id6478404244) · [Google Play](https://play.google.com/store/apps/details?id=com.impericus.prescriber&hl=en_US)
+- [DocUpdate](https://www.docupdate.io/) · [FAQ](https://www.docupdate.io/faq/) · [App Store](https://apps.apple.com/us/app/docupdate/id6478404244) · [Google Play](https://play.google.com/store/apps/details?id=com.impericus.prescriber&hl=en_US)
 - [Impiricus solutions](https://impiricus.com/our-solutions/), products, homepage; Wallet launch; Ascend launch (Nov 2025); QPharma (Aug 2026) and Medvantx (Sep 2026) integrations
 - [Impiricus homepage](https://impiricus.com/) ("Trusted by 1M+ Opted-In HCPs")
 - [AAMC 2025 Key Findings](https://www.aamc.org/data-reports/data/2025-key-findings) (866,460 direct patient care physicians, 2024)
 - [AMA prior authorization survey](https://www.ama-assn.org/practice-management/prior-authorization/fixing-prior-auth-nearly-40-prior-authorizations-week-way) (39 PAs and 13 hours per physician per week; 40% with dedicated staff)
 - [BLS Occupational Outlook: Medical Assistants](https://www.bls.gov/ooh/healthcare/medical-assistants.htm) (833,900 jobs in 2025; 56% in offices of physicians)
+- [NPPES NPI Registry API](https://npiregistry.cms.hhs.gov/api-page) · [NCPDP SCRIPT and RxFill guide](https://intuitionlabs.ai/articles/ncpdp-script-standard-guide)
 - FirstDose repo `khadimswe/firstdose`, v1 spec, one-pager, build plan
