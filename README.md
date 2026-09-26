@@ -24,17 +24,20 @@ Your Amazon package is tracked by the minute. Your prescription goes dark the mo
 
 Surescripts and hubs can tell you a script didn't happen. FirstDose tells you **why**, fixes it in one tap inside Impiricus Ascend, and proves it worked.
 
-## What's real and what's a stand-in
+## Built on real data, designed to plug into Impiricus Ascend
 
-| Real | Simulated (labelled on every screen) |
+**Live in this build:** RxNorm drug lookup · verbatim DailyMed labels with a byte-exact check · Garmin wrist alerts via ntfy · Grok voice handoff · Tiger Data time-to-first-fill · Gemini reason classification · Supabase realtime across every screen.
+
+**Integration points** (stand-ins with the production interface, labelled on screen):
+
+| Stand-in | Production source |
 |---|---|
-| Drug lookup (RxNorm) | Pharmacy and hub status feed (uses real RxFill / hub vocabulary and NCPDP reject codes) |
-| Label text (DailyMed SPL, byte-exact check, no AI-written drug claims) | Impiricus Ascend, Wallet, QPharma, Medvantx |
-| Watch alert (ntfy → Garmin) | Insurance claim and prices (quoted price labelled "demo") |
-| Voice handoff (Grok STT with keyterms) | Patients (fictional test records, no PHI) |
-| Time-to-first-fill aggregate (Tiger Data) | |
+| Pharmacy / hub status feed | NCPDP RxFill, hub status data (we use their real status vocabulary and reject codes) |
+| Impiricus Ascend, Wallet | Impiricus skill interface |
+| QPharma / Medvantx | Impiricus sample-partner integrations |
+| Claim pricing | Pharmacy claim response |
 
-The router never changes a prescription. It only removes access barriers. Market Access pays per patient recovered, never per prescription.
+Demo patients are fictional; no PHI. The router never changes a prescription. It only removes access barriers.
 
 ## Screens
 
