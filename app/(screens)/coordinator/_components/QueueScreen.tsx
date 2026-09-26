@@ -14,8 +14,9 @@ import {
   stuckEvent,
   type QueueBucket,
 } from "@/components/data/derive";
-import { inQueue, isLinked } from "@/components/data/links";
+import { inQueue } from "@/components/data/links";
 import { useLocal } from "@/components/data/local";
+import { useCoordinatorLinks } from "@/components/data/useCoordinatorLinks";
 import { useEvents } from "@/components/data/useEvents";
 import { useNowAt } from "@/components/data/useNowAt";
 import type { CaseView } from "@/components/data/types";
@@ -44,13 +45,14 @@ function byStuckAge(a: CaseView, b: CaseView) {
 /** The coordinator's home: what's stuck, what's waiting, what got its fill. */
 export function QueueScreen() {
   const { cases, catalog, fired, mode, act, canAct } = useEvents();
-  const { approved, marks } = useLocal();
+  const { marks } = useLocal();
+  const links = useCoordinatorLinks();
   const nowAt = useNowAt(fired, mode === "supabase");
   const [openId, setOpenId] = useState<string | null>(null);
   const [tab, setTab] = useState<QueueBucket>("needs_you");
 
   const all = prescribers(cases);
-  const linked = all.filter((p) => isLinked(p, cases, approved));
+  const linked = all.filter((p) => links.linked(p));
   const pending = all.filter((p) => !linked.includes(p));
   const mine = cases.filter((c) => inQueue(c, new Set(linked)));
 
