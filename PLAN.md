@@ -185,7 +185,7 @@ Current objective, scope and claim boundaries: [v2 spec](docs/spec-v2-coordinato
 | 2.2 | James case on every screen + before-visit card with real boxed warning | `app/(screens)/doctor/**` | **Deem** | 🟡 | 1.4, 1.10 | Template only, never free text. Built; the real boxed warning appears when 1.10 fills `labels.json`. |
 | 2.3 | Tiger event projection, deduplication and direct summary | `lib/server/tiger.ts`, `lib/server/analytics/**`, `app/api/access/**` | **Minh** | ⬜ | 1.7 | Handoff C1-C3; Vinh supplies committed run events; continuous aggregate deferred. |
 | 2.4 | `/access`: KPI tiles, reason bars, who-sees-what | `app/(screens)/access/**` | **Deem** | ✅ | 1.1, 2.3 | Type has no patient fields. |
-| 2.5 | Gemini note-to-reason classifier | `lib/server/classify.ts`, `lib/server/classifier/**` | **Minh** | ⬜ | 0.6 | Handoff B1-B2; explicit model smoke, <=140 code points, enum or null; no routing authority. |
+| 2.5 | Gemini note-to-reason classifier | `lib/server/classify.ts`, `lib/server/classifier/**` | **Minh** | 🟡 | 0.6 | Handoff B1-B2; explicit model smoke, <=140 code points, enum or null; no routing authority. PR #23: 17 tests green; live smoke 4/4 pass (gemini-3.8-flash, thinking off, self-registered key in local .env); review + wiring pending. |
 | 2.6 | Vercel deploy (`firstdose-web`) | `.vercel/` | **Deem** | ✅ | 1.9 | Production deploys from `main` in mock mode; the link is in the README. Redeploy in `supabase` mode after #9. |
 | 2.7 | `/sim` extras: `?upto=`, `?replay=1`, Autoplay | `app/(screens)/sim/**` | **Deem** | ✅ | 1.3 | Offline fallback for the board. `?replay=1&speed=N` loops one tab. |
 
