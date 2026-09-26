@@ -34,6 +34,7 @@ Legend: [ ] not started · [-] in progress · [x] done · [!] blocked
 - [ ] Rebase #7 (access/sim) onto `main` and retarget it. Bring in #9's behaviour: practice counts when Tiger is unavailable; `/sim` offers only valid inputs live; Autoplay mock-only.
 - [ ] 2.6: redeploy in `supabase` mode (Vinh sets the private env). Keep a mock deploy as the fallback.
 - [ ] Reword `WhoSeesWhat` to match `docs/who-sees-what.md` (DocUpdate view on the practice side; "first fill confirmed").
+- [ ] After #9 merges, clear the lines in `docs/for-vihn.md` that #9 completed (RxCUIs, Realtime channel, `EventSource`, reset). Keep open items only.
 
 ## 12–2 PM build (one branch per screen, mock first, then live)
 
