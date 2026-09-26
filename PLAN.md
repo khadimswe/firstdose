@@ -22,6 +22,8 @@ FirstDose becomes **the access coordinator's daily queue**; the doctor hears abo
 
 ## Execution brief (engine and gates; still valid under v2)
 
+**Local integration checkpoint, September 26:** at the user's request, `integration/coordinator-pivot` combines Deem's screen stack through `63e24cf` (PRs #11-14) with pivot docs through `5ea44fb`, retaining the backend/frontend foundation from `8713fe1`. Documentation conflicts use the v2 brief, Phase 6 and current owner task guides; confirmed Phase 0/1 status rows from #9 are retained below. Local merge `eea83c2` passes 256 tests, lint and a live-mode production build. This local integration is not a merge of any GitHub PR. The earlier two-browser Maria check used the v1 screens; the rebuilt v2 flow still needs its own browser/device checkpoint. Prescriber approvals/contact marks remain local UI state pending C7/C2.
+
 This dashboard is the execution source of truth. Keep presentation work in `docs/presentation/`; freeze the other planning/audit documents as reference snapshots. Do not maintain parallel schedules. This local revision responds to review and awaits team feedback; it does not change the shared mock contract or merge itself into main.
 
 **Synced source:** main `56b5a46` has six screens on mock data, state-based button guards, replay/autoplay, the v2 spec with the four surfaces, and the DocUpdate teardown. Open PRs:
@@ -139,12 +141,12 @@ Current objective, scope and claim boundaries: [v2 spec](docs/spec-v2-coordinato
 | 0.1 | Repo, `.gitignore`, `.env.example`, README, ABOUT, LICENSE | root | **Deem** | ✅ | n/a | Vinh invited. |
 | 0.2 | Next.js 16 scaffold (App Router, TS, Tailwind v4) | `app/**`, `package.json` | **Deem** | ✅ | 0.1 | No `src/`. Read `node_modules/next/dist/docs/` before route code. |
 | 0.3 | CI: lint, build, `npm test --if-present`, gitleaks, tracked-file gate, mock JSON gate | `.github/workflows/ci.yml` | **Deem** | ✅ | 0.2 | Not required on `main` during the event. |
-| 0.4 | Data contract | `mock/*.json` | **both** | 🟡 | 0.1 | Two fixes pending (see 0.7). Frozen after. |
-| 0.5 | Architecture doc | `docs/architecture.md` | **Vinh** reviews | 🟡 | 0.4 | Deem drafted. Vinh corrects routes/tables to match his build. |
-| 0.6 | Keys (each person signs up, keys move by AirDrop only) | local `.env` | **Vinh**: Supabase, Tiger Data, Gemini, xAI. **Deem**: ElevenLabs + .Tech (MLH), Vercel, HexLabs OpenAI | ⬜ | n/a | |
+| 0.4 | Data contract | `mock/*.json` | **both** | ✅ | 0.1 | Sep 26: user confirms Deem/Minh agree with the plan. Runtime contract corrections and actual artifact verification remain Phase 1 implementation/review work. |
+| 0.5 | Architecture doc | `docs/architecture.md` | **Vinh** reviews | ✅ | 0.4 | Sep 26: team-plan agreement confirmed by user; architecture review/proposals prepared. Concrete implementation/API additions still receive affected-owner review. |
+| 0.6 | Required setup keys; later provider keys at their implementation phase | local `.env` | **Vinh + Deem + Minh** | ✅ | n/a | Phase 0 scope closed by user: Supabase/ntfy verified; Gemini model listing verified. Generation/quota and Tiger/xAI/ElevenLabs setup remain with their later tasks. MLH prize pursuit deferred, not a core blocker. |
 | 0.7 | Contract fixes: add `ev_21b` (James `fix_sent` BRIDGE_SAMPLE); `wrist.started` → `"{patient_short} started {drug}. $0 with copay card."` | `mock/events.json`, `mock/templates.json` | **Deem** | ✅ | 0.4 | ⚠️ CONTRACT commit. Tell Vinh first. |
-| 0.8 | **Gate:** ntfy POST → iPhone → Garmin FR55 buzz with text | `scripts/ntfy-smoke.sh` | **Vinh** | ⬜ | 0.6 | Garmin Connect open. Body ≤ 200 chars. |
-| 0.9 | Register team on HexLabs; ask #qna if Notability is a challenge or sponsor track | n/a | **Deem** | ⬜ | n/a | |
+| 0.8 | **Gate:** ntfy POST → iPhone → Garmin FR55 buzz with text | `scripts/ntfy-smoke.ts` | **Vinh** | ✅ | 0.6 | September 26: ntfy accepted smoke request; user confirmed iPhone and Garmin FR55 receipt after enabling watch app notifications. Workflow-triggered alerts remain pending. |
+| 0.9 | Register team on HexLabs; optional MLH category research | n/a | **Deem** | ✅ | n/a | Sep 26: user confirms registration complete; MLH/Notability prize questions deferred. |
 
 ### Phase 1: Maria core loop (Saturday morning target; recheck around 7 AM)
 
@@ -156,13 +158,13 @@ Current objective, scope and claim boundaries: [v2 spec](docs/spec-v2-coordinato
 | 1.4 | `/doctor`: prescribe → label card → alert → "Send to my coordinator" | `app/(screens)/doctor/**` | **Deem** | ✅ | 1.1 | v1 iPad 1180×820 EHR + Ascend thread; becomes the DocUpdate phone view in 6.3. Never suggests a drug. |
 | 1.5 | `/coordinator`: work queue, ONE fix button per case | `app/(screens)/coordinator/**` | **Deem** | ✅ | 1.1 | Desk-first table (md and up); cards + pinned fix button on a phone (390×844). |
 | 1.6 | `/patient/[id]`: Wallet pass stand-in, "Use at pharmacy" | `app/(screens)/patient/[id]/**` | **Deem** | ✅ | 1.1 | No barcode, BIN/PCN or member number. |
-| 1.7 | Supabase schema: `patients`, `drugs`, `rx_cases`, `fill_events`, `labels`; seed from `mock/` | `supabase/migrations/**`, `scripts/seed.ts` | **Vinh** | ⬜ | 0.4, 0.6 | Field names identical to `mock/`. |
-| 1.8 | Router + table test (every reason × insurance; Medicare never gets a copay card) | `lib/server/router.ts`, `tests/router.test.ts` | **Vinh** | ⬜ | 0.4 | Pure function over `reasons.json → router.rows`. No AI. |
-| 1.9 | `lib/realtime.ts` (implements 1.2) + `/api/sim/fire`, `/api/sim/reset` | `lib/realtime.ts`, `app/api/sim/**` | **Vinh** | ⬜ | 1.2, 1.7 | Realtime channel `fill_events`, insert only. |
+| 1.7 | Supabase schema: `patients`, `drugs`, `rx_cases`, `fill_events`, `labels`; seed from `mock/` | `supabase/migrations/**`, `scripts/seed.ts` | **Vinh** | 🟡 | 0.4, 0.6 | Sep 26: migrations 001/002 and seed applied to the intended hosted project over TLS; 8 RLS tables and fixture counts verified; 14 local DB checks pass. Affected-owner review/merge pending. |
+| 1.8 | Router + table test (every reason × insurance; Medicare never gets a copay card) | `lib/server/router.ts`, `tests/router.test.ts` | **Vinh** | 🟡 | 0.4 | Sep 26 1:47 AM ET: local implementation reviewed, 86 tests pass; explicit card/bridge eligibility gates; owner review/merge pending. |
+| 1.9 | `lib/realtime.ts` (implements 1.2) + `/api/sim/fire`, `/api/sim/reset` | `lib/realtime.ts`, `app/api/sim/**` | **Vinh** | 🟡 | 1.2, 1.7 | Sep 26: 43ca67b integrates live polling/session/reset with the frontend. onSync clears transient errors even on304. Real rendered-screen reload and remote reset pass across independent browser contexts. Owner review/physical two-device run pending. |
 | 1.10 | Verified cached label pipeline and endpoint | `lib/server/label.ts`, `lib/server/labels/**`, `tests/labels/**` | **Minh** | ⬜ | 0.6 | Handoff A1-A3; Otezla first; identity/fidelity review before badge and shared fixture update. |
-| 1.11 | Action routes: `/api/rx`, `/api/handoff`, `/api/fix`, `/api/patient/use` | `app/api/**` | **Vinh** | ⬜ | 1.7, 1.8 | Guarded transitions so a double tap can't double-fire. |
-| 1.12 | ntfy on `alert_sent` and `started` | `lib/server/ntfy.ts` | **Vinh** | ⬜ | 0.8, 1.9 | Action button → `/api/handoff`. |
-| 1.13 | Wire `useEvents()` to `lib/realtime.ts`: live source, buttons enabled by case state | `components/data/**` | **Deem** | ✂️ | 1.9 | Carried by Vinh's #9, which is built on this design. PR #6 closes. |
+| 1.11 | Action routes: `/api/rx`, `/api/handoff`, `/api/fix`, `/api/patient/use` | `app/api/**`, `lib/server/workflow.ts` | **Vinh** | 🟡 | 1.7, 1.8 | Sep 26: 43ca67b passes 252 tests, lint/build and 14 DB checks. Actual UI buttons exercised hosted Maria APIs; acknowledgment remained pending until separate pharmacy signal; final board/access checks pass. |
+| 1.12 | ntfy delivery for reviewed alerts and pharmacy confirmation | `lib/server/ntfy.ts` | **Vinh** | 🟡 | 0.8, 1.9 | Sep 26: claim-once outbox worker delivered actual hosted Maria reason alert; ntfy accepted once and user confirmed BOTH iPhone and Garmin receipt. No automatic ambiguous retries. Second pharmacy-confirmation alert requires reviewed truthful copy; task remains in progress. |
+| 1.13 | Wire `useEvents()` to `lib/realtime.ts`: live source, buttons enabled by case state | `components/data/**` | **Deem** | 🟡 | 1.9 | Sep 26: user explicitly requested frontend wiring now. 43ca67b builds on selected PR #6 hook/store/banner files, adds run-change/login/pending guards and fixes board/access outcomes. Two browser-context UI flow passes. Deem affected-owner review and physical-device/deployment check pending. |
 
 **CORE CHECKPOINT, Saturday morning:** Maria across two devices: prescribe -> barrier -> physical wrist alert -> reviewed coordinator handoff -> resource acknowledgment (still pending) -> separate simulated pharmacy confirmation -> first fill observed. If it fails, stop optional provider work and fix the loop.
 
