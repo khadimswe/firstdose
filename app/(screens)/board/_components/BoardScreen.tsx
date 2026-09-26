@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import { PatientQr } from "@/components/PatientQr";
 import { StandIn } from "@/components/StandIn";
 import { WristMirror } from "@/components/WristMirror";
 import { Button } from "@/components/ui/button";
@@ -71,6 +72,11 @@ export function BoardScreen() {
           <WristMirror text={fired.findLast((e) => e.wrist !== null)?.wrist ?? null} />
         </aside>
       </div>
+      <PatientQr
+        size={120}
+        caption="Scan to become Maria."
+        className="fixed right-8 bottom-8 text-sm text-muted-foreground"
+      />
     </div>
   );
 }
