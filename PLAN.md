@@ -6,6 +6,8 @@
 
 **Phase 0 remaining:** agree the open shared contracts (0.4–0.5); configure and verify the selected service accounts/credentials with each owner (0.6); demonstrate ntfy receipt on the iPhone and physical Garmin (0.8); confirm Deem's team registration and selected-track setup, including domain/category status (0.9). Local `.env` preparation and a successful dry run do not pass a live-service or hardware gate. Resume Phase 1 only after these setup results are recorded.
 
+**Phase 0 evidence, September 26:** user created the Supabase project and saved its URL/publishable/secret keys in the original checkout. Copied only those three settings to the isolated worktree's ignored `.env`. Read-only checks: publishable key `/auth/v1/settings` HTTP 200; secret key `/rest/v1/` HTTP 200. The schema-inspection endpoint rejects a publishable key with “Secret API key required,” as expected for that endpoint. No tables, policies, migrations or account settings were changed. Supabase credential setup verified; other provider setup and the physical watch gate remain open.
+
 This dashboard is the execution source of truth. Keep presentation work in `docs/presentation/`; freeze the other planning/audit documents as reference snapshots. Do not maintain parallel schedules. This local revision responds to review and awaits team feedback; it does not change the shared mock contract or merge itself into main.
 
 **Synced source:** this worktree starts from main `8687bb9`, including Minh's merged implementation guide. Vinh's `backend/workflow-foundation` now has a locally tested router, pure command planner and offline-ready ntfy transport/CLI. Supabase, HTTP routes and Realtime remain pending. `/api/sim/fire` is standardized as `{ ids: string[] }` in `docs/architecture.md`.
@@ -106,7 +108,7 @@ Current objective, scope and claim boundaries: [product proposal](docs/product-p
 | 0.3 | CI: lint, build, `npm test --if-present`, gitleaks, tracked-file gate, mock JSON gate | `.github/workflows/ci.yml` | **Deem** | ✅ | 0.2 | Not required on `main` during the event. |
 | 0.4 | Data contract | `mock/*.json` | **both** | 🟡 | 0.1 | Two fixes pending (see 0.7). Frozen after. |
 | 0.5 | Architecture doc | `docs/architecture.md` | **Vinh** reviews | 🟡 | 0.4 | Deem drafted. Vinh corrects routes/tables to match his build. |
-| 0.6 | Keys (each person signs up, keys move by AirDrop only) | local `.env` | **Vinh**: Supabase, Tiger Data, Gemini, xAI. **Deem**: ElevenLabs + .Tech (MLH), Vercel, HexLabs OpenAI | ⬜ | n/a | |
+| 0.6 | Keys (each person signs up, keys move by AirDrop only) | local `.env` | **Vinh**: Supabase, Tiger Data, Gemini, xAI. **Deem**: ElevenLabs + .Tech (MLH), Vercel, HexLabs OpenAI | 🟡 | n/a | September 26: Supabase publishable/secret keys verified read-only; remaining selected-provider setup not yet verified. |
 | 0.7 | Contract fixes: add `ev_21b` (James `fix_sent` BRIDGE_SAMPLE); `wrist.started` → `"{patient_short} started {drug}. $0 with copay card."` | `mock/events.json`, `mock/templates.json` | **Deem** | ✅ | 0.4 | ⚠️ CONTRACT commit. Tell Vinh first. |
 | 0.8 | **Gate:** ntfy POST → iPhone → Garmin FR55 buzz with text | `scripts/ntfy-smoke.ts` | **Vinh** | 🟡 | 0.6 | Sep 26 1:47 AM ET: dry-run CLI prepared; credentials and physical-device check pending. Explicit --send required. |
 | 0.9 | Register team on HexLabs; ask #qna if Notability is a challenge or sponsor track | n/a | **Deem** | ⬜ | n/a | |
