@@ -292,7 +292,11 @@ export function SimScreen() {
           </section>
 
           {selected && (
-            <BeatDetail beat={selected} who={who(selected)} firedIds={firedIds} catalog={catalog} />
+            <BeatDetail
+              beat={{ ...selected, events: selected.events.map((event) => fired.find((row) => row.id === event.id) ?? event) }}
+              who={who(selected)} firedIds={firedIds} catalog={catalog}
+              live={mode === "supabase"}
+            />
           )}
 
           <section className="flex items-center gap-4 rounded-2xl border bg-card p-4">

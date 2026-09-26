@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { WEEK_PATIENTS, WEEK_CASES, WEEK_EVENTS, seedWeekEvents } from "@/lib/demo-week";
 import { CATALOG } from "@/components/data/catalog";
 import { deriveCases, queueBucket } from "@/components/data/derive";
+import { isLinked } from "@/components/data/links";
 import { planCommand } from "@/lib/server/workflow";
 
 const now = "2026-09-26T16:00:00.000Z";
@@ -14,6 +15,13 @@ const buckets = (events: ReturnType<typeof seedWeekEvents>) => {
 };
 
 describe("fictional seed week", () => {
+  it("gives the prepared queue its own prescriber without approving the live doctor", () => {
+    const cases = deriveCases(catalog, seedWeekEvents(now));
+    expect(new Set(WEEK_CASES.map(row => row.prescriber_label))).toEqual(new Set(["Dr. Rivera (demo)"]));
+    expect(isLinked("Dr. Rivera (demo)", cases, {})).toBe(true);
+    expect(isLinked("Dr. Demo (judge 1)", cases, {})).toBe(false);
+  });
+
   it("has 13 fixed separate records and the same 3/2/8 queue in offline and persisted form", () => {
     expect(WEEK_PATIENTS).toHaveLength(13);
     expect(WEEK_CASES).toHaveLength(13);
