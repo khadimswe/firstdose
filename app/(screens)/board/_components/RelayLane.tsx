@@ -39,16 +39,16 @@ export function RelayLane({ c }: { c?: CaseView }) {
   const stuckAt = c?.events.find((e) => e.type === "reason_classified")?.at;
 
   return (
-    <section className="grid grid-cols-[220px_minmax(0,1fr)] items-start gap-8">
+    <section className="grid min-w-0 lg:grid-cols-[220px_minmax(0,1fr)] items-start gap-8">
       <div className="pt-1">
         {c && (
           <>
-            <div className="text-4xl font-semibold">{c.patient.display_short}</div>
+            <div className="text-2xl font-semibold sm:text-4xl">{c.patient.display_short}</div>
             <div className="text-xl text-muted-foreground">
               {c.drug.brand} {c.drug.strength}
             </div>
             {waitingOn(c) && (
-              <div className="mt-3 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-lg">
+              <div className="mt-3 inline-flex flex-wrap items-center gap-2 rounded-full border px-3 py-1 text-lg">
                 <span className="text-muted-foreground">Waiting on</span>
                 <span className="font-semibold">{waitingOn(c)}</span>
               </div>
@@ -57,7 +57,7 @@ export function RelayLane({ c }: { c?: CaseView }) {
         )}
       </div>
 
-      <div className="space-y-6">
+      <div className="min-w-0 space-y-6">
         <div className="relative">
           <div className="absolute top-6 right-[12.5%] left-[12.5%] h-1.5 -translate-y-1/2 rounded bg-muted" />
           <div
@@ -83,7 +83,7 @@ export function RelayLane({ c }: { c?: CaseView }) {
                   />
                   <span
                     className={cn(
-                      "text-2xl",
+                      "text-center text-xs sm:text-lg lg:text-2xl",
                       i > stop && "text-muted-foreground",
                       here && stuck && "font-semibold text-stuck",
                       here && confirmed && "font-semibold text-started",
@@ -92,7 +92,7 @@ export function RelayLane({ c }: { c?: CaseView }) {
                     {label}
                   </span>
                   {times[i] !== undefined && (
-                    <span className="font-mono text-lg text-muted-foreground">
+                    <span className="font-mono text-[10px] text-muted-foreground sm:text-sm lg:text-lg">
                       {clock(times[i]!)}
                     </span>
                   )}
@@ -102,7 +102,7 @@ export function RelayLane({ c }: { c?: CaseView }) {
           </ol>
         </div>
         {c && stuck && (
-          <p className="text-center text-3xl font-semibold text-stuck">
+          <p className="text-center text-xl font-semibold sm:text-3xl text-stuck">
             {stuckLabel(c)}
             {stuckAt !== undefined && (
               <span className="font-mono font-normal text-muted-foreground">

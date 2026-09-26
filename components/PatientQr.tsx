@@ -40,12 +40,13 @@ export function PatientQr({
   const { url } = usePatientUrl();
 
   return (
-    <figure className={cn("flex flex-col items-center gap-2", className)}>
-      <div className="rounded-lg bg-white p-2">
+    <figure className={cn("flex max-w-full min-w-0 flex-col items-center gap-2", className)}>
+      <div className="max-w-full rounded-lg bg-white p-2" style={{ width: size + 16 }}>
         {url ? (
-          <QRCodeSVG value={url} size={size} level="M" marginSize={0} />
+          <QRCodeSVG value={url} size={size} level="M" marginSize={0}
+            aria-label={caption ?? qrCaption()} className="block h-auto max-w-full" />
         ) : (
-          <div style={{ width: size, height: size }} />
+          <div className="aspect-square w-full" />
         )}
       </div>
       {caption && <figcaption className="text-center">{caption}</figcaption>}

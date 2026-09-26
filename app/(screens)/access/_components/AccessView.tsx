@@ -119,7 +119,7 @@ export function AccessView({
   const max = Math.max(1, ...tally.map(([, n]) => n));
 
   return (
-    <main className="mx-auto w-full max-w-6xl space-y-8 px-8 py-10">
+    <main id="main-content" tabIndex={-1} className="mx-auto w-full max-w-6xl space-y-8 px-8 py-10">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div className="space-y-2">
           <h1 className="text-3xl font-semibold tracking-tight">{t.title}</h1>

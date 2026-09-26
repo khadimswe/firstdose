@@ -76,7 +76,7 @@ export function PrescribersScreen() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-6xl space-y-6 p-4 md:p-8">
+    <main id="main-content" tabIndex={-1} className="mx-auto w-full max-w-6xl space-y-6 p-4 md:p-8">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold tracking-tight">Prescribers</h1>
@@ -97,8 +97,9 @@ export function PrescribersScreen() {
         {coordinator.error && <Button variant="outline" onClick={() => void coordinator.refresh()}>Reconnect</Button>}
       </section>}
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
-        <div className="overflow-x-auto rounded-xl border bg-background">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
+        <div role="region" aria-label="Prescriber links" tabIndex={0}
+          className="min-w-0 overflow-x-auto rounded-xl border bg-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground">
           <table className="w-full text-left text-sm">
             <thead className="border-b bg-muted/40 text-xs text-muted-foreground">
               <tr>
@@ -142,8 +143,8 @@ export function PrescribersScreen() {
           </table>
         </div>
 
-        <aside className="space-y-4 rounded-xl border bg-background p-4">
-          <h2 className="font-semibold">How linking works</h2>
+        <aside aria-labelledby="linking-guide-title" className="space-y-4 rounded-xl border bg-background p-4">
+          <h2 id="linking-guide-title" className="font-semibold">How linking works</h2>
           <ol className="space-y-4">
             {STEPS.map((s, i) => {
               const Icon = s.icon;

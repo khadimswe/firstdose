@@ -33,7 +33,7 @@ export function CoordinatorShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-dvh bg-muted/30">
-      <aside className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col border-r bg-background md:flex">
+      <aside aria-label="Coordinator navigation" className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col border-r bg-background md:flex">
         <div className="px-5 pt-6 pb-4">
           <div className="text-lg font-semibold tracking-tight">FirstDose</div>
           <div className="text-sm text-muted-foreground">Access coordinator</div>

@@ -97,7 +97,7 @@ export function DemoLauncher() {
   const wrist = fired.findLast((e) => e.wrist !== null)?.wrist ?? null;
 
   return (
-    <main className="mx-auto w-full max-w-5xl space-y-8 p-6 md:p-10">
+    <main id="main-content" tabIndex={-1} className="mx-auto w-full max-w-5xl space-y-8 p-6 md:p-10">
       <ModeBadge />
       <header className="space-y-2">
         <h1 className="text-2xl font-semibold tracking-tight">FirstDose demo setup</h1>
@@ -107,14 +107,14 @@ export function DemoLauncher() {
         </p>
       </header>
 
-      <div className="grid gap-6 md:grid-cols-[1fr_220px]">
-        <ul className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_220px]">
+        <ul className="grid min-w-0 gap-3 sm:grid-cols-2">
           {DEVICES.map((d) => {
             const Icon = d.icon;
             return (
-              <li key={d.device} className="flex flex-col gap-3 rounded-xl border p-4">
-                <div className="flex items-start gap-3">
-                  <Icon className="mt-0.5 size-5 text-muted-foreground" />
+              <li key={d.device} className="flex min-w-0 flex-col gap-3 rounded-xl border p-4">
+                <div className="flex flex-wrap items-start gap-3">
+                  <Icon className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
                   <div className="min-w-0 flex-1">
                     <div className="font-medium">{d.who}</div>
                     <div className="text-sm text-muted-foreground">{d.device}</div>
@@ -123,7 +123,7 @@ export function DemoLauncher() {
                 </div>
                 <p className="text-sm">{d.how}</p>
                 {d.qr && (
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-wrap items-center gap-3">
                     <PatientQr size={112} />
                     <Button asChild size="sm" variant="outline">
                       <Link href="/qr">Printable card</Link>
@@ -131,8 +131,8 @@ export function DemoLauncher() {
                   </div>
                 )}
                 {d.href && (
-                  <div className="mt-auto flex items-center justify-between gap-2">
-                    <span className="truncate font-mono text-xs text-muted-foreground">
+                  <div className="mt-auto flex min-w-0 items-center justify-between gap-2">
+                    <span className="min-w-0 flex-1 truncate font-mono text-xs text-muted-foreground">
                       {origin}
                       {d.href}
                     </span>
