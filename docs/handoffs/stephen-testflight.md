@@ -1,47 +1,79 @@
-# Stephen: wrapping the doctor's phone view for TestFlight (6.13)
+# FirstDose Rx: build the doctor's TestFlight shell (6.13)
 
-Sat Sep 26, 2026 · Deem. **Last in line:** start this only after the web frontend is done, and don't test phones until then. PLAN row 6.13.
+Updated September 26, 2026. Stephen is not on this project. This is now a self-service handoff for whoever has the team's Mac and Apple Developer account. The filename stays stable for existing links. PLAN.md remains the execution dashboard.
 
-## What you're wrapping
+The wrapper source is in [`ios/`](../../ios/). It loads `https://firstdose.vercel.app/doctor` in a persistent `WKWebView`, with the existing web interface and its fictional-data disclosures. The app is named **FirstDose Rx** and has an original navy “FD” icon generated locally. It has no third-party SDKs, native push, native analytics, or embedded access code.
 
-The doctor's screen is a web app at `https://firstdose.vercel.app/doctor`. It's built for an iPhone: 390 wide, a bottom tab bar, and safe-area padding. The TestFlight build is a thin native shell around that page, not a rewrite. The web app keeps all the logic; the shell makes it an installed app with its own icon and full screen.
+**Readiness:** source and reproducible XcodeGen configuration are prepared. Six Swift navigation-policy tests passed in a disposable Swift 6 Linux container. Swift syntax parsing and plist/asset-JSON/YAML parsing passed on Windows. These checks do **not** establish an iOS build, visual layout, microphone capture, session persistence on an iPhone, App Store Connect acceptance, or a TestFlight installation. Those require the Mac/device steps below. Finish the live web deployment before the phone acceptance check.
 
-| Route | Tab | What it is |
-|---|---|---|
-| `/doctor` | Prescriber | Home: Rx Alerts, the before-visit card, Recent Patients with fill status, the "New Rx" button |
-| `/doctor/new` | Prescriber | New Rx: patient → medication → pharmacy → savings card → Sign and send, then the DailyMed label |
-| `/doctor/patients/[id]` | Prescriber | Patient Details and Past Prescriptions (`pt_maria`, `pt_james`) |
-| `/doctor/concierge` | Concierge | Request types, including "Help my patient start" |
-| `/doctor/profile` | Profile | "My coordinator": approve the coordinator |
+## Behavior and boundaries
 
-- **Layout already handled.** `viewport-fit=cover` and theme color `#1c2150` are set in `app/(screens)/doctor/layout.tsx`. `env(safe-area-inset-top/bottom)` padding is in `PhoneShell.tsx`, and the content is capped at 430 px wide.
-- **Home-screen metadata** (`appleWebApp`) is already set, so "Add to Home Screen" in Safari works today as a fallback.
+- `/doctor` and its descendants, `/coordinator` and its descendants, and the exact `/api/demo-login` path stay in the shell only on the configured HTTPS origin. Query strings are supported, including `/api/demo-login?next=/doctor`.
+- Other ordinary HTTP(S) links tapped by the user open in the default browser. Automatic external redirects, subframe escapes, custom schemes, credentials in URLs, and ambiguous internal paths are blocked. The native wrapper does not follow arbitrary incoming deep links.
+- The default persistent website data store retains the existing HttpOnly demo-session cookie. Enter the private demo access code on the web sign-in page. Never put it in the project, plist, URL, or build settings. Cookie expiry and server sign-out still apply; Safari has a separate session.
+- Navy launch/loading/background and light status text match the web header. WebKit uses the full viewport; the existing `PhoneShell` CSS owns the notch and home-indicator insets. Native back-swipe is enabled, alongside the web back buttons.
+- Network failures, main-frame 404/5xx, and WebKit process termination show “Can't reach FirstDose” with Retry. Retry issues a fresh GET to `/doctor`, so it cannot resubmit an old form. The wrapper has no native fake-data fallback. The deployed app must itself use live mode; the wrapper does not override server configuration.
+- Microphone requests prompt the user only for a main frame on the configured origin and allowed page. Camera and combined camera/microphone requests are denied. The plist explains handoff recording; recording still begins only through the web button. No audio is stored by native code.
 
-## The native shell
+## Prepare on a Mac
 
-- **A `WKWebView`** loading `https://firstdose.vercel.app/doctor`, full screen, with no browser chrome. Keep it inside the web view for links under `/doctor`, `/api/demo-login` and `/coordinator`; open anything else in Safari.
-- **Sign-in:**
-  - live mode uses an HttpOnly session cookie set by `/api/demo-login?next=/doctor`;
-  - use the default persistent `WKWebsiteDataStore`, so the team signs in once on the demo phone;
-  - never ship or hard-code the access code or any key in the app.
-- **Status bar:** a light style over the navy header. Match the background `#1c2150`, so there's no white flash while the page loads.
-- **Microphone** (only if the voice handoff ships, 4.1): add `NSMicrophoneUsageDescription` and allow `getUserMedia` in the web view (iOS 14.3+). The web app shows the mic button only in live mode.
-- **Offline:** show a simple "Can't reach FirstDose" screen with Retry. No cached fake data.
-- **App name and icon:** "FirstDose Rx", with our own icon. **Never DocUpdate's name, logo or icon** (PLAN D9). The in-app screens keep their "Concept: FirstDose inside DocUpdate · Not affiliated" line.
+Install Xcode, its iOS simulator runtime, and [XcodeGen](https://github.com/yonaskolb/XcodeGen). The project targets iOS 16 or newer and an iPhone. Use an Xcode version currently accepted by App Store Connect.
 
-## The watch
+From the repository root:
 
-The Apple Watch alerts don't come from this app. They come from the **ntfy** app on the same iPhone, subscribed to the team topic (private; Vinh has it). iOS mirrors them to the watch **only while the phone is locked**, so the demo locks the phone after Sign and send. Native push (APNs) is out of scope for the weekend.
+```sh
+cd ios
+brew install xcodegen
+swift test
+swift scripts/make-icon.swift
+xcodegen generate --spec project.yml
+xcodebuild -list -project FirstDoseRx.xcodeproj
+open FirstDoseRx.xcodeproj
+```
 
-## Don't
+The icon generator uses only AppKit and produces a 1024px opaque PNG. Inspect that icon before archiving. Generated projects, icons, Swift build products, archives, and personal configuration are ignored by `ios/.gitignore`; regenerate them after a fresh checkout.
 
-- Don't add analytics, crash reporters or third-party SDKs that send data off the phone.
-- Don't put patient data in logs or local storage outside the web view.
-- Don't submit to the App Store: TestFlight internal testing only.
+In Xcode's **Signing & Capabilities**, select your Apple Developer team and a bundle identifier registered to that team. `app.firstdose.rx` in `project.yml` is a proposed identifier, not an assertion that the team owns it. Change that setting in `project.yml` before regenerating. Never commit certificates, provisioning profiles, account tokens, or a personal team configuration. Automatic signing is enabled; no capabilities or entitlements need adding.
 
-## Done when
+The production origin is a public, non-secret value in `ios/FirstDoseRx/Info.plist` under `FirstDoseOrigin`. To test a deployed HTTPS preview, replace that value with its exact origin (no path, query, or fragment), then rebuild. Do not disable App Transport Security or add blanket host exceptions. Restore the production origin for the demo archive.
 
-- [ ] The TestFlight build installs on the demo iPhone, opens `/doctor` full screen, and stays signed in after a relaunch.
-- [ ] Every tab and route above works, the back buttons work, and nothing is cut off by the notch or the home indicator.
-- [ ] After live mode is on: Sign and send, lock the phone, and the Apple Watch buzzes (C8), then the Rx Alert shows when you unlock.
-- [ ] Record the build number in PLAN.md (6.13) with a `status:` commit.
+Build on an installed iPhone simulator, selected through Xcode, or list destinations and use its concrete ID:
+
+```sh
+xcodebuild -showdestinations -project FirstDoseRx.xcodeproj -scheme FirstDoseRx
+xcodebuild -project FirstDoseRx.xcodeproj -scheme FirstDoseRx \
+  -destination 'platform=iOS Simulator,id=YOUR_SIMULATOR_UUID' \
+  -derivedDataPath DerivedData CODE_SIGNING_ALLOWED=NO build
+```
+
+`swift test` compiles the exact navigation policy imported by the app. It covers allowed routes/login, path boundaries, scheme/host/port checks, credential-bearing URLs, encoded traversal, and microphone-origin matching. UIKit/WebKit behavior is verified separately on the simulator and real iPhone.
+
+## Archive and invite an internal tester
+
+1. Confirm the live web deployment and private sign-in work in Safari. In App Store Connect, create/select the FirstDose Rx app using the registered bundle identifier.
+2. In Xcode, select **Any iOS Device**, then **Product → Archive**. Fix any compile or validation errors before distributing. Increase `CURRENT_PROJECT_VERSION` in `project.yml` for each subsequent upload and regenerate the project.
+3. In Organizer, validate the archive and choose **Distribute App → App Store Connect** for internal TestFlight testing. Complete Apple's current signing, privacy, and export-compliance questions truthfully for the deployed app and wrapper; do not assume answers from this source preparation.
+4. After processing finishes, add the build to the team's internal TestFlight group and install it on the demo iPhone. Do not submit this weekend shell for public App Store release.
+5. Record the actual build number and observed acceptance results in a separate `status: 6.13 ...` PLAN.md commit. Source readiness alone does not complete that row.
+
+## Phone acceptance
+
+- [ ] Install the uploaded TestFlight build; launch full screen with the correct icon and no white launch flash.
+- [ ] Sign in through the web form. Force quit and relaunch; verify the valid session persists. Verify expired/invalid sessions return to sign-in without bundling the code.
+- [ ] Test `/doctor`, `/doctor/new`, `/doctor/patients/pt_maria`, `/doctor/patients/pt_james`, `/doctor/concierge`, `/doctor/profile`, and the coordinator handoff. Check tabs, back buttons, native back-swipe, keyboard, notch, home indicator, and larger text.
+- [ ] Tap an external DailyMed/source link; it opens in the default browser. Return to the app and confirm its session and route remain usable.
+- [ ] Launch without connectivity; confirm Retry appears. Restore connectivity and retry. Also check a server-error response; no stale page is presented as a new success.
+- [ ] In live mode, allow and deny microphone permission in separate runs. Confirm handoff review works when allowed and the existing text path works when denied. No camera prompt should appear.
+- [ ] Exercise the real Sign and send → coordinator → pharmacy-fill flow across devices. Confirm current events after backgrounding and resuming.
+- [ ] Separately verify the physical Apple Watch notification, then record the device/build evidence.
+
+## Watch receipt remains separate
+
+The wrapper does not register for APNs. Watch notifications come from the **ntfy** app on the paired iPhone subscribed to the team's private topic. Configure iPhone/Watch notification mirroring and test with the phone locked; do not assume a successful server delivery proves wrist receipt. Confirm on the actual Apple Watch and then verify the updated Rx Alert after unlocking. The existing Garmin evidence does not substitute for this check.
+
+## API references checked
+
+- Apple's [default website data store](https://developer.apple.com/documentation/webkit/wkwebsitedatastore/default()) persists WebKit data to disk.
+- Apple's [media-capture permission delegate](https://developer.apple.com/documentation/webkit/wkuidelegate/webview(_:requestmediacapturepermissionfor:initiatedbyframe:type:decisionhandler:)) provides the origin, frame, requested device type, and prompt/deny decision (iOS 15+).
+- [XcodeGen project specification](https://github.com/yonaskolb/XcodeGen/blob/master/Docs/ProjectSpec.md) defines the local Swift package, app target, scheme, and build settings used here.
+- Apple's [internal TestFlight testers](https://developer.apple.com/help/app-store-connect/test-a-beta-version/add-internal-testers/) guide covers internal groups and build access after upload.

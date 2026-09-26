@@ -1,0 +1,41 @@
+name: FirstDoseRx
+options:
+  minimumXcodeGenVersion: 2.42.0
+  deploymentTarget:
+    iOS: '16.0'
+settings:
+  base:
+    SWIFT_VERSION: '5.0'
+    MARKETING_VERSION: '0.1.0'
+    CURRENT_PROJECT_VERSION: '1'
+    CODE_SIGN_STYLE: Automatic
+    DEVELOPMENT_TEAM: ''
+packages:
+  FirstDoseNavigation:
+    path: .
+targets:
+  FirstDoseRx:
+    type: application
+    platform: iOS
+    sources:
+      - path: FirstDoseRx
+    dependencies:
+      - package: FirstDoseNavigation
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.firstdose.rx
+        PRODUCT_NAME: FirstDoseRx
+        TARGETED_DEVICE_FAMILY: '1'
+        SUPPORTS_MACCATALYST: NO
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: FirstDoseRx/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+schemes:
+  FirstDoseRx:
+    build:
+      targets:
+        FirstDoseRx: all
+    run:
+      config: Debug
+    archive:
+      config: Release
