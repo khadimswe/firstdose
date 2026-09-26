@@ -66,7 +66,6 @@ function newOrderedParser(): XMLParser {
     trimValues: false,
     parseTagValue: false,
     parseAttributeValue: false,
-    allowDTD: false,
     processEntities: true,
   });
 }
@@ -195,10 +194,13 @@ function collapseInline(value: string): string {
 }
 
 export function extractSections(xml: string): SectionResult[] {
+  if (/<!DOCTYPE/i.test(xml) || /<!ENTITY/i.test(xml)) {
+    return SECTION_CODES.map((loinc) => ({ status: 'invalid', loinc, detail: 'malformed XML (DTD or entity declaration rejected)' }));
+  }
   let parsed: OrderedNode[] | null = null;
   try {
-    const validation = XMLValidator.validate(xml, { allowDTD: false });
-    if (validation === false || typeof validation === 'object') throw new Error('bad xml');
+    const validation = XMLValidator.validate(xml);
+    if (typeof validation === 'object') throw new Error(validation.err.msg);
     parsed = newOrderedParser().parse(xml) as OrderedNode[];
   } catch {
     return SECTION_CODES.map((loinc) => ({ status: 'invalid', loinc, detail: 'malformed XML' }));

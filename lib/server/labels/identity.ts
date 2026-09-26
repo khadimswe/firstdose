@@ -186,8 +186,6 @@ export type SplExpectation = {
   labeler: string;
 };
 
-const HL7_V3_NS = 'urn:hl7-org:v3';
-
 function newSplParser(): XMLParser {
   return new XMLParser({
     // SPL narrative text matters; the value tree is only used for evidence.
@@ -195,7 +193,6 @@ function newSplParser(): XMLParser {
     attributeNamePrefix: '@',
     parseTagValue: false,
     trimValues: false,
-    allowDTD: false,
   });
 }
 
@@ -218,27 +215,6 @@ function attr(node: unknown, name: string): string | null {
   if (found === null) return null;
   const value = found[`@${name}`];
   return typeof value === 'string' && value.length > 0 ? value : null;
-}
-
-function findValues(node: unknown, tag: string, out: string[]): void {
-  if (Array.isArray(node)) {
-    for (const child of node) findValues(child, tag, out);
-    return;
-  }
-  if (typeof node !== 'object' || node === null) return;
-  const record = node as Record<string, unknown>;
-  for (const [key, value] of Object.entries(record)) {
-    if (key === tag) {
-      if (typeof value === 'string') out.push(value);
-      else if (typeof value === 'object' && value !== null) {
-        const valueRecord = value as Record<string, unknown>;
-        // Self-closing elements may arrive as { '#text': '', '@root': ... }.
-        const text = valueRecord['#text'];
-        if (typeof text === 'string') out.push(text);
-      }
-    }
-    findValues(value, tag, out);
-  }
 }
 
 function collectProducts(node: unknown, out: SplProduct[]): void {
@@ -325,12 +301,10 @@ function assertNoDtdOrEntities(xml: string): void {
 
 export function parseSplEvidence(xml: string): SplEvidence {
   assertNoDtdOrEntities(xml);
-  const validation = XMLValidator.validate(xml, { allowDTD: false });
-  if (validation === false || typeof validation === 'object') {
-    throw new Error('SPL document rejected: malformed XML');
-  }
   let parsed: unknown;
   try {
+    const validation = XMLValidator.validate(xml);
+    if (typeof validation === 'object') throw new Error(validation.err.msg);
     parsed = newSplParser().parse(xml);
   } catch (error) {
     throw new Error(`SPL document rejected: malformed XML (${String(error)})`);

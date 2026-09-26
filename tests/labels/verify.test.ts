@@ -55,6 +55,7 @@ function identity(): LabelIdentity {
     source_sha256: sha256(XML),
   };
 }
+void identity;
 
 function sha256(value: string): string {
   return createHash('sha256').update(value, 'utf8').digest('hex');
@@ -62,9 +63,9 @@ function sha256(value: string): string {
 
 function labelFromXml(xml: string, over: Partial<Label> = {}): Label {
   const results = extractSections(xml);
-  const sections = results
+  const sections: Label['sections'] = results
     .filter((r): r is Extract<typeof r, { status: 'present' }> => r.status === 'present')
-    .map((r) => r.section);
+    .map((r) => ({ ...r.section }));
   const boxed = results.find((r) => 'loinc' in r && r.loinc === '34066-1' && r.status === 'absent');
   if (boxed !== undefined) {
     sections.push({ loinc: '34066-1', title: 'BOXED WARNING', text: null });
@@ -174,9 +175,14 @@ describe('verifyLabel', () => {
     const xml = readFileSync('data/labels/drug_otezla/source.xml', 'utf8');
     const identityJson = JSON.parse(readFileSync('data/labels/drug_otezla/provenance.json', 'utf8')) as LabelIdentity;
     const results = extractSections(xml);
-    const sections = results.flatMap((r) =>
-      r.status === 'present' ? [r.section] : [{ loinc: r.loinc, title: 'BOXED WARNING', text: null }],
-    );
+    const sections: Label['sections'] = [];
+    for (const r of results) {
+      if (r.status === 'present') {
+        sections.push({ loinc: r.section.loinc, title: r.section.title, text: r.section.text });
+      } else if (r.status === 'absent' && r.loinc === '34066-1') {
+        sections.push({ loinc: r.loinc, title: 'BOXED WARNING', text: null });
+      }
+    }
     const label: Label = {
       drug_id: 'drug_otezla',
       setid: identityJson.setid,

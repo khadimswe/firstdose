@@ -51,7 +51,7 @@ export function verifyLabel(
 
   const xml = new TextDecoder().decode(xmlBytes);
   const fresh = extractSections(xml);
-  const freshByLoinc = new Map<string, string | null>();
+  const freshByLoinc = new Map<string, string | null | undefined>();
   for (const result of fresh) {
     if (result.status === 'present') freshByLoinc.set(result.section.loinc, result.section.text);
     else if (result.status === 'absent') freshByLoinc.set(result.loinc, null);

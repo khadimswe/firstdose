@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { selectRxConcept, type LabelIdentity } from '@/lib/server/labels/identity';
+import { selectRxConcept } from '@/lib/server/labels/identity';
 
 // Raw responses are untrusted input: the selector must never assume the first
 // concept found is the right product (starter packs, other strengths, other
