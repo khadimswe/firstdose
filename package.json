@@ -13,6 +13,7 @@
     "smoke:watch": "node --env-file-if-exists=.env --import tsx scripts/ntfy-smoke.ts"
   },
   "dependencies": {
+    "@google/genai": "^2.24.0",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.4.0",
     "fast-xml-parser": "^5.11.1",
