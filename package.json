@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node --import tsx scripts/labels/verify.ts --drug drug_otezla",
+    "prebuild": "node --import tsx scripts/labels/verify.ts --drug drug_otezla && node --import tsx scripts/labels/verify.ts --drug drug_humira",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

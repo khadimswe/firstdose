@@ -33,6 +33,8 @@ export type RxNormExpectation = {
   ingredient: string;
   strength: string;
   form: string;
+  /** Optional volume token (e.g. "0.4 mL") to disambiguate pen sizes. */
+  volume?: string;
 };
 
 function normalize(value: string): string {
@@ -80,6 +82,27 @@ function extractBrandBracket(name: string): string | null {
   return match === null ? null : match[1];
 }
 
+/**
+ * For volume presentations, RxNorm expresses the strength as a concentration
+ * ("40 mg / 0.4 mL" -> "100 MG/ML"), so derive and match that token instead
+ * of the per-dose strength.
+ */
+function concentrationFrom(strength: string, volume: string): string {
+  const strengthMatch = /([0-9]+(?:\.[0-9]+)?)/.exec(strength);
+  const volumeMatch = /([0-9]+(?:\.[0-9]+)?)/.exec(volume);
+  if (strengthMatch === null || volumeMatch === null) {
+    throw new Error(`RxNorm expectation: cannot derive a concentration from ${strength}/${volume}`);
+  }
+  const mg = Number(strengthMatch[1]);
+  const ml = Number(volumeMatch[1]);
+  if (!Number.isFinite(mg) || !Number.isFinite(ml) || ml === 0) {
+    throw new Error(`RxNorm expectation: cannot derive a concentration from ${strength}/${volume}`);
+  }
+  // Round away floating-point artifacts (10 mg/0.1 mL must be 100, not 99.999…).
+  const perMl = Number((mg / ml).toPrecision(10));
+  return `${perMl} MG/ML`;
+}
+
 function matchesExpectation(concept: { rxcui: string; name: string; tty: string }, expected: RxNormExpectation): boolean {
   const { name } = concept;
   // Pack rows are compound descriptions like "{4 (apremilast 30 MG Oral Tablet
@@ -90,13 +113,21 @@ function matchesExpectation(concept: { rxcui: string; name: string; tty: string 
   if (normalize(brand) !== normalize(expected.brand)) return false;
 
   const norm = normalize(name);
+  const strengthToken =
+    expected.volume === undefined ? expected.strength : concentrationFrom(expected.strength, expected.volume);
   let cursor = 0;
-  for (const part of [expected.ingredient, expected.strength, expected.form]) {
+  for (const part of [expected.ingredient, strengthToken, expected.form]) {
     const token = normalize(part);
     if (token.length === 0) return false;
     const idx = indexOfToken(norm, token, cursor);
     if (idx === -1) return false;
     cursor = idx + token.length;
+  }
+  // The volume token (pen sizes: 0.4 mL vs 0.8 mL) must also match, because
+  // the same concentration describes several pack sizes.
+  if (expected.volume !== undefined) {
+    const volumeToken = normalize(expected.volume);
+    if (volumeToken.length > 0 && indexOfToken(norm, volumeToken, 0) === -1) return false;
   }
   return true;
 }
@@ -166,6 +197,9 @@ export type SplProduct = {
   active_ingredient: string;
   strength_value: string;
   strength_unit: string;
+  /** Volume from the nested containerPackagedProduct numerator, e.g. "0.4" mL. */
+  volume_value?: string;
+  volume_unit?: string;
 };
 
 export type SplEvidence = {
@@ -184,6 +218,8 @@ export type SplExpectation = {
   strength: string;
   form: string;
   labeler: string;
+  /** Optional volume (e.g. "0.4 mL") required for pen presentations. */
+  volume?: string;
 };
 
 function newSplParser(): XMLParser {
@@ -217,6 +253,42 @@ function attr(node: unknown, name: string): string | null {
   return typeof value === 'string' && value.length > 0 ? value : null;
 }
 
+/**
+ * Extract presentation evidence from one nested node: the ACTIB quantity gives
+ * the strength; the quantity denominator gives the fill volume for pens.
+ */
+function presentationFromActib(
+  nested: Record<string, unknown>,
+  brand: string,
+  generic: string,
+  form: string,
+): SplProduct | null {
+  const actibNode = findIngredientWithClass(nested, 'ACTIB');
+  if (actibNode === null) return null;
+  const activeNode = firstNodeAtPath(actibNode, ['ingredientSubstance', 'name']);
+  const active = activeNode !== null ? asString(activeNode) : '';
+  const numerator = attr(firstNodeAtPath(actibNode, ['quantity', 'numerator']), 'value');
+  const numeratorUnit = attr(firstNodeAtPath(actibNode, ['quantity', 'numerator']), 'unit');
+  const denominator = attr(firstNodeAtPath(actibNode, ['quantity', 'denominator']), 'value');
+  const denominatorUnit = attr(firstNodeAtPath(actibNode, ['quantity', 'denominator']), 'unit');
+  if (numerator === null || numeratorUnit === null) return null;
+  const product: SplProduct = {
+    brand,
+    generic,
+    form,
+    active_ingredient: active,
+    strength_value: numerator,
+    strength_unit: numeratorUnit,
+  };
+  // Pens carry the fill volume in the ACTIB quantity denominator
+  // (e.g. numerator 40 mg / denominator 0.4 mL); tablets use "1"/"1".
+  if (denominator !== null && denominatorUnit !== null && normalize(denominatorUnit) === 'ml') {
+    product.volume_value = denominator;
+    product.volume_unit = 'mL';
+  }
+  return product;
+}
+
 function collectProducts(node: unknown, out: SplProduct[]): void {
   if (Array.isArray(node)) {
     for (const child of node) collectProducts(child, out);
@@ -236,25 +308,73 @@ function collectProducts(node: unknown, out: SplProduct[]): void {
         formNode !== null && typeof formNode['@displayName'] === 'string'
           ? (formNode['@displayName'] as string)
           : '';
-      const actibNode = findIngredientWithClass(nested, 'ACTIB');
-      const activeNode =
-        actibNode !== null
-          ? firstNodeAtPath(actibNode, ['ingredientSubstance', 'name'])
-          : firstNodeAtPath(nested, ['ingredientSubstance', 'name']);
-      const active = activeNode !== null ? asString(activeNode) : '';
-      const strengthValue = actibNode !== null ? attr(firstNodeAtPath(actibNode, ['quantity', 'numerator']), 'value') : '';
-      const strengthUnit = actibNode !== null ? attr(firstNodeAtPath(actibNode, ['quantity', 'numerator']), 'unit') : '';
-      out.push({
-        brand,
-        generic,
-        form,
-        active_ingredient: active,
-        strength_value: strengthValue === null ? '' : strengthValue,
-        strength_unit: strengthUnit === null ? '' : strengthUnit,
-      });
+      // KIT wrappers (Humira pens) nest the real presentations inside
+      // containerPackagedProduct > asContent; the wrapper itself carries no
+      // ACTIB quantity, so descend to the first nested level before falling
+      // back to a flat (tablet-style) product.
+      const presentation = presentationFromActib(nested, brand, generic, form);
+      if (presentation === null) {
+        const nestedPresentation = firstNestedActibPresentation(nested, brand, generic);
+        if (nestedPresentation !== null) out.push(nestedPresentation);
+      } else {
+        out.push(presentation);
+      }
     }
   }
   for (const value of Object.values(record)) collectProducts(value, out);
+}
+
+/**
+ * For KIT-style labels: the manufactured product is a wrapper (formCode KIT)
+ * and each presentation lives in a nested containerPackagedProduct with its
+ * own asContent > quantity and ACTIB ingredient. Return the first nested
+ * presentation that has an ACTIB quantity, with the product-level name.
+ */
+function firstNestedActibPresentation(
+  nested: Record<string, unknown>,
+  brand: string,
+  generic: string,
+): SplProduct | null {
+  const containers = collectNestedActibNodes(nested);
+  for (const { node, form } of containers) {
+    const presentation = presentationFromActib(node, brand, generic, form);
+    if (presentation !== null) return presentation;
+  }
+  return null;
+}
+
+/**
+ * Walk the containerPackagedProduct/asContent hierarchy below a KIT wrapper
+ * and collect every node that has its own ingredient list, together with the
+ * container form displayName (e.g. "CARTON") for context. The list preserves
+ * document order.
+ */
+function collectNestedActibNodes(nested: Record<string, unknown>): { node: Record<string, unknown>; form: string }[] {
+  const found: { node: Record<string, unknown>; form: string }[] = [];
+  const walk = (node: Record<string, unknown>, form: string): void => {
+    if ('ingredient' in node) {
+      found.push({ node, form });
+    }
+    for (const value of Object.values(node)) {
+      if (Array.isArray(value)) {
+        for (const child of value) {
+          if (typeof child === 'object' && child !== null) {
+            const childRecord = child as Record<string, unknown>;
+            const formNode = firstNodeAtPath(childRecord, ['formCode']);
+            const childForm =
+              formNode !== null && typeof formNode['@displayName'] === 'string'
+                ? (formNode['@displayName'] as string)
+                : form;
+            walk(childRecord, childForm);
+          }
+        }
+      } else if (typeof value === 'object' && value !== null) {
+        walk(value as Record<string, unknown>, form);
+      }
+    }
+  };
+  walk(nested, '');
+  return found;
 }
 
 function findIngredientWithClass(node: Record<string, unknown>, classCode: string): Record<string, unknown> | null {
@@ -363,18 +483,23 @@ export function assertSplIdentity(evidence: SplEvidence, expected: SplExpectatio
   const strengthParts = expected.strength.trim().split(/\s+/);
   const strengthValue = strengthParts[0] ?? '';
   const strengthUnit = (strengthParts[1] ?? '').toLowerCase();
+  const volumeParts = expected.volume === undefined ? null : expected.volume.trim().split(/\s+/);
+  const volumeValue = volumeParts === null ? null : (volumeParts[0] ?? '');
+  const volumeUnit = volumeParts === null ? null : (volumeParts[1] ?? '').toLowerCase();
   const presentationMatch = evidence.products.some(
     (product) =>
       normalize(product.brand) === normalize(expected.brand) &&
       normalize(product.generic) === normalize(expected.ingredient) &&
       product.strength_value === strengthValue &&
       product.strength_unit.toLowerCase() === strengthUnit &&
-      (product.form === '' || normalize(product.form) === normalize(expected.form)),
+      (product.form === '' || normalize(product.form) === normalize(expected.form)) &&
+      (volumeValue === null ||
+        (product.volume_value === volumeValue && product.volume_unit?.toLowerCase() === volumeUnit)),
   );
   if (!presentationMatch) {
     throw new Error(
       `SPL identity mismatch: document does not explicitly contain the selected product presentation ` +
-        `(${expected.brand} ${expected.strength} ${expected.form})`,
+        `(${expected.brand} ${expected.strength}${expected.volume === undefined ? '' : `/${expected.volume}`} ${expected.form})`,
     );
   }
 }

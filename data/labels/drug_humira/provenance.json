@@ -1,0 +1,20 @@
+{
+  "drug_id": "drug_humira",
+  "rxcui": "1872980",
+  "rxnorm_name": "0.4 ML adalimumab 100 MG/ML Auto-Injector [Humira]",
+  "rxnorm_tty": "SBD",
+  "setid": "608d4f0d-b19f-46d3-749a-7159aa5f933d",
+  "document_id": "8bf84b15-6763-41cf-bfa4-bcee9ad4ef9a",
+  "version": "2154",
+  "effective_time": "20251223",
+  "source_url": "https://dailymed.nlm.nih.gov/dailymed/services/v2/spls/608d4f0d-b19f-46d3-749a-7159aa5f933d.xml",
+  "fetched_at": "2026-09-26T22:24:05.205Z",
+  "source_sha256": "06b13f288416565f3c781b85462751338a7df379d9036f10570bb1c0582e729a",
+  "extraction_method": "spl-section-text-v1",
+  "section_sha256": {
+    "34066-1": "001ed0bebd5908d5081156695e9aa78fbc8d8189dd6f7d12877be66949985d02",
+    "34067-9": "03f837314686d2dd0eaa8c5abced38acd7bd0d054a5637f05c02df9491cdcdf4",
+    "43685-7": "095170f773116e0f2f59e3fbf1865a237392b4230eaacd1d48cf3ae8a33861ba",
+    "34068-7": "455a272beadd7956077b555164e31d17107b6ce21ddae479fd90b00aee1d16e8"
+  }
+}
