@@ -14,12 +14,12 @@
 
 [PLAN.md](../../PLAN.md) owns status. The detailed A/B/C steps below are retained implementation and review references, not a fresh backlog. The old PR #8 review records the issues at that SHA; it does not describe the currently verified Otezla artifact.
 
-- Otezla verification and rendered source text pass; Humira remains an explicit placeholder.
+- Otezla and Humira verification pass. Humira was published in #43 with its boxed warning; the tamper test fails as expected.
 - Gemini classifier PR #23 and integration PR #39 are merged. The hosted Maria/James audit passed; the classifier returns an allowlisted reason or null and the router still owns the action.
 - Tiger replay and checkpoint-aware summaries are live. Hosted seed returned 8 fills / median 60 seconds / reason counts 2,2,2; reset returned zero/null/empty.
 - Tasks 6.6 (NPPES lookup) and 6.7 (coordinator rollup) are cut. Do not implement them from older checklist text.
-- Remaining: owner sign-off on label/model/metric claims and any explicitly chosen Humira follow-up. Physical-device and native language checks remain with the team.
-- Frontend audit repairs are in draft PR #40; no Minh module or shared fixture change is required.
+- Owner sign-off on label/model/metric claims is merged (#44, `docs/minh-signoff-5.1.md`). Physical-device and native language checks remain with the team.
+- Frontend audit repairs are merged in PR #40; no Minh module or shared fixture change is required.
 
 Evidence: [deployed acceptance](../handoffs/deployed-acceptance.md), [Phase 2 integration](../handoffs/vinh-phase2-live.md), [frontend repairs](../handoffs/frontend-audit-fixes.md).
 

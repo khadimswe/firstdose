@@ -12,7 +12,8 @@ import { createVerificationReceipt } from '@/lib/server/labels/receipt';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 async function main() {
   const args = process.argv.slice(2);
-  if (args.length !== 2 || args[0] !== '--drug' || args[1] !== 'drug_otezla') throw new Error('Usage: publish.ts --drug drug_otezla');
+  const SUPPORTED_DRUGS = ['drug_otezla', 'drug_humira'] as const;
+  if (args.length !== 2 || args[0] !== '--drug' || !SUPPORTED_DRUGS.includes(args[1] as (typeof SUPPORTED_DRUGS)[number])) throw new Error('Usage: publish.ts --drug <drug_otezla|drug_humira>');
   const drugId = args[1];
   const base = resolve(root, 'data/labels');
   const dir = resolve(base, drugId);

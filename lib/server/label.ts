@@ -10,20 +10,27 @@
 import type { Label } from '@/components/data/types';
 
 import otezla from '@/data/labels/drug_otezla/label.json';
-import provenance from '@/data/labels/drug_otezla/provenance.json';
-import rxnorm from '@/data/labels/drug_otezla/rxnorm.json';
-import receipt from '@/data/labels/drug_otezla/verification.json';
+import otezlaProvenance from '@/data/labels/drug_otezla/provenance.json';
+import otezlaRxnorm from '@/data/labels/drug_otezla/rxnorm.json';
+import otezlaReceipt from '@/data/labels/drug_otezla/verification.json';
+import humira from '@/data/labels/drug_humira/label.json';
+import humiraProvenance from '@/data/labels/drug_humira/provenance.json';
+import humiraRxnorm from '@/data/labels/drug_humira/rxnorm.json';
+import humiraReceipt from '@/data/labels/drug_humira/verification.json';
 import { receiptMatches } from './labels/receipt';
 import type { LabelProvenance } from './labels/verify';
 
 // Fixed allowlist: request input is only ever compared against these keys,
 // never interpolated into a path or URL.
-const candidate = otezla as Label;
+const otezlaCandidate = otezla as Label;
+const humiraCandidate = humira as Label;
 // The mandatory prebuild gate re-verifies XML and RxNorm. At runtime, only the
 // immutable bundled JSON/receipt is needed; no filesystem or provider request.
-const verified = receiptMatches(candidate, provenance as LabelProvenance, rxnorm, receipt);
+const otezlaVerified = receiptMatches(otezlaCandidate, otezlaProvenance as LabelProvenance, otezlaRxnorm, otezlaReceipt);
+const humiraVerified = receiptMatches(humiraCandidate, humiraProvenance as LabelProvenance, humiraRxnorm, humiraReceipt);
 const LABELS: ReadonlyMap<string, Label> = new Map([
-  ['drug_otezla', { ...candidate, byte_exact: verified }],
+  ['drug_otezla', { ...otezlaCandidate, byte_exact: otezlaVerified }],
+  ['drug_humira', { ...humiraCandidate, byte_exact: humiraVerified }],
 ]);
 
 export async function getLabel(drugId: string): Promise<Label | null> {

@@ -42,6 +42,7 @@ export function verifyLabel(label: Label, xmlBytes: Uint8Array, provenance: Labe
     }
     const selected = selectRxConcept(context.rxnorm, {
       brand: expected.brand, ingredient: expected.ingredient, strength: expected.strength, form: expected.rxnorm_form,
+      ...(expected.volume === undefined ? {} : { volume: expected.volume }),
     });
     if (provenance.rxcui !== selected.rxcui || provenance.rxnorm_name !== selected.name || provenance.rxnorm_tty !== selected.tty) errors.push('RxNorm identity mismatch');
   } catch { errors.push('source or RxNorm product identity could not be verified'); }

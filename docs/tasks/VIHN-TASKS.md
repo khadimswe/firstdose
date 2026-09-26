@@ -10,13 +10,13 @@ Updated September 26, 2026. [PLAN.md](../../PLAN.md) is the execution dashboard.
 - Gemini/Tiger are integrated in #39; the hosted summary and reset were verified. Minh owns those modules and final claim review.
 - Voice backend and capture/confirmation UI are merged; synthetic-provider and permission-denial checks do not establish a human microphone demonstration.
 - TestFlight wrapper source is merged in #30. Mac signing/build/install remain.
-- Frontend repairs are implemented in draft [PR #40](https://github.com/khadimswe/firstdose/pull/40). 724 tests, lint, live/mock builds and browser checks pass; CI/preview are green at the application commit. Deem's review/merge and deployed repair acceptance remain.
+- Frontend repairs are merged in [PR #40](https://github.com/khadimswe/firstdose/pull/40). 724 tests, lint, live/mock builds and browser checks pass; CI/preview are green at the application commit. Deem's review/merge and deployed repair acceptance remain.
 
 Full evidence and boundaries: [deployed acceptance](../handoffs/deployed-acceptance.md).
 
 ## Remaining work
 
-- [ ] Coordinate affected frontend-owner review of #40, merge through the normal PR process, and verify the deployed fixes.
+- [x] #40 is merged. Verify the deployed fixes during the two-device run.
 - [ ] Record the physical two-device HTTPS workflow and both alerts on the intended watch; Apple Watch C8 needs its own locked-iPhone check. Earlier notification confirmations do not establish this whole run.
 - [ ] Review human voice capture/confirmation if demonstrated, and complete the native Spanish/audible-phone check with Deem.
 - [ ] A Mac operator builds/signs/installs the wrapper and records TestFlight acceptance. Stephen is not on the project.

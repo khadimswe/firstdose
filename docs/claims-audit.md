@@ -1,5 +1,37 @@
 # Phase 5 claims and release audit
 
+## Refresh at main `ba3c439` (Sat Sep 26, about 5:15 PM ET)
+
+This supersedes the application and deployment rows below where they differ. The record below is kept as the earlier snapshot.
+
+**Checks at `ba3c439`:** fresh `npm ci` on a Windows checkout, then lint, 724 tests in 53 files, `next build`, typecheck, a 13-route smoke test and 10 workflow gate tests all pass. A full-history scan of every branch found no provider keys, access code, ntfy topic or database credentials. No `.env` is tracked.
+
+**Deployed (`firstdose.vercel.app`), signed in with the Vercel access code, read-only:**
+
+| Claim | Evidence now | Permitted wording |
+|---|---|---|
+| Supabase | Live `/api/events` returns the hosted run. Hosted migrations 0001–0006 and the 15-case catalog (Okafor 2, Mercer 13) verified by direct read. Browser keys get 401 on tables | Supabase Postgres persists the workflow. Screens sync by 1.5-second authenticated polling, **not** Supabase Realtime |
+| RxNorm / DailyMed | `/api/label/drug_otezla` and `/api/label/drug_humira` serve the verified artifacts. The offline verifier reads the published `label.json` and rejects a one-character edit | Otezla and Humira label text is checked against saved DailyMed SPL sections (Humira in #43, with its boxed warning) |
+| Gemini | #23 merged and wired into simulator `fire` by #39. Hosted runs at 4:23 and 4:28 PM recorded `DECLINED_AT_PRICE` and `UNABLE_TO_REACH` | Gemini maps the pharmacy note to a reason code or null. On failure the case stays unclassified (no doctor alert, access-support route). It never restores a scripted reason |
+| Tiger Data | #37 and #39 merged. Live `/api/access/summary` returns 200 for the current run and revision | `/access` reads a run-scoped Tiger summary (a direct query over a hypertable). **No continuous aggregate** |
+| ElevenLabs | English and Spanish patient-message mp3s for Otezla are on main | Pre-generated voice for the templated patient message. No runtime ElevenLabs call and no Humira audio |
+| Grok / xAI (SpaceXAI entry) | #16 backend and #25 UI merged. Funded trials recorded in `docs/voice-handoff.md` | Grok transcribes a spoken handoff that the doctor confirms. **No Cursor claim** |
+| ntfy / iPhone / Garmin | Transport and claim-once outbox merged. User-confirmed receipt of workflow alerts earlier | Real watch alerts via ntfy. The deployed two-device run is still to be recorded |
+| Impiricus products | Concept screens and simulated events | A proposed workflow with DocUpdate-inspired screens. No partner integration |
+
+**Voice release blocker:** fixed in #42. A voice proposal now keeps the run it was recorded in, and Confirm re-reads the active run and refuses after a reset. The approval sheet itself still follows the button path.
+
+**Not claimed:** Notability (not entered), Cursor, a Connect IQ widget, the NPPES colleague invite (6.6 ✂️), coordinator tiles (6.7 ✂️), Supabase Realtime, a Tiger continuous aggregate, paying customers.
+
+**Freeze still open:**
+
+1. The deployed two-device run with both alert receipts.
+2. The `docs/submission.md` and README corrections listed below.
+3. Deem's review of the merged voice fix (#42).
+
+Minh's sign-off on the label, Gemini and Tiger evidence is merged (#44, `docs/minh-signoff-5.1.md`).
+
+
 **Historical audit:** Findings below describe commits `158b5a9` and `22b78f0`, not the current deployment. The later [deployed acceptance record](handoffs/deployed-acceptance.md) supersedes the old `demo_not_configured`, missing-integration and deployed-check pending observations. The original evidence is preserved; claims freeze still requires the listed human/owner checks as reconciled in the current record.
 
 Vinh, September 26, 2026. Initial audit 13:25–13:31 ET at `158b5a9`; publication review around 13:53 ET updates the audited application commit to **`22b78f0643f0300866afa9b6177a1394cf3eb9b7`**, fetched `origin/main`. Audit branch: `audit/vinh-phase5`. `PLAN.md` remains the execution dashboard; this is evidence for task 5.1, not another schedule.

@@ -22,7 +22,7 @@ type State =
   | { step: "idle" }
   | { step: "recording" }
   | { step: "sending" }
-  | ({ step: "result" } & VoiceResult);
+  | ({ step: "result"; run?: string } & VoiceResult);
 
 /** Chrome records webm, which /api/voice doesn't take: decode it and send 16 kHz WAV instead. */
 async function toUploadable(blob: Blob): Promise<Blob> {
@@ -46,12 +46,13 @@ async function currentRun(): Promise<string> {
   return body.run_id;
 }
 
-async function propose(audio: Blob): Promise<VoiceResult> {
+/** A proposal remembers the run it was recorded in, so Confirm can refuse it after a reset. */
+async function propose(audio: Blob): Promise<{ result: VoiceResult; run?: string }> {
   let run: string;
   try {
     run = await currentRun();
   } catch (error) {
-    return voiceResult((error as { status?: number }).status ?? 502, { error: "voice_unavailable" });
+    return { result: voiceResult((error as { status?: number }).status ?? 502, { error: "voice_unavailable" }) };
   }
   const form = new FormData();
   form.set("audio", audio, audio.type.includes("wav") ? "recording.wav" : "recording");
@@ -61,7 +62,7 @@ async function propose(audio: Blob): Promise<VoiceResult> {
     credentials: "same-origin",
     headers: { "X-FirstDose-Run": run },
   });
-  return voiceResult(response.status, await response.json().catch(() => null));
+  return { result: voiceResult(response.status, await response.json().catch(() => null)), run };
 }
 
 /**
@@ -112,7 +113,8 @@ export function VoiceHandoff({ onConfirm }: { onConfirm: (caseId: string) => voi
       setState({ step: "sending" });
       try {
         const audio = await toUploadable(new Blob(chunks, { type: rec.mimeType || mimeType }));
-        setState({ step: "result", ...(await propose(audio)) });
+        const { result, run } = await propose(audio);
+        setState({ step: "result", run, ...result });
       } catch {
         setState({ step: "result", kind: "error", message: "Voice isn't available right now. Use the Send button instead." });
       }
@@ -125,6 +127,19 @@ export function VoiceHandoff({ onConfirm }: { onConfirm: (caseId: string) => voi
 
   function stop() {
     if (recorder.current?.state === "recording") recorder.current.stop();
+  }
+
+  // Same-ID cases exist in every run, so a proposal from before a reset must not
+  // hand off in the new run: re-check the active run right before confirming.
+  async function confirm(caseId: string, run: string | undefined) {
+    setState({ step: "sending" });
+    const now = await currentRun().catch(() => null);
+    if (!run || now !== run) {
+      setState({ step: "result", kind: "error", message: "This case changed after you spoke. Tap to speak again." });
+      return;
+    }
+    onConfirm(caseId);
+    setState({ step: "idle" });
   }
 
   const proposed = state.step === "result" && state.kind === "proposal" ? cases.find((c) => c.id === state.caseId) : undefined;
@@ -178,10 +193,7 @@ export function VoiceHandoff({ onConfirm }: { onConfirm: (caseId: string) => voi
                 </Button>
                 <Button
                   className="h-11 rounded-full bg-du-purple text-white hover:bg-du-purple/90"
-                  onClick={() => {
-                    onConfirm(proposed.id);
-                    setState({ step: "idle" });
-                  }}
+                  onClick={() => void confirm(proposed.id, state.run)}
                 >
                   {templates.doctor_alert.action}
                 </Button>

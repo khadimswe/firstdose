@@ -107,6 +107,7 @@ async function fetchRxnorm(drug: DrugCatalogEntry): Promise<{ raw: string; rxcui
     ingredient: drug.generic,
     strength: extractStrengthNumber(drug.strength),
     form: extractForm(drug.strength),
+    volume: extractVolume(drug.strength),
   };
   const selected = selectRxConcept(parsed, expectation);
   return { raw, rxcui: selected.rxcui, name: selected.name, tty: selected.tty };
@@ -119,11 +120,20 @@ function extractStrengthNumber(strength: string): string {
   return `${match[1]} MG`;
 }
 
-/** "30 mg tablet" -> "Oral Tablet"; "40 mg/0.4 mL pen" -> "Oral Pen? (unsupported)". */
+/** "40 mg/0.4 mL pen" -> "0.4 mL"; undefined for presentations without a volume. */
+function extractVolume(strength: string): string | undefined {
+  const match = /([0-9]+(?:\.[0-9]+)?)\s*mL/i.exec(strength);
+  return match === null ? undefined : `${match[1]} mL`;
+}
+
+/** "30 mg tablet" -> "Oral Tablet"; "40 mg/0.4 mL pen" -> "Auto-Injector". */
 function extractForm(strength: string): string {
   const lowered = strength.toLowerCase();
   if (lowered.includes('tablet')) return 'Oral Tablet';
-  throw new Error(`Cannot derive an RxNorm oral form from catalog strength: ${strength}`);
+  // The catalog's "pen" is the RxNorm Auto-Injector presentation; prefilled
+  // syringes share strength and volume, so the form token is the selector.
+  if (lowered.includes('pen')) return 'Auto-Injector';
+  throw new Error(`Cannot derive an RxNorm form from catalog strength: ${strength}`);
 }
 
 async function fetchSpl(drug: DrugCatalogEntry): Promise<{ bytes: Buffer; evidence: ReturnType<typeof parseSplEvidence> }> {
@@ -142,6 +152,7 @@ async function fetchSpl(drug: DrugCatalogEntry): Promise<{ bytes: Buffer; eviden
     strength: extractSplStrength(drug.strength),
     form: extractSplForm(drug.strength),
     labeler: drug.manufacturer,
+    volume: extractVolume(drug.strength),
   });
   return { bytes: buffer, evidence };
 }
@@ -153,9 +164,14 @@ function extractSplStrength(strength: string): string {
   return `${match[1]} mg`;
 }
 
+/** Catalog strength -> SPL product form, e.g. "30 mg tablet" -> "TABLET, FILM COATED". */
 function extractSplForm(strength: string): string {
   const lowered = strength.toLowerCase();
   if (lowered.includes('tablet')) return 'TABLET, FILM COATED';
+  // Humira's SPL is a KIT whose nested presentations carry no useful
+  // container form; the identity proof is the ACTIB quantity (40 mg/0.4 mL),
+  // so accept the INJECTION-level form for pens.
+  if (lowered.includes('pen')) return 'INJECTION';
   throw new Error(`Cannot derive an SPL form expectation from catalog strength: ${strength}`);
 }
 

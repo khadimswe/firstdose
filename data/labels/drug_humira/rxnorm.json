@@ -1,0 +1,188 @@
+{
+  "drugGroup": {
+    "name": null,
+    "conceptGroup": [
+      {
+        "tty": "BPCK",
+        "conceptProperties": [
+          {
+            "rxcui": "1594352",
+            "name": "{6 (0.8 ML adalimumab 50 MG/ML Prefilled Syringe [Humira]) } Pack [Humira Pediatric Crohn's Disease Starter Package (6 count)]",
+            "synonym": "Humira Pediatric Crohn's Disease Starter Pack 40 MG/0.8 ML Prefilled Syringe (6 count)",
+            "tty": "BPCK",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "1594358",
+            "name": "{3 (0.8 ML adalimumab 50 MG/ML Prefilled Syringe [Humira]) } Pack [Humira Pediatric Crohn's Disease Starter Package (3 count)]",
+            "synonym": "Humira Pediatric Crohn's Disease Starter Package (3 count)",
+            "tty": "BPCK",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "1801278",
+            "name": "{4 (0.8 ML adalimumab 50 MG/ML Auto-Injector [Humira]) } Pack [Humira Pen - Psoriasis Starter Pack]",
+            "synonym": "Humira Psoriasis Starter Pack 40 MG/0.8 ML Pen (4 count)",
+            "tty": "BPCK",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "1855527",
+            "name": "{1 (0.4 ML adalimumab 100 MG/ML Prefilled Syringe [Humira]) / 1 (0.8 ML adalimumab 100 MG/ML Prefilled Syringe [Humira]) } Pack [Humira Pediatric Crohn's Disease Starter Package (2 count)]",
+            "synonym": "Humira Pediatric Crohn's Disease Starter Package (2 count)",
+            "tty": "BPCK",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "1872984",
+            "name": "{6 (0.4 ML adalimumab 100 MG/ML Auto-Injector [Humira]) } Pack [Humira Pen 40 MG/0.4 ML Starter Pack - Crohn's Disease]",
+            "synonym": "Humira Pen 40 MG/0.4 ML Starter Pack - Crohn's Disease, Ulcerative Colitis or Hidradenitis Suppurativa (6 count)",
+            "tty": "BPCK",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "1872986",
+            "name": "{4 (0.4 ML adalimumab 100 MG/ML Auto-Injector [Humira]) } Pack [Humira Pen 40 MG/0.4 ML Starter Pack - Psoriasis]",
+            "synonym": "Humira Pen 40 MG/0.4 ML Starter Pack - Psoriasis/Uveitis (4 count)",
+            "tty": "BPCK",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "1873087",
+            "name": "{3 (0.8 ML adalimumab 100 MG/ML Prefilled Syringe [Humira]) } Pack [Humira Prefilled Syringe 80 MG/0.8 ML Starter Pack - Pediatric Crohn's Disease]",
+            "synonym": "Humira Prefilled Syringe 80 MG/0.8 ML Starter Pack - Pediatric Crohn's Disease (3 count)",
+            "tty": "BPCK",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "1921245",
+            "name": "{3 (0.8 ML adalimumab 100 MG/ML Auto-Injector [Humira]) } Pack [Humira Pen 80 MG/0.8 ML - Starter Package for Crohn's Disease, Ulcerative Colitis or Hidradenitis Suppurativa]",
+            "synonym": "Humira Pen 80 MG/0.8 ML - Starter Package for Crohn's Disease, Ulcerative Colitis or Hidradenitis Suppurativa (3 count)",
+            "tty": "BPCK",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "1921468",
+            "name": "{2 (0.4 ML adalimumab 100 MG/ML Auto-Injector [Humira]) / 1 (0.8 ML adalimumab 100 MG/ML Auto-Injector [Humira]) } Pack [Humira Pen 80 MG/0.8 ML and 40 MG/0.4 ML - Psoriasis/Uveitis Starter Package]",
+            "synonym": "Humira Pen 80 MG/0.8 ML and 40 MG/0.4 ML - Psoriasis/Uveitis Starter Package (3 count)",
+            "tty": "BPCK",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "2531134",
+            "name": "{4 (0.8 ML adalimumab 100 MG/ML Auto-Injector [Humira]) } Pack [Humira Pen 80 MG/0.8 ML - Starter Package for Pediatric Ulcerative Colitis]",
+            "synonym": "Humira Pen 80 MG/0.8 ML - Starter Package for Pediatric Ulcerative Colitis (4 count)",
+            "tty": "BPCK",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "825170",
+            "name": "{6 (0.8 ML adalimumab 50 MG/ML Auto-Injector [Humira]) } Pack [Humira Pen - Crohn's Disease Starter Pack]",
+            "synonym": "Humira Pen 40 MG/0.8 ML - Crohn's Disease Starter Pack",
+            "tty": "BPCK",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          }
+        ]
+      },
+      {
+        "tty": "SBD",
+        "conceptProperties": [
+          {
+            "rxcui": "1655728",
+            "name": "0.8 ML adalimumab 50 MG/ML Auto-Injector [Humira]",
+            "synonym": "0.8 ML Humira 50 MG/ML Auto-Injector",
+            "tty": "SBD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "1726846",
+            "name": "0.4 ML adalimumab 100 MG/ML Prefilled Syringe [Humira]",
+            "synonym": "0.4 ML Humira 100 MG/ML Prefilled Syringe",
+            "tty": "SBD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "1855524",
+            "name": "0.8 ML adalimumab 100 MG/ML Prefilled Syringe [Humira]",
+            "synonym": "0.8 ML Humira 100 MG/ML Prefilled Syringe",
+            "tty": "SBD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "1872980",
+            "name": "0.4 ML adalimumab 100 MG/ML Auto-Injector [Humira]",
+            "synonym": "0.4 ML Humira 100 MG/ML Auto-Injector",
+            "tty": "SBD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "1921010",
+            "name": "0.1 ML adalimumab 100 MG/ML Prefilled Syringe [Humira]",
+            "synonym": "0.1 ML Humira 100 MG/ML Prefilled Syringe",
+            "tty": "SBD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "1921017",
+            "name": "0.2 ML adalimumab 100 MG/ML Prefilled Syringe [Humira]",
+            "synonym": "0.2 ML Humira 100 MG/ML Prefilled Syringe",
+            "tty": "SBD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "1921240",
+            "name": "0.8 ML adalimumab 100 MG/ML Auto-Injector [Humira]",
+            "synonym": "0.8 ML Humira 100 MG/ML Auto-Injector",
+            "tty": "SBD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "727705",
+            "name": "0.8 ML adalimumab 50 MG/ML Prefilled Syringe [Humira]",
+            "synonym": "0.8 ML Humira 50 MG/ML Prefilled Syringe",
+            "tty": "SBD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          }
+        ]
+      }
+    ]
+  }
+}
