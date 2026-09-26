@@ -1,19 +1,18 @@
 # FirstDose presentation pack
 
-Prepared September 26, 2026 for Vinh, Minh, and Deem. This is ready-to-review content and a rehearsal plan, not a claim that a video or visual slide deck has been rendered.
+Being rewritten around the coordinator after the 11 AM workshop (PLAN task 6.9). Nothing here claims a rendered deck or video.
 
 Read in this order:
 
-1. [Product proposal](../product-proposal.md): objective, users, scope, success criteria.
-2. [Tracks and requirements](../research/tracks-and-requirements.md): primary targets, conditional entries, recovered organizer guidance.
-3. [Winner lessons](../research/winner-lessons.md): what our six-event research supports and what it does not.
-4. [Claims and evidence](claims-and-evidence.md): the source of truth for what may be said today.
-5. [Demo script](demo-script.md): short, extended, and current-mock versions; operators, fallbacks, recording gates.
-6. [Slides, poster, and judge answers](pitch-and-qa.md): paste-ready presentation copy and answers.
-7. [Submission draft](submission-draft.md): truthful current-state write-up with a release checklist.
+1. [v2 spec](../spec-v2-coordinator.md): the idea, who uses it, the four DocUpdate surfaces, **the 4-minute demo (the demo script)**, the lines to say and the judge questions.
+2. [DocUpdate teardown](../research/docupdate-teardown.md): the evidence behind the pitch. Quote only what is in the claims register.
+3. [Claims and evidence](claims-and-evidence.md): the source of truth for what may be said. Every new teardown fact gets a row, with its source, before it goes on a slide.
+4. [Slides, poster and judge answers](pitch-and-qa.md): paste-ready copy (rewrite in 6.9).
+5. [Tracks and requirements](../research/tracks-and-requirements.md) and [winner lessons](../research/winner-lessons.md).
+6. [Submission](../submission.md): the Devpost writeup, rewritten in 5.4 after the 9 PM claims freeze.
 
-**One sentence to align the team:** FirstDose turns a stuck first fill into a reviewed access task, then checks for a later pharmacy fill signal.
+**One line to align the team:** "Impiricus reaches the doctor who writes the prescription. FirstDose reaches the person who gets the patient on it, every day."
 
-Vinh leads the technical proof, Minh checks source/model/metric evidence, and Deem owns the presentation and rehearsal. The short demo follows one case; technical detail and the second case are available when a judge asks.
+**The one-glance slide (6.10):** DocUpdate's App Store home screen beside our phone view, credited, "Concept · Not affiliated".
 
-Prioritize the [winning conditions](../winning-conditions.md). Reconcile this submission draft with Deem's `docs/submission.md` during review; neither is an automatically approved final entry.
+Deem owns the presentation and rehearsal. Vinh leads the technical proof, and Minh checks the source, model and metric evidence.

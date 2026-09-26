@@ -1,3 +1,5 @@
+> **Superseded 2026-09-26 09:20:** pitch is now coordinator-first ("Impiricus reaches the doctor; FirstDose reaches the person who gets the patient on it, every day"). Source of truth: `docs/spec-v2-coordinator.md`. Rewrite after the 11 AM workshop.
+
 # Pitch, slide copy and judge questions
 
 Prepared September 26, 2026. Paste-ready content for Deem's presentation, not a rendered deck. Lead with the app in a short expo pitch; use these slides for a longer explanation or submission asset. All implementation claims depend on the [evidence register](claims-and-evidence.md).
