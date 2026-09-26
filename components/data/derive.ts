@@ -6,6 +6,7 @@ import type {
   CaseView,
   FillEvent,
   ReasonKey,
+  ScreenAction,
 } from "./types";
 
 const BEAT_GAP_SECONDS = 2;
@@ -119,6 +120,24 @@ export function deriveCases(catalog: Catalog, fired: FillEvent[]): CaseView[] {
     }
     return view;
   });
+}
+
+/**
+ * Whether a screen button may act on this case right now. Mirrors the guarded
+ * transitions on Vihn's API routes (IMPLEMENTATION 1.11), so a double tap does
+ * nothing and buttons disable correctly whatever ids the live routes write.
+ */
+export function canActOn(action: ScreenAction, c: CaseView): boolean {
+  switch (action) {
+    case "prescribe":
+      return !c.ordered;
+    case "handoff":
+      return c.status === "stuck";
+    case "fix":
+      return c.status === "handed_off" && c.fix !== null;
+    case "use_card":
+      return c.status === "fix_sent" && c.fix === "RESEND_COPAY_CARD" && !c.cardUsed;
+  }
 }
 
 /** Board stops: 0 Doctor · 1 Pharmacy · 2 Patient · 3 Started. */
