@@ -33,3 +33,20 @@ Mock mode only syncs tabs on one laptop. For the iPad, the judge's phone and the
 ## Template change to agree on (from the design pass)
 
 - [ ] `templates.json → coordinator_card.fix_line` renders as "Suggested fix: Re-send copay card (Impiricus Wallet (stand-in))", brackets inside brackets, because `fixes[].via` already ends in "(stand-in)". Proposal: `"Suggested fix: {fix_label} · {fix_via}"`. Frontend picks it up with no code change.
+
+## Vinh's reply prepared for Deem — September 26
+
+Reviewed PR #6 at `63ae988`; these are proposed answers to its PLAN Q5–Q10, not a record that Deem approved them. No message has been posted to the PR. The full proposal is in `docs/architecture.md`.
+
+| Question | Vinh's proposed answer | Required frontend follow-through |
+|---|---|---|
+| Q5: module export | Default-export the existing `EventSource` object from `lib/realtime.ts`. | Existing importer matches. |
+| Q6: reset | Extend `subscribe(onInsert, onRunChange?)`; callback receives active run identity. Adapter watches the active-run pointer, tags mutations with the observed run and rejects stale-run commands with 409. | Increment generation and clear events/access/pending buffers on remote reset, then reload. Reject stale loads/summary responses. The 15-second poll remains recovery, not the reset protocol. |
+| Q7: patient tap | Acknowledgment only: `ev_10`. Independent simulator `ev_11` confirms pharmacy fill. | Change mock action grouping and simulator beats together; a patient tap cannot turn the board green or increment fill totals. |
+| Q8: label delivery | For this fixed two-case demo, prefer reviewed generated fixtures bundled into the catalog in both modes; keep Minh's endpoint available for verification/future refresh. | Publish no green badge until fidelity and extraction scope are agreed and the actual cached artifact passes checks. Current label PR #8 needs corrections first. |
+| Q9: wording/metrics | Final stop **Fill confirmed**; aggregate label **First fills confirmed**. Temporarily retain `recovered` as the response key with the new explicit meaning. | Update board timestamp/color, status pill, patient/doctor copy, chime and optional audio together. Count unique independently confirmed cases and latest reason once per case. Display Tiger unavailable/lagging rather than silently substituting local totals. |
+| Q10: identity/order | Keep `rx_001`/`rx_002` and frontend `ev_01` IDs. Storage uniqueness uses run + script identity; add a monotonic per-run sequence for ordering. | Consume inserts/snapshots in server sequence order. A delayed earlier event must trigger ordered reconciliation, not rely on callback arrival order. Agree whether sequence travels in a storage envelope or additive event field before implementation. |
+
+Also needed: template-backed practice doctor alerts when reasons arrive, a separate notification-delivery status, James ACCESS_SUPPORT without bridge-specific eligibility evidence, and practice-only case-linked records. The physical ntfy/iPhone/Garmin smoke passed; workflow-triggered alerts have not.
+
+Reply checklist: agree or amend Q6–Q10; confirm team registration and current category limits; confirm the deployment project/origin and domain status. These outstanding responses keep Phase 0 open. Supabase/Gemini credentials are verified locally; that does not establish deployed configuration.
