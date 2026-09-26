@@ -12,7 +12,7 @@ Legend: [ ] not started · [-] in progress · [x] done · [!] blocked
 
 - [x] 0.8 ntfy → iPhone → Garmin, confirmed by the user.
 - [-] 1.7 schema and seed · 1.8 router · 1.9 live source (polling + ETags) · 1.11 guarded routes. All built and tested in #9 (252 tests, 14 DB checks, a two-browser Maria run). They wait on review and merge.
-- [-] 1.12 ntfy: the reason alert is delivered and felt. The pharmacy-confirmation alert is still to do.
+- [-] 1.12 ntfy: both reason and pharmacy-confirmation alerts are implemented; provider accepted each once and the user confirmed both on iPhone/Garmin. Integrated deployment remains pending.
 - [-] 1.13 live hook, integrated in #9 from Deem's #6 design.
 
 ## Now → 11 AM
@@ -30,9 +30,9 @@ Legend: [ ] not started · [-] in progress · [x] done · [!] blocked
 
 ## Phase 1 gates (the core must pass before optional work)
 
-- [ ] **1.12b** Second wrist alert on the separate pharmacy confirmation (`wrist.fill_confirmed`). Feel it on the Garmin.
+- [x] **1.12b** Second wrist alert on the separate pharmacy confirmation (`wrist.fill_confirmed`): c51b23f; user confirmed iPhone and Garmin receipt.
 - [ ] Two physical devices on the HTTPS origin, following `docs/handoffs/deem-phase1.md`. Record the result in PLAN.md.
-- [ ] Agree the verified-label display path with Minh and Deem. Your proposal: reviewed fixtures bundled into the catalog in both modes.
+- [-] Verified Otezla fixture is bundled into the catalog in both modes and shown directly before prescribing; corrected verification passes. Affected-owner integration review remains.
 
 ## Phase 6 (parallel with Deem's screens)
 
