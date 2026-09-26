@@ -64,3 +64,10 @@ Reply checklist: review Q6–Q10 against the implementation; confirm the deploym
 The user subsequently authorized frontend integration on this branch. Selected hook/store/banner files from PR #6 are now integrated and adapted to the concrete backend lifecycle. The board/access failures are fixed and the rendered Maria flow plus remote reset pass in independent phone/tablet browser contexts against hosted Supabase. Review these changes with Deem before integrating PR #6; do not overwrite the run-change, authentication or outcome fixes with the older hook. Reviewed labels, the second wrist alert and a physical two-device run remain Phase 1 gates. Set NEXT_PUBLIC_DATA_SOURCE=supabase before the deployment build to enable live mode; private credentials remain server-side.
 
 Current review and remaining-work handoff: [Deem Phase 1 handoff](handoffs/deem-phase1.md).
+## v2 screens (Deem, Sat 12:15): PRs #11–#14, stacked on #9
+
+- [ ] **Seed the week (6.1, C1/C9).** The queue shows only prescribers who approved the coordinator. Put the seeded cases under an already-linked prescriber, not "Dr. Demo (judge 1)", so the demo opens on a full queue and Dr. Demo's approval stays the 0:55 beat. The names are in PLAN C1.
+- [ ] **Link events (C7).** In live mode, "approved" is derived from the first handoff, so the demo works without new events. An Approve on the Profile tab (with no handoff) stays on that phone until `coordinator_link_requested` / `coordinator_linked` exist.
+- [ ] **Contact marks (C2).** "Reached patient / Left message" are local to the coordinator's browser for now.
+- [ ] **Apple Watch (C8).** The doctor's iPhone runs `/doctor` from the home screen and ntfy. iOS sends notifications to the Apple Watch only while the iPhone is locked, so please test both alerts that way.
+- [ ] **Tests.** `tests/frontend-derive.test.ts` still imports `app/(screens)/doctor/_components/thread.ts`, so I kept that file. New pure tests are in `tests/coordinator-views.test.ts`.
