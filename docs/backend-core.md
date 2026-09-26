@@ -74,7 +74,7 @@ After migration and frontend integration, verify two real clients, reset/reconne
 
 ## Phase 2: committed-history handoff to Minh
 
-Vinh's integration preparation is on `backend/phase2-integration`, based on the local `backend/maria-core` checkpoint `cafadf2`. The Phase 1 live gate remains unverified. This branch supplies the durable input for Minh's analytics replay; it does not implement Tiger projection, storage, summaries or Gemini classification.
+Vinh's integration preparation is on `backend/phase2-integration`, reconciled onto the committed coordinator-pivot checkpoint `2b45812`. The full Phase 1 physical-device gate remains open. This branch supplies the durable input for Minh's analytics replay; it does not implement Tiger projection, storage, summaries or Gemini classification.
 
 Migration `202609260003_read_run.sql` adds `fd_read_run(run UUID)`. Number `002` is reserved for the concurrent Phase 1 notification-delivery migration. It returns one database snapshot of the requested run's events, ordered by committed sequence. Reset retains this history, so retrying an old run cannot accidentally read the new active run. An existing empty run returns an empty array; an unknown run or failed read is an error at the TypeScript boundary. Only `service_role` can execute this read; existing table restrictions remain in force.
 
@@ -98,4 +98,4 @@ Remaining dependencies: Minh's classifier/replay modules and real-provider check
 
 Local verification on September 26: 187 unit tests, 12 PostgreSQL database checks (including real empty/retained run reads and denied browser access), lint and production build passed. Read-only agent review found no significant issues. An affected-owner review is still required before merging.
 
-Concurrent handoff: `backend/maria-core` subsequently advanced to `bfe1e5b` with browser sessions, polling and notification delivery (draft PR #9). Its recorded hosted API/watch evidence supersedes this branch's older Phase 1 status text; the rendered-screen gate and second-alert copy remain open. This branch still uses the explicit `cafadf2` base and must be reconciled with the newer Phase 1 commits before integration. The Phase 2 reader migration has not been applied to the hosted project.
+Reconciliation checkpoint: this branch now includes the committed coordinator pivot `2b45812`, including browser sessions, polling and notification delivery from draft PR #9. Both notification-delivery and committed-reader database assertions were retained during rebase; the current v2 PLAN brief was preserved. Active uncommitted label/workflow edits in the other worktree were not copied. The Phase 2 reader migration has not been applied to the hosted project.
