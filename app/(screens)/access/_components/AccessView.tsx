@@ -4,7 +4,7 @@ import { SideBadge } from "@/components/SideBadge";
 import { StandIn } from "@/components/StandIn";
 import { WhoSeesWhat } from "@/components/WhoSeesWhat";
 import { templates } from "@/components/copy/templates";
-import { useIncrease, useTween } from "@/components/live";
+import { useIncrease, useTween } from "@/components/liveHooks";
 import type { AccessSummary, Catalog, ReasonKey } from "@/components/data/types";
 import { cn } from "@/lib/utils";
 

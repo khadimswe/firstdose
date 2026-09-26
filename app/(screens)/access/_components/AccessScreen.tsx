@@ -1,6 +1,6 @@
 "use client";
 
-import { useChangedAt, useNowSeconds } from "@/components/live";
+import { useChangedAt, useNowSeconds } from "@/components/liveHooks";
 import { useEvents } from "@/components/data/useEvents";
 
 import { AccessView } from "./AccessView";

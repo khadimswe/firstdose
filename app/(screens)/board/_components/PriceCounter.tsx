@@ -1,7 +1,7 @@
 "use client";
 
 import { StandIn } from "@/components/StandIn";
-import { useTween } from "@/components/live";
+import { useTween } from "@/components/liveHooks";
 import { fill, money } from "@/components/copy/fill";
 import { templates } from "@/components/copy/templates";
 import type { CaseView } from "@/components/data/types";
