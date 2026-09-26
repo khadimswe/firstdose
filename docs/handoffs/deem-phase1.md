@@ -1,54 +1,40 @@
-# Deem handoff: Phase 1 frontend wiring
+# Deem handoff: Phase 1 closure on the coordinator pivot
 
-September 26, 2026. `PLAN.md` remains the status dashboard.
+September 26, 2026. `PLAN.md` remains the execution dashboard.
 
-Deem — I wired the frontend to the backend after the user asked us to finish the integration now. I built on your PR #6 hook/store/banner work and kept your screen designs. The changes are in [PR #9](https://github.com/khadimswe/firstdose/pull/9), branch `backend/maria-core`: implementation `43ca67b`, verification/status `7f7a460`. They are pushed, with CI green, but not merged into main.
+## Branch to review
 
-## What is already wired
+`integration/coordinator-pivot` combines the backend foundation from PR #9, Deem's screen stack through `63e24cf`, pivot docs through `5ea44fb`, and Minh's label branch through `9241b61`, with the closure fixes below. This is an integration candidate; the existing PRs and main have not been merged or rewritten by this work.
 
-- Doctor prescription → simulated pharmacy barrier → doctor alert → coordinator handoff → resource sent → patient acknowledgment → separate pharmacy confirmation.
-- The board reaches **Fill confirmed**, uses the confirmation timestamp/color/chime, and access counts one distinct confirmed case. A patient tap alone does neither.
-- All screens share the live source through `useEvents()`. Polling runs every 1.5 seconds, with run/revision ETags and immediate refresh after commands.
-- Remote reset clears events, pending actions and access state. Late responses cannot restore the previous run. Reload recovers persisted state.
-- Unauthenticated screens show a login link that returns to the current screen, including `/patient/rx_001`. The server issues an HttpOnly cookie; no token is placed in browser JavaScript or URLs.
-- Live simulator controls expose only valid, prerequisite-ready inputs. Autoplay stays in mock mode.
-- Access explicitly shows **practice event counts / Tiger unavailable** when Minh's summary is unavailable. This is not a Tiger integration claim.
+## What is ready
 
-The previously failing doctor-alert, board-final-stop and access-count checks are fixed. You do not need to reimplement this wiring.
+- Maria's v2 flow: New Rx -> pharmacy barrier -> doctor alert -> approve-and-send handoff -> coordinator case-sheet fix -> patient acknowledgment -> separate pharmacy confirmation.
+- Otezla's full cached DailyMed sections and RxCUI `1492746` are in the shared catalog. New Rx displays the actual artifact before signing; it does not fabricate `label_shown`. Humira remains a red placeholder.
+- The label verifier checks the saved artifact, XML identity/version, RxNorm identity, exact section content/order/titles and hashes. `npm run build` runs this check first, including catalog equality. The public drug-label endpoint checks a bundled verification receipt and fails closed on mismatch. The original XML bytes match a fresh official DailyMed download.
+- The separate pharmacy event `ev_11` queues the truthful `wrist.fill_confirmed` message through the existing atomic, claim-once outbox. Patient acknowledgment remains silent; retries cannot duplicate the notification.
+- Login now returns safely to the exact v2 routes. New Rx keeps Maria selected after signing instead of switching to the next unordered patient.
 
-## Review and integration
+The shared contract changes are the Otezla label content/RxCUI and the label parser/build tooling; JSON shapes and event IDs are unchanged. Keep Vitest 5 and `vitest.config.mts`; do not restore the duplicate older config from PR #8.
 
-1. Review PR #9 against your current UI work. PR #6 is still open at `63ae988`; its older hook does not contain the new reset/login behavior. Reconcile the overlap rather than overwriting the integrated files. Choose which PR carries the overlapping changes after review; neither PR has been merged by this work.
-2. Preserve `subscribe(onInsert, onRunChange, onError, onSync)`. Run changes clear state before inserts; `onSync` also fires after 304 so connection errors can recover without new events. Keep command failures visible and never automatically replay a stale click.
-3. Review the shared copy and fixture changes already announced on PR #6: **first fill pending / fill confirmed**, acknowledgment-only wording, and James `ACCESS_SUPPORT` rather than bridge support without eligibility evidence. Event IDs and JSON shapes are unchanged. Offline previews suppress synthetic started/recovered milestones and unsupported provider-success notes. The watch image is labeled as a notification preview, not proof of receipt.
-4. Retain the backend foundation's Vitest/tsx dependencies alongside your frontend dependencies. This frontend follow-up adds no packages. Coordinate any merge conflicts in shared package files and regenerate the lockfile with npm rather than hand-editing it.
+## Evidence
 
-The detailed contract and implementation locations are in [backend-core](../backend-core.md).
+- 339 application tests, lint and the live-mode production build pass.
+- 14 disposable PostgreSQL checks pass, including concurrent writes/reset and the second notification's outbox deduplication.
+- Direct unauthenticated login succeeds at phone/tablet sizes on the new doctor/coordinator routes.
+- The rendered v2 workflow passes in three independent browser contexts against hosted Supabase: exact label text, default patient selection, handoff/fix, acknowledgment still pending, separate pharmacy confirmation, count one after reload, and reset to empty.
+- Both hosted notification rows are `accepted`, with one attempt each. The user confirmed the new pharmacy-confirmation alert on BOTH iPhone and Garmin; the earlier reason alert was also physically confirmed.
+- The production label endpoint returns the exact verified artifact, and production-mode login passes for the new routes at both viewport sizes. Private-value scans of changes, outgoing history and browser bundles pass.
 
-## Your remaining work
+These browser contexts do not establish the final physical two-device HTTPS gate.
 
-- Review the integrated screens/shared contract, then complete the reviewed merge and deployment flow.
-- Before building the live deployment, set `NEXT_PUBLIC_DATA_SOURCE=supabase`. `mock` intentionally selects the offline preview. Configure the server's Supabase secret, private demo access token and ntfy settings privately; do not place secrets in `NEXT_PUBLIC_*`. `SUPABASE_DB_URL` is a migration credential and is not needed by the running app. Use HTTPS on real devices for the production session cookie.
-- Reconcile the patient QR work with this login return path and the deployed origin. Do not encode the access token in a QR code. Verify the destination on a phone without an existing session.
-- Integrate Minh's reviewed Otezla artifact. PR #8 was last checked at `95e6f2f`; placeholder labels are not verification evidence. The current order card is gated by `label_shown`, which the backend intentionally does not synthesize. Agree a real verified-artifact display path rather than restoring a fake simulator success beat.
-- Review the truthful `wrist.fill_confirmed` template with Vinh. Vinh still needs to connect the second notification to the independent pharmacy confirmation and verify receipt.
+## Deployment and final checkpoint
 
-## Evidence and final checkpoint
+1. Review the integration candidate, including Minh's corrected label verification and Deem's New Rx behavior. Coordinate which reviewed PRs carry the changes into main; do not overwrite the integrated hook with the closed PR #6.
+2. Build/deploy with `NEXT_PUBLIC_DATA_SOURCE=supabase`. Configure the intended project's `NEXT_PUBLIC_SUPABASE_URL`, server-only `SUPABASE_SECRET_KEY`, private `FIRSTDOSE_DEMO_TOKEN`, and `NTFY_TOPIC`/`NTFY_SERVER` (plus `NTFY_TOKEN` only if used). Existing ignored `.env` values stay private. `SUPABASE_DB_URL` is not required by the running app.
+3. For Phase 1 (C5 option B), use a pre-signed spare phone with the current demo-code login. On a judge's own phone, a team member enters the private code once. The QR contains only the patient URL. Patient-only access remains a separate Phase 6 follow-up; no per-run short code is implemented.
+4. On two physical devices at the deployed HTTPS origin, sign in and reset. Prescribe Maria, trigger the barrier, hand off, send the card, and acknowledge it. Confirm fill/count remain pending/zero. Then fire `ev_11`; confirm fill/count one, both wrist notifications, reload and remote reset. Verify the cached Otezla card on the doctor device.
+5. Record the physical result in a separate PLAN status commit. Phase 1 is complete only after reviewed integration/deployment and this checkpoint.
 
-At `43ca67b`: 252 application tests, 14 PostgreSQL checks, workflow smoke, lint and the live-mode production build pass. Production-mode login passes at phone/tablet sizes. Private-value scans cover the changes, outgoing history and browser bundles; no environment file is tracked.
+Prescriber profile approvals and contact marks remain local UI state pending Phase 6 C7/C2. This handoff does not claim those new features persist across devices. Gemini, Tiger and Grok are not Phase 1 blockers.
 
-The actual rendered screens completed Maria against hosted Supabase in two independent browser contexts. Patient acknowledgment stayed pending; the separate pharmacy signal completed the board and access total; reload and remote reset passed. The hosted run was left empty afterward. Browser contexts do not establish a physical two-device test.
-
-The earlier workflow reason alert reached both iPhone and Garmin by the user's confirmation. The second pharmacy-confirmation wrist alert is still outstanding.
-
-For the final run, use two physical devices on the intended live HTTPS origin:
-
-1. Sign in, reset once, and confirm both screens are empty.
-2. Prescribe Maria; fire the quote and reason inputs; verify the doctor alert and actual first watch notification.
-3. Hand off, send the resource and tap **Use at pharmacy** on the phone. Confirm the fill is still pending and the count is zero.
-4. Fire the separate pharmacy confirmation. Confirm the final board stop, access count one and, once implemented, the second watch notification.
-5. Verify the reviewed label card, patient QR entry, reload and remote reset across both devices.
-
-Record results in `PLAN.md`. Phase 1 is complete only after the remaining review, verified-label, second-alert and physical-device gates pass. Gemini, Tiger analytics and Grok are not extra Phase 1 blockers.
-
-The repeatable browser check is `scripts/browser-workflow-smoke.py`; it requires Python Playwright, `FIRSTDOSE_TEST_TOKEN` and explicit `FIRSTDOSE_TEST_ALLOW_RESET=1`. It resets the target demo and triggers a reason notification, so use it only against the intended fictional demo project.
+For repeatable checks, use `scripts/browser-login-smoke.py` and `scripts/browser-workflow-smoke.py`. Both use `FIRSTDOSE_TEST_ORIGIN` and a private `FIRSTDOSE_TEST_TOKEN`. The workflow additionally requires `FIRSTDOSE_TEST_ALLOW_RESET=1`; it resets the target demo, sends two alerts, and leaves a fresh empty run on success. Regenerating label sources is an explicit maintenance operation: run fetch, publish and verify successfully before using or committing a new artifact.

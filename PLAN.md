@@ -29,7 +29,7 @@ FirstDose is **an Impiricus Ascend skill that shows up in DocUpdate**: the acces
 
 ## Execution brief (engine and gates; still valid under v2)
 
-**Current phase: Phase 1 gates + Phase 6.** The Maria core (#9) is on `main`. Phase 1 closes after the four gates in IMPLEMENTATION.md: owner review, the verified label in the live flow, the pharmacy-confirmation watch alert, and a two-device run.
+**Phase 1 closure candidate, September 26:** `integration/coordinator-pivot` at `c51b23f` adds reviewed label-verification corrections, publishes the full Otezla artifact/RxCUI, renders it in New Rx, fixes v2 login returns/default-patient selection, and queues the second wrist alert on separate pharmacy confirmation. Fresh evidence: 339 tests, lint, live-mode production build, 14 PostgreSQL checks, production login/label endpoint, and the complete v2 workflow in three independent browser contexts against hosted Supabase. Both notification rows were accepted once; the user confirmed the new pharmacy-fill alert on BOTH iPhone and Garmin. Independent code review found no blockers. **Phase 1 remains open only for affected-owner integration/deployment and the full physical two-device HTTPS checkpoint. Deem will deploy.** Handoff: `docs/handoffs/deem-phase1.md`. The final test left hosted state empty.
 
 **Vinh Phase 2 preparation:** `backend/seed-week` carries the server-only committed-run reader and restricted read RPC for Minh's analytics replay, rebased onto publication base main `ca4da47`. Existing-run history survives reset without changing IDs/timestamps. No hosted reader migration or Tiger/Gemini integration is claimed. Minh retains ownership of 2.3/2.5. See [backend handoff](docs/backend-core.md#phase-2-committed-history-handoff-to-minh).
 
@@ -37,32 +37,25 @@ FirstDose is **an Impiricus Ascend skill that shows up in DocUpdate**: the acces
 
 **Phase 0 closed by user confirmation:** team registration is complete and Deem/Minh agree with the plan. Required Supabase access and physical ntfy/iPhone/Garmin setup are verified. Defer MLH prize pursuit and later-phase provider configuration; they do not block the Maria core. Team agreement does not prove label artifacts, implementation correctness or a live Phase 1 gate. Review the new concrete API/authentication details with the consuming owner during integration.
 
-**Phase 0 evidence, September 26:** user created the Supabase project and saved its URL/publishable/secret keys in the original checkout. Copied only those three settings to the isolated worktree's ignored `.env`. Read-only checks: publishable key `/auth/v1/settings` HTTP 200; secret key `/rest/v1/` HTTP 200. The schema-inspection endpoint rejects a publishable key with “Secret API key required,” as expected for that endpoint. No tables, policies, migrations or account settings were changed. Supabase credential setup verified. Physical watch gate 0.8 passed: after enabling app notifications on the Forerunner 55, the user confirmed receipt on the watch following an ntfy test; iPhone receipt was confirmed earlier. This verifies the smoke-notification path only; workflow alert integration remains pending. Other provider setup remains open.
+**Local integration checkpoint, September 26:** at the user's request, `integration/coordinator-pivot` combines Deem's screen stack through `63e24cf` (PRs #11-14) with pivot docs through `5ea44fb`, retaining the backend/frontend foundation from `8713fe1`. Documentation conflicts use the v2 brief, Phase 6 and current owner task guides; confirmed Phase 0/1 status rows from #9 are retained below. Local merge `eea83c2` passes 256 tests, lint and a live-mode production build. This local integration is not a merge of any GitHub PR. The earlier two-browser Maria check used the v1 screens; the rebuilt v2 flow still needs its own browser/device checkpoint. Prescriber approvals/contact marks remain local UI state pending C7/C2.
 
-**Verification, September 26:** `43ca67b` passes 252 application tests, 14 real PostgreSQL checks, workflow smoke, lint and a production build in live mode. Production-mode phone/tablet login passes. The actual doctor/simulator/coordinator/patient/board/access screens completed Maria in two independent browser contexts against hosted Supabase: acknowledgment stayed pending, separate pharmacy confirmation made the board final stop and access total 1, reload retained state and remote reset cleared both sessions. This verifies rendered-screen browser sessions, not two physical devices. Private-value scans of staged changes, outgoing history and browser bundles pass; environment files remain ignored.
+This dashboard is the execution source of truth. Keep presentation work in `docs/presentation/`; freeze the other planning/audit documents as reference snapshots. Do not maintain parallel schedules. This local revision responds to review and awaits team feedback; it does not change the shared mock contract or merge itself into main.
 
-**Synced source (Sat Sep 26, 12:40):**
-- `main` now has #10 (v2 docs), #8 (label pipeline and `/api/label`) and #9 (persisted backend, live wiring, fill wording).
-- #8's review items 2–6 are still open (see Minh's tasks), so there's no green label badge until that gate passes.
-- The v2 screens (#11–#14) and #4/#7 merge next, in that order.
-- `/api/sim/fire` takes `{ ids: string[] }`; production stays mock until the live Vercel env is set.
+**Synced source:** main `560685a` now includes pivot docs (#10) and the original labels branch (#8). This integration candidate preserves the later public-source briefing and Phase 6 additions, plus the verified Phase 1 closure fixes. Open PRs:
+- #15, this closure/integration candidate;
+- #9, persisted backend (Vinh, draft). It carries the status for 0.4–0.9 and 1.7–1.12;
+- #4, QR, and #7, access/sim design (Deem).
+
+`/api/sim/fire` takes `{ ids: string[] }`.
 
 **Immediate work:**
-- Vinh:
-  - merge-ready #9;
-  - 6.1 Seed the week (names in C1);
-  - C7 link events;
-  - the pharmacy-confirmation watch alert, tested on the Apple Watch with the phone locked;
-  - review #11–#14.
-- Minh:
-  - the six review fixes on #8;
-  - then 6.7 and C6.
-- Deem:
-  - merges and rebases (6.0);
-  - 6.10 slide, 6.9 presentation.
-- Stephen: the TestFlight wrapper for `/doctor`, last (6.13).
+- Vinh: support the Phase 1 deployed-device checkpoint; start 6.1 only after the core gate closes.
+- Minh: review the corrected label integration in `integration/coordinator-pivot`; original #8 is preserved for coordinated integration.
+- Deem: review/integrate the Phase 1 candidate, configure the live HTTPS deployment, and run the physical two-device checkpoint; preserve the v2 screen stack.
 
-**Thin backend:** scripted fixtures feed guarded atomic server commands. Existing four action routes are preserved. `lib/realtime.ts` provides 1.5-second server polling with run/revision ETags and signed HttpOnly sessions. The integrated hook clears run state, fences summaries, shows login/recovery errors and labels fallback access totals as practice counts when Tiger is unavailable. `main` has it; production stays mock until the live Vercel env is set; production identity and a verified Ascend privacy projection remain outside this slice.
+- Phase 6 follow-ups retain Deem's seed/link work, Stephen's TestFlight wrapper (6.13), and Apple Watch check (C8). Garmin receipt is confirmed; it does not establish Apple Watch receipt.
+
+**Thin backend:** reuse scripted rows and the existing EventSource seam. One shared command implementation can serve the agreed routes; a new `/api/act` is optional, not required to rename every API. Vinh's #9 carries the live wiring, built on the design from Deem's #6, so #6 closes. `main` runs mock mode until #9 merges. Keep basic database grants/RLS and guarded writes; a full production identity system is outside this demo. Privacy separation may be presented as proposed unless implemented and verified.
 
 **Labels:** Otezla first, cached before the demo. Proposed fidelity rule: literal text from a deterministically extracted SPL section, preserving section code, source/version and source hash; an altered character must fail verification. Coordinate that contract change before claiming `byte_exact`; a hash does not prove source authenticity by itself. Humira follows only after the core works.
 
@@ -72,8 +65,6 @@ FirstDose is **an Impiricus Ascend skill that shows up in DocUpdate**: the acces
 
 Every selected entry must have actual technology use and proof before submission. Core and supporting technologies are not all sponsor requirements. No unrelated sponsor stack additions are requested.
 
-**Category rule check, September 26:** the [public rules](https://hackgt13.devpost.com/rules) permit multiple categories but give no numeric cap. Saved organizer guidance reports two sponsor tracks; Impiricus is the primary sponsor target and SpaceXAI is only a candidate second entry, with A Marina's Mission as the general track. Do not assume MLH entries are exempt from that cap. Gemini, Tiger Data, ElevenLabs and .Tech are listed by [MLH](https://www.mlh.com/events/hackgt-13/prizes), but entry compatibility must be confirmed through current organizer/submission instructions. Notability and Create-X are not committed entries. The technology table below is a build plan, not an approved set of prize selections. Defer account setup driven solely by an unconfirmed prize requirement until this is resolved.
-
 | Technology / entry | Owner | Completion evidence |
 |---|---|---|
 | Impiricus / proposed Ascend workflow | Vinh + Deem | Useful HCP handoff; disclose partner stand-ins; validate current challenge fit and overlap |
@@ -82,12 +73,12 @@ Every selected entry must have actual technology use and proof before submission
 | ntfy + iPhone + Garmin | Vinh | Physical alert from the actual run; watch remains core |
 | Gemini API | Minh, after labels | Real note-to-enum result and unknown/error behavior |
 | Tiger Data | Minh, after stable events | Actual stored run/query feeding summary, freshness and duplicate checks |
-| Optional Grok + Cursor / conditional SpaceXAI entry | Vinh backend, Deem capture; actual Cursor user documents work | Real confirmed voice handoff plus truthful Cursor development evidence; neither currently verified |
+| Grok + Cursor / SpaceXAI | Vinh backend, Deem capture; actual Cursor user documents work | Real confirmed voice handoff plus truthful Cursor development evidence; neither currently verified |
 | ElevenLabs | Deem | Generated asset actually plays in the app; a WebAudio chime is insufficient |
 | .Tech | Deem | Registered project domain resolves to the reviewed app on another device |
 | Notability Pro / conditional entry | Deem | Actual process use and required screenshots/tag; confirm category-slot treatment |
 
-A Marina's Mission is the selected social-good track; no Aramco API requirement was established. Gemini is listed on the [MLH event page](https://www.mlh.com/events/hackgt-13/prizes), though absent from the fetched [Devpost prize list](https://hackgt13.devpost.com/). Exact category limits remain unconfirmed. Keep Grok/Tiger in the proposed build scope; their prize entries remain conditional on eligibility and actual use; if the core slips, explicitly decide whether to cut the corresponding entry. Do not quietly promise every prize while omitting its technology. Status today: frontend exists; live provider integrations remain pending.
+A Marina's Mission is the selected social-good track; no Aramco API requirement was established. Gemini is listed on the [MLH event page](https://www.mlh.com/events/hackgt-13/prizes), though absent from the fetched [Devpost prize list](https://hackgt13.devpost.com/). Exact category limits remain unconfirmed. Keep Grok/Tiger in the selected-track build plan; if the core slips, explicitly decide whether to cut the corresponding entry. Do not quietly promise every prize while omitting its technology. Status today: frontend exists; live provider integrations remain pending.
 
 ---
 
@@ -184,15 +175,13 @@ Current objective, scope and claim boundaries: [v2 spec](docs/spec-v2-coordinato
 | 1.6 | `/patient/[id]`: Wallet pass stand-in, "Use at pharmacy" | `app/(screens)/patient/[id]/**` | **Deem** | ✅ | 1.1 | No barcode, BIN/PCN or member number. |
 | 1.7 | Supabase schema: `patients`, `drugs`, `rx_cases`, `fill_events`, `labels`; seed from `mock/` | `supabase/migrations/**`, `scripts/seed.ts` | **Vinh** | 🟡 | 0.4, 0.6 | Sep 26: migrations 001/002 and seed applied to the intended hosted project over TLS; 8 RLS tables and fixture counts verified; 14 local DB checks pass. Affected-owner review/merge pending. |
 | 1.8 | Router + table test (every reason × insurance; Medicare never gets a copay card) | `lib/server/router.ts`, `tests/router.test.ts` | **Vinh** | 🟡 | 0.4 | Sep 26 1:47 AM ET: local implementation reviewed, 86 tests pass; explicit card/bridge eligibility gates; owner review/merge pending. |
-| 1.9 | `lib/realtime.ts` (implements 1.2) + `/api/sim/fire`, `/api/sim/reset` | `lib/realtime.ts`, `app/api/sim/**` | **Vinh** | 🟡 | 1.2, 1.7 | Sep 26: 43ca67b integrates live polling/session/reset with the frontend. onSync clears transient errors even on304. Real rendered-screen reload and remote reset pass across independent browser contexts. Owner review/physical two-device run pending. |
-| 1.10 | Verified cached label pipeline and endpoint | `lib/server/label.ts`, `lib/server/labels/**`, `tests/labels/**` | **Minh** | 🟡 | 0.6 | PR #8 merged Sat 12:30 with the build fix (review item 1). Items 2–6 (byte-preserving checkout, verify the committed artifact, reject malformed evidence, full sections vs highlights, publication gate) are still open; no green badge or byte-exact claim until they pass. |
-| 1.11 | Action routes: `/api/rx`, `/api/handoff`, `/api/fix`, `/api/patient/use` | `app/api/**`, `lib/server/workflow.ts` | **Vinh** | 🟡 | 1.7, 1.8 | Sep 26: 43ca67b passes 252 tests, lint/build and 14 DB checks. Actual UI buttons exercised hosted Maria APIs; acknowledgment remained pending until separate pharmacy signal; final board/access checks pass. |
-| 1.12 | ntfy delivery for reviewed alerts and pharmacy confirmation | `lib/server/ntfy.ts` | **Vinh** | 🟡 | 0.8, 1.9 | Sep 26: claim-once outbox worker delivered actual hosted Maria reason alert; ntfy accepted once and user confirmed BOTH iPhone and Garmin receipt. No automatic ambiguous retries. Second pharmacy-confirmation alert requires reviewed truthful copy; task remains in progress. |
-| 1.13 | Wire `useEvents()` to `lib/realtime.ts`: live source, buttons enabled by case state | `components/data/**` | **Deem** | ✂️ | 1.9 | Carried by Vinh's #9 (merged Sat 12:35), built on the design from PR #6. |
+| 1.9 | `lib/realtime.ts` (implements 1.2) + `/api/sim/fire`, `/api/sim/reset` | `lib/realtime.ts`, `app/api/sim/**` | **Vinh** | 🟡 | 1.2, 1.7 | Sep 26: c51b23f verifies v2 live polling/session/reset in three independent browser contexts against hosted Supabase; production login passes at phone/tablet sizes. Reviewed deployment and physical two-device checkpoint remain. |
+| 1.10 | Verified cached label pipeline and endpoint | `lib/server/label.ts`, `lib/server/labels/**`, `tests/labels/**` | **Minh** | 🟡 | 0.6 | Sep 26: c51b23f integrates #8 through 9241b61 with corrected identity/full-section/saved-artifact verification, exact-source hash, runtime receipt, and Otezla catalog/RxCUI publication. Label is visible before prescribing; 68 independent label/catalog tests pass. Affected-owner integration/deployment pending; Humira remains placeholder. |
+| 1.11 | Action routes: `/api/rx`, `/api/handoff`, `/api/fix`, `/api/patient/use` | `app/api/**`, `lib/server/workflow.ts` | **Vinh** | 🟡 | 1.7, 1.8 | Sep 26: c51b23f passes 339 tests, lint/build and 14 DB checks. Actual v2 UI flow against hosted Supabase passes: acknowledgment remains pending; separate pharmacy signal updates counts; reload/reset pass. Deployment/physical-device checkpoint pending. |
+| 1.12 | ntfy delivery for reviewed alerts and pharmacy confirmation | `lib/server/ntfy.ts` | **Vinh** | 🟡 | 0.8, 1.9 | Sep 26: c51b23f queues wrist.fill_confirmed on independent ev_11; duplicate commands cannot duplicate delivery. Both hosted reason/fill rows accepted once. User confirms BOTH iPhone and Garmin received the new pharmacy-confirmation alert; prior reason alert also physically confirmed. Reviewed deployed loop remains pending. |
+| 1.13 | Wire `useEvents()` to `lib/realtime.ts`: live source, buttons enabled by case state | `components/data/**` | **Deem** | 🟡 | 1.9 | Sep 26: c51b23f passes full v2 doctor/coordinator/patient/board/access browser flow, exact verified label display and remote reset across three independent sessions. Login return/default-patient regressions fixed. Deem review/deployment and physical-device checkpoint pending. |
 
 **CORE CHECKPOINT, Saturday morning:** Maria across two devices: prescribe -> barrier -> physical wrist alert -> reviewed coordinator handoff -> resource acknowledgment (still pending) -> separate simulated pharmacy confirmation -> first fill observed. If it fails, stop optional provider work and fix the loop.
-
-**Phase 1 closure conditions:** the current backend/frontend wiring is implemented and browser-tested, but the phase remains open until all four gates are recorded: (1) affected-owner review and integration, (2) reviewed Otezla label visible in the live flow, (3) independent pharmacy-confirmation wrist alert implemented with physical receipt verified, and (4) the complete live HTTPS flow including QR/login and reset on two physical devices. Vinh owns the second-alert backend follow-up; Deem owns UI/deployment integration and joins the device check; Minh supplies the verified label artifact. Gemini/Tiger/Grok work is not required to close Phase 1.
 
 ### Phase 2: Evidence and integrations (after the Maria core gate)
 
@@ -313,7 +302,7 @@ The DocUpdate-styled screens copy structure: dark navy, a purple primary, the bo
 ## Open Questions
 
 - [ ] **Q1:** Does Medvantx or Spark already detect never-filled patients? Ask at the 11 AM workshop. Needs both.
-- [ ] **Q2:** Gemini model list verified September 26 (HTTP 200); gemini-2.5-flash and gemini-3.8-flash are among returned generateContent models. Minh must select/pin a model and verify constrained generation during Phase 2. Model listing alone does not prove quota or classifier behavior.
+- [ ] **Q2:** Which Gemini model ID is live? List models at H0 and pin it. Needs Vinh.
 - [x] **Q3:** Is Notability a challenge or a third sponsor track? **A challenge, not a sponsor track** (per our team sponsor book, p. 22 "The other challenges").
   - Prize: a year of Notability Pro each.
   - Entry: use Notability in the process (interviews, sketches), then add 2 screenshots and the "Notability" tag to the Devpost.
@@ -340,7 +329,7 @@ The DocUpdate-styled screens copy structure: dark navy, a purple primary, the bo
 - [ ] **C2 (6.2):** Are "Reached patient / Left message" marks an event, or local-only this weekend?
 - [ ] **C3 (6.8):** The coordinator-approved patient message (and its Spanish version) needs a template key (⚠️ CONTRACT), or an explicit exception to D2.
 - [ ] **C4:** Can the DocUpdate stand-in label extend `<StandIn>` in code (`components/copy/`) rather than `templates.json`? Proposed text (spec, D9): "Concept: FirstDose inside DocUpdate · Not affiliated".
-- [ ] **C5 (4.4): Vinh decides.** Deem asks for option A.
+- [x] **C5 (4.4): Phase 1 uses option B.** Use a pre-signed spare phone with the existing demo session; on a judge's own phone, a team member enters the private code once. Replied on PR #9, September 26. A new per-run short code is not implemented. Deem's requested patient-only option A remains a separate Phase 6 follow-up.
   - **Option A (Deem's pick): a limited patient-only path.**
     - `/patient/rx_001` renders without the staff login.
     - Its one command, `POST /api/patient/use`, is accepted without a session only when all of these hold: that case, the active run, `fix_sent` with `RESEND_COPAY_CARD`, and the card not yet used.

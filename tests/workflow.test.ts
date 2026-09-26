@@ -129,6 +129,34 @@ describe("workflow command planning", () => {
     expect(confirmed.some((e) => e.type === "started" || e.type === "recovered")).toBe(false);
   });
 
+  it("attaches the second template-backed wrist message only to the pharmacy fill confirmation", () => {
+    const history = run(prescribe, fire("ev_04", "ev_05"), handoff, fix, use);
+    const confirmed = planCommand(history, fire("ev_11"), NOW);
+    expect(confirmed).toMatchObject([{
+      id: "ev_11", case_id: "rx_001", actor: "pharmacy", type: "claim_run", status_text: "Dispensed",
+      wrist: "Maria: Otezla pharmacy fill confirmed.", side: "practice",
+    }]);
+    expect([...history, ...confirmed].filter(event => event.wrist !== null).map(event => event.id)).toEqual(["ev_06", "ev_11"]);
+    expect(confirmed[0].wrist).not.toMatch(/started|recovered|\$0|delivered/i);
+    expect(history.find(event => event.id === "ev_10")?.wrist).toBeNull();
+  });
+
+  it("does not create another fill notification for repeated confirmation commands or duplicate batch IDs", () => {
+    const history = run(prescribe, fire("ev_04", "ev_05"), handoff, fix, use);
+    const confirmed = planCommand(history, fire("ev_11", "ev_11"), NOW);
+    expect(confirmed.filter(event => event.wrist !== null)).toHaveLength(1);
+    expect(confirmed.map(event => event.id)).toEqual(["ev_11"]);
+    expect(planCommand([...history, ...confirmed], fire("ev_11"), NOW)).toEqual([]);
+    expect(planCommand([...history, ...confirmed], use, NOW)).toEqual([]);
+  });
+
+  it("requires a prescription for the confirmed case even when acknowledgment is present", () => {
+    const ack = run(prescribe, fire("ev_04", "ev_05"), handoff, fix, use).find(event => event.id === "ev_10")!;
+    expect(() => planCommand([ack], fire("ev_11"), NOW)).toThrow();
+    const unrelated = run({ kind: "prescribe", patient_id: "pt_james", drug_id: "drug_humira" });
+    expect(() => planCommand([...unrelated, ack], fire("ev_11"), NOW)).toThrow();
+  });
+
   it("retries each screen command without appending duplicate events, even after later steps", () => {
     const commands = [prescribe, fire("ev_04", "ev_05"), handoff, fix, use, fire("ev_11")];
     const history = run(...commands);

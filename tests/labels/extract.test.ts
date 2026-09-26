@@ -155,7 +155,7 @@ describe('extractSections', () => {
     expect(text).toBe('Table 1\nDay\tDose\n1-5\t10 mg\n6+\t30 mg');
   });
 
-  it('keeps namespaced elements (excerpt/highlight wrappers) transparent', () => {
+  it('rejects a highlights-only section instead of presenting it as the full section', () => {
     const xml = splDocument(
       `<section>
         <code code="34067-9" codeSystem="2.16.840.1.113883.6.1" displayName="X"/>
@@ -165,6 +165,26 @@ describe('extractSections', () => {
     );
     const results = extractSections(xml);
     const found = byLoinc(results, '34067-9');
-    expect(found && found.status === 'present' && found.section.text).toBe('Deep para.');
+    expect(found && found.status).toBe('invalid');
+  });
+
+  it('extracts nested full subsections once and excludes the highlights excerpt', () => {
+    const xml = splDocument(`<section><code code="34067-9"/>
+      <excerpt><highlight><text><paragraph>Short highlight.</paragraph></text></highlight></excerpt>
+      <component><section><title>1.1 Full indication</title><text><paragraph>Full narrative.</paragraph></text>
+        <component><section><title>Detail</title><text><paragraph>Nested detail.</paragraph></text></section></component>
+      </section></component></section>`);
+    const found = byLoinc(extractSections(xml), '34067-9');
+    expect(found && found.status === 'present' && found.section.text).toBe('1.1 Full indication\nFull narrative.\nDetail\nNested detail.');
+  });
+
+  it('preserves meaningful whitespace between adjacent inline elements', () => {
+    const found = byLoinc(extractSections(splDocument(sectionXml('34067-9', '<paragraph><content>First</content> <content>second</content>.</paragraph>'))), '34067-9');
+    expect(found && found.status === 'present' && found.section.text).toBe('First second.');
+  });
+
+  it('rejects unresolved footnote references instead of dropping them', () => {
+    const found = byLoinc(extractSections(splDocument(sectionXml('34067-9', '<paragraph>Text<footnoteRef IDREF="missing"/>.</paragraph>'))), '34067-9');
+    expect(found && found.status).toBe('invalid');
   });
 });

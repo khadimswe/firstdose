@@ -99,3 +99,13 @@ Remaining dependencies: Minh's classifier/replay modules and real-provider check
 Publication verification on September 26: the combined branch passed 320 unit tests, 14 PostgreSQL checks (including real empty/retained run reads and denied browser access), lint and production build. Gitleaks found no leaks in the branch history, and configured private-value scans passed. On Windows, the inherited label-source test required restoring exact Git XML bytes after automatic CRLF conversion; the committed artifact is unchanged. Read-only agent review found no blocking issues. An affected-owner review is still required before merging.
 
 Publication base: main `ca4da47` includes the merged backend PR #9, coordinator shell #11 and doctor view #12. Rebase retained both notification-delivery and committed-reader database assertions plus main's v2 PLAN brief. Unmerged teammate screen/closure changes are outside this branch. The Phase 2 reader migration has not been applied to the hosted project.
+
+## Phase 1 closure integration on the v2 screens
+
+The independent pharmacy event `ev_11` now carries `wrist.fill_confirmed`. The same atomic outbox and claim-once worker used for reason alerts deliver it. Patient acknowledgment still has no wrist message; repeated pharmacy commands cannot create another notification. Provider acceptance and physical watch receipt remain separate evidence.
+
+The New Rx screen renders its cached label directly, before prescribing, without inventing a `label_shown` event. It retains the selected patient after signing. Otezla's artifact is checked against the saved DailyMed XML and RxNorm response; build verification also checks the exact artifact copied into the screen catalog. Humira remains a visibly unverified placeholder. `GET /api/label/drug_otezla` serves public drug-label content, without patient information or a staff-session requirement.
+
+The demo login accepts the exact v2 doctor routes, the two fictional patient-detail routes, `/coordinator/prescribers`, and `/demo`, while rejecting unknown destinations and external redirects. Phase 1 retains the private shared demo login for patient acknowledgment; the optional patient-only access policy is separate work.
+
+The browser workflow script now targets the v2 screens across three independent browser contexts. It checks label text, default-patient selection, approval/handoff, the coordinator case sheet, acknowledgment remaining pending, separate confirmation, reload and reset. Running it against the live demo sends both reason and pharmacy-confirmation notifications. Browser automation does not replace the physical two-device HTTPS checkpoint.

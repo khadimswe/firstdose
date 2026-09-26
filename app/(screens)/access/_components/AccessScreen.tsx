@@ -1,10 +1,22 @@
 "use client";
 
+import { useChangedAt, useNowSeconds } from "@/components/liveHooks";
 import { useEvents } from "@/components/data/useEvents";
 
 import { AccessView } from "./AccessView";
 
 export function AccessScreen() {
   const { access, catalog, accessSource, accessError } = useEvents();
-  return <AccessView summary={access} reasons={catalog.reasons} source={accessSource} error={accessError} />;
+  const now = useNowSeconds();
+  const changedAt = useChangedAt(JSON.stringify(access));
+
+  return (
+    <AccessView
+      summary={access}
+      reasons={catalog.reasons}
+      source={accessSource}
+      error={accessError}
+      updatedAgo={now && changedAt ? Math.max(0, now - changedAt) : null}
+    />
+  );
 }

@@ -1,38 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-
 import { StandIn } from "@/components/StandIn";
+import { useTween } from "@/components/liveHooks";
 import { fill, money } from "@/components/copy/fill";
 import { templates } from "@/components/copy/templates";
 import type { CaseView } from "@/components/data/types";
 import { hasConfirmedFill } from "@/components/data/derive";
 import { cn } from "@/lib/utils";
-
-/** Counts from the last shown value to `target`. Jumps straight there with reduced motion. */
-function useTween(target: number, ms = 1500) {
-  const [value, setValue] = useState(target);
-  const from = useRef(target);
-
-  useEffect(() => {
-    const start = from.current;
-    if (start === target) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const t0 = performance.now();
-    let raf = 0;
-    const step = (now: number) => {
-      const p = reduce ? 1 : Math.min(1, (now - t0) / ms);
-      const v = start + (target - start) * (1 - (1 - p) ** 3);
-      from.current = v;
-      setValue(v);
-      if (p < 1) raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [target, ms]);
-
-  return value;
-}
 
 export function PriceCounter({ c }: { c: CaseView & { quoteUsd: number } }) {
   const target = c.amountUsd ?? c.quoteUsd;

@@ -1,0 +1,2 @@
+# Preserve the exact fetched SPL bytes on every platform; do not normalize line endings.
+data/labels/**/source.xml -text

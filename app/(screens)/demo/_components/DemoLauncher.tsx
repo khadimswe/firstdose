@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSyncExternalStore } from "react";
 import { ChartColumn, Monitor, QrCode, SlidersHorizontal, Smartphone, Tv, Watch } from "lucide-react";
 
+import { PatientQr } from "@/components/PatientQr";
 import { SideBadge } from "@/components/SideBadge";
 import { WristMirror } from "@/components/WristMirror";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ type Device = {
   href: string | null;
   how: string;
   side: Side | null;
+  qr?: boolean;
 };
 
 const DEVICES: Device[] = [
@@ -49,8 +51,9 @@ const DEVICES: Device[] = [
     device: "Judge's own phone",
     who: "Maria (patient)",
     href: "/patient/rx_001",
-    how: "The judge scans the patient QR and becomes Maria.",
+    how: "The judge scans this QR (or the printed card at /qr) and becomes Maria. A phone with no session signs in first.",
     side: "practice",
+    qr: true,
   },
   {
     icon: SlidersHorizontal,
@@ -111,6 +114,14 @@ export function DemoLauncher() {
                   {d.side && <SideBadge side={d.side} />}
                 </div>
                 <p className="text-sm">{d.how}</p>
+                {d.qr && (
+                  <div className="flex items-center gap-3">
+                    <PatientQr size={112} />
+                    <Button asChild size="sm" variant="outline">
+                      <Link href="/qr">Printable card</Link>
+                    </Button>
+                  </div>
+                )}
                 {d.href && (
                   <div className="mt-auto flex items-center justify-between gap-2">
                     <span className="truncate font-mono text-xs text-muted-foreground">

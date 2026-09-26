@@ -38,6 +38,8 @@ const KNOWN_TEXT_TAGS = new Set([
   'thead',
   'tbody',
   'tfoot',
+  'col',
+  'colgroup',
   'tr',
   'th',
   'td',
@@ -47,7 +49,6 @@ const KNOWN_TEXT_TAGS = new Set([
   'sub',
   'br',
   'footnote',
-  'footnoteRef',
   'highlight',
   'excerpt',
 ]);
@@ -124,22 +125,31 @@ function sectionOwnCode(sectionNode: OrderedNode): string | null {
   return null;
 }
 
-function directTextChild(sectionNode: OrderedNode): OrderedNode | null {
-  for (const child of children(sectionNode)) {
-    if (tagName(child) === 'text') return child;
-  }
-  // Sections like the highlights excerpt wrap text in excerpt/highlight.
-  for (const child of children(sectionNode)) {
-    const name = tagName(child);
-    if (name === 'excerpt' || name === 'highlight') {
-      const nested = directTextChild(child);
-      if (nested !== null) return nested;
-    }
-  }
-  return null;
-}
-
 type Rendered = { ok: true; text: string } | { ok: false; detail: string };
+
+/** Full section only: direct narrative followed by nested section titles/text in source order. */
+function renderSection(section: OrderedNode, nested = false): Rendered {
+  const parts: string[] = [];
+  let hasNarrative = false;
+  for (const child of children(section)) {
+    const name = tagName(child);
+    if (name === 'text' || (nested && name === 'title')) {
+      const rendered = renderChildren(children(child));
+      if (!rendered.ok) return rendered;
+      if (name === 'text' && rendered.text.trim()) hasNarrative = true;
+      if (rendered.text.trim()) parts.push(collapseInline(rendered.text));
+    } else if (name === 'component') {
+      for (const subsection of children(child).filter(node => tagName(node) === 'section')) {
+        const rendered = renderSection(subsection, true);
+        if (!rendered.ok) return rendered;
+        hasNarrative = true;
+        parts.push(rendered.text);
+      }
+    }
+    // Excerpts are highlights, not the complete section narrative.
+  }
+  return hasNarrative ? { ok: true, text: parts.join('\n') } : { ok: false, detail: 'empty or missing full narrative section' };
+}
 
 function isKnown(name: string): boolean {
   return KNOWN_TEXT_TAGS.has(name);
@@ -156,13 +166,18 @@ function isKnown(name: string): boolean {
  */
 function renderChildren(nodes: OrderedNode[]): Rendered {
   let out = '';
-  for (const node of nodes) {
+  for (const [index, node] of nodes.entries()) {
     const name = tagName(node);
     if (name === null) continue;
     if (name === '#text') {
       const raw = textValue(node);
-      // Whitespace-only text between elements is indentation, not content.
-      if (raw.trim().length === 0) continue;
+      if (raw.trim().length === 0) {
+        const inline = new Set(['content', 'sup', 'sub', 'linkHtml', 'footnote']);
+        const previous = index > 0 ? tagName(nodes[index - 1]) : null;
+        const next = index + 1 < nodes.length ? tagName(nodes[index + 1]) : null;
+        if (previous && next && inline.has(previous) && inline.has(next)) out += ' ';
+        continue;
+      }
       out += raw;
       continue;
     }
@@ -229,12 +244,7 @@ export function extractSections(xml: string): SectionResult[] {
       results.push({ status: 'invalid', loinc, detail: `ambiguous: ${matches.length} sections carry code ${loinc}` });
       continue;
     }
-    const textNode = directTextChild(matches[0]);
-    if (textNode === null) {
-      results.push({ status: 'invalid', loinc, detail: 'no narrative <text> element in section' });
-      continue;
-    }
-    const rendered = renderChildren(children(textNode));
+    const rendered = renderSection(matches[0]);
     if (!rendered.ok) {
       results.push({ status: 'invalid', loinc, detail: rendered.detail });
       continue;

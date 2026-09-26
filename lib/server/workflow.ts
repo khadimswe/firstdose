@@ -114,11 +114,20 @@ export function planCommand(
     if (seen.has(id)) return;
     const template = SCRIPT.find((event) => event.id === id);
     if (!template) invalid("Unknown script event.");
+    let wrist: string | null = null;
+    if (template.actor === "pharmacy" && template.type === "claim_run" && template.status_text === "Dispensed") {
+      requireTransition(all().some((event) => event.case_id === template.case_id && event.type === "prescribed"));
+      const rx = patientsJson.cases.find((row) => row.id === template.case_id)!;
+      const patient = patientsJson.patients.find((row) => row.id === rx.patient_id)!;
+      const drug = patientsJson.drugs.find((row) => row.id === rx.drug_id)!;
+      // The confirmation itself owns the outbox key; replay cannot queue another alert.
+      wrist = fill(templates.wrist.fill_confirmed, { patient_short: patient.display_short, drug: drug.brand });
+    }
     pending.push({
       ...template,
       // Script notes make unverified provider/label claims. Only retain the supplied pharmacy/hub input.
       note: template.actor === "pharmacy" || template.actor === "hub" ? template.note : "",
-      wrist: null,
+      wrist,
       side: "practice",
       ...changes,
       at: new Date(nextTime++).toISOString(),
