@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import { CATALOG, SCRIPT } from "@/components/data/catalog";
 import { deriveCases, queueBucket } from "@/components/data/derive";
 import type { FillEvent } from "@/components/data/types";
-import { WEEK_EVENTS, seedWeekEvents } from "@/lib/demo-week";
 import { projectRxFill } from "@/lib/rxfill";
 
 function event(overrides: Partial<FillEvent> = {}): FillEvent {
@@ -130,8 +129,15 @@ describe("simulated RxFill projection", () => {
     expect(queueBucket(maria)).toBe("confirmed");
   });
 
-  it("preserves ordering and IDs across offline and live seed events without fabricating fills", () => {
-    for (const sourceEvents of [WEEK_EVENTS, seedWeekEvents("2026-09-26T16:00:00Z")]) {
+  it("preserves ordering, IDs and relative/ISO times without fabricating fills", () => {
+    const relativeEvents = Array.from({ length: 8 }, (_, index) => event({
+      id: `rxfill_fixture_${index}`, case_id: `rxfill_case_${index}`,
+      at: -300 + index * 30, type: "claim_run", status_text: "Dispensed", note: "",
+    }));
+    const isoEvents = relativeEvents.map(row => ({
+      ...row, at: new Date(Date.parse("2026-09-26T16:00:00Z") + Number(row.at) * 1_000).toISOString(),
+    }));
+    for (const sourceEvents of [relativeEvents, isoEvents]) {
       const projections = sourceEvents.map(projectRxFill).filter(row => row !== null);
       const pharmacyEvents = sourceEvents.filter(row => row.actor === "pharmacy" && row.side === "practice");
       expect(projections.map(row => row.source_event)).toEqual(pharmacyEvents);

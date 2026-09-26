@@ -2,6 +2,8 @@
 
 September 26, 2026. Additive presentation module: `lib/rxfill.ts`. Deem owns the `/sim` raw-message toggle; this branch supplies its data projection. No mock contract, workflow, store, screen or package changes. No transport integration or certified NCPDP payload is claimed.
 
+Publication base: `origin/main` at `4c80650`, including merged PRs #15 and #7, corrected label artifacts and the prebuild verification receipt. This branch no longer depends on the unpublished seed-week branch and can target main directly. The original local branch is retained as `backup/rxfill-events-before-pr15-20260926`.
+
 ## Toggle wiring
 
 Use the selected **existing event**, whether from the offline script or the guarded live `/api/events` snapshot:
@@ -27,7 +29,7 @@ The existing `StandIn` pharmacy kind renders "Simulated pharmacy · real RxFill 
 | `dispensing_status` | Explicit simulation status for those dedicated events only; never a payment interpretation or evidence of real pickup/ingestion. |
 | `synthetic_example` | Optional vocabulary illustration from a legacy claim's exact status text. Its `basis` is `legacy_status_text_only`; it supplies no dispensing outcome. |
 
-The core fixture's `ev_04` produces a synthetic `NotDispensed` illustration using its unchanged note; `ev_11` produces a synthetic `Dispensed` illustration. Both keep `RxFill: null` and `dispensing_status: null` because their event type is `claim_run`. The existing workflow still treats the independent simulated pharmacy event `ev_11` with exact `status_text: "Dispensed"` as its confirmation. The projection has no routing or state authority and does not change that behavior. The eight seed-week pharmacy confirmations follow the same legacy presentation rule.
+The core fixture's `ev_04` produces a synthetic `NotDispensed` illustration using its unchanged note; `ev_11` produces a synthetic `Dispensed` illustration. Both keep `RxFill: null` and `dispensing_status: null` because their event type is `claim_run`. The existing workflow still treats the independent simulated pharmacy event `ev_11` with exact `status_text: "Dispensed"` as its confirmation. The projection has no routing or state authority and does not change that behavior. Future seed-week pharmacy `claim_run` rows can follow the same rule without a dependency on their fixture module.
 
 James's `ev_16` keeps reject code `75`, raw status and note, with no RxFill or synthetic illustration. A reject code, a paid claim, a dollar amount, a hub note or a patient card tap cannot establish pharmacy non-dispensing or dispensing. Unknown/case-altered status strings and contradictory dispensing/reject fields fail closed; their original fields remain visible. Application reason enums and claim reject codes never become SCRIPT `ReasonCode` values.
 
@@ -41,6 +43,8 @@ This JSON omits SCRIPT envelopes, pharmacy/prescriber/patient identity, prescrip
 
 ## Validation and remaining integration
 
-Focused tests cover raw preservation, request context, legacy versus dedicated event types, reject/payment ambiguity, unknown/contradictory status, pharmacy/practice boundaries, reason-code separation, offline/live seed parity, allocation safety and Maria's unchanged workflow confirmation. Verification: 305 tests (27 focused), lint, typecheck and production build pass. Next's generated route types must exist before standalone `tsc`; the fresh worktree's initial typecheck reported missing `PageProps`/`LayoutProps`, resolved by the normal build without changing source. A read-only review found no blockers and independently passed all 27 focused tests.
+Focused tests cover raw preservation, request context, legacy versus dedicated event types, reject/payment ambiguity, unknown/contradictory status, pharmacy/practice boundaries, reason-code separation, relative/ISO timestamp parity using self-contained fixtures, allocation safety and Maria's unchanged workflow confirmation. The original local implementation passed 305 tests (27 focused), lint, typecheck and production build; a read-only review found no blockers and independently passed all 27 focused tests. Next's generated route types must exist before standalone `tsc`; the normal build creates these without source edits.
+
+Fresh validation on main `4c80650`: `npm ci --ignore-scripts` succeeds with zero reported vulnerabilities; all 366 tests in 25 files pass (27 RxFill tests); lint, standalone `tsc --noEmit` and production build pass. The prebuild offline Otezla gate verifies saved source, identity, full sections, receipt and published fixtures. Only the three additive RxFill files differ from main; label, mock and package artifacts are exactly the current base's versions.
 
 Deem's actual toggle implementation and browser validation remain. Owner review and branch integration remain; no hosted apply, send, deployment, push or merge is part of this handoff.
