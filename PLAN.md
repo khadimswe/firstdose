@@ -15,47 +15,27 @@ FirstDose is **an Impiricus Ascend skill that shows up in DocUpdate**: the acces
   - one iPhone running `/doctor` from the home screen (a TestFlight wrapper comes last, from Stephen);
   - one Apple Watch paired to that iPhone with ntfy. The watch buzzes only while the phone is locked.
   - The judge's own phone is Maria via QR. Vinh's laptop runs `/sim`. Setup page: `/demo`.
-- **Built (Deem, Sat 12:10, stacked on #9):**
-  - #11 coordinator shell, Queue and `/demo` (6.2);
-  - #12 DocUpdate phone view (6.3);
-  - #13 Prescribers (6.12);
-  - #14 board "Waiting on" (6.11).
-
-  Merge order: #8 → #9 → #11 → #12 → #13 → #14, then Deem rebases #4 and #7.
-- **What the demo still needs from others:**
-  - Vinh: 6.1 Seed the week (the opening shot shows an empty queue without it), C7 link events, and the second watch alert.
-  - Minh: the Otezla label (#8 fixes) and the 6.7 rollup.
+- **Merged, Sat 13:00:** everything is on `main` at `4c80650`, in this order: #10, #8, #9, #11–#14, #15 (Vinh's Phase 1 closure), #4, #7. CI is green: 339 tests, lint, and mock and live builds. firstdose.vercel.app serves the v2 screens in mock mode. Merged branches are deleted. The open drafts are Vinh's #16 (Grok) and #17 (seed week).
+- **The demo still needs:**
+  - Vinh: #17 seed week (the opening shot), C7 link events, the Apple Watch check (C8), and the live Vercel env.
+  - Deem: with Vinh, the deployed two-device run (Phase 1 gate 4); 6.8 once C3 is agreed.
+  - Minh: 6.7 rollup, C6 NPPES API, Gemini (2.5), Tiger (2.3).
+  - Stephen: TestFlight (6.13).
 - **Copy (D8) and brand (D9):** fill wording, templates for every patient sentence, and structure never brand on DocUpdate screens.
 
 ## Execution brief (engine and gates; still valid under v2)
 
-**Phase 1 closure candidate, September 26:** `integration/coordinator-pivot` at `c51b23f` adds reviewed label-verification corrections, publishes the full Otezla artifact/RxCUI, renders it in New Rx, fixes v2 login returns/default-patient selection, and queues the second wrist alert on separate pharmacy confirmation. Fresh evidence: 339 tests, lint, live-mode production build, 14 PostgreSQL checks, production login/label endpoint, and the complete v2 workflow in three independent browser contexts against hosted Supabase. Both notification rows were accepted once; the user confirmed the new pharmacy-fill alert on BOTH iPhone and Garmin. Independent code review found no blockers. **Phase 1 remains open only for affected-owner integration/deployment and the full physical two-device HTTPS checkpoint. Deem will deploy.** Handoff: `docs/handoffs/deem-phase1.md`. The final test left hosted state empty.
+**Phase 1 closure (#15, merged Sat 12:48):** `c51b23f` adds reviewed label-verification corrections, publishes the full Otezla artifact/RxCUI, renders it in New Rx, fixes v2 login returns/default-patient selection, and queues the second wrist alert on separate pharmacy confirmation. Fresh evidence: 339 tests, lint, live-mode production build, 14 PostgreSQL checks, production login/label endpoint, and the complete v2 workflow in three independent browser contexts against hosted Supabase. Both notification rows were accepted once; the user confirmed the new pharmacy-fill alert on BOTH iPhone and Garmin. Independent code review found no blockers. **Phase 1 remains open only for affected-owner integration/deployment and the full physical two-device HTTPS checkpoint. Deem will deploy.** Handoff: `docs/handoffs/deem-phase1.md`. The final test left hosted state empty.
 
 **Vinh Phase 2 preparation:** `backend/seed-week`, draft PR #17, carries the server-only committed-run reader and restricted read RPC for Minh's analytics replay, with main `4c80650` merged. Existing-run history survives reset without changing IDs/timestamps. No hosted reader migration or Tiger/Gemini integration is claimed. Minh retains ownership of 2.3/2.5. See [backend handoff](docs/backend-core.md#phase-2-committed-history-handoff-to-minh).
 
 **Vinh 6.1 publication checkpoint, September 26:** `backend/seed-week`, draft PR #17, adds the fixed C1 fixture, SQL catalog seed, guarded `/api/sim/seed`, `source.seedWeek()` and background-case fix support. Thirteen background cases derive 3 needing a fix, 2 waiting, 8 confirmed fills; Maria/James remain separate (15 total). Merged verification: 361 unit tests, 14 PostgreSQL checks, lint/build, secret scans and read-only review passed. Owner review, hosted catalog apply, Deem's catalog/store/button wiring and actual mock/live queue check remain. [Integration handoff](docs/handoffs/vinh-seed-week.md).
 
-**Phase 0 closed by user confirmation:** team registration is complete and Deem/Minh agree with the plan. Required Supabase access and physical ntfy/iPhone/Garmin setup are verified. Defer MLH prize pursuit and later-phase provider configuration; they do not block the Maria core. Team agreement does not prove label artifacts, implementation correctness or a live Phase 1 gate. Review the new concrete API/authentication details with the consuming owner during integration.
+**Phase 1 is open only for gate 4:** the full live HTTPS flow on two physical devices. The live Vercel env isn't set (Supabase secret, demo token, ntfy). Vinh sets it privately, never in git; then Deem flips `NEXT_PUBLIC_DATA_SOURCE=supabase` and redeploys. Until then production is mock. Garmin receipt is confirmed; Apple Watch receipt is C8.
 
-**Local integration checkpoint, September 26:** at the user's request, `integration/coordinator-pivot` combines Deem's screen stack through `63e24cf` (PRs #11-14) with pivot docs through `5ea44fb`, retaining the backend/frontend foundation from `8713fe1`. Documentation conflicts use the v2 brief, Phase 6 and current owner task guides; confirmed Phase 0/1 status rows from #9 are retained below. Local merge `eea83c2` passes 256 tests, lint and a live-mode production build. This local integration is not a merge of any GitHub PR. The earlier two-browser Maria check used the v1 screens; the rebuilt v2 flow still needs its own browser/device checkpoint. Prescriber approvals/contact marks remain local UI state pending C7/C2.
+This dashboard is the execution source of truth. Keep presentation work in `docs/presentation/`. Code changes go through affected-owner review and reviewed PRs.
 
-This dashboard is the execution source of truth. Keep presentation work in `docs/presentation/`; freeze the other planning/audit documents as reference snapshots. Do not maintain parallel schedules. This local revision responds to review and awaits team feedback; it does not change the shared mock contract or merge itself into main.
-
-**Synced source:** main `560685a` now includes pivot docs (#10) and the original labels branch (#8). This integration candidate preserves the later public-source briefing and Phase 6 additions, plus the verified Phase 1 closure fixes. Open PRs:
-- #15, this closure/integration candidate;
-- #9, persisted backend (Vinh, draft). It carries the status for 0.4–0.9 and 1.7–1.12;
-- #4, QR, and #7, access/sim design (Deem).
-
-`/api/sim/fire` takes `{ ids: string[] }`.
-
-**Immediate work:**
-- Vinh: support the Phase 1 deployed-device checkpoint; start 6.1 only after the core gate closes.
-- Minh: review the corrected label integration in `integration/coordinator-pivot`; original #8 is preserved for coordinated integration.
-- Deem: review/integrate the Phase 1 candidate, configure the live HTTPS deployment, and run the physical two-device checkpoint; preserve the v2 screen stack.
-
-- Phase 6 follow-ups retain Deem's seed/link work, Stephen's TestFlight wrapper (6.13), and Apple Watch check (C8). Garmin receipt is confirmed; it does not establish Apple Watch receipt.
-
-**Thin backend:** reuse scripted rows and the existing EventSource seam. One shared command implementation can serve the agreed routes; a new `/api/act` is optional, not required to rename every API. Vinh's #9 carries the live wiring, built on the design from Deem's #6, so #6 closes. `main` runs mock mode until #9 merges. Keep basic database grants/RLS and guarded writes; a full production identity system is outside this demo. Privacy separation may be presented as proposed unless implemented and verified.
+**Thin backend:** reuse scripted rows and the existing EventSource seam. One shared command implementation can serve the agreed routes; a new `/api/act` is optional, not required to rename every API. Vinh's #9 carries the live wiring, built on the design from Deem's #6, so #6 closes. `main` has #9's live wiring; production stays mock until the live env is set. Keep basic database grants/RLS and guarded writes; a full production identity system is outside this demo. Privacy separation may be presented as proposed unless implemented and verified.
 
 **Labels:** Otezla first, cached before the demo. Proposed fidelity rule: literal text from a deterministically extracted SPL section, preserving section code, source/version and source hash; an altered character must fail verification. Coordinate that contract change before claiming `byte_exact`; a hash does not prove source authenticity by itself. Humira follows only after the core works.
 
@@ -207,8 +187,8 @@ Current objective, scope and claim boundaries: [v2 spec](docs/spec-v2-coordinato
 |---|---|---|---|---|---|---|
 | 4.1 | Grok STT handoff with keyterms + `/api/voice` | `lib/server/voice.ts`, `app/api/voice/**` | **Vinh** | ⬜ | 1.11 | Record actual trials with and without keyterms; do not presume failure. |
 | 4.2 | ElevenLabs "started" line on the board | `public/audio/**` | **Deem** | ✂️ | 2.1 | Replaced by 6.8 (the patient message). PR #3 closes; its `scripts/tts.mjs` is reused. |
-| 4.3 | Design pass on all screens | `app/(screens)/**` | **Deem** | 🟡 | Phase 2 | doctor, patient, coordinator, board done 2026-09-26 00:07; access + sim left. |
-| 4.4 | QR flow on a stranger's phone | n/a | **Deem** | 🟡 | 2.6 | QR built (PR #4). It must follow #9's login return path and never encode a token. Stranger-phone test on the deployed HTTPS origin is still to do. |
+| 4.3 | Design pass on all screens | `app/(screens)/**` | **Deem** | ✅ | Phase 2 | All screens done: doctor, patient, coordinator and board (Sat 00:07); access and sim (#7, merged Sat 13:00). |
+| 4.4 | QR flow on a stranger's phone | n/a | **Deem** | 🟡 | 2.6 | QR merged (#4): on `/board`, `/sim`, `/demo` and the printable `/qr`. It encodes `<origin>/patient/rx_001`, never a token; C5 option B (a pre-signed spare phone, or a team member types the code once). The stranger-phone test on the deployed origin is still to do. |
 | 4.5 | **Cut check Sat 2 PM** (see Decisions D5) | n/a | **both** | ⬜ | n/a | |
 | 4.6 | Connect IQ widget (stretch) | `garmin/**` | **Vinh** | ⬜ | 1.12 | Go/no-go at 2 PM. |
 | 4.7 | Dry run with 2 strangers as judges; raw footage at 6 PM | n/a | **both** | ⬜ | all | |
@@ -232,19 +212,19 @@ Spec: `docs/spec-v2-coordinator.md` ("the four surfaces"). Steps: `docs/IMPLEMEN
 
 | # | Task | Owner | Status | Deps | Notes |
 |---|---|---|---|---|---|
-| 6.0 | Integrate the open PRs: review and merge #8 (labels) and #9 (backend); Deem rebases #4 (QR + #9 login return) and #7 (access/sim design); close #2, #3 and #6 | Deem + Vinh + Minh | 🟡 | none | Order in the v2 brief. Sat 09:44: screens-side reviews posted on #8 (✅) and #9 (✅, with a QR sign-in question). #2, #3 and #6 closed. Rebases of #4 and #7 wait for #8 and #9 to merge. |
+| 6.0 | Integrate the open PRs: review and merge #8 (labels) and #9 (backend); Deem rebases #4 (QR + #9 login return) and #7 (access/sim design); close #2, #3 and #6 | Deem + Vinh + Minh | ✅ | none | Sat 13:00: #10, #8, #9, #11–#14, #15, #4 and #7 merged in that order; conflicts resolved (one vitest config, a regenerated lockfile, #9's behaviour in #7's access and sim); merged branches deleted. |
 | 6.1 | `/sim` "Seed the week": fixed fictional stuck/waiting/fill-confirmed cases | Vinh | 🟡 | none | Sep 26 12:32 ET: backend, fixture and adapter locally verified; Deem UI wiring, hosted catalog apply and queue check pending. See handoff. |
-| 6.2 | `/coordinator` = home screen: summary strip (stuck / waiting / fill confirmed, per D8), sort by time stuck, "Reached patient / Left message" marks, header per W3 | Deem | 🟡 | 11 AM | Medium. Sat 12:10: PR #11 (shell, Queue, case Sheet, `/demo`). An app shell with a sidebar (Queue · Prescribers) and a case Sheet. `/` opens it, and today's index becomes `/demo`, a setup launcher with a QR per device. Needs C1 and C2. Structure: `docs/frontend-plan.md`, "v2 structure". |
-| 6.3 | `/doctor` becomes the DocUpdate phone view (phone-width): Rx Alerts card (a new alert type; the chip is the pharmacy status as it arrived), Past-Rx fill-status line (Sent → At pharmacy → Fill confirmed / Stuck + reason), Concierge "Help my patient start" checkbox (deep-links the handoff), Profile "My coordinator" invite. Structure not brand; "Concept: FirstDose inside DocUpdate · Not affiliated" on every styled screen. See spec: four surfaces | Deem | 🟡 | W3, 6.0 | Medium: rebuilds the `/doctor` shell (reuses `LabelCard`, the alert derivation, `boardStop`). Only if W3 = DocUpdate; otherwise the Ascend thread moves to phone width. Chip = pharmacy `status_text`; title, reason and button from templates (D8). One route per tab (`/doctor`, `/doctor/new`, `/doctor/patients/[id]`, `/doctor/concierge`, `/doctor/profile`). Sat 12:10: PR #12. |
+| 6.2 | `/coordinator` = home screen: summary strip (stuck / waiting / fill confirmed, per D8), sort by time stuck, "Reached patient / Left message" marks, header per W3 | Deem | ✅ | 11 AM | Medium. Sat 12:10: PR #11 (shell, Queue, case Sheet, `/demo`). An app shell with a sidebar (Queue · Prescribers) and a case Sheet. `/` opens it, and today's index becomes `/demo`, a setup launcher with a QR per device. Needs C1 and C2. Structure: `docs/frontend-plan.md`, "v2 structure". Merged Sat 12:40. |
+| 6.3 | `/doctor` becomes the DocUpdate phone view (phone-width): Rx Alerts card (a new alert type; the chip is the pharmacy status as it arrived), Past-Rx fill-status line (Sent → At pharmacy → Fill confirmed / Stuck + reason), Concierge "Help my patient start" checkbox (deep-links the handoff), Profile "My coordinator" invite. Structure not brand; "Concept: FirstDose inside DocUpdate · Not affiliated" on every styled screen. See spec: four surfaces | Deem | ✅ | W3, 6.0 | Medium: rebuilds the `/doctor` shell (reuses `LabelCard`, the alert derivation, `boardStop`). Only if W3 = DocUpdate; otherwise the Ascend thread moves to phone width. Chip = pharmacy `status_text`; title, reason and button from templates (D8). One route per tab (`/doctor`, `/doctor/new`, `/doctor/patients/[id]`, `/doctor/concierge`, `/doctor/profile`). Sat 12:10: PR #12. Merged Sat 12:42; #15 adds the verified label on New Rx and keeps Maria selected. |
 | 6.4 | `coordinator_id` on cases + `coordinator_invited` event | Vinh | ⬜ | none | ⚠️ CONTRACT if it touches mock shapes |
 | 6.5 | RxFill-shaped `/sim` events + "raw message" toggle (`NotDispensed`, `RxFillIndicator`), labelled simulated | Vinh (events), Deem (`/sim` toggle) | ⬜ | none | Mostly relabeling. The toggle lives in #7's console. |
 | 6.6 | `/api/npi`: NPPES lookup + ZIP/taxonomy colleague search, cached; UI "Likely colleagues → Invite", names hidden, "public NPPES record, not users" | Minh (API, proposed; C6), Deem (UI) | ⬜ | 6.2 | Run from deployed app. Verify field names on a live call. |
 | 6.7 | `/access` tiles: coordinators active this week, fixes per coordinator (Tiger rollup) | Minh (data), Deem (UI) | ⬜ | 2.3 | Retention proof |
 | 6.8 | ElevenLabs: coordinator-approved patient message, templated, voiced in patient's language (Spanish for Maria) | Deem | ⬜ | 6.2 | Replaces the plain "started" mp3 job. Reuses PR #3's `tts.mjs`. Needs C3. |
-| 6.9 | Rewrite `docs/presentation/*` around the coordinator; market-size slide; align README tagline with Q3 answer | Deem | ⬜ | 11 AM | Also: teardown facts into the claims register with sources, and the GitHub repo description (R1). |
-| 6.10 | Before/after slide: DocUpdate's real App Store home screenshot beside our `/doctor` (credited, "Not affiliated") | Deem | ⬜ | 6.3 | The one-glance pitch |
-| 6.11 | "Waiting on" (whose move): Doctor / Coordinator / Patient / Pharmacy, as a column in the coordinator queue and a label on `/board` lanes | Deem | 🟡 | 6.2 | Small. One derived function. Sat 12:10: PR #14 (board lanes); the queue column is in #11. |
-| 6.12 | Prescribers, CoverMyMeds-style: the coordinator links a prescriber by NPI (`/coordinator/prescribers`), and the doctor approves on the phone (`/doctor/profile`, plus an approve sheet on the first "Send to my coordinator"). Pending → Linked. Demo record labelled "Demo prescriber record · not a real NPI" | Deem (UI), Vinh (C7 events) | 🟡 | 6.2, 6.3 | Small–medium. Mock overrides first; live needs C7. The approve sheet is the 0:55 demo beat. Sat 12:10: UI in PRs #12 (approve sheet) and #13 (Prescribers). In live mode the approval travels with the first handoff until C7. |
+| 6.9 | Rewrite `docs/presentation/*` around the coordinator; market-size slide; align README tagline with Q3 answer | Deem | ✅ | 11 AM | Sat 13:05: `pitch-and-qa.md` (9 slides, poster, judge answers, sponsor openings) and `claims-and-evidence.md` (verified state and a source for every pitch fact) rewritten. The GitHub description already matches W3 (R1). |
+| 6.10 | Before/after slide: DocUpdate's real App Store home screenshot beside our `/doctor` (credited, "Not affiliated") | Deem | ✅ | 6.3 | Sat 13:05: slide 3 in `pitch-and-qa.md`. Our still is `docs/stills/doctor-home-rx-alert.png` (deployed origin); DocUpdate's App Store image is linked and credited, not committed. |
+| 6.11 | "Waiting on" (whose move): Doctor / Coordinator / Patient / Pharmacy, as a column in the coordinator queue and a label on `/board` lanes | Deem | ✅ | 6.2 | Small. One derived function. Sat 12:10: PR #14 (board lanes); the queue column is in #11. Merged Sat 12:46. |
+| 6.12 | Prescribers, CoverMyMeds-style: the coordinator links a prescriber by NPI (`/coordinator/prescribers`), and the doctor approves on the phone (`/doctor/profile`, plus an approve sheet on the first "Send to my coordinator"). Pending → Linked. Demo record labelled "Demo prescriber record · not a real NPI" | Deem (UI), Vinh (C7 events) | ✅ | 6.2, 6.3 | Small–medium. Mock overrides first; live needs C7. The approve sheet is the 0:55 demo beat. Sat 12:10: UI in PRs #12 (approve sheet) and #13 (Prescribers). In live mode the approval travels with the first handoff until C7. UI merged Sat 12:44. Live Profile-only approval still needs C7 (Vinh). |
 | 6.13 | TestFlight wrapper for `/doctor` (the doctor's phone as an installed app; ntfy stays the watch path) | Stephen | ⬜ | 6.3 merged | Last. Until then, `/doctor` runs from the iPhone home screen (Add to Home Screen). |
 
 **v2 cut order (2 PM):** Grok voice → 6.6 NPPES invite → 6.7 tiles → 6.8 voice message → the 6.12 Prescribers page (keep the approve sheet) → 6.11 "Waiting on" → surfaces 3–4 (shown on the slide instead). **Never cut:** coordinator queue with one-tap fix, the doctor's Rx Alerts card, pharmacy re-run, real DailyMed label, who-sees-what.
@@ -360,4 +340,4 @@ The DocUpdate-styled screens copy structure: dark navy, a purple primary, the bo
 5. Every screen runs on `mock/` with zero network before it's merged.
 6. Every number on screen, in the README, video or Devpost comes from the sourced facts sheet in `notes/`.
 
-_Last updated: Sat Sep 26, 12:15 ET by Deem (workshop answers from public research; D7 locked; 6.2/6.3/6.11/6.12 built in #11–#14; 6.13 Stephen TestFlight; C8 Apple Watch, C9 seed week)._
+_Last updated: Sat Sep 26, 13:05 ET by Deem (everything merged to main 4c80650; 4.3, 6.0, 6.2, 6.3, 6.9, 6.10, 6.11, 6.12 ✅; Phase 1 open only for the deployed two-device run)._
