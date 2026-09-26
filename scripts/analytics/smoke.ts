@@ -10,6 +10,7 @@
 // Never deletes other runs.
 
 import { randomUUID } from 'node:crypto';
+import { isDeepStrictEqual } from 'node:util';
 
 import type { MetricEvent } from '@/lib/server/analytics/project';
 import { summarize } from '@/lib/server/analytics/summary';
@@ -72,10 +73,8 @@ async function main(): Promise<void> {
   // Check 4: SQL summary equals the pure oracle on the same rows.
   const sql = await getAccessSummary(run);
   const oracle = summarize(batch, run);
-  const same = sql.recovered === oracle.recovered
-    && sql.median_ttff_seconds === oracle.median_ttff_seconds
-    && JSON.stringify(sql.reason_tally) === JSON.stringify(oracle.reason_tally);
-  if (!same) {
+  // SQL GROUP BY does not promise row/key order; compare values, not JSON order.
+  if (!isDeepStrictEqual(sql, oracle)) {
     fail(`SQL/oracle mismatch: sql=${JSON.stringify(sql)} oracle=${JSON.stringify(oracle)}`);
   }
   console.log(`PASS SQL matches oracle: ${JSON.stringify(sql)}`);

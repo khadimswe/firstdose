@@ -10,6 +10,8 @@ import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { stripSslParams, tigerSsl } from '@/lib/server/analytics/store';
+
 async function main(): Promise<void> {
   const url = process.env.TIGER_DATABASE_URL;
   if (typeof url !== 'string' || url.length === 0) {
@@ -17,7 +19,13 @@ async function main(): Promise<void> {
     process.exit(1);
   }
   const { default: pg } = await import('pg');
-  const client = new pg.Client({ connectionString: url, ssl: { rejectUnauthorized: true } });
+  const client = new pg.Client({
+    connectionString: stripSslParams(url),
+    ssl: tigerSsl(),
+    connectionTimeoutMillis: 5_000,
+    statement_timeout: 10_000,
+    query_timeout: 15_000,
+  });
   const schemaPath = resolve(dirname(fileURLToPath(import.meta.url)), 'schema.sql');
   try {
     await client.connect();
@@ -30,7 +38,7 @@ async function main(): Promise<void> {
   } catch (error) {
     // Never print the connection string or raw error details containing it.
     console.error(`Schema init failed: ${error instanceof Error ? error.message : 'unknown error'}`);
-    process.exit(1);
+    process.exitCode = 1;
   } finally {
     await client.end().catch(() => undefined);
   }

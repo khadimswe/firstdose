@@ -1,12 +1,14 @@
 // Tiger storage for run-scoped fill metrics (task 2.3 / C2).
 //
-// Lazy pg Pool (max 2, finite timeouts, TLS verification on). Missing config
-// affects only analytics calls, never build/import. writeMetricBatch is a
-// transactional key-ledger write: newly inserted keys get a hypertable row;
-// an existing key no-ops only when the canonical payload hash is identical,
-// otherwise the transaction rolls back with event_conflict. Analytics failure
-// must never roll back Supabase's committed workflow, and connection strings
-// or credential-bearing errors are never logged.
+// Lazy pg Pool (max 2, finite timeouts, TLS verification on). Use Node's
+// trusted CAs: Tiger services can use publicly signed certificates, so pinning
+// only ca.timescale.com would reject them. Missing config affects only
+// analytics calls, never build/import. writeMetricBatch is a transactional
+// key-ledger write: newly inserted keys get a hypertable row; an existing key
+// no-ops only when the canonical payload hash is identical, otherwise the
+// transaction rolls back with event_conflict. Analytics failure must never
+// roll back Supabase's committed workflow, and connection strings or
+// credential-bearing errors are never logged.
 
 import { createHash } from 'node:crypto';
 
@@ -15,6 +17,29 @@ import type { AccessSummary, ReasonKey } from '@/components/data/types';
 import type { MetricEvent } from './project';
 
 export type { MetricEvent } from './project';
+
+/**
+ * pg merges the parsed connection string OVER the config object, so a
+ * URL SSL option can replace our verified ssl object. Remove those options
+ * without re-encoding credentials or unrelated query parameters.
+ */
+export function stripSslParams(url: string): string {
+  const queryStart = url.indexOf('?');
+  if (queryStart === -1) return url;
+  const base = url.slice(0, queryStart);
+  const query = url.slice(queryStart + 1);
+  const stripped = ['ssl', 'sslmode', 'sslcert', 'sslkey', 'sslrootcert', 'uselibpqcompat', 'sslnegotiation'];
+  const kept = query.split('&').filter((part) => {
+    const key = new URLSearchParams(part).keys().next().value;
+    return key !== undefined && !stripped.includes(key);
+  });
+  return kept.length > 0 ? `${base}?${kept.join('&')}` : base;
+}
+
+/** Verify the certificate chain and hostname using Node's trusted CAs. */
+export function tigerSsl(): { rejectUnauthorized: true } {
+  return { rejectUnauthorized: true };
+}
 
 let pool: import('pg').Pool | null | undefined;
 
@@ -29,11 +54,13 @@ async function analyticsPool(): Promise<import('pg').Pool | null> {
   // Deferred import keeps the pg driver out of non-analytics imports.
   const pg = await import('pg');
   pool = new pg.Pool({
-    connectionString: url,
+    connectionString: stripSslParams(url),
     max: 2,
     connectionTimeoutMillis: 5_000,
     idleTimeoutMillis: 10_000,
-    ssl: { rejectUnauthorized: true },
+    statement_timeout: 10_000,
+    query_timeout: 15_000,
+    ssl: tigerSsl(),
   });
   return pool;
 }

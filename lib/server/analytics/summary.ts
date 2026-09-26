@@ -15,7 +15,7 @@ function median(values: number[]): number | null {
   const sorted = [...values].sort((a, b) => a - b);
   const middle = Math.floor(sorted.length / 2);
   return sorted.length % 2 === 1
-    ? sorted[middle]!
+    ? Math.round(sorted[middle]!)
     : Math.round((sorted[middle - 1]! + sorted[middle]!) / 2);
 }
 
@@ -45,15 +45,21 @@ export function summarize(events: readonly MetricEvent[], runId: string): Access
     return fold;
   };
 
+  // Establish the earliest prescription before matching fills. A fill at
+  // the same instant qualifies even when its script id sorts first.
+  for (const event of ordered) {
+    if (event.kind !== 'prescribed') continue;
+    const fold = foldOf(event.case_hash);
+    const time = Date.parse(event.at);
+    if (fold.firstPrescribedAt === null || time < fold.firstPrescribedAt) {
+      fold.firstPrescribedAt = time;
+    }
+  }
+
   for (const event of ordered) {
     const fold = foldOf(event.case_hash);
     const time = Date.parse(event.at);
     switch (event.kind) {
-      case 'prescribed':
-        if (fold.firstPrescribedAt === null || time < fold.firstPrescribedAt) {
-          fold.firstPrescribedAt = time;
-        }
-        break;
       case 'dispensed':
         // Only a fill at or after the case's prescription confirms; an early
         // stray fill must not hide a later valid confirmation.
@@ -84,7 +90,7 @@ export function summarize(events: readonly MetricEvent[], runId: string): Access
   const reasonTally: Partial<Record<ReasonKey, number>> = {};
   for (const fold of byCase.values()) {
     if (fold.firstPrescribedAt !== null && fold.firstDispensedAfter !== null) {
-      ttffs.push(Math.round((fold.firstDispensedAfter - fold.firstPrescribedAt) / 1000));
+      ttffs.push((fold.firstDispensedAfter - fold.firstPrescribedAt) / 1000);
     }
     if (fold.latestReason !== null) {
       const reason = fold.latestReason.reason;

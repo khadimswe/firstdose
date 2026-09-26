@@ -43,6 +43,41 @@ describe('summarize — recovered count and median ttff', () => {
     expect(summarize(events, RUN).median_ttff_seconds).toBe(60);
   });
 
+  it.each([
+    ['a-fill', 'z-prescription'],
+    ['z-fill', 'a-prescription'],
+  ])('counts a zero-second fill with script IDs %s and %s', (fillId, prescriptionId) => {
+    const at = '2026-09-26T10:00:00.000Z';
+    const events = [
+      metric({ script_id: fillId, kind: 'dispensed', at }),
+      metric({ script_id: prescriptionId, kind: 'prescribed', at }),
+    ];
+    expect(summarize(events, RUN)).toEqual({ recovered: 1, median_ttff_seconds: 0, reason_tally: {} });
+    expect(summarize([...events].reverse(), RUN)).toEqual(summarize(events, RUN));
+  });
+
+  it('rounds the final median instead of each elapsed duration', () => {
+    const events = [
+      metric({ script_id: 'p1', kind: 'prescribed', at: '2026-09-26T10:00:00.000Z' }),
+      metric({ script_id: 'd1', kind: 'dispensed', at: '2026-09-26T10:00:00.490Z' }),
+      metric({ script_id: 'p2', kind: 'prescribed', at: '2026-09-26T10:00:00.000Z', case_hash: 'case-b' }),
+      metric({ script_id: 'd2', kind: 'dispensed', at: '2026-09-26T10:00:00.500Z', case_hash: 'case-b' }),
+    ];
+    // The SQL percentile is 0.495 seconds, rounded once to zero.
+    expect(summarize(events, RUN)).toEqual({ recovered: 2, median_ttff_seconds: 0, reason_tally: {} });
+  });
+
+  it.each([
+    ['2026-09-26T10:00:00.499Z', 0],
+    ['2026-09-26T10:00:00.500Z', 1],
+  ])('rounds an odd median ending at %s to %s seconds', (at, expected) => {
+    const events = [
+      metric({ script_id: 'p1', kind: 'prescribed', at: '2026-09-26T10:00:00.000Z' }),
+      metric({ script_id: 'd1', kind: 'dispensed', at }),
+    ];
+    expect(summarize(events, RUN).median_ttff_seconds).toBe(expected);
+  });
+
   it('missing-prescription/unresolved cases do not count; no completed cases -> median null', () => {
     // Dispensing without a prescription in the run is not a confirmed first fill.
     const events = [
@@ -58,7 +93,7 @@ describe('summarize — recovered count and median ttff', () => {
     const events = [
       metric({ script_id: 'p1', kind: 'prescribed', at: '2026-09-26T10:00:00Z' }),
       // Invalid earlier fill (before the prescription).
-      metric({ script_id: 'd-early', kind: 'dispensed', at: '2026-09-26T09:00:00Z', case_hash: 'case-other' }),
+      metric({ script_id: 'd-early', kind: 'dispensed', at: '2026-09-26T09:00:00Z' }),
       // Valid later confirmation for case-a.
       metric({ script_id: 'd1', kind: 'dispensed', at: '2026-09-26T10:02:00Z' }),
     ];
