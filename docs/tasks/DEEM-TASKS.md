@@ -53,7 +53,7 @@ Shared (⚠️ CONTRACT commits, tell Vinh first): `mock/*.json`, `package.json`
 - [x] **2.1** `/board`.
 - [-] **2.2** James case + before-visit card (real boxed warning waits on 1.10).
 - [x] **2.4** `/access`.
-- [ ] **2.6** Vercel deploy.
+- [x] **2.6** Vercel deploy (mock mode, from `main`).
 - [x] **2.7** `/sim` extras (`?upto=`, `?replay=1`, Autoplay).
 
 ## Phase 3-4 (Sat 11 AM to 6 PM)
