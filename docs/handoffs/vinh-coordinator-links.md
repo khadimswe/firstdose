@@ -1,6 +1,6 @@
 # Phase 6 coordinator linkage: backend handoff
 
-Tasks 6.4 and C7/6.12. Branch `backend/coordinator-links` is stacked on `integration/coordinator-pivot` at `0b3a507` (PR #15), including the corrected labels and second-alert implementation. It has no seed-week runtime dependency. Review this focused diff against PR #15; retarget to `main` after that prerequisite merges. No hosted migration, deployment or real staff invitation is part of this change.
+Tasks 6.4 and C7/6.12. Branch `backend/coordinator-links` is based on `main` at `4c80650`, after PRs #15 (corrected labels and second alert) and #7 (access/simulator) merged. It has no seed-week runtime dependency. Review this focused diff directly against `main`. No hosted migration, deployment or real staff invitation is part of this change.
 
 ## Reviewable contract for Deem and Minh
 
