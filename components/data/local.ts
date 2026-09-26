@@ -1,8 +1,8 @@
 "use client";
 
 // UI state that isn't an event yet: prescriber approvals made on the doctor's
-// Profile tab (PLAN C7), the coordinator's contact marks (C2) and extra link
-// requests. Kept in localStorage and synced across tabs like the mock store.
+// Profile tab (PLAN C7), the coordinator's contact marks (C2), extra link
+// requests and approved patient messages (C3). Kept in localStorage and synced across tabs like the mock store.
 // Live mode keeps it on this device only until Vinh's events exist; the demo's
 // approval also travels as the handoff event, so the desktop still sees it.
 import { useEffect, useSyncExternalStore } from "react";
@@ -13,6 +13,8 @@ const KEY = "firstdose:local";
 
 export type ContactMark = { kind: "reached" | "left_message"; at: number };
 export type LinkRequest = { id: string; npiLast4: string; at: number };
+export type MessageLang = "en" | "es";
+export type PatientMessage = { lang: MessageLang; at: number; acknowledgedAt?: number };
 export type LocalState = {
   /** prescriber_label → when the prescriber approved (ms). */
   approved: Record<string, number>;
@@ -20,9 +22,11 @@ export type LocalState = {
   marks: Record<string, ContactMark>;
   /** Link requests the coordinator started for other prescribers. */
   requests: LinkRequest[];
+  /** case id → the patient message the coordinator approved (6.8; an event once C3 lands). */
+  messages: Record<string, PatientMessage>;
 };
 
-const EMPTY: LocalState = { approved: {}, marks: {}, requests: [] };
+const EMPTY: LocalState = { approved: {}, marks: {}, requests: [], messages: {} };
 
 let state: LocalState = EMPTY;
 let started = false;
@@ -40,10 +44,20 @@ function read(): LocalState {
       approved: isRecord(parsed.approved) ? (parsed.approved as Record<string, number>) : {},
       marks: isRecord(parsed.marks) ? (parsed.marks as Record<string, ContactMark>) : {},
       requests: Array.isArray(parsed.requests) ? (parsed.requests as LinkRequest[]) : [],
+      messages: readMessages(parsed.messages),
     };
   } catch {
     return EMPTY;
   }
+}
+
+function readMessages(value: unknown): Record<string, PatientMessage> {
+  if (!isRecord(value)) return {};
+  const m = value.rx_001;
+  if (!isRecord(m) || (m.lang !== "en" && m.lang !== "es") || typeof m.at !== "number" || !Number.isFinite(m.at)) return {};
+  return { rx_001: { lang: m.lang, at: m.at,
+    ...(typeof m.acknowledgedAt === "number" && Number.isFinite(m.acknowledgedAt) ? { acknowledgedAt: m.acknowledgedAt } : {}),
+  } };
 }
 
 function emit() {
@@ -87,7 +101,12 @@ function getLocal() {
 const getServerLocal = () => EMPTY;
 
 function isEmpty(s: LocalState) {
-  return Object.keys(s.approved).length === 0 && Object.keys(s.marks).length === 0 && s.requests.length === 0;
+  return (
+    Object.keys(s.approved).length === 0 &&
+    Object.keys(s.marks).length === 0 &&
+    s.requests.length === 0 &&
+    Object.keys(s.messages).length === 0
+  );
 }
 
 export const local = {
@@ -101,6 +120,15 @@ export const local = {
   request(npiLast4: string) {
     const at = Date.now();
     write({ ...state, requests: [...state.requests, { id: `req_${at}`, npiLast4, at }] });
+  },
+  sendMessage(caseId: string, lang: MessageLang) {
+    if (caseId !== "rx_001" || (lang !== "en" && lang !== "es") || state.messages[caseId]) return;
+    write({ ...state, messages: { ...state.messages, [caseId]: { lang, at: Date.now() } } });
+  },
+  acknowledgeMessage(caseId: string) {
+    const message = state.messages[caseId];
+    if (!message || message.acknowledgedAt !== undefined) return;
+    write({ ...state, messages: { ...state.messages, [caseId]: { ...message, acknowledgedAt: Date.now() } } });
   },
   clear() {
     if (!isEmpty(state)) write(EMPTY);
