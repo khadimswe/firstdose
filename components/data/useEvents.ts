@@ -6,7 +6,15 @@ import { useMemo, useSyncExternalStore } from "react";
 import { CATALOG, SCRIPT } from "./catalog";
 import { accessSummary, beats, canActOn, deriveCases } from "./derive";
 import { DATA_MODE, REQUESTED_MODE, type DataMode } from "./mode";
-import { getServerSnapshot, getSnapshot, setFired, subscribe } from "./store";
+import {
+  getOverride,
+  getServerOverride,
+  getServerSnapshot,
+  getSnapshot,
+  setFired,
+  subscribe,
+  type Override,
+} from "./store";
 import type {
   AccessSummary,
   Beat,
@@ -69,6 +77,8 @@ async function reset() {
 
 export type EventsApi = {
   mode: DataMode;
+  /** This tab is frozen (?upto=) or replaying (?replay=1), and ignores other tabs. */
+  override: Override;
   /** Every event in mock/events.json. Only /sim should need this. */
   script: FillEvent[];
   beats: Beat[];
@@ -89,6 +99,7 @@ export type EventsApi = {
 
 export function useEvents(): EventsApi {
   const ids = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const override = useSyncExternalStore(subscribe, getOverride, getServerOverride);
 
   return useMemo(() => {
     const firedIds = new Set(ids);
@@ -96,6 +107,7 @@ export function useEvents(): EventsApi {
     const cases = deriveCases(CATALOG, fired);
     return {
       mode: DATA_MODE,
+      override,
       script: SCRIPT,
       beats: BEATS,
       fired,
@@ -111,5 +123,5 @@ export function useEvents(): EventsApi {
       },
       reset,
     };
-  }, [ids]);
+  }, [ids, override]);
 }

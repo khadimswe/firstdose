@@ -1,7 +1,10 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+
 import { StandIn } from "@/components/StandIn";
 import { Button } from "@/components/ui/button";
+import { playBeats } from "@/components/data/replay";
 import { useEvents } from "@/components/data/useEvents";
 
 import { BeatRow } from "./BeatRow";
@@ -10,7 +13,35 @@ export function SimScreen() {
   const { script, beats, fired, firedIds, cases, fire, reset } = useEvents();
 
   const who = new Map(cases.map((c) => [c.id, `${c.patient.display_short} · ${c.drug.brand}`]));
-  const next = beats.find((b) => !b.events.every((e) => firedIds.has(e.id)));
+  const remaining = beats.filter((b) => !b.events.every((e) => firedIds.has(e.id)));
+  const next = remaining[0];
+
+  // Autoplay fires the remaining beats on their own clock into the shared store,
+  // so every other tab follows along.
+  const [autoSpeed, setAutoSpeed] = useState<number | null>(null);
+  const cancel = useRef<(() => void) | null>(null);
+  useEffect(() => () => cancel.current?.(), []);
+
+  function stopAuto() {
+    cancel.current?.();
+    cancel.current = null;
+    setAutoSpeed(null);
+  }
+
+  function startAuto(speed: number) {
+    stopAuto();
+    if (remaining.length === 0) return;
+    setAutoSpeed(speed);
+    cancel.current = playBeats(
+      remaining,
+      speed,
+      (b) => void fire(b.events.map((e) => e.id)),
+      () => {
+        cancel.current = null;
+        setAutoSpeed(null);
+      },
+    );
+  }
 
   return (
     <main className="mx-auto w-full max-w-5xl space-y-4 p-6">
@@ -24,11 +55,44 @@ export function SimScreen() {
         <div className="flex flex-wrap items-center gap-2">
           <StandIn kind="pharmacy" />
           <StandIn kind="hub" />
-          <Button variant="outline" onClick={reset}>
+          <Button
+            variant="outline"
+            onClick={() => {
+              stopAuto();
+              void reset();
+            }}
+          >
             Reset
           </Button>
         </div>
       </header>
+
+      <div className="flex flex-wrap items-center gap-2">
+        <Button
+          disabled={!next || autoSpeed !== null}
+          onClick={() => next && fire(next.events.map((e) => e.id))}
+        >
+          Next beat
+        </Button>
+        {autoSpeed === null ? (
+          <>
+            <Button variant="outline" disabled={!next} onClick={() => startAuto(1)}>
+              Autoplay 1×
+            </Button>
+            <Button variant="outline" disabled={!next} onClick={() => startAuto(4)}>
+              Autoplay 4×
+            </Button>
+          </>
+        ) : (
+          <Button variant="destructive" onClick={stopAuto}>
+            Stop autoplay ({autoSpeed}×)
+          </Button>
+        )}
+        <p className="text-xs text-muted-foreground">
+          Other tabs: <span className="font-mono">?upto=ev_06</span> freezes a tab,{" "}
+          <span className="font-mono">?replay=1</span> loops the script in that tab alone.
+        </p>
+      </div>
 
       <ol className="space-y-3">
         {beats.map((b, i) => (
