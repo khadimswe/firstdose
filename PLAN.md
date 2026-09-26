@@ -30,7 +30,7 @@ This dashboard is the execution source of truth. Keep presentation work in `docs
 
 Every selected entry must have actual technology use and proof before submission. Core and supporting technologies are not all sponsor requirements. No unrelated sponsor stack additions are requested.
 
-**Category rule check, September 26:** the [public rules](https://hackgt13.devpost.com/rules) permit multiple categories but give no numeric cap. Saved organizer guidance reports two sponsor tracks; the provisional allocation is Impiricus + SpaceXAI, with A Marina's Mission as the general track. Do not assume MLH entries are exempt from that cap. Gemini, Tiger Data, ElevenLabs and .Tech are listed by [MLH](https://www.mlh.com/events/hackgt-13/prizes), but entry compatibility must be confirmed through current organizer/submission instructions. Notability and Create-X are not committed entries. The technology table below is a build plan, not an approved set of prize selections. Defer account setup driven solely by an unconfirmed prize requirement until this is resolved.
+**Category rule check, September 26:** the [public rules](https://hackgt13.devpost.com/rules) permit multiple categories but give no numeric cap. Saved organizer guidance reports two sponsor tracks; Impiricus is the primary sponsor target and SpaceXAI is only a candidate second entry, with A Marina's Mission as the general track. Do not assume MLH entries are exempt from that cap. Gemini, Tiger Data, ElevenLabs and .Tech are listed by [MLH](https://www.mlh.com/events/hackgt-13/prizes), but entry compatibility must be confirmed through current organizer/submission instructions. Notability and Create-X are not committed entries. The technology table below is a build plan, not an approved set of prize selections. Defer account setup driven solely by an unconfirmed prize requirement until this is resolved.
 
 | Technology / entry | Owner | Completion evidence |
 |---|---|---|
@@ -40,12 +40,12 @@ Every selected entry must have actual technology use and proof before submission
 | ntfy + iPhone + Garmin | Vinh | Physical alert from the actual run; watch remains core |
 | Gemini API | Minh, after labels | Real note-to-enum result and unknown/error behavior |
 | Tiger Data | Minh, after stable events | Actual stored run/query feeding summary, freshness and duplicate checks |
-| Grok + Cursor / SpaceXAI | Vinh backend, Deem capture; actual Cursor user documents work | Real confirmed voice handoff plus truthful Cursor development evidence; neither currently verified |
+| Optional Grok + Cursor / conditional SpaceXAI entry | Vinh backend, Deem capture; actual Cursor user documents work | Real confirmed voice handoff plus truthful Cursor development evidence; neither currently verified |
 | ElevenLabs | Deem | Generated asset actually plays in the app; a WebAudio chime is insufficient |
 | .Tech | Deem | Registered project domain resolves to the reviewed app on another device |
 | Notability Pro / conditional entry | Deem | Actual process use and required screenshots/tag; confirm category-slot treatment |
 
-A Marina's Mission is the selected social-good track; no Aramco API requirement was established. Gemini is listed on the [MLH event page](https://www.mlh.com/events/hackgt-13/prizes), though absent from the fetched [Devpost prize list](https://hackgt13.devpost.com/). Exact category limits remain unconfirmed. Keep Grok/Tiger in the selected-track build plan; if the core slips, explicitly decide whether to cut the corresponding entry. Do not quietly promise every prize while omitting its technology. Status today: frontend exists; live provider integrations remain pending.
+A Marina's Mission is the selected social-good track; no Aramco API requirement was established. Gemini is listed on the [MLH event page](https://www.mlh.com/events/hackgt-13/prizes), though absent from the fetched [Devpost prize list](https://hackgt13.devpost.com/). Exact category limits remain unconfirmed. Keep Grok/Tiger in the proposed build scope; their prize entries remain conditional on eligibility and actual use; if the core slips, explicitly decide whether to cut the corresponding entry. Do not quietly promise every prize while omitting its technology. Status today: frontend exists; live provider integrations remain pending.
 
 ---
 
