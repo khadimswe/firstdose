@@ -84,6 +84,37 @@ async function main() {
   await executeCommand(store, next.run_id, prescribe);
   assert.deepEqual((await store.snapshot()).events.map(e => e.id), ["ev_01", "ev_03"]);
   console.log("PASS integrated reset fences old devices and allows a new run");
+
+  const weekRun = await store.reset(next.run_id);
+  const seedCommand = { kind: "seed_week" };
+  const seeds = await Promise.all([
+    executeCommand(store, weekRun.run_id, seedCommand),
+    executeCommand(store, weekRun.run_id, seedCommand),
+  ]);
+  assert.deepEqual(seeds.map(result => result.inserted.length).sort((a, b) => a - b), [0, 38]);
+  const seeded = await store.snapshot();
+  assert.equal(seeded.revision, 1);
+  assert.equal(seeded.events.length, 38);
+  assert.equal(new Set(seeded.events.map(event => event.case_id)).size, 13);
+  assert.equal(seeded.events.filter(event => event.actor === "pharmacy" && event.status_text === "Dispensed").length, 8);
+  assert.ok(seeded.events.every(event => event.wrist === null));
+  assert.equal(await query<number>(`SELECT count(*) FROM notification_outbox WHERE run_id='${weekRun.run_id}';`), 0);
+  console.log("PASS integrated seed-week double tap writes 13 cases once without notifications");
+
+  const fix = await executeCommand(store, weekRun.run_id, { kind: "fix", case_id: "week_rx_01", fix: "ACCESS_SUPPORT" });
+  assert.equal(fix.inserted[0].type, "fix_sent");
+  await executeCommand(store, weekRun.run_id, prescribe);
+  const weekAfter = await store.snapshot();
+  assert.ok(weekAfter.events.some(event => event.id === "ev_01"));
+  const retry = await executeCommand(store, weekRun.run_id, seedCommand);
+  assert.deepEqual(retry.inserted, []);
+  assert.deepEqual(retry.snapshot, weekAfter);
+  const afterWeek = await store.reset(weekRun.run_id);
+  await assert.rejects(executeCommand(store, weekRun.run_id, seedCommand), { code: "stale_run" });
+  assert.deepEqual((await store.snapshot()).events, []);
+  const reseeded = await executeCommand(store, afterWeek.run_id, seedCommand);
+  assert.deepEqual(reseeded.inserted.map(event => event.id), seeded.events.map(event => event.id));
+  console.log("PASS integrated seed-week fixes, Maria continuation and reset preserve run isolation");
 }
 
 main().catch(error => {

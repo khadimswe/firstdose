@@ -3,7 +3,8 @@ import { readFileSync, writeFileSync } from "node:fs";
 // Generates reviewable SQL only. It does not read .env or connect to any database.
 const catalog = JSON.parse(readFileSync(new URL("../mock/patients.json", import.meta.url), "utf8"));
 const { labels } = JSON.parse(readFileSync(new URL("../mock/labels.json", import.meta.url), "utf8"));
-const statements = ["-- Generated from mock/patients.json and mock/labels.json. Fictional records only.", "BEGIN;", "SET LOCAL standard_conforming_strings = on;"];
+const week = JSON.parse(readFileSync(new URL("../data/demo-week.json", import.meta.url), "utf8"));
+const statements = ["-- Generated from mock/patients.json, mock/labels.json and data/demo-week.json. Fictional records only.", "BEGIN;", "SET LOCAL standard_conforming_strings = on;"];
 
 function upsert(table: string, rows: Record<string, unknown>[], key: string, preserveExisting = false) {
   const columns = [...new Set(rows.flatMap((row) => Object.keys(row)))];
@@ -20,9 +21,9 @@ function upsert(table: string, rows: Record<string, unknown>[], key: string, pre
   );
 }
 
-upsert("patients", catalog.patients, "id");
+upsert("patients", [...catalog.patients, ...week.patients], "id");
 upsert("drugs", catalog.drugs, "id");
-upsert("rx_cases", catalog.cases, "id");
+upsert("rx_cases", [...catalog.cases, ...week.cases], "id");
 // A repeated seed must never overwrite Minh's subsequently verified label cache.
 upsert("labels", labels, "drug_id", true);
 statements.push("COMMIT;", "");

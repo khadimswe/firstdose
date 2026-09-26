@@ -15,7 +15,7 @@ All tables use RLS and deny `anon`/`authenticated` access. Only `service_role` c
 
 Outbox rows are unique per run/event and queued only for events with a wrist message. `202609260002_notification_delivery.sql` adds atomic delivery claims. After a committed command, Next.js `after()` runs a bounded worker that claims at most two pending messages from the active run. Old-run pending messages are skipped. Claims carry a unique identity; only that claim can record `accepted` (ntfy HTTP acceptance) or `unknown` (a failed or ambiguous send). Claimed/unknown messages are never automatically reclaimed or resent. This avoids duplicate retries at the cost of requiring manual investigation of unresolved delivery. A send already in flight can finish after reset; its audit stays attached to its original run. No scheduled retry service is introduced.
 
-The reason alert is template-backed; `alert_sent` records creation of the app alert, not device receipt. An accepted outbox row also does not establish physical receipt. A second pharmacy-confirmation wrist alert still requires reviewed truthful copy; the existing “started” template is not used to claim a patient started treatment.
+The reason alert is template-backed; `alert_sent` records creation of the app alert, not device receipt. An accepted outbox row also does not establish physical receipt. The second alert uses `wrist.fill_confirmed` after independent pharmacy confirmation; physical watch receipt remains a separate check.
 
 ## HTTP contract
 
@@ -71,6 +71,34 @@ The database suite creates a disposable PostgreSQL 16 container without networki
 The seed generator writes reviewable SQL only. It preserves existing label rows so rerunning it cannot overwrite Minh's reviewed cache with placeholders. Before a hosted apply, review the migration and generated seed against the target project and existing schema. Apply the migration, then seed through the team's database workflow. A project API key alone is not a database DDL connection. No hosted application is performed by these scripts.
 
 After migration and frontend integration, verify two real clients, reset/reconnect, reviewed doctor alerts, independent pharmacy confirmation, cached labels and physical notification delivery before marking the Phase 1 gate complete.
+
+## Phase 2: committed-history handoff to Minh
+
+The reader is included in `backend/seed-week`, with main `4c80650` merged for owner review. It supplies the durable input for Minh's analytics replay; it does not implement Tiger projection, storage, summaries or Gemini classification.
+
+Migration `202609260003_read_run.sql` adds `fd_read_run(run UUID)` after the merged Phase 1 notification-delivery migration `002`. It returns one database snapshot of the requested run's events, ordered by committed sequence. Reset retains this history, so retrying an old run cannot accidentally read the new active run. An existing empty run returns an empty array; an unknown run or failed read is an error at the TypeScript boundary. Only `service_role` can execute this read; existing table restrictions remain in force.
+
+The server export `readCommittedEvents(runId)` in `lib/server/supabase-workflow.ts` returns `Promise<CommittedEvent[]>`:
+
+```ts
+type CommittedEvent = {
+  run_id: string;
+  script_id: string;
+  event: FillEvent & { at: string };
+};
+```
+
+This matches Minh's proposed C1/C3 input structurally. Pass the function to his `replayRun` when that module lands. The reader preserves event timestamps and script IDs, validates run identity and rejects malformed/duplicate history. It performs no writes and no provider retry; a caller can retry the entire replay using the same durable history. Reads include all event types; projection remains responsible for selecting metric evidence.
+
+These events contain practice-side fields and must stay on the server. Send only Minh's explicitly allowlisted, HMAC-projected metric rows to Tiger, never this raw history. The reader does not establish analytics freshness, successful Tiger delivery or anonymous partner exports. A failed replay must not undo committed workflow actions or appear as a current successful summary.
+
+Confirmed planner semantics for integration: Maria's `use_card` action emits only `ev_10` acknowledgment; `ev_11` is a separate simulator-only pharmacy `claim_run` with status `Dispensed`. That independent confirmation can feed the fill metric. `started`/`recovered` and acknowledgment alone do not establish dispensing. James remains routed to access support without bridge eligibility evidence.
+
+Remaining dependencies: Minh's classifier/replay modules and real-provider checks; Vinh's replay trigger and freshness handling; Deem's adapter/UI integration; reviewed hosted migrations and the Maria two-device/watch gate. The reader itself adds no HTTP endpoint or shared fixture; this branch's separate seed-week feature adds a guarded simulator endpoint and prepared background data. Neither feature includes provider credentials or a production deployment.
+
+Publication verification on September 26: the combined branch passed 361 unit tests, 14 PostgreSQL checks (including real empty/retained run reads and denied browser access), lint and production build with offline label verification. Gitleaks found no leaks in the branch history, and configured private-value scans passed. The database label assertion normalizes equivalent timestamp encodings while comparing every other field exactly. Read-only agent review found no blocking issues. An affected-owner review is still required before merging. Published as draft PR #17.
+
+Publication base: main `4c80650` includes the backend, coordinator screens and Phase 1 closure fixes through PR #15. The merge retains both notification-delivery and committed-reader database assertions plus main's v2 PLAN brief. This PR's changes are scoped to the reader and seed-week backend, tests and handoffs. The Phase 2 reader migration has not been applied to the hosted project.
 
 ## Phase 1 closure integration on the v2 screens
 

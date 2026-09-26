@@ -57,20 +57,26 @@ The router never changes a prescription. It only removes access barriers, and Me
 
 ## Current state
 
-- **On `main`:** six screens on mock data, state-based button guards, replay and Autoplay, and a production deploy in mock mode.
-- **In review:**
-  - #8, the verified Otezla label (Minh);
-  - #9, the persisted backend and live wiring (Vinh);
-  - #4, the patient QR, and #7, the access/sim design (Deem).
-- **Built, in review:** #11–#14 (stacked on #9) cover the v2 screens: the coordinator's Queue and Prescribers, the DocUpdate phone view with approve-and-send, the board's "Waiting on", and `/demo` (which device runs which screen).
-- **Next:** the before/after slide, coordinator tiles, the colleague invite, the patient voice message and a TestFlight wrapper for the doctor's phone.
+- **On `main`:**
+  - the v2 screens: the coordinator's Queue and Prescribers, the DocUpdate-style phone view with approve-and-send, the board, access, sim, and `/demo` (which device runs which screen);
+  - the persisted Supabase workflow with guarded commands;
+  - Otezla's verified DailyMed label;
+  - both watch alerts (receipt confirmed on iPhone and Garmin).
+
+  Production at firstdose.vercel.app runs in mock mode.
+- **Next:**
+  - the deployed live run on two phones;
+  - the seeded week (#17);
+  - Gemini and Tiger analytics;
+  - the Spanish patient message (ElevenLabs);
+  - a TestFlight build of the doctor's phone.
 
 ## Screens
 
 | Route | Who looks at it | What it shows |
 |---|---|---|
 | `/coordinator` | Access coordinator (home screen in v2) | The queue of stuck patients, the reason, and the one fix |
-| `/doctor` | Doctor, on a phone | The DocUpdate view (v2, being built): Rx Alerts with "Send to my coordinator", New Rx with the verbatim label, past prescriptions with fill status, the before-visit card. On `main` it is still the v1 iPad EHR |
+| `/doctor` | Doctor, on a phone | The DocUpdate-style view: Rx Alerts with "Send to my coordinator", New Rx with the verbatim label, past prescriptions with fill status, the before-visit card, and approving the coordinator |
 | `/patient/[id]` | Patient (a judge, via QR) | The savings card stand-in and "Use at pharmacy" |
 | `/board` | Optional second screen | Each prescription's route, the stuck reason and the demo price |
 | `/access` | Market Access | Aggregate counts, stuck reasons and who sees what |
