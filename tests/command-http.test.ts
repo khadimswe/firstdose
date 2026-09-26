@@ -30,6 +30,36 @@ function makeStore(): WorkflowStore {
 }
 
 describe("guarded demo command HTTP boundary", () => {
+  it("guards seed-week with auth/run checks and rejects client-supplied history", async () => {
+    const store = makeStore();
+    const seed = commandHandler("seed_week", { store, env });
+    expect((await seed(request({}, { authorization: "" }))).status).toBe(401);
+    expect((await seed(request({}, { origin: "https://attacker.example" }))).status).toBe(403);
+    expect((await seed(request({}, { "x-firstdose-run": "" }))).status).toBe(428);
+    expect((await seed(request({ events: [] }))).status).toBe(400);
+    expect((await store.snapshot()).events).toEqual([]);
+    const response = await seed(request({}));
+    expect(response.status).toBe(200);
+    expect(response.headers.get("x-firstdose-revision")).toBe("1");
+    const rows = await response.json();
+    expect(rows).toHaveLength(38);
+    expect(rows.every((e: { wrist: unknown }) => e.wrist === null)).toBe(true);
+    expect(await (await seed(request({}))).json()).toEqual([]);
+    await store.reset(runId);
+    expect((await seed(request({}))).status).toBe(409);
+    expect((await store.snapshot()).events).toEqual([]);
+  });
+
+  it("requires reset rather than adding a week to an already active demo", async () => {
+    const store = makeStore();
+    await commandHandler("prescribe", { store, env })(request());
+    const before = await store.snapshot();
+    const response = await commandHandler("seed_week", { store, env })(request({}));
+    expect(response.status).toBe(409);
+    expect(await response.json()).toEqual({ error: "invalid_transition" });
+    expect(await store.snapshot()).toEqual(before);
+  });
+
   it("schedules notification work only after a successful atomic command", async () => {
     const store = makeStore();
     const scheduled: string[][] = [];

@@ -80,9 +80,9 @@ try {
   });
   await check("seed is repeatable and retains placeholder labels", () => {
     sql(seed.stdout); sql(seed.stdout);
-    assert.equal(sql("SELECT count(*) FROM patients;"), "2");
+    assert.equal(sql("SELECT count(*) FROM patients;"), "15");
     assert.equal(sql("SELECT count(*) FROM drugs;"), "2");
-    assert.equal(sql("SELECT count(*) FROM rx_cases;"), "2");
+    assert.equal(sql("SELECT count(*) FROM rx_cases;"), "15");
     const expected = JSON.parse(readFileSync(`${root}/mock/labels.json`, "utf8")).labels;
     const actual = JSON.parse(sql("SELECT jsonb_agg(to_jsonb(l) ORDER BY drug_id) FROM labels l;"));
     assert.deepEqual(actual, expected.sort((a,b) => a.drug_id.localeCompare(b.drug_id)));
