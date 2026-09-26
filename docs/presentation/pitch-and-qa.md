@@ -25,7 +25,7 @@ Sat Sep 26, 2026 · Deem. Paste-ready content, not a rendered deck. The 4-minute
 - **Say:** "Same Rx Alerts card, one new alert type: the pharmacy's own status, the reason, and Send to my coordinator."
 
 ### 4. The coordinator's Monday
-- **On slide:** the `/coordinator` Queue still (take it after 6.1 seeds the week): stuck, waiting and fills confirmed; one fix per row.
+- **On slide:** `../stills/coordinator-queue-seeded.png` (firstdose.vercel.app, seeded week): 3 stuck, 2 waiting, 8 fills confirmed; one fix per row.
 - **Say:** "This is the person who gets patients started. Chasing new starts by phone is already their whole job. Now it's a list of who's stuck, why, and the one fix."
 
 ### 5. The loop
