@@ -8,7 +8,10 @@ export type LiveError = { sync: string | null; action: string | null; loginPath:
 const EMPTY: readonly FillEvent[] = [];
 const NO_PENDING: ReadonlySet<string> = new Set();
 
-export function createLiveStore(options: { source: () => Promise<PollingEventSource> }) {
+// The default source also seeds the week (6.1); other sources may not.
+type SeedableSource = PollingEventSource & { seedWeek?: () => Promise<void> };
+
+export function createLiveStore(options: { source: () => Promise<SeedableSource> }) {
   let events: readonly FillEvent[] = EMPTY;
   let access: AccessSummary | null = null;
   let accessError: string | null = null;
@@ -18,7 +21,7 @@ export function createLiveStore(options: { source: () => Promise<PollingEventSou
   let summaryVersion = 0;
   let needsSummary = false;
   let summaryRetryAt = 0;
-  let source: PollingEventSource | undefined;
+  let source: SeedableSource | undefined;
   let unsubscribe: (() => void) | undefined;
   let summaryTimer: ReturnType<typeof setTimeout> | undefined;
   let retryTimer: ReturnType<typeof setTimeout> | undefined;
@@ -97,7 +100,7 @@ export function createLiveStore(options: { source: () => Promise<PollingEventSou
       retryTimer = setTimeout(() => { if (active()) void start(); }, 1_500);
     }
   }
-  async function command(key: string, run: (source: PollingEventSource) => Promise<void>) {
+  async function command(key: string, run: (source: SeedableSource) => Promise<void>) {
     if (!ready || !source || pending.has(key) || pending.has("reset")) return;
     const epoch = generation;
     pending = new Set([...pending, key]); emit();
@@ -140,6 +143,8 @@ export function createLiveStore(options: { source: () => Promise<PollingEventSou
     },
     fire: (ids: string[]) => command("fire", source => source.fire(ids)),
     reset: () => command("reset", source => source.reset()),
+    seedWeek: () => command("seed", source =>
+      source.seedWeek ? source.seedWeek() : Promise.reject(new Error("Seeding the week isn't available on this source."))),
   };
 }
 
@@ -155,3 +160,4 @@ export const dismissLiveError = store.dismissError;
 export const liveAct = store.act;
 export const liveFire = store.fire;
 export const liveReset = store.reset;
+export const liveSeedWeek = store.seedWeek;

@@ -12,7 +12,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { prescriberLinked } from "@/components/data/derive";
+import { isLinked } from "@/components/data/links";
 import { local, useLocal } from "@/components/data/local";
 import { useEvents } from "@/components/data/useEvents";
 
@@ -93,7 +93,7 @@ export function useHandoff() {
 
   const linked = (id: string) => {
     const c = cases.find((x) => x.id === id);
-    return c ? prescriberLinked(c.rx.prescriber_label, cases, approved) : false;
+    return c ? isLinked(c.rx.prescriber_label, cases, approved) : false;
   };
 
   function request(id: string) {

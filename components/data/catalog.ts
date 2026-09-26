@@ -5,13 +5,15 @@ import patientsJson from "@/mock/patients.json";
 import reasonsJson from "@/mock/reasons.json";
 
 import type { Catalog, FillEvent } from "./types";
+import { WEEK_ACTIONS, WEEK_CASES, WEEK_EVENTS, WEEK_PATIENTS } from "@/lib/demo-week";
 import { fill, money } from "@/components/copy/fill";
 import { templates } from "@/components/copy/templates";
 
 export const CATALOG = {
-  patients: patientsJson.patients,
+  // Maria and James, then the seeded week (6.1): fictional background cases.
+  patients: [...patientsJson.patients, ...WEEK_PATIENTS],
   drugs: patientsJson.drugs,
-  cases: patientsJson.cases,
+  cases: [...patientsJson.cases, ...WEEK_CASES],
   labels: labelsJson.labels,
   reasons: reasonsJson.reasons,
   fixes: reasonsJson.fixes,
@@ -38,3 +40,20 @@ export const SCRIPT: FillEvent[] = (eventsJson.events as FillEvent[])
     }
     return { ...event, wrist, note: event.actor === "pharmacy" || event.actor === "hub" ? event.note : "" };
   });
+
+/** The seeded week's case ids. Background only: never on the doctor's phone or the board. */
+export const WEEK_CASE_IDS: ReadonlySet<string> = new Set(WEEK_CASES.map((c) => c.id));
+export const isWeekCase = (caseId: string) => WEEK_CASE_IDS.has(caseId);
+
+/** The seeded history's ids, fired by "Seed the week" in mock mode. */
+export const WEEK_EVENT_IDS: readonly string[] = WEEK_EVENTS.map((e) => e.id);
+
+/**
+ * Every event the mock store can hold, in the order derive expects: the seeded
+ * history (negative offsets, before demo time zero), the seeded cases' action
+ * templates, then Maria and James's script. Ids are unique.
+ */
+export const ALL_EVENTS: FillEvent[] = (() => {
+  const seen = new Set<string>();
+  return [...WEEK_EVENTS, ...WEEK_ACTIONS, ...SCRIPT].filter((e) => !seen.has(e.id) && seen.add(e.id));
+})();

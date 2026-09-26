@@ -5,7 +5,7 @@ import { BadgeCheck, UserRound } from "lucide-react";
 
 import { StandIn } from "@/components/StandIn";
 import { Button } from "@/components/ui/button";
-import { prescriberLinked } from "@/components/data/derive";
+import { isLinked } from "@/components/data/links";
 import { useLocal } from "@/components/data/local";
 import { useEvents } from "@/components/data/useEvents";
 
@@ -17,7 +17,7 @@ export function Profile() {
   const { approved } = useLocal();
   const [open, setOpen] = useState(false);
   const me = cases[0]?.rx.prescriber_label ?? "";
-  const linked = me !== "" && prescriberLinked(me, cases, approved);
+  const linked = me !== "" && isLinked(me, cases, approved);
 
   return (
     <div className="space-y-4">

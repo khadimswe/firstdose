@@ -20,6 +20,7 @@ export function useNowAt(fired: readonly FillEvent[], live: boolean): number | n
     return () => clearInterval(id);
   }, [live]);
   if (live) return wall;
-  const last = fired.at(-1);
-  return last ? atSeconds(last.at) : null;
+  if (fired.length === 0) return null;
+  // Seeded history and the script interleave in store order; "now" is the latest time.
+  return Math.max(...fired.map((e) => atSeconds(e.at)));
 }

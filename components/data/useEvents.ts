@@ -3,7 +3,7 @@
 // The one hook every screen reads data through.
 import { useMemo, useSyncExternalStore } from "react";
 
-import { CATALOG, SCRIPT } from "./catalog";
+import { ALL_EVENTS, CATALOG, SCRIPT, WEEK_EVENT_IDS } from "./catalog";
 import { accessSummary, beats, canActOn, deriveCases } from "./derive";
 import {
   dismissLiveError,
@@ -16,6 +16,7 @@ import {
   liveAct,
   liveFire,
   liveReset,
+  liveSeedWeek,
   subscribeLive,
   type LiveError,
 } from "./live";
@@ -42,15 +43,23 @@ import type {
 const BEATS = beats(SCRIPT);
 const LIVE = DATA_MODE === "supabase";
 
+// Lookups use ALL_EVENTS so the seeded week's action templates resolve too.
 function nextEvent(firedIds: ReadonlySet<string>, caseId: string, type: EventType) {
-  return SCRIPT.find(
+  return ALL_EVENTS.find(
     (e) => e.case_id === caseId && e.type === type && !firedIds.has(e.id),
   );
 }
 
 async function fire(ids: string[]) {
   const all = new Set([...getSnapshot(), ...ids]);
-  setFired(SCRIPT.filter((e) => all.has(e.id)).map((e) => e.id));
+  setFired(ALL_EVENTS.filter((e) => all.has(e.id)).map((e) => e.id));
+}
+
+// Mock "Seed the week" (6.1): the prepared history lands before demo time zero.
+async function seedWeek() {
+  const ids = new Set(getSnapshot());
+  if (WEEK_EVENT_IDS.some((id) => ids.has(id))) return;
+  await fire([...WEEK_EVENT_IDS]);
 }
 
 // On mock, each screen button fires the beats holding the same events its live
@@ -64,7 +73,7 @@ const ACTION_EVENTS: Record<ScreenAction, EventType[]> = {
 
 function currentCase(caseId: string) {
   const ids = new Set(getSnapshot());
-  const fired = SCRIPT.filter((e) => ids.has(e.id));
+  const fired = ALL_EVENTS.filter((e) => ids.has(e.id));
   return deriveCases(CATALOG, fired).find((c) => c.id === caseId);
 }
 
@@ -75,8 +84,9 @@ async function act(action: ScreenAction, caseId: string) {
   for (const type of ACTION_EVENTS[action]) {
     const next = nextEvent(new Set(getSnapshot()), caseId, type);
     if (!next) return;
-    const beat = BEATS.find((b) => b.events.some((e) => e.id === next.id))!;
-    await fire(action === "use_card" ? [next.id] : beat.events.map((e) => e.id));
+    // Seeded cases have single action templates, not scripted beats.
+    const beat = BEATS.find((b) => b.events.some((e) => e.id === next.id));
+    await fire(action === "use_card" || !beat ? [next.id] : beat.events.map((e) => e.id));
   }
 }
 
@@ -91,7 +101,7 @@ function getMockEvents(): readonly FillEvent[] {
   const ids = getSnapshot();
   if (ids !== cachedIds) {
     const set = new Set(ids);
-    cachedEvents = SCRIPT.filter((e) => set.has(e.id));
+    cachedEvents = ALL_EVENTS.filter((e) => set.has(e.id));
     cachedIds = ids;
   }
   return cachedEvents;
@@ -123,6 +133,7 @@ const SOURCE = LIVE
       fire: liveFire,
       act: liveAct,
       reset: liveReset,
+      seedWeek: liveSeedWeek,
     }
   : {
       subscribe,
@@ -137,6 +148,7 @@ const SOURCE = LIVE
       fire,
       act,
       reset,
+      seedWeek,
     };
 
 export type EventsApi = {
@@ -165,6 +177,10 @@ export type EventsApi = {
   /** True when act(action, caseId) has something left to do. */
   canAct: (action: ScreenAction, caseId: string) => boolean;
   reset: () => Promise<void>;
+  /** /sim only: add the prepared fictional week (6.1) to an empty run. */
+  seedWeek: () => Promise<void>;
+  /** True when the run has no seeded week yet and nothing else is in flight. */
+  canSeed: boolean;
   /** Live only: why live data isn't updating (`sync`) and the last failed command (`action`). Mock never fails. */
   error: LiveError;
   dismissError: () => void;
@@ -207,6 +223,9 @@ export function useEvents(): EventsApi {
         return c !== undefined && canActOn(action, c);
       },
       reset: SOURCE.reset,
+      seedWeek: SOURCE.seedWeek,
+      canSeed:
+        ready && pending.size === 0 && override === null && !WEEK_EVENT_IDS.some((id) => firedIds.has(id)),
       error,
       dismissError: SOURCE.dismissError,
     };

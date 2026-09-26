@@ -8,6 +8,7 @@ import { StandIn } from "@/components/StandIn";
 import { StatusPill } from "@/components/StatusPill";
 import { Button } from "@/components/ui/button";
 import { playBeats } from "@/components/data/replay";
+import { isWeekCase } from "@/components/data/catalog";
 import { useEvents } from "@/components/data/useEvents";
 import type { Beat } from "@/components/data/types";
 
@@ -28,7 +29,11 @@ function Kbd({ children }: { children: React.ReactNode }) {
 
 /** Operator console: the scripted run on the left, controls and the selected beat on the right. */
 export function SimScreen() {
-  const { mode, ready, busy, canFire, script, beats, fired, firedIds, cases, catalog, fire, reset } = useEvents();
+  const { mode, ready, busy, canFire, canSeed, seedWeek, script, beats, fired, firedIds, cases, catalog, fire, reset } =
+    useEvents();
+  // The seeded week (6.1) is background history; the run counts Maria and James only.
+  const scriptFired = fired.filter((e) => !isWeekCase(e.case_id)).length;
+  const weekSeeded = fired.some((e) => isWeekCase(e.case_id));
   const { url: patientUrl, local } = usePatientUrl();
 
   const caseById = new Map(cases.map((c) => [c.id, c]));
@@ -148,7 +153,7 @@ export function SimScreen() {
     else groups.push({ caseId: b.case_id, beats: [b] });
   }
 
-  const progress = script.length ? Math.min(1, fired.length / script.length) : 0;
+  const progress = script.length ? Math.min(1, scriptFired / script.length) : 0;
 
   return (
     <main className="mx-auto w-full max-w-7xl space-y-6 px-6 py-8">
@@ -202,7 +207,7 @@ export function SimScreen() {
               <div className="flex items-baseline justify-between text-sm">
                 <span className="font-medium">Run</span>
                 <span className="text-muted-foreground tabular-nums">
-                  {mode === "supabase" ? `${fired.length} committed events` : `${fired.length} / ${script.length} events`}
+                  {mode === "supabase" ? `${scriptFired} committed events` : `${scriptFired} / ${script.length} events`}
                 </span>
               </div>
               <div className="h-1.5 overflow-hidden rounded-full bg-muted">
@@ -221,6 +226,20 @@ export function SimScreen() {
                   "Every scripted event has fired."
                 )}
               </p>
+            </div>
+
+            <div className="flex items-center justify-between gap-3 rounded-lg border border-dashed p-3">
+              <div className="space-y-0.5 text-xs">
+                <p className="font-medium text-foreground">Seed the week</p>
+                <p className="text-muted-foreground">
+                  {weekSeeded
+                    ? "Seeded: 13 fictional background cases are in the coordinator's queue."
+                    : "Adds 13 fictional background cases to an empty run: 3 need a fix, 2 waiting, 8 filled."}
+                </p>
+              </div>
+              <Button size="sm" variant="outline" disabled={!canSeed} onClick={() => void seedWeek()}>
+                {weekSeeded ? "Seeded" : "Seed"}
+              </Button>
             </div>
 
             <div className="flex flex-wrap items-center gap-2">

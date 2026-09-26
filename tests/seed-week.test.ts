@@ -5,7 +5,9 @@ import { deriveCases, queueBucket } from "@/components/data/derive";
 import { planCommand } from "@/lib/server/workflow";
 
 const now = "2026-09-26T16:00:00.000Z";
-const catalog = { ...CATALOG, patients: [...CATALOG.patients, ...WEEK_PATIENTS], cases: [...CATALOG.cases, ...WEEK_CASES] };
+// CATALOG already includes the seeded week (Deem's 6.1 wiring); de-duplicating keeps this valid either way.
+const uniq = <T extends { id: string }>(rows: T[]) => [...new Map(rows.map(r => [r.id, r])).values()];
+const catalog = { ...CATALOG, patients: uniq([...CATALOG.patients, ...WEEK_PATIENTS]), cases: uniq([...CATALOG.cases, ...WEEK_CASES]) };
 const buckets = (events: ReturnType<typeof seedWeekEvents>) => {
   const cases = deriveCases(catalog, events).filter(c => c.ordered);
   return ["needs_you", "waiting", "confirmed"].map(bucket => cases.filter(c => queueBucket(c) === bucket).length);
