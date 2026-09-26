@@ -10,6 +10,7 @@ import {
   getLiveAccess,
   getLiveError,
   getLiveEvents,
+  getLivePending,
   liveAct,
   liveFire,
   liveReset,
@@ -97,6 +98,8 @@ const NO_EVENTS: readonly FillEvent[] = [];
 const getNoEvents = () => NO_EVENTS;
 const getNoAccess = (): AccessSummary | null => null;
 const getNoError = (): LiveError => null;
+const NO_PENDING: ReadonlySet<string> = new Set();
+const getNoPending = () => NO_PENDING;
 const noop = () => {};
 
 // One source per build: NEXT_PUBLIC_DATA_SOURCE is inlined at build time.
@@ -106,6 +109,7 @@ const SOURCE = LIVE
       events: getLiveEvents,
       access: getLiveAccess,
       error: getLiveError,
+      pending: getLivePending,
       dismissError: dismissLiveError,
       override: getServerOverride,
       fire: liveFire,
@@ -117,6 +121,7 @@ const SOURCE = LIVE
       events: getMockEvents,
       access: getNoAccess,
       error: getNoError,
+      pending: getNoPending,
       dismissError: noop,
       override: getOverride,
       fire,
@@ -145,7 +150,7 @@ export type EventsApi = {
   /** True when act(action, caseId) has something left to do. */
   canAct: (action: ScreenAction, caseId: string) => boolean;
   reset: () => Promise<void>;
-  /** Live only: the last failed load or command, for the error banner. Mock never fails. */
+  /** Live only: why live data isn't updating (`sync`) and the last failed command (`action`). Mock never fails. */
   error: LiveError;
   dismissError: () => void;
 };
@@ -155,6 +160,7 @@ export function useEvents(): EventsApi {
   const liveAccess = useSyncExternalStore(SOURCE.subscribe, SOURCE.access, getNoAccess);
   const override = useSyncExternalStore(SOURCE.subscribe, SOURCE.override, getServerOverride);
   const error = useSyncExternalStore(SOURCE.subscribe, SOURCE.error, getNoError);
+  const pending = useSyncExternalStore(SOURCE.subscribe, SOURCE.pending, getNoPending);
 
   return useMemo(() => {
     const fired = [...events];
@@ -173,6 +179,8 @@ export function useEvents(): EventsApi {
       fire: SOURCE.fire,
       act: SOURCE.act,
       canAct: (action, caseId) => {
+        // Live: a command already sent for this case stays disabled until its event arrives.
+        if (pending.has(`${action}:${caseId}`)) return false;
         const c = cases.find((x) => x.id === caseId);
         return c !== undefined && canActOn(action, c);
       },
@@ -180,5 +188,5 @@ export function useEvents(): EventsApi {
       error,
       dismissError: SOURCE.dismissError,
     };
-  }, [events, liveAccess, override, error]);
+  }, [events, liveAccess, override, error, pending]);
 }

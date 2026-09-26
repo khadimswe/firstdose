@@ -11,8 +11,15 @@ import type {
 
 const BEAT_GAP_SECONDS = 2;
 
+/**
+ * Seconds for an event's `at`: mock seconds as-is, or a timestamp string.
+ * Postgres-style strings ("2026-09-26 05:00:00+00") are normalized to ISO first,
+ * because Safari won't parse the space or the short offset. NaN if unparseable.
+ */
 export function atSeconds(at: number | string): number {
-  return typeof at === "number" ? at : Date.parse(at) / 1000;
+  if (typeof at === "number") return at;
+  const iso = at.trim().replace(" ", "T").replace(/([+-]\d{2})$/, "$1:00");
+  return Date.parse(iso) / 1000;
 }
 
 /** Whole calendar days between two ISO timestamps, by their own local dates. */
