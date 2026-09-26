@@ -122,7 +122,7 @@ Full teardown: `docs/research/docupdate-teardown.md`. The judge wants proof we k
 | 1 | Home → Rx Alerts card: "Generic Substitution · John Smith · Oxytocin · Resolve" | New alert type, same card anatomy: **"Not dispensed · Maria Lopez · Otezla · Declined at price ($410 demo) → Send to my coordinator."** The whole pitch in one screenshot | Priority 1 |
 | 2 | Patient Details → Past Prescriptions list | One status line per script: **Sent → At pharmacy → Fill confirmed**, or **⚠ Stuck + reason** (the fill status their FAQ says they don't have) | Priority 2 |
 | 3 | Concierge checkboxes: Request Free Samples · Speak with a Rep · Custom | Add **"Help my patient start"** — routes to the same Wallet / QPharma / Medvantx rails via the existing fix flow | Cosmetic; deep-link the handoff |
-| 4 | Profile | **"My coordinator"** + invite — the staff account their FAQ says "isn't live yet" | Cosmetic |
+| 4 | Profile | **"My coordinator"**: the coordinator's link request, with **Approve**. That's the staff account their FAQ says "isn't live yet", verified the CoverMyMeds way: the prescriber approves the delegate | Small (6.12) |
 
 **Copy on these surfaces (D1, D2, D8).** "Not started" is the word we *say*; the screen shows data. The alert chip is the pharmacy status as it arrived (`status_text`, e.g. "Not dispensed / returned to stock", shortened with CSS only). The reason is `templates.reason_short`, the title and button are `templates.doctor_alert`, and the last step is "Fill confirmed" (`templates.board.stops`). Nothing is hand-written about a patient.
 
@@ -147,7 +147,7 @@ Full teardown: `docs/research/docupdate-teardown.md`. The judge wants proof we k
 | 0:00 | Desktop: the coordinator queue, Monday morning. "3 stuck, 2 waiting, 11 fills confirmed" | "Impiricus reaches the doctor who writes the prescription. This is the person who gets the patient on it. She opens this every morning." |
 | 0:20 | Judge 2, on the DocUpdate phone view: New Rx → Maria → Otezla → Sign and send. Real DailyMed label on the order | "DocUpdate sends the script. Today, that's where the story ends." |
 | 0:40 | Pharmacy: declined at the quoted price. The phone's Rx Alerts shows **Not dispensed · Maria Lopez · Otezla**. The watch buzzes | "A patient who never started looks exactly like a drug that doesn't work." |
-| 0:55 | Judge 2 taps "Send to my coordinator." First time only: "Invite your coordinator" | "One tap just brought the person who gets patients started into the Impiricus network." |
+| 0:55 | Judge 2 taps "Send to my coordinator." First time only, a sheet: "Your access coordinator asked to work on your patients' access. Approve?" One tap approves the delegate and hands Maria off. On the desktop, Prescribers flips from Pending to Linked | "One tap just brought the person who gets patients started into the Impiricus network. Staff accounts, the way CoverMyMeds does them, except the doctor approves inside the app they already verified with." |
 | 1:10 | Maria jumps to the top of Judge 1's queue with the reason and one fix: "Re-send copay card (commercial: eligible)." Judge 1 taps it | "One tap, not three phone calls." |
 | 1:25 | Hand Judge 2 the QR: "Now you're Maria." Their phone gets the card | — |
 | 1:35 | Judge 2 taps "Use at pharmacy": acknowledged, fill still pending. Vinh fires the separate pharmacy confirmation: price $410 → $0 (demo), chime, the phone's Past Rx line reads **Fill confirmed**, watch: "Maria: Otezla pharmacy fill confirmed" | "The doctor heard about it twice: when it broke, and when it was fixed." |
@@ -176,7 +176,7 @@ Full teardown: `docs/research/docupdate-teardown.md`. The judge wants proof we k
 | Doesn't Surescripts flag abandonment? | RxFill and First-Fill Abandonment (Oct 2025) say a script wasn't picked up. Neither says why. We say why, route the one fix that matches, and show Market Access the confirmed first fills |
 | Is that DocUpdate on the phone? | No. It's a concept built on DocUpdate's structure, labelled "Concept: FirstDose inside DocUpdate · Not affiliated". Their real screen is only on the comparison slide, credited to the App Store |
 | Who sees Maria's name? | Only the practice: the doctor's DocUpdate view and the coordinator's queue. Pharma sees counts |
-| How would a coordinator log in? | Staff accounts the way CoverMyMeds does them: staff identity, approved by a verified prescriber, under the practice's NPI |
+| How would a coordinator log in? | Staff accounts the way CoverMyMeds does them: the coordinator links to a prescriber by NPI, and the prescriber approves them. CoverMyMeds faxes a code to the prescriber; we ask the prescriber inside DocUpdate, where their NPI and identity are already verified. The coordinator never signs a prescription |
 | Why not just build this into DocUpdate yourselves? | That's the idea: FirstDose is the missing step inside DocUpdate, after the script is sent. We built it against a stand-in so you can see it working today |
 | Does pharma see my patients? | No. Names, chart and fill status stay in the practice. Pharma sees counts only |
 | Won't this push doctors toward drugs? | It acts only after the doctor chose the drug and never suggests one. Nobody is paid per prescription |
