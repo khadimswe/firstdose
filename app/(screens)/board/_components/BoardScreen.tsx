@@ -6,6 +6,9 @@ import { StandIn } from "@/components/StandIn";
 import { Button } from "@/components/ui/button";
 import { useEvents } from "@/components/data/useEvents";
 import type { CaseView } from "@/components/data/types";
+import { hasConfirmedFill } from "@/components/data/derive";
+import { fill } from "@/components/copy/fill";
+import { templates } from "@/components/copy/templates";
 
 import { chime } from "./chime";
 import { PriceCounter } from "./PriceCounter";
@@ -24,17 +27,16 @@ export function BoardScreen() {
   // Browsers block audio until someone clicks, so sound needs one tap before the demo.
   const audio = useRef<AudioContext | null>(null);
   const [soundOn, setSoundOn] = useState(false);
-  const startedCount = fired.filter((e) => e.type === "started").length;
-  const prevStarted = useRef(startedCount);
+  const confirmedCount = lanes.filter(hasConfirmedFill).length;
+  const previousConfirmed = useRef(confirmedCount);
   useEffect(() => {
-    if (startedCount > prevStarted.current && audio.current) chime(audio.current);
-    prevStarted.current = startedCount;
-  }, [startedCount]);
+    if (confirmedCount > previousConfirmed.current && audio.current) chime(audio.current);
+    previousConfirmed.current = confirmedCount;
+  }, [confirmedCount]);
 
   function enableSound() {
     audio.current ??= new AudioContext();
     void audio.current.resume();
-    chime(audio.current);
     setSoundOn(true);
   }
 
@@ -53,6 +55,10 @@ export function BoardScreen() {
           )}
         </div>
       </header>
+
+      <p role="status" aria-atomic="true" className="sr-only">
+        {fill(templates.board.confirmation_count, { count: confirmedCount })}
+      </p>
 
       <div className="grid flex-1 gap-16 xl:grid-cols-[minmax(0,1fr)_480px]">
         <main className="space-y-16">

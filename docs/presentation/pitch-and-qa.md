@@ -99,4 +99,4 @@ Prepared September 26, 2026. Paste-ready content for Deem's presentation, not a 
 
 **Tiger:** "The event history supports subsequent-fill and elapsed-time queries. Here is the stored run and the query behind this display, including its freshness."
 
-**SpaceXAI:** "Grok transcribes a real handoff that the user confirms before execution." Separately explain actual Cursor development use if required and true. Skip this entry if its requirements are unmet.
+**SpaceXAI, only after verification:** "Grok transcribes a real handoff that the user confirms before execution." The saved challenge announcement calls for Cursor and Grok; explain actual Cursor development work as well. Neither voice integration nor Cursor-use evidence is currently verified. Skip this entry if its requirements are unmet; the ntfy/Garmin path alone does not qualify.

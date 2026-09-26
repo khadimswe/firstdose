@@ -5,6 +5,7 @@ import { StatusPill } from "@/components/StatusPill";
 import { Button } from "@/components/ui/button";
 import { templates } from "@/components/copy/templates";
 import { useEvents } from "@/components/data/useEvents";
+import { hasConfirmedFill } from "@/components/data/derive";
 
 import { WalletPass } from "./WalletPass";
 
@@ -33,6 +34,12 @@ export function PatientScreen({ caseId }: { caseId: string }) {
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 p-5 pb-32">
       <WalletPass c={c} />
+
+      <p role="status" aria-atomic="true" className="text-sm text-muted-foreground">
+        {hasConfirmedFill(c)
+          ? templates.patient_card.filled
+          : c.cardUsed ? templates.patient_card.acknowledged : ""}
+      </p>
 
       {canUse && (
         <div className="fixed inset-x-0 bottom-0 border-t bg-background">

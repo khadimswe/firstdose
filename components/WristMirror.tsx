@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-/** What the doctor's watch shows: event.wrist exactly as sent to ntfy. */
+/** Notification text preview; device receipt is verified separately. */
 export function WristMirror({ text, compact }: { text: string | null; compact?: boolean }) {
   return (
     <figure className="space-y-2">
@@ -13,7 +13,7 @@ export function WristMirror({ text, compact }: { text: string | null; compact?: 
         {text ?? <span className="text-neutral-500">No alerts</span>}
       </div>
       <figcaption className="text-center text-xs text-muted-foreground">
-        Garmin Forerunner 55 · via ntfy
+        Notification preview · Garmin via ntfy
       </figcaption>
     </figure>
   );
