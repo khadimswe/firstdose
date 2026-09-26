@@ -39,8 +39,15 @@ export function metricEventConflict(a: MetricEvent, b: MetricEvent): boolean {
 }
 
 function canonicalizeTime(value: string): string | null {
-  // A timezone offset or Z must be present; bare local dates are ambiguous.
-  if (!/(\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:?\d{2}))$/.test(value)) return null;
+  if (typeof value !== 'string') return null;
+  const parts = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d{1,3})?(?:Z|([+-])(\d{2}):?(\d{2}))$/.exec(value);
+  if (!parts) return null;
+  const [year, month, day, hour, minute, second] = parts.slice(1, 7).map(Number);
+  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const days = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  if (month < 1 || month > 12 || day < 1 || day > days[month - 1]!
+    || hour > 23 || minute > 59 || second > 59
+    || (parts[7] && (Number(parts[8]) > 23 || Number(parts[9]) > 59))) return null;
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return null;
   return date.toISOString();
@@ -56,7 +63,8 @@ export function caseHash(runId: string, caseId: string, hmacKey: string): string
 
 export function projectEvent(input: CommittedEvent, hmacKey: string): MetricEvent | null {
   const { run_id: runId, script_id: scriptId, event } = input;
-  if (runId.length === 0 || scriptId.length === 0 || hmacKey.length === 0) return null;
+  if (![runId, scriptId, event.case_id, hmacKey].every(value => typeof value === 'string' && value.trim().length > 0)) return null;
+  if (event.side !== 'practice') return null;
 
   let kind: MetricEvent['kind'];
   let reason: ReasonKey | null = null;
@@ -72,6 +80,11 @@ export function projectEvent(input: CommittedEvent, hmacKey: string): MetricEven
       reason = event.reason as ReasonKey;
       break;
     case 'dispensed':
+      kind = 'dispensed';
+      break;
+    case 'claim_run':
+      // This is the independent pharmacy confirmation emitted by workflow.ts.
+      if (event.actor !== 'pharmacy' || event.status_text !== 'Dispensed') return null;
       kind = 'dispensed';
       break;
     default:

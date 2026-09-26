@@ -24,10 +24,17 @@ export function makeClassifier(
     if ([...note].length > 140) return null;
 
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const deadline = new Promise<null>((resolve) => {
+      timer = setTimeout(() => {
+        resolve(null);
+        controller.abort();
+      }, timeoutMs);
+    });
     try {
-      const raw = await transport(note, controller.signal);
-      return parseReason(raw);
+      // Abort is cooperative; the race also bounds transports that ignore it.
+      const raw = await Promise.race([transport(note, controller.signal), deadline]);
+      return raw === null ? null : parseReason(raw);
     } catch {
       // No retries in the interactive path; the case stays visibly unclassified.
       return null;

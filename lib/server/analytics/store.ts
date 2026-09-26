@@ -11,34 +11,61 @@
 import { createHash } from 'node:crypto';
 
 import type { AccessSummary, ReasonKey } from '@/components/data/types';
+import reasonCatalog from '@/mock/reasons.json';
 
 import type { MetricEvent } from './project';
 
 export type { MetricEvent } from './project';
 
-let pool: import('pg').Pool | null | undefined;
+let pool: Promise<import('pg').Pool> | undefined;
 
-/** Lazy pg Pool; null when analytics is not configured (build/import unaffected). */
-async function analyticsPool(): Promise<import('pg').Pool | null> {
-  if (pool !== undefined) return pool;
+/** URL options cannot override the server's verified TLS or finite timeouts. */
+export function analyticsConnectionConfig(value: string): import('pg').PoolConfig {
+  try {
+    const url = new URL(value);
+    if (!['postgres:', 'postgresql:'].includes(url.protocol) || !url.hostname) throw new Error();
+    url.search = '';
+    url.hash = '';
+    return {
+      connectionString: url.toString(), max: 2,
+      connectionTimeoutMillis: 5_000, idleTimeoutMillis: 10_000,
+      statement_timeout: 5_000, query_timeout: 6_000,
+      idle_in_transaction_session_timeout: 6_000,
+      ssl: { rejectUnauthorized: true },
+    };
+  } catch {
+    throw new Error('analytics_unavailable');
+  }
+}
+
+/** Lazy pg Pool; missing configuration fails only at call time. */
+async function analyticsPool(): Promise<import('pg').Pool> {
+  if (pool) return pool;
   const url = process.env.TIGER_DATABASE_URL;
   if (typeof url !== 'string' || url.length === 0) {
-    pool = null;
-    return pool;
+    throw new Error('analytics_unavailable');
   }
   // Deferred import keeps the pg driver out of non-analytics imports.
-  const pg = await import('pg');
-  pool = new pg.Pool({
-    connectionString: url,
-    max: 2,
-    connectionTimeoutMillis: 5_000,
-    idleTimeoutMillis: 10_000,
-    ssl: { rejectUnauthorized: true },
+  const config = analyticsConnectionConfig(url);
+  pool = import('pg').then(pg => {
+    const current = new pg.Pool(config);
+    // Idle client failures must not become uncaught EventEmitter errors.
+    current.on('error', () => undefined);
+    return current;
+  }).catch(() => {
+    pool = undefined;
+    throw new Error('analytics_unavailable');
   });
   return pool;
 }
 
-/** Canonical payload hash from a fixed ordered array of fields. */
+export async function closeAnalyticsPool(): Promise<void> {
+  const current = pool;
+  pool = undefined;
+  if (current) await (await current).end();
+}
+
+/** Preserve the existing ledger encoding so identical historical retries remain no-ops. */
 export function payloadHash(event: MetricEvent): string {
   const ordered = [
     event.run_id,
@@ -62,13 +89,14 @@ export class EventConflictError extends Error {
  * Transactional batch write. A failed transaction leaves no key without its
  * event; retries reuse identical immutable source data and therefore no-op.
  */
-export async function writeMetricBatch(events: readonly MetricEvent[]): Promise<void> {
-  const current = await analyticsPool();
-  if (current === null) throw new Error('analytics_unavailable');
+async function writeBatch(current: AnalyticsPool, events: readonly MetricEvent[]): Promise<void> {
   const client = await current.connect();
+  let discard = false;
   try {
     await client.query('BEGIN');
-    for (const event of events) {
+    // Consistent ledger lock order prevents deadlocks between reversed replays.
+    const ordered = [...events].sort((a, b) => a.run_id.localeCompare(b.run_id) || a.script_id.localeCompare(b.script_id));
+    for (const event of ordered) {
       const hash = payloadHash(event);
       const inserted = await client.query(
         `INSERT INTO firstdose.event_keys (run_id, script_id, payload_hash)
@@ -90,7 +118,6 @@ export async function writeMetricBatch(events: readonly MetricEvent[]): Promise<
         );
         const stored = existing.rows[0]?.payload_hash;
         if (stored !== hash) {
-          await client.query('ROLLBACK');
           throw new EventConflictError(event.run_id, event.script_id);
         }
         // Identical replay: no-op.
@@ -98,21 +125,16 @@ export async function writeMetricBatch(events: readonly MetricEvent[]): Promise<
     }
     await client.query('COMMIT');
   } catch (error) {
-    // ROLLBACK may itself throw when the transaction already aborted; the
-    // client release below is the guaranteed cleanup path.
-    if (!(error instanceof EventConflictError)) {
-      await client.query('ROLLBACK').catch(() => undefined);
-    }
+    // A failed rollback leaves transaction state uncertain; discard that socket.
+    await client.query('ROLLBACK').catch(() => { discard = true; });
     throw error;
   } finally {
-    client.release();
+    client.release(discard);
   }
 }
 
 /** Direct SQL summary; cross-checked against the pure summarize() oracle. */
-export async function getAccessSummary(runId: string): Promise<AccessSummary> {
-  const current = await analyticsPool();
-  if (current === null) throw new Error('analytics_unavailable');
+async function querySummary(current: AnalyticsPool, runId: string): Promise<AccessSummary> {
 
   // Confirmed first fills: earliest dispensing at or after the earliest
   // prescription per case; count and median of elapsed seconds.
@@ -155,23 +177,49 @@ export async function getAccessSummary(runId: string): Promise<AccessSummary> {
   );
 
   const fillRow = fills.rows[0] ?? { recovered: 0, median_ttff_seconds: null };
-  const recovered = Number(fillRow.recovered);
+  const recovered = numberFromSql(fillRow.recovered);
   const medianRaw = fillRow.median_ttff_seconds;
   const median = medianRaw === null || medianRaw === undefined
     ? null
-    : Number.isFinite(Number(medianRaw))
-      ? Math.round(Number(medianRaw))
-      : null;
+    : numberFromSql(medianRaw);
+  if (!Number.isSafeInteger(recovered) || (recovered === 0) !== (median === null)) throw new Error('analytics_unavailable');
 
   const reasonTally: Partial<Record<ReasonKey, number>> = {};
   for (const row of reasons.rows as Array<{ reason: string; count: number }>) {
-    reasonTally[row.reason as ReasonKey] = Number(row.count);
+    if (!Object.hasOwn(reasonCatalog.reasons, row.reason)) throw new Error('analytics_unavailable');
+    const count = numberFromSql(row.count);
+    if (!Number.isSafeInteger(count)) throw new Error('analytics_unavailable');
+    reasonTally[row.reason as ReasonKey] = count;
   }
 
   // Validate response keys; never return raw rows.
   return {
-    recovered: Number.isFinite(recovered) ? recovered : 0,
+    recovered,
     median_ttff_seconds: median,
     reason_tally: reasonTally,
   };
+}
+
+function numberFromSql(value: unknown): number {
+  if ((typeof value !== 'string' && typeof value !== 'number') || (typeof value === 'string' && !value.trim())) throw new Error('analytics_unavailable');
+  const number = Number(value);
+  if (!Number.isFinite(number) || number < 0) throw new Error('analytics_unavailable');
+  return number;
+}
+
+type AnalyticsPool = Pick<import('pg').Pool, 'connect' | 'query'>;
+
+export function createAnalyticsStore(current: AnalyticsPool) {
+  return {
+    writeMetricBatch: (events: readonly MetricEvent[]) => writeBatch(current, events),
+    getAccessSummary: (runId: string) => querySummary(current, runId),
+  };
+}
+
+export async function writeMetricBatch(events: readonly MetricEvent[]): Promise<void> {
+  await writeBatch(await analyticsPool(), events);
+}
+
+export async function getAccessSummary(runId: string): Promise<AccessSummary> {
+  return querySummary(await analyticsPool(), runId);
 }

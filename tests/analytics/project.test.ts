@@ -103,6 +103,10 @@ describe('projectEvent — validation', () => {
 });
 
 describe('projectEvent — privacy boundary', () => {
+  it('excludes partner-side events even when their kind is otherwise allowed', () => {
+    expect(projectEvent(committed({ side: 'ascend', type: 'prescribed' }), HMAC_KEY)).toBeNull();
+    expect(projectEvent(committed({ side: 'ascend', type: 'dispensed' }), HMAC_KEY)).toBeNull();
+  });
   it('never leaks input fields into the output', () => {
     const result = projectEvent(committed({ note: 'secret note', wrist: 'Maria: Otezla', amount_usd: 410 }), HMAC_KEY);
     const serialized = JSON.stringify(result);
@@ -118,5 +122,26 @@ describe('projectEvent — privacy boundary', () => {
     const otherRun = projectEvent({ ...committed({}), run_id: 'run-2' }, HMAC_KEY);
     expect(a?.case_hash).toBe(b?.case_hash);
     expect(a?.case_hash).not.toBe(otherRun?.case_hash);
+  });
+});
+
+describe('projectEvent — authoritative pharmacy confirmation', () => {
+  it('projects the actual pharmacy claim_run with exact Dispensed status', () => {
+    expect(projectEvent(committed({ type: 'claim_run', actor: 'pharmacy', status_text: 'Dispensed' }), HMAC_KEY)?.kind).toBe('dispensed');
+  });
+
+  it('does not treat acknowledgment or another pharmacy status as dispensing', () => {
+    for (const status_text of ['Partially dispensed', 'dispensed', 'Shipped', null]) {
+      expect(projectEvent(committed({ type: 'claim_run', actor: 'pharmacy', status_text }), HMAC_KEY)).toBeNull();
+    }
+    expect(projectEvent(committed({ type: 'claim_run', actor: 'patient', status_text: 'Dispensed' }), HMAC_KEY)).toBeNull();
+  });
+
+  it('rejects empty case identities and impossible calendar dates', () => {
+    for (const case_id of ['', '  ']) expect(projectEvent(committed({ case_id }), HMAC_KEY)).toBeNull();
+    for (const at of ['2026-02-30T10:00:00Z', '2026-02-29T10:00:00Z', '2026-09-31T10:00:00Z', '2026-09-26T24:00:00Z']) {
+      expect(projectEvent(committed({ at }), HMAC_KEY)).toBeNull();
+    }
+    expect(projectEvent(committed({ at: '2028-02-29T10:00:00+04:00' }), HMAC_KEY)?.at).toBe('2028-02-29T06:00:00.000Z');
   });
 });

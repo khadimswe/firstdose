@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { makeClassifier, type ClassifierTransport } from '@/lib/server/classify';
 
@@ -6,7 +6,7 @@ import { makeClassifier, type ClassifierTransport } from '@/lib/server/classify'
 // a default 4,000 ms deadline, abort of the underlying request on timeout,
 // blank or overlength input rejected without a call, UNKNOWN mapped to null,
 // and never a fix, drug suggestion or advice in the result. Tests use a short
-// explicit timeout and a transport that settles on abort.
+// explicit timeout, including transports that ignore abort.
 
 const VALID_NOTE = 'pt came in, saw 410.00 OOP on HDHP, said she would think about it. copay card not presented.';
 
@@ -15,6 +15,8 @@ function transportReturning(raw: string): ClassifierTransport {
 }
 
 describe('makeClassifier with an injected transport', () => {
+  afterEach(() => vi.useRealTimers());
+
   it('returns the parsed reason for a valid reply', async () => {
     const classify = makeClassifier(transportReturning('{"reason":"DECLINED_AT_PRICE"}'));
     expect(await classify(VALID_NOTE)).toBe('DECLINED_AT_PRICE');
@@ -48,6 +50,39 @@ describe('makeClassifier with an injected transport', () => {
     const classify = makeClassifier(slow, 25);
     expect(await classify(VALID_NOTE)).toBeNull();
     expect((observedSignal as AbortSignal | null)?.aborted).toBe(true);
+  });
+
+  it('returns null at the default deadline even when the transport never settles', async () => {
+    vi.useFakeTimers();
+    let observedSignal: AbortSignal | undefined;
+    const classify = makeClassifier((_note, signal) => {
+      observedSignal = signal;
+      return new Promise<string>(() => {});
+    });
+    let result: unknown = 'pending';
+    void classify(VALID_NOTE).then(value => { result = value; });
+    await vi.advanceTimersByTimeAsync(3_999);
+    expect(result).toBe('pending');
+    await vi.advanceTimersByTimeAsync(1);
+    expect(result).toBeNull();
+    expect(observedSignal?.aborted).toBe(true);
+  });
+
+  it.each(['response', 'failure'])('ignores a late %s after returning null at the deadline', async (outcome) => {
+    vi.useFakeTimers();
+    const classify = makeClassifier(() => new Promise<string>((resolve, reject) => {
+      setTimeout(() => {
+        if (outcome === 'response') resolve('{"reason":"PA_REQUIRED"}');
+        else reject(new Error('late provider failure'));
+      }, 50);
+    }), 25);
+    let result: unknown = 'pending';
+    void classify(VALID_NOTE).then(value => { result = value; });
+    await vi.advanceTimersByTimeAsync(25);
+    expect(result).toBeNull();
+    await vi.advanceTimersByTimeAsync(25);
+    expect(result).toBeNull();
+    expect(vi.getTimerCount()).toBe(0);
   });
 
   it('returns null for blank input without calling the transport', async () => {

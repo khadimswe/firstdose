@@ -8,7 +8,7 @@
 
 import type { AccessSummary, ReasonKey } from '@/components/data/types';
 
-import type { MetricEvent } from './project';
+import { metricEventConflict, type MetricEvent } from './project';
 
 function median(values: number[]): number | null {
   if (values.length === 0) return null;
@@ -16,7 +16,7 @@ function median(values: number[]): number | null {
   const middle = Math.floor(sorted.length / 2);
   return sorted.length % 2 === 1
     ? sorted[middle]!
-    : Math.round((sorted[middle - 1]! + sorted[middle]!) / 2);
+    : (sorted[middle - 1]! + sorted[middle]!) / 2;
 }
 
 type CaseFold = { firstPrescribedAt: number | null; firstDispensedAfter: number | null; latestReason: { at: number; scriptId: string; reason: ReasonKey } | null };
@@ -26,7 +26,9 @@ export function summarize(events: readonly MetricEvent[], runId: string): Access
   const byKey = new Map<string, MetricEvent>();
   for (const event of events) {
     if (event.run_id !== runId) continue;
-    const key = `${event.run_id}:${event.script_id}`;
+    const key = event.script_id;
+    const prior = byKey.get(key);
+    if (prior && metricEventConflict(prior, event)) throw new Error('event_conflict');
     byKey.set(key, event);
   }
 
@@ -44,6 +46,14 @@ export function summarize(events: readonly MetricEvent[], runId: string): Access
     }
     return fold;
   };
+
+  // Find prescriptions first so an equal-time fill never depends on script order.
+  for (const event of ordered) {
+    if (event.kind !== 'prescribed') continue;
+    const fold = foldOf(event.case_hash);
+    const time = Date.parse(event.at);
+    if (fold.firstPrescribedAt === null || time < fold.firstPrescribedAt) fold.firstPrescribedAt = time;
+  }
 
   for (const event of ordered) {
     const fold = foldOf(event.case_hash);
@@ -84,7 +94,7 @@ export function summarize(events: readonly MetricEvent[], runId: string): Access
   const reasonTally: Partial<Record<ReasonKey, number>> = {};
   for (const fold of byCase.values()) {
     if (fold.firstPrescribedAt !== null && fold.firstDispensedAfter !== null) {
-      ttffs.push(Math.round((fold.firstDispensedAfter - fold.firstPrescribedAt) / 1000));
+      ttffs.push((fold.firstDispensedAfter - fold.firstPrescribedAt) / 1000);
     }
     if (fold.latestReason !== null) {
       const reason = fold.latestReason.reason;

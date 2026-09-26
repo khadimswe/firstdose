@@ -1,4 +1,4 @@
-import { executeCommand, PersistenceError, type Snapshot, type WorkflowStore } from "./commands";
+import { executeCommand, PersistenceError, type ReasonClassifier, type Snapshot, type WorkflowStore } from "./commands";
 import { createWorkflowStore, isRunId } from "./supabase-workflow";
 import { WorkflowError, type WorkflowCommand } from "./workflow";
 import { demoAccess, demoConfigured } from "./demo-session";
@@ -6,7 +6,7 @@ import { HttpError, readText, requireSameOrigin } from "./http-body";
 
 export type CommandKind = WorkflowCommand["kind"] | "reset";
 export type CommitCheckpoint = Pick<Snapshot, "run_id" | "revision"> & { kind: CommandKind };
-type Options = { store?: WorkflowStore; env?: Record<string, string | undefined>; onCommit?: (checkpoint: CommitCheckpoint) => void | Promise<void> };
+type Options = { store?: WorkflowStore; env?: Record<string, string | undefined>; classify?: ReasonClassifier; onCommit?: (checkpoint: CommitCheckpoint) => void | Promise<void> };
 export function authorize(request: Request, env: Record<string, string | undefined>) {
   if (!demoConfigured(env)) throw new HttpError(503, "demo_not_configured");
   const access = demoAccess(request, env);
@@ -60,7 +60,7 @@ export function commandHandler(kind: CommandKind, options: Options = {}) {
         await scheduleFollowup(snapshot);
         return json(snapshot, 200, snapshot);
       }
-      const result = await executeCommand(store, runId, { ...body, kind });
+      const result = await executeCommand(store, runId, { ...body, kind }, undefined, options.classify);
       await scheduleFollowup(result.snapshot);
       return json(result.inserted, 200, result.snapshot);
     } catch (error) { return failure(error); }

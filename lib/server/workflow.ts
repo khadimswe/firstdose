@@ -95,6 +95,7 @@ export function planCommand(
   history: readonly FillEvent[],
   command: WorkflowCommand,
   now: string,
+  classifications?: Readonly<Record<string, ReasonKey | null>>,
 ): FillEvent[] {
   validateCommand(command);
   if (command.kind === "seed_week") {
@@ -157,8 +158,15 @@ export function planCommand(
       if (!Object.hasOwn(SIMULATOR_PREREQUISITES, id)) invalid("This beat requires a screen action or a verified integration.");
       if (seen.has(id)) continue;
       requireTransition(seen.has(SIMULATOR_PREREQUISITES[id]));
-      emit(id);
-      if (id === "ev_05" || id === "ev_18") emitReasonAlert(pending.at(-1)!, id === "ev_05" ? "ev_06" : "ev_19");
+      if (id === "ev_05" || id === "ev_18") {
+        let reason = classifications === undefined ? SCRIPT.find(event => event.id === id)!.reason : classifications[id] ?? null;
+        if (reason !== null && !Object.hasOwn(templates.reason_short, reason)) reason = null;
+        // A price refusal needs recorded price evidence; never invent a quote from model text.
+        if (reason === "DECLINED_AT_PRICE" && !all().some(event => event.case_id === SCRIPT.find(row => row.id === id)!.case_id
+          && event.type === "claim_run" && typeof event.amount_usd === "number" && Number.isFinite(event.amount_usd))) reason = null;
+        emit(id, { reason, note: "" });
+        if (reason !== null) emitReasonAlert(pending.at(-1)!, id === "ev_05" ? "ev_06" : "ev_19");
+      } else emit(id);
     }
     return pending;
   }
