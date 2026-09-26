@@ -14,7 +14,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { prescribers } from "@/components/data/derive";
-import { isLinked } from "@/components/data/links";
+import { DEMO_PRESCRIBER, useCoordinator } from "@/components/data/coordinator";
 import { local, useLocal } from "@/components/data/local";
 import { isValidNpi } from "@/components/data/npi";
 import { useEvents } from "@/components/data/useEvents";
@@ -29,18 +29,18 @@ const STEPS = [
   {
     icon: Smartphone,
     title: "They approve you in DocUpdate",
-    text: "CoverMyMeds faxes a code to the prescriber. Here the prescriber taps Approve in the app they already verified with.",
+    text: "The delegation concept needs verified prescriber approval. This demo records simulated approval on the doctor's phone.",
   },
   { icon: BadgeCheck, title: "Their stuck patients reach your queue", text: "You can send access fixes. You can't sign or change prescriptions." },
 ];
 
-function StatusBadge({ linked }: { linked: boolean }) {
+function StatusBadge({ linked, label = "Pending approval" }: { linked: boolean; label?: string }) {
   return linked ? (
     <span className="inline-flex items-center gap-1 rounded-full bg-started/15 px-2 py-0.5 text-xs font-medium whitespace-nowrap text-started">
       <BadgeCheck className="size-3.5" /> Linked
     </span>
   ) : (
-    <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium whitespace-nowrap">Pending approval</span>
+    <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium whitespace-nowrap">{label}</span>
   );
 }
 
@@ -48,17 +48,22 @@ function StatusBadge({ linked }: { linked: boolean }) {
 export function PrescribersScreen() {
   const { cases } = useEvents();
   const { approved, requests } = useLocal();
+  const coordinator = useCoordinator();
   const [open, setOpen] = useState(false);
   const [npi, setNpi] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const rows = prescribers(cases).map((p) => {
-    const linked = isLinked(p, cases, approved);
+    const linked = coordinator.linked(p, cases, approved);
     const handoff = cases.find((c) => c.rx.prescriber_label === p && c.events.some((e) => e.type === "handoff"));
-    return { p, linked, since: approved[p] ?? null, viaHandoff: !approved[p] && handoff !== undefined };
+    const savedApproval = coordinator.snapshot?.events.find(event => event.type === "coordinator_linked");
+    return { p, linked, since: coordinator.live ? p === DEMO_PRESCRIBER && savedApproval ? Date.parse(savedApproval.at) : null : approved[p] ?? null,
+      viaHandoff: !coordinator.live && !approved[p] && handoff !== undefined,
+      status: coordinator.live ? !coordinator.ready ? "Checking link…" : coordinator.snapshot?.links[0]?.status === "pending" ? "Pending approval" : "Not linked" : "Pending approval" };
   });
 
   function submit() {
+    if (coordinator.live) return;
     const digits = npi.replace(/\D/g, "");
     if (!isValidNpi(digits)) {
       setError("That isn't a valid NPI. Check the 10 digits.");
@@ -79,10 +84,20 @@ export function PrescribersScreen() {
             The prescribers you work for. Their patients reach your queue once they approve you in DocUpdate.
           </p>
         </div>
-        <Button onClick={() => setOpen(true)}>
-          <Link2 /> Link a prescriber
+        <Button disabled={coordinator.live && (!coordinator.ready || coordinator.pending || coordinator.snapshot?.links[0]?.status === "linked")}
+          onClick={() => coordinator.live ? void coordinator.request() : setOpen(true)}>
+          <Link2 /> {coordinator.live ? "Request Dr. Demo approval" : "Link a prescriber"}
         </Button>
       </header>
+
+      {coordinator.live && <section className="space-y-2 rounded-xl border border-dashed p-4">
+        <p className="text-sm">Simulated staff linking for Dr. Demo only. This shared session does not verify real professional roles. Background Dr. Rivera has a separate prepared demo link.</p>
+        <p className="text-xs text-muted-foreground">Linking arbitrary NPIs is unavailable in live demo mode. No real invitation is sent.</p>
+        <p role="status" aria-atomic="true" className="text-sm">{coordinator.pending ? "Saving the approval request…" : !coordinator.ready ? "Checking saved coordinator links…" : coordinator.snapshot?.links[0]?.status === "linked" ? "Dr. Demo approved the coordinator for this run." : coordinator.snapshot?.links[0]?.status === "pending" ? "Request saved. Approve it on the doctor's Profile tab." : "No request is saved for Dr. Demo yet."}</p>
+        <p role="alert" className="text-sm text-stuck">{coordinator.error}</p>
+        {coordinator.loginPath && <a href="/api/demo-login?next=%2Fcoordinator%2Fprescribers" className="text-sm underline">Sign in to the staff demo</a>}
+        {coordinator.error && <Button variant="outline" onClick={() => void coordinator.refresh()}>Reconnect</Button>}
+      </section>}
 
       <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
         <div className="overflow-x-auto rounded-xl border bg-background">
@@ -107,14 +122,14 @@ export function PrescribersScreen() {
                     <StandIn kind="prescriber" />
                   </td>
                   <td className="p-3">
-                    <StatusBadge linked={r.linked} />
+                    <StatusBadge linked={r.linked} label={r.status} />
                   </td>
                   <td className="p-3 text-muted-foreground">
-                    {r.since ? `Approved ${time(r.since)}` : r.viaHandoff ? "Approved with the first handoff" : "Requested, waiting in DocUpdate"}
+                    {r.since ? `Approved ${time(r.since)}` : r.viaHandoff ? "Approved with the first handoff" : coordinator.live ? r.p !== DEMO_PRESCRIBER && r.linked ? "Prepared background demo link" : r.status === "Pending approval" ? "Requested, waiting in DocUpdate" : "—" : "Requested, waiting in DocUpdate"}
                   </td>
                 </tr>
               ))}
-              {requests.map((r) => (
+              {!coordinator.live && requests.map((r) => (
                 <tr key={r.id} className="border-t align-top">
                   <td className="p-3 text-muted-foreground">Prescriber (from NPI)</td>
                   <td className="p-3 font-mono">NPI ••••••{r.npiLast4}</td>
@@ -156,7 +171,7 @@ export function PrescribersScreen() {
           <SheetHeader>
             <SheetTitle>Link a prescriber</SheetTitle>
             <SheetDescription>
-              Enter their 10-digit NPI. They get an approval request in DocUpdate.
+              Offline concept only: record an NPI-format request on this device. No invitation is sent.
             </SheetDescription>
           </SheetHeader>
           <div className="space-y-2 px-4">
@@ -179,10 +194,9 @@ export function PrescribersScreen() {
                 error && "border-stuck",
               )}
             />
-            {error && <p className="text-sm text-stuck">{error}</p>}
+            <p role="alert" className="text-sm text-stuck">{error}</p>
             <p className="text-xs text-muted-foreground">
-              Only the last four digits are kept. A valid NPI shows the number exists; the prescriber&apos;s approval is
-              what links you.
+              Only the last four digits are kept. The check digit validates the format; it does not verify a real record or identity.
             </p>
           </div>
           <SheetFooter>

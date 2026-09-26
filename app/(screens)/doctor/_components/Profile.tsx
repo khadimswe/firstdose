@@ -5,7 +5,7 @@ import { BadgeCheck, UserRound } from "lucide-react";
 
 import { StandIn } from "@/components/StandIn";
 import { Button } from "@/components/ui/button";
-import { isLinked } from "@/components/data/links";
+import { useCoordinator } from "@/components/data/coordinator";
 import { useLocal } from "@/components/data/local";
 import { useEvents } from "@/components/data/useEvents";
 
@@ -15,9 +15,11 @@ import { CanList, ProfileApprove } from "./ApproveSheet";
 export function Profile() {
   const { cases } = useEvents();
   const { approved } = useLocal();
+  const coordinator = useCoordinator();
   const [open, setOpen] = useState(false);
   const me = cases[0]?.rx.prescriber_label ?? "";
-  const linked = me !== "" && isLinked(me, cases, approved);
+  const linked = me !== "" && coordinator.linked(me, cases, approved);
+  const pending = coordinator.snapshot?.links[0]?.status === "pending";
 
   return (
     <div className="space-y-4">
@@ -46,25 +48,32 @@ export function Profile() {
               <BadgeCheck className="size-3.5" /> Linked
             </span>
           ) : (
-            <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium">Request pending</span>
+            <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium">{coordinator.live ? !coordinator.ready ? "Checking link…" : pending ? "Request pending" : "Not linked" : "Request pending"}</span>
           )}
         </div>
         <p className="text-sm">
           {linked
             ? "Your practice's access coordinator works on your patients' access."
-            : "Your practice's access coordinator asked to help your patients get their first fill."}
+            : coordinator.live && !pending ? "Review access for the fictional demo coordinator." : "Your practice's access coordinator asked to help your patients get their first fill."}
         </p>
         <CanList />
+        {coordinator.live && <>
+          <p role="status" aria-atomic="true" className="text-sm">{linked ? "Coordinator approval is saved for this demo run." : coordinator.pending ? "Saving coordinator link…" : coordinator.ready ? pending ? "Coordinator request is waiting for approval." : "No coordinator link is saved for this run." : "Checking saved coordinator links…"}</p>
+          <p role="alert" className="text-sm text-stuck">{coordinator.error}</p>
+          {coordinator.loginPath && <a href={coordinator.loginPath} className="text-sm underline">Sign in to the staff demo</a>}
+          {coordinator.error && <Button variant="outline" onClick={() => void coordinator.refresh()}>Reconnect</Button>}
+        </>}
         {!linked && (
           <Button
             className="h-11 w-full rounded-full bg-du-purple text-base text-white hover:bg-du-purple/90"
             onClick={() => setOpen(true)}
+            disabled={coordinator.live && (!coordinator.ready || coordinator.pending)}
           >
-            Review request
+            {coordinator.live && !pending ? "Review coordinator access" : "Review request"}
           </Button>
         )}
         <p className="text-xs text-muted-foreground">
-          Staff access works like CoverMyMeds delegation: you approve it once, here, where you&apos;re already verified.
+          {coordinator.live ? "Simulated staff approval in a shared demo session. This does not verify a prescriber's identity." : "Concept: staff access follows prescriber approval, as in CoverMyMeds delegation."}
         </p>
       </section>
 

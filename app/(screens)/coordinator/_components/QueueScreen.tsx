@@ -14,7 +14,8 @@ import {
   stuckEvent,
   type QueueBucket,
 } from "@/components/data/derive";
-import { inQueue, isLinked } from "@/components/data/links";
+import { inQueue } from "@/components/data/links";
+import { useCoordinator } from "@/components/data/coordinator";
 import { useLocal } from "@/components/data/local";
 import { useEvents } from "@/components/data/useEvents";
 import { useNowAt } from "@/components/data/useNowAt";
@@ -45,12 +46,13 @@ function byStuckAge(a: CaseView, b: CaseView) {
 export function QueueScreen() {
   const { cases, catalog, fired, mode, act, canAct } = useEvents();
   const { approved, marks } = useLocal();
+  const coordinator = useCoordinator();
   const nowAt = useNowAt(fired, mode === "supabase");
   const [openId, setOpenId] = useState<string | null>(null);
   const [tab, setTab] = useState<QueueBucket>("needs_you");
 
   const all = prescribers(cases);
-  const linked = all.filter((p) => isLinked(p, cases, approved));
+  const linked = all.filter((p) => coordinator.linked(p, cases, approved));
   const pending = all.filter((p) => !linked.includes(p));
   const mine = cases.filter((c) => inQueue(c, new Set(linked)));
 
@@ -80,6 +82,12 @@ export function QueueScreen() {
           {mode === "mock" && <StandIn kind="price" />}
         </div>
       </header>
+
+      {coordinator.live && <div>
+        <p role="status" aria-atomic="true" className="text-sm text-muted-foreground">{coordinator.ready ? "Queue uses saved coordinator approvals for this run." : "Checking coordinator approvals…"}</p>
+        <p role="alert" className="text-sm text-stuck">{coordinator.error}</p>
+        {coordinator.loginPath && <a href="/api/demo-login?next=%2Fcoordinator" className="text-sm underline">Sign in to the staff demo</a>}
+      </div>}
 
       {pending.length > 0 && (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-dashed bg-background p-4">
