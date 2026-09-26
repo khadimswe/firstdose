@@ -211,24 +211,35 @@ export type ScreenAction =
   | "prescribe" // /doctor → POST /api/rx { patient_id, drug_id }: prescribed, label_shown, copay_card_sent
   | "handoff" // /doctor → POST /api/handoff { case_id }: handoff, fix_chosen
   | "fix" // /coordinator → POST /api/fix { case_id, fix }: fix_sent
-  | "use_card"; // /patient → POST /api/patient/use { case_id }: copay_card_used … recovered
+  | "use_card"; // /patient → POST /api/patient/use { case_id }: acknowledgment only
 
 /**
- * Supabase mode. Vihn implements this in lib/realtime.ts; useEvents() calls it
- * when NEXT_PUBLIC_DATA_SOURCE=supabase. Rows keep the mock event `id` so /sim
- * can tell which beats have fired.
+ * Supabase mode. Vinh implements this in lib/realtime.ts as the module's default
+ * export; useEvents() loads it lazily when NEXT_PUBLIC_DATA_SOURCE=supabase.
+ * Rows keep the fixture id (ev_01...) as `FillEvent.id` so /sim can tick off
+ * fired beats. Every method rejects on failure (never pretends a command
+ * succeeded); the hook turns rejections into a visible error.
  */
 export interface EventSource {
-  /** Rows already in fill_events, oldest first. */
+  /** Rows of the current run, oldest first. */
   load(): Promise<FillEvent[]>;
   /** Calls onInsert for every new fill_events row. Returns an unsubscribe function. */
-  subscribe(onInsert: (event: FillEvent) => void): () => void;
-  /** A screen button. `rx` gives the route its body (patient_id, drug_id, fix). */
+  subscribe(
+    onInsert: (event: FillEvent) => void,
+    onRunChange?: (runId: string, previousRunId: string | null) => void,
+    onError?: (error: Error) => void,
+    onSync?: () => void,
+  ): () => void;
+  /**
+   * A screen button. `rx` supplies the route body: prescribe → POST /api/rx
+   * { patient_id, drug_id }; handoff → /api/handoff { case_id }; fix → /api/fix
+   * { case_id, fix }; use_card → /api/patient/use { case_id }.
+   */
   act(action: ScreenAction, rx: RxCase, fix: FixKey | null): Promise<void>;
-  /** /sim only: replays these mock/events.json ids, in order (POST /api/sim/fire per id). */
+  /** /sim only: appends these fixture ids as one ordered batch (POST /api/sim/fire { ids }). */
   fire(ids: string[]): Promise<void>;
-  /** Clears fill_events for a fresh run (POST /api/sim/reset). */
+  /** Starts a fresh run (POST /api/sim/reset). */
   reset(): Promise<void>;
-  /** From Tiger daily_ttff (GET /api/access/summary). */
+  /** Aggregate only (GET /api/access/summary). */
   accessSummary(): Promise<AccessSummary>;
 }

@@ -67,10 +67,21 @@ describe("durable workflow commands", () => {
     expect(result.inserted[0].status_text).toBe("Dispensed");
   });
 
+  it("persists one app alert when concurrent reason commands are replanned", async () => {
+    const store = new Store();
+    await executeCommand(store, runId, prescribe, now);
+    const barrier = { kind: "fire", ids: ["ev_04", "ev_05"] };
+    const results = await Promise.all([executeCommand(store, runId, barrier, now), executeCommand(store, runId, barrier, now)]);
+    expect(results.map(result => result.inserted.length).sort()).toEqual([0, 3]);
+    expect(store.state.events.filter(event => event.type === "alert_sent")).toMatchObject([
+      { id: "ev_06", wrist: "Maria: Otezla first fill pending. Declined at price ($410 demo)." },
+    ]);
+  });
+
   it("does not partially persist a batch when its later beat is invalid", async () => {
     const store = new Store();
     await executeCommand(store, runId, prescribe, now);
-    await expect(executeCommand(store, runId, { kind: "fire", ids: ["ev_04", "ev_11"] }, now)).rejects.toMatchObject({ code: "invalid_transition" });
+    await expect(executeCommand(store, runId, { kind: "fire", ids: ["ev_04", "ev_05", "ev_11"] }, now)).rejects.toMatchObject({ code: "invalid_transition" });
     expect(store.state.events.map(e => e.id)).toEqual(["ev_01", "ev_03"]);
   });
 

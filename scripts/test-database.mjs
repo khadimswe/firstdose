@@ -100,6 +100,8 @@ try {
       const state = snapshot();
       fails(commit(state, []), /42501.*permission denied/s, role);
       fails(`SELECT public.fd_reset('${state.run_id}');`, /42501.*permission denied/s, role);
+      fails("SELECT public.fd_claim_notification();", /42501.*permission denied/s, role);
+      fails(`SELECT public.fd_finish_notification('${state.run_id}', 'ev_06', gen_random_uuid(), 'accepted');`, /42501.*permission denied/s, role);
     }
   });
   await check("commit preserves event shape/order and queues only wrist events", () => {
@@ -193,6 +195,48 @@ try {
     });
     assert.equal(smoke.status, 0, smoke.stderr || String(smoke.error));
     process.stdout.write(smoke.stdout);
+  });
+  await check("concurrent delivery claims return one active-run notification only once", async () => {
+    const fresh = JSON.parse(sql(`SELECT fd_reset('${snapshot().run_id}');`));
+    assert.equal(sql("SELECT fd_claim_notification();"), "null", "Old-run pending rows must be ignored");
+    sql(commit(fresh, [event("ev_delivery", { wrist: "Prepared delivery test." })]));
+    const results = await Promise.all([1, 2].map(() => parallelSql("BEGIN; SELECT fd_claim_notification(); SELECT pg_sleep(0.3); COMMIT;")));
+    for (const result of results) assert.equal(result.status, 0, result.stderr);
+    const claims = results.map(result => JSON.parse(result.stdout.trim()));
+    assert.equal(claims.filter(Boolean).length, 1);
+    const claimed = claims.find(Boolean);
+    assert.equal(claimed.run_id, fresh.run_id);
+    assert.equal(claimed.script_id, "ev_delivery");
+    assert.equal(claimed.wrist, "Prepared delivery test.");
+    assert.match(claimed.claim_id, /^[0-9a-f-]{36}$/);
+    assert.equal(sql(`SELECT status || ':' || attempts || ':' || (claimed_at IS NOT NULL) FROM notification_outbox WHERE run_id='${fresh.run_id}';`), "claimed:1:true");
+    sql(`UPDATE notification_outbox SET claimed_at = now() - interval '1 day' WHERE run_id='${fresh.run_id}';`);
+    assert.equal(sql("SELECT fd_claim_notification();"), "null", "A crashed worker's claim must never be reclaimed");
+    const finish = (id, status) => `SELECT fd_finish_notification('${fresh.run_id}', 'ev_delivery', '${id}', '${status}');`;
+    assert.equal(sql(finish("00000000-0000-0000-0000-000000000000", "accepted")), "f");
+    fails(finish(claimed.claim_id, "pending"), /22023/);
+    fails(`SELECT fd_finish_notification('${fresh.run_id}', 'ev_delivery', '${claimed.claim_id}', NULL);`, /22023/);
+    assert.equal(sql(finish(claimed.claim_id, "accepted")), "t");
+    assert.equal(sql(finish(claimed.claim_id, "unknown")), "f", "Finished claims cannot be rewritten");
+    assert.equal(sql(`SELECT status || ':' || attempts || ':' || (accepted_at IS NOT NULL) FROM notification_outbox WHERE run_id='${fresh.run_id}';`), "accepted:1:true");
+    assert.equal(sql("SELECT fd_claim_notification();"), "null");
+  });
+  await check("reset skips unsent old notifications while allowing an in-flight outcome to be recorded", () => {
+    const fresh = JSON.parse(sql(`SELECT fd_reset('${snapshot().run_id}');`));
+    sql(commit(fresh, [event("ev_inflight", { wrist: "First alert." }), event("ev_unsent", { wrist: "Second alert." })]));
+    const claimed = JSON.parse(sql("SELECT fd_claim_notification();"));
+    assert.equal(claimed.script_id, "ev_inflight");
+    const next = JSON.parse(sql(`SELECT fd_reset('${fresh.run_id}');`));
+    assert.equal(sql(`SELECT fd_finish_notification('${next.run_id}', '${claimed.script_id}', '${claimed.claim_id}', 'unknown');`), "f");
+    assert.equal(sql(`SELECT fd_finish_notification('${fresh.run_id}', 'ev_unsent', '${claimed.claim_id}', 'unknown');`), "f");
+    assert.equal(sql(`SELECT fd_finish_notification('${fresh.run_id}', '${claimed.script_id}', '${claimed.claim_id}', 'unknown');`), "t");
+    assert.equal(sql(`SELECT status || ':' || attempts || ':' || (accepted_at IS NULL) FROM notification_outbox WHERE run_id='${fresh.run_id}' AND script_id='ev_inflight';`), "unknown:1:true");
+    assert.equal(sql("SELECT fd_claim_notification();"), "null");
+    assert.equal(sql(`SELECT status || ':' || attempts FROM notification_outbox WHERE run_id='${fresh.run_id}' AND script_id='ev_unsent';`), "pending:0");
+    sql(commit(next, [event("ev_inflight", { wrist: "New-run alert." })]));
+    const nextClaim = JSON.parse(sql("SELECT fd_claim_notification();"));
+    assert.equal(nextClaim.run_id, next.run_id);
+    assert.notEqual(nextClaim.claim_id, claimed.claim_id);
   });
   console.log(`${passed} database checks passed (${image}).`);
 } finally {

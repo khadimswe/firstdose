@@ -55,6 +55,10 @@ export function AscendThread({
         <SideBadge side="ascend" />
       </header>
 
+      <p role="status" aria-atomic="true" className="sr-only">
+        {bubbles.findLast((b): b is Extract<Bubble, { kind: "note" }> => b.kind === "note" && b.tone === "confirmed")?.text ?? ""}
+      </p>
+
       <ol ref={list} className="min-h-0 flex-1 space-y-4 overflow-y-auto p-4">
         {bubbles.length === 0 && (
           <li className="pt-10 text-center text-sm text-muted-foreground">No messages.</li>
@@ -111,7 +115,7 @@ export function AscendThread({
               <div
                 className={cn(
                   "max-w-[90%] space-y-1 rounded-2xl rounded-tl-sm bg-background p-4 shadow-sm",
-                  b.tone === "started" && "border-l-4 border-started",
+                  b.tone === "confirmed" && "border-l-4 border-started",
                   b.tone === "visit" && "border-l-4 border-foreground",
                 )}
               >

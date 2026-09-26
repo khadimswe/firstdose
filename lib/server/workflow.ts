@@ -1,6 +1,8 @@
 import type { FillEvent, FixKey, ReasonKey } from "@/components/data/types";
 import eventsJson from "@/mock/events.json";
 import patientsJson from "@/mock/patients.json";
+import templates from "@/mock/templates.json";
+import { fill, money } from "@/components/copy/fill";
 import { routeFix } from "./router";
 
 export type WorkflowCommand =
@@ -110,12 +112,30 @@ export function planCommand(
     seen.add(id);
   }
 
+  function emitReasonAlert(reasonEvent: FillEvent, alertId: string) {
+    const rx = patientsJson.cases.find((row) => row.id === reasonEvent.case_id)!;
+    const patient = patientsJson.patients.find((row) => row.id === rx.patient_id)!;
+    const drug = patientsJson.drugs.find((row) => row.id === rx.drug_id)!;
+    const reason = reasonEvent.reason!;
+    const reasonTemplate = templates.reason_short[reason];
+    const quote = all().findLast((event) => event.case_id === rx.id && event.type === "claim_run" && event.amount_usd !== null)?.amount_usd;
+    if (reasonTemplate.includes("{quote}") && (typeof quote !== "number" || !Number.isFinite(quote))) invalid("The price alert requires a recorded pharmacy quote.");
+    const wrist = fill(templates.wrist.stuck, {
+      patient_short: patient.display_short,
+      drug: drug.brand,
+      reason_short: fill(reasonTemplate, { quote: typeof quote === "number" ? money(quote) : "" }),
+    });
+    // Legacy alert_sent records an app alert; the transaction queues provider delivery separately.
+    emit(alertId, { reason, wrist });
+  }
+
   if (command.kind === "fire") {
     for (const id of command.ids) {
       if (!Object.hasOwn(SIMULATOR_PREREQUISITES, id)) invalid("This beat requires a screen action or a verified integration.");
       if (seen.has(id)) continue;
       requireTransition(seen.has(SIMULATOR_PREREQUISITES[id]));
       emit(id);
+      if (id === "ev_05" || id === "ev_18") emitReasonAlert(pending.at(-1)!, id === "ev_05" ? "ev_06" : "ev_19");
     }
     return pending;
   }

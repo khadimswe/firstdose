@@ -1,6 +1,6 @@
 # Voice handoff backend
 
-Task 4.1 is implemented on `backend/voice-handoff`, temporarily based on `backend/maria-core` at `cafadf2`. Retarget onto reviewed main after the backend prerequisite lands. `PLAN.md` remains the execution dashboard. This slice adds transcription and a proposed handoff; microphone capture and confirmation UI belong to Deem.
+Task 4.1's backend is implemented on `backend/voice-handoff`, synchronized with main at `54c3d22` after the backend prerequisite and coordinator shell landed. `PLAN.md` remains the execution dashboard. This slice adds transcription and a proposed handoff; microphone capture and confirmation UI belong to Deem.
 
 ## Provider contract
 
@@ -12,7 +12,8 @@ Names in keyterms are the two fictional demo patients. Record only the short fic
 
 `POST /api/voice` requires the same private demo authentication as the existing commands:
 
-- `Authorization: Bearer <FIRSTDOSE_DEMO_TOKEN>`; at least 32 characters, never `NEXT_PUBLIC_*`, a URL, or a committed/public bundle. The existing browser session integration is still pending.
+- Browser: use the existing `/api/demo-login` flow and its signed HttpOnly session cookie. Same-origin uploads require an `Origin` header; normal browser fetch supplies it. Do not put the demo token into frontend code. An invalid explicit Authorization header cannot fall back to a valid cookie.
+- CLI: `Authorization: Bearer <FIRSTDOSE_DEMO_TOKEN>`; at least 32 characters, never `NEXT_PUBLIC_*`, a URL, or a committed/public bundle. This uses the same authentication and origin helpers as the current workflow commands.
 - `X-FirstDose-Run: <run UUID>` captured when recording starts.
 - `multipart/form-data` with exactly one file field named `audio`. Let the browser set the boundary. Optional `keyterms` is the literal string `true` or `false`; default is `true`. No user-supplied prompt, URL, case ID, or confirmation field is accepted.
 

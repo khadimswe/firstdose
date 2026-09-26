@@ -3,6 +3,7 @@ import { voiceHandler } from "@/lib/server/voice-http";
 import { commandHandler } from "@/lib/server/command-http";
 import type { Snapshot, WorkflowStore } from "@/lib/server/commands";
 import { planCommand } from "@/lib/server/workflow";
+import { issueDemoCookie } from "@/lib/server/demo-session";
 
 const runId = "63d4b651-0eb5-440d-a523-e8daf82f36ca";
 const env = { FIRSTDOSE_DEMO_TOKEN: "local-demo-token-at-least-32-characters", XAI_API_KEY: "local-test-key" };
@@ -43,6 +44,42 @@ describe("voice HTTP proposal boundary", () => {
 
   it("fails closed without demo auth configuration", async () => {
     expect((await voiceHandler({ env: {}, fetchImpl: provider })(request())).status).toBe(503);
+  });
+
+  it("accepts the existing browser session with a same-origin upload", async () => {
+    const original = request();
+    const headers = new Headers(original.headers);
+    headers.delete("authorization");
+    headers.set("cookie", issueDemoCookie(original, env).split(";")[0]);
+    headers.set("origin", "http://localhost:3000");
+    const authenticated = new Request(original, { headers });
+    const response = await voiceHandler({ env, fetchImpl: provider })(authenticated);
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({ intent: "SEND_TO_COORDINATOR", case_id: "rx_001" });
+  });
+
+  it.each([undefined, "https://attacker.example"])("rejects a browser session without a matching origin: %s", async origin => {
+    const original = request();
+    const headers = new Headers(original.headers);
+    headers.delete("authorization");
+    headers.set("cookie", issueDemoCookie(original, env).split(";")[0]);
+    if (origin) headers.set("origin", origin);
+    const fetchImpl = vi.fn(provider);
+    const response = await voiceHandler({ env, fetchImpl })(new Request(original, { headers }));
+    expect(response.status).toBe(403);
+    expect(await response.json()).toEqual({ error: "forbidden_origin" });
+    expect(fetchImpl).not.toHaveBeenCalled();
+  });
+
+  it("does not use a valid cookie to bypass an invalid explicit bearer", async () => {
+    const original = request();
+    const headers = new Headers(original.headers);
+    headers.set("authorization", "Bearer wrong");
+    headers.set("cookie", issueDemoCookie(original, env).split(";")[0]);
+    headers.set("origin", "http://localhost:3000");
+    const fetchImpl = vi.fn(provider);
+    expect((await voiceHandler({ env, fetchImpl })(new Request(original, { headers }))).status).toBe(401);
+    expect(fetchImpl).not.toHaveBeenCalled();
   });
 
   it.each(["missing", "duplicate", "text", "extra", "keyterms", "url"])("rejects invalid multipart shape: %s", async kind => {

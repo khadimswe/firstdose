@@ -6,7 +6,7 @@ import { executeCommand, PersistenceError, type Snapshot, type WorkflowStore } f
 const container = process.argv[2];
 if (!/^firstdose-db-test-\d+-\d+$/.test(container ?? "")) throw new Error("Expected the disposable test container name.");
 const literal = (value: unknown) => `'${JSON.stringify(value).replaceAll("'", "''")}'::jsonb`;
-async function query(sql: string): Promise<Snapshot> {
+async function query<T = Snapshot>(sql: string): Promise<T> {
   return new Promise((resolve, reject) => {
     const child = spawn("docker", ["exec", "-i", container, "psql", "-X", "-qAt", "-v", "ON_ERROR_STOP=1", "-U", "postgres"], { stdio: "pipe" });
     let output = "", error = "";
@@ -38,7 +38,19 @@ async function main() {
   assert.deepEqual(first.map(r => r.inserted.length).sort(), [0, 2]);
   console.log("PASS integrated concurrent prescriptions commit once");
 
-  await command({ kind: "fire", ids: ["ev_04", "ev_05"] });
+  const barrier = { kind: "fire", ids: ["ev_04", "ev_05"] };
+  const alerts = await Promise.all([command(barrier), command(barrier)]);
+  assert.deepEqual(alerts.map(result => result.inserted.length).sort(), [0, 3]);
+  const alertState = await store.snapshot();
+  const appAlerts = alertState.events.filter(event => event.type === "alert_sent");
+  assert.equal(appAlerts.length, 1);
+  assert.equal(appAlerts[0].id, "ev_06");
+  assert.equal(appAlerts[0].wrist, "Maria: Otezla first fill pending. Declined at price ($410 demo).");
+  const queued = await query<{ script_id: string; wrist: string; status: string; attempts: number }[]>(
+    `SELECT jsonb_agg(jsonb_build_object('script_id', script_id, 'wrist', wrist, 'status', status, 'attempts', attempts)) FROM notification_outbox WHERE run_id='${state.run_id}';`,
+  );
+  assert.deepEqual(queued, [{ script_id: "ev_06", wrist: appAlerts[0].wrist, status: "pending", attempts: 0 }]);
+  console.log("PASS integrated concurrent reason commands create one app alert and pending outbox entry");
   await command({ kind: "handoff", case_id: "rx_001" });
   await command({ kind: "fix", case_id: "rx_001", fix: "RESEND_COPAY_CARD" });
   await command({ kind: "use_card", case_id: "rx_001" });

@@ -1,4 +1,5 @@
-import { authorizeDemo, HttpError } from "./demo-auth";
+import { demoAccess, demoConfigured } from "./demo-session";
+import { HttpError, requireSameOrigin } from "./http-body";
 import { isRunId } from "./supabase-workflow";
 import { readVoiceBody, transcribeAudio, VoiceError, type VoiceOptions } from "./voice";
 
@@ -10,7 +11,10 @@ export function voiceHandler(options: Pick<VoiceOptions, "env" | "fetchImpl"> = 
   return async (request: Request): Promise<Response> => {
     try {
       const env = options.env ?? process.env;
-      authorizeDemo(request, env);
+      if (!demoConfigured(env)) throw new HttpError(503, "demo_not_configured");
+      const access = demoAccess(request, env);
+      if (!access) throw new HttpError(401, "unauthorized");
+      requireSameOrigin(request, access === "session");
       const runId = request.headers.get("x-firstdose-run");
       if (!runId) throw new HttpError(428, "run_required");
       if (!isRunId(runId)) throw new HttpError(400, "invalid_run");

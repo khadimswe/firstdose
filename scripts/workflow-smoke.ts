@@ -20,9 +20,14 @@ const rows = steps.map(([step, command]) => {
   if (command.kind === "use_card") {
     assert(!history.some((event) => event.status_text === "Dispensed"), "Acknowledgment must not confirm dispensing");
   }
+  if (command.kind === "fire" && command.ids.includes("ev_05")) {
+    assert.deepEqual(events.map((event) => event.id), ["ev_04", "ev_05", "ev_06"]);
+    assert.equal(events.at(-1)?.wrist, "Maria: Otezla first fill pending. Declined at price ($410 demo).");
+  }
   return { step, new_events: events.map((event) => event.id).join(", ") };
 });
 
 assert.equal(history.filter((event) => event.status_text === "Dispensed").length, 1);
+assert.equal(history.filter((event) => event.type === "alert_sent").length, 1);
 console.table(rows);
 console.log("Local workflow passed. No database writes, provider calls, or watch notifications were made.");
