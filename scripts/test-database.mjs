@@ -65,6 +65,7 @@ try {
     assert.match(state.run_id, /^[0-9a-f-]{36}$/);
     assert.equal(state.revision, 0);
     assert.deepEqual(state.events, []);
+    assert.deepEqual(JSON.parse(sql(`SELECT fd_read_run('${state.run_id}');`)), { run_id: state.run_id, events: [] });
   });
   const seed = spawnSync(process.execPath, ["--import", "tsx", "scripts/seed.ts"], { cwd: root, encoding: "utf8" });
   assert.equal(seed.status, 0, seed.stderr);
@@ -102,6 +103,7 @@ try {
       fails(`SELECT public.fd_reset('${state.run_id}');`, /42501.*permission denied/s, role);
       fails("SELECT public.fd_claim_notification();", /42501.*permission denied/s, role);
       fails(`SELECT public.fd_finish_notification('${state.run_id}', 'ev_06', gen_random_uuid(), 'accepted');`, /42501.*permission denied/s, role);
+      fails(`SELECT public.fd_read_run('${state.run_id}');`, /42501.*permission denied/s, role);
     }
   });
   await check("commit preserves event shape/order and queues only wrist events", () => {
@@ -153,6 +155,9 @@ try {
     const next = JSON.parse(sql(commit(after, [event("ev_01")])));
     assert.equal(next.events.length, 1);
     assert.equal(sql(`SELECT sequence FROM fill_events WHERE run_id='${after.run_id}';`), "1");
+    assert.deepEqual(JSON.parse(sql(`SELECT fd_read_run('${before.run_id}');`)), { run_id: before.run_id, events: before.events });
+    assert.deepEqual(JSON.parse(sql(`SELECT fd_read_run('${after.run_id}');`)), { run_id: after.run_id, events: next.events });
+    assert.equal(sql("SELECT fd_read_run('00000000-0000-0000-0000-000000000000') IS NULL;"), "t");
   });
   await check("concurrent commits admit one revision winner", async () => {
     const before = snapshot();

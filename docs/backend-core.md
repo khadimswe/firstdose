@@ -71,3 +71,29 @@ The database suite creates a disposable PostgreSQL 16 container without networki
 The seed generator writes reviewable SQL only. It preserves existing label rows so rerunning it cannot overwrite Minh's reviewed cache with placeholders. Before a hosted apply, review the migration and generated seed against the target project and existing schema. Apply the migration, then seed through the team's database workflow. A project API key alone is not a database DDL connection. No hosted application is performed by these scripts.
 
 After migration and frontend integration, verify two real clients, reset/reconnect, reviewed doctor alerts, independent pharmacy confirmation, cached labels and physical notification delivery before marking the Phase 1 gate complete.
+
+## Phase 2: committed-history handoff to Minh
+
+Vinh's integration preparation is on `backend/phase2-integration`, based on the local `backend/maria-core` checkpoint `cafadf2`. The Phase 1 live gate remains unverified. This branch supplies the durable input for Minh's analytics replay; it does not implement Tiger projection, storage, summaries or Gemini classification.
+
+Migration `202609260002_read_run.sql` adds `fd_read_run(run UUID)`. It returns one database snapshot of the requested run's events, ordered by committed sequence. Reset retains this history, so retrying an old run cannot accidentally read the new active run. An existing empty run returns an empty array; an unknown run or failed read is an error at the TypeScript boundary. Only `service_role` can execute this read; existing table restrictions remain in force.
+
+The server export `readCommittedEvents(runId)` in `lib/server/supabase-workflow.ts` returns `Promise<CommittedEvent[]>`:
+
+```ts
+type CommittedEvent = {
+  run_id: string;
+  script_id: string;
+  event: FillEvent & { at: string };
+};
+```
+
+This matches Minh's proposed C1/C3 input structurally. Pass the function to his `replayRun` when that module lands. The reader preserves event timestamps and script IDs, validates run identity and rejects malformed/duplicate history. It performs no writes and no provider retry; a caller can retry the entire replay using the same durable history. Reads include all event types; projection remains responsible for selecting metric evidence.
+
+These events contain practice-side fields and must stay on the server. Send only Minh's explicitly allowlisted, HMAC-projected metric rows to Tiger, never this raw history. The reader does not establish analytics freshness, successful Tiger delivery or anonymous partner exports. A failed replay must not undo committed workflow actions or appear as a current successful summary.
+
+Confirmed planner semantics for integration: Maria's `use_card` action emits only `ev_10` acknowledgment; `ev_11` is a separate simulator-only pharmacy `claim_run` with status `Dispensed`. That independent confirmation can feed the fill metric. `started`/`recovered` and acknowledgment alone do not establish dispensing. James remains routed to access support without bridge eligibility evidence.
+
+Remaining dependencies: Minh's classifier/replay modules and real-provider checks; Vinh's replay trigger and freshness handling; Deem's adapter/UI integration; reviewed hosted migrations and the Maria two-device/watch gate. No new endpoint, provider credentials, shared fixture change or deployment is included here.
+
+Local verification on September 26: 187 unit tests, 12 PostgreSQL database checks (including real empty/retained run reads and denied browser access), lint and production build passed. Read-only agent review found no significant issues. An affected-owner review is still required before merging.
