@@ -96,8 +96,7 @@ Sat Sep 26, 2026 · Deem. Paste-ready content, not a rendered deck. The 4-minute
 ## Sponsor openings (only with the evidence in the claims register)
 
 - **Impiricus:** "Your FAQ says staff accounts are on the roadmap. Here's what the first one does, and the doctor still approves it."
-- **Gemini** (once Minh's classifier is live): "Gemini does one narrow job: turn a pharmacy or hub note into a reason code, or unknown. Rules choose the action."
-- **Tiger Data** (once 2.3 is live): "The event history answers confirmed first fills and time to first fill. Here's the query."
-- **ElevenLabs** (once 6.8 plays in the app): "The coordinator approves a templated message, and ElevenLabs voices it in the patient's language."
-- **Notability:** "We ran our interviews and sketches in Notability." Add 2 screenshots and the tag on Devpost.
-- **SpaceXAI** (only if #16's Grok handoff is verified): "Grok transcribes a spoken handoff that the doctor confirms before anything happens."
+- **Gemini** (merged #23/#39; live mode classifies the pharmacy note. If Gemini fails, the case stays unclassified, gets no doctor alert and routes to access support, so keep the mock fallback ready): "Gemini does one narrow job: turn a pharmacy or hub note into a reason code, or unknown. Rules choose the action."
+- **Tiger Data** (merged #37/#39; /access reads the live Tiger summary): "The event history answers confirmed first fills and time to first fill. Here's the query."
+- **ElevenLabs** (pre-generated EN/ES mp3s for the Otezla message; play it on stage to prove it): "The coordinator approves a templated message, and ElevenLabs voices it in the patient's language."
+- **SpaceXAI** (entered on Grok; we make no Cursor claim): "Grok transcribes a spoken handoff that the doctor confirms before anything happens."
