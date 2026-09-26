@@ -48,7 +48,7 @@ async function readJson(response: Response): Promise<unknown> {
 }
 
 /** Cookie-authenticated polling through the practice server; no browser Supabase credentials. */
-export function createPollingEventSource(options: Options = {}): PollingEventSource {
+export function createPollingEventSource(options: Options = {}): PollingEventSource & { seedWeek(): Promise<void> } {
   const fetcher = options.fetch ?? ((input, init) => globalThis.fetch(input, init));
   const visibility = options.document ?? (typeof document === "undefined" ? undefined : document);
   const interval = options.pollIntervalMs ?? 1_500;
@@ -235,6 +235,7 @@ export function createPollingEventSource(options: Options = {}): PollingEventSou
       }
     },
     fire: ids => mutate("/api/sim/fire", { ids }),
+    seedWeek: () => mutate("/api/sim/seed", {}),
     reset: () => mutate("/api/sim/reset", {}, true),
     async accessSummary(): Promise<AccessSummary> {
       const body = await readJson(await request("/api/access/summary"));

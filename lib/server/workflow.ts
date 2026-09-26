@@ -4,8 +4,10 @@ import patientsJson from "@/mock/patients.json";
 import templates from "@/mock/templates.json";
 import { fill, money } from "@/components/copy/fill";
 import { routeFix } from "./router";
+import { WEEK_PATIENTS, WEEK_CASES, WEEK_EVENTS, WEEK_ACTIONS, seedWeekEvents, weekActionIds } from "../demo-week";
 
 export type WorkflowCommand =
+  | { kind: "seed_week" }
   | { kind: "prescribe"; patient_id: string; drug_id: string }
   | { kind: "handoff" | "use_card"; case_id: string }
   | { kind: "fix"; case_id: string; fix: FixKey }
@@ -18,7 +20,9 @@ export class WorkflowError extends Error {
   }
 }
 
-const SCRIPT = eventsJson.events as FillEvent[];
+const SCRIPT = [...eventsJson.events as FillEvent[], ...WEEK_ACTIONS];
+const CASES = [...patientsJson.cases, ...WEEK_CASES];
+const PATIENTS = [...patientsJson.patients, ...WEEK_PATIENTS];
 const SIMULATED_FIX_NOTES: Record<FixKey, string> = {
   RESEND_COPAY_CARD: "Simulated savings-card resend (stand-in).",
   BRIDGE_SAMPLE: "Simulated bridge-sample request (stand-in).",
@@ -47,6 +51,9 @@ export function validateCommand(value: unknown): asserts value is WorkflowComman
   const command = value as Record<string, unknown>;
   let keys: string[];
   switch (command.kind) {
+    case "seed_week":
+      keys = ["kind"];
+      break;
     case "prescribe":
       keys = ["kind", "patient_id", "drug_id"];
       if (typeof command.patient_id !== "string" || typeof command.drug_id !== "string") invalid("Patient and drug IDs are required.");
@@ -62,7 +69,7 @@ export function validateCommand(value: unknown): asserts value is WorkflowComman
       break;
     case "fire":
       keys = ["kind", "ids"];
-      if (!Array.isArray(command.ids) || command.ids.length === 0 || command.ids.length > SCRIPT.length || !command.ids.every((id) => typeof id === "string")) invalid("Supply a non-empty, bounded list of event IDs.");
+      if (!Array.isArray(command.ids) || command.ids.length === 0 || command.ids.length > eventsJson.events.length || !command.ids.every((id) => typeof id === "string")) invalid("Supply a non-empty, bounded list of event IDs.");
       break;
     default:
       invalid("Unknown command.");
@@ -90,6 +97,13 @@ export function planCommand(
   now: string,
 ): FillEvent[] {
   validateCommand(command);
+  if (command.kind === "seed_week") {
+    isoMillis(now);
+    const seen = new Set(history.map(event => event.id));
+    if (WEEK_EVENTS.every(event => seen.has(event.id))) return [];
+    requireTransition(history.length === 0);
+    return seedWeekEvents(now);
+  }
   let nextTime = isoMillis(now);
   for (const event of history) nextTime = Math.max(nextTime, isoMillis(event.at) + 1);
   const pending: FillEvent[] = [];
@@ -150,10 +164,10 @@ export function planCommand(
   }
 
   const rx = command.kind === "prescribe"
-    ? patientsJson.cases.find((row) => row.patient_id === command.patient_id && row.drug_id === command.drug_id)
-    : patientsJson.cases.find((row) => row.id === command.case_id);
+    ? CASES.find((row) => row.patient_id === command.patient_id && row.drug_id === command.drug_id)
+    : CASES.find((row) => row.id === command.case_id);
   if (!rx) invalid("Unknown fictional case or patient/drug pair.");
-  const patient = patientsJson.patients.find((row) => row.id === rx.patient_id)!;
+  const patient = PATIENTS.find((row) => row.id === rx.patient_id)!;
   const caseEvents = all().filter((event) => event.case_id === rx.id);
   const has = (type: FillEvent["type"]) => caseEvents.some((event) => event.type === type);
   const reason = caseEvents.findLast((event) => event.type === "reason_classified")?.reason as ReasonKey | null | undefined;
@@ -166,7 +180,9 @@ export function planCommand(
   });
   const ids = rx.id === "rx_001"
     ? { prescribe: "ev_01", handoff: "ev_07", choose: "ev_08", send: "ev_09" }
-    : { prescribe: "ev_14", handoff: "ev_20", choose: "ev_21", send: "ev_21b" };
+    : rx.id === "rx_002"
+      ? { prescribe: "ev_14", handoff: "ev_20", choose: "ev_21", send: "ev_21b" }
+      : weekActionIds(rx.id);
 
   switch (command.kind) {
     case "prescribe":

@@ -65,6 +65,7 @@ try {
     assert.match(state.run_id, /^[0-9a-f-]{36}$/);
     assert.equal(state.revision, 0);
     assert.deepEqual(state.events, []);
+    assert.deepEqual(JSON.parse(sql(`SELECT fd_read_run('${state.run_id}');`)), { run_id: state.run_id, events: [] });
   });
   const seed = spawnSync(process.execPath, ["--import", "tsx", "scripts/seed.ts"], { cwd: root, encoding: "utf8" });
   assert.equal(seed.status, 0, seed.stderr);
@@ -77,14 +78,15 @@ try {
       assert.equal(readFileSync(output, "utf8"), seed.stdout);
     } finally { if (existsSync(output)) unlinkSync(output); }
   });
-  await check("seed is repeatable and retains placeholder labels", () => {
+  await check("seed is repeatable and retains label artifacts", () => {
     sql(seed.stdout); sql(seed.stdout);
-    assert.equal(sql("SELECT count(*) FROM patients;"), "2");
+    assert.equal(sql("SELECT count(*) FROM patients;"), "15");
     assert.equal(sql("SELECT count(*) FROM drugs;"), "2");
-    assert.equal(sql("SELECT count(*) FROM rx_cases;"), "2");
+    assert.equal(sql("SELECT count(*) FROM rx_cases;"), "15");
     const expected = JSON.parse(readFileSync(`${root}/mock/labels.json`, "utf8")).labels;
     const actual = JSON.parse(sql("SELECT jsonb_agg(to_jsonb(l) ORDER BY drug_id) FROM labels l;"));
-    assert.deepEqual(actual, expected.sort((a,b) => a.drug_id.localeCompare(b.drug_id)));
+    const normalizeTimestamp = (label) => ({ ...label, fetched_at: label.fetched_at === null ? null : new Date(label.fetched_at).toISOString() });
+    assert.deepEqual(actual.map(normalizeTimestamp), expected.sort((a,b) => a.drug_id.localeCompare(b.drug_id)).map(normalizeTimestamp));
     sql("UPDATE labels SET fetched_at='2026-09-26T14:00:00Z', byte_exact=true WHERE drug_id='drug_otezla';");
     sql(seed.stdout);
     assert.equal(sql("SELECT byte_exact FROM labels WHERE drug_id='drug_otezla';"), "t");
@@ -102,6 +104,7 @@ try {
       fails(`SELECT public.fd_reset('${state.run_id}');`, /42501.*permission denied/s, role);
       fails("SELECT public.fd_claim_notification();", /42501.*permission denied/s, role);
       fails(`SELECT public.fd_finish_notification('${state.run_id}', 'ev_06', gen_random_uuid(), 'accepted');`, /42501.*permission denied/s, role);
+      fails(`SELECT public.fd_read_run('${state.run_id}');`, /42501.*permission denied/s, role);
     }
   });
   await check("commit preserves event shape/order and queues only wrist events", () => {
@@ -153,6 +156,9 @@ try {
     const next = JSON.parse(sql(commit(after, [event("ev_01")])));
     assert.equal(next.events.length, 1);
     assert.equal(sql(`SELECT sequence FROM fill_events WHERE run_id='${after.run_id}';`), "1");
+    assert.deepEqual(JSON.parse(sql(`SELECT fd_read_run('${before.run_id}');`)), { run_id: before.run_id, events: before.events });
+    assert.deepEqual(JSON.parse(sql(`SELECT fd_read_run('${after.run_id}');`)), { run_id: after.run_id, events: next.events });
+    assert.equal(sql("SELECT fd_read_run('00000000-0000-0000-0000-000000000000') IS NULL;"), "t");
   });
   await check("concurrent commits admit one revision winner", async () => {
     const before = snapshot();
