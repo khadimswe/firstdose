@@ -188,3 +188,59 @@ export function accessSummary(fired: FillEvent[]): AccessSummary {
     reason_tally,
   };
 }
+
+// --- v2 coordinator views (Phase 6). Still pure: case state in, labels out. ---
+
+/** Who the case is waiting on right now (6.11). null before the order is signed and after a confirmed fill. */
+export type WaitingOn = "Doctor" | "Coordinator" | "Patient" | "Pharmacy" | "Access team" | "Sample program";
+
+export function waitingOn(c: CaseView): WaitingOn | null {
+  if (!c.ordered || hasConfirmedFill(c)) return null;
+  switch (c.status) {
+    case "stuck":
+      return "Doctor";
+    case "handed_off":
+      return "Coordinator";
+    case "fix_sent":
+      if (c.fix === "RESEND_COPAY_CARD") return c.cardUsed ? "Pharmacy" : "Patient";
+      if (c.fix === "BRIDGE_SAMPLE") return "Sample program";
+      return "Access team";
+    default:
+      return "Pharmacy";
+  }
+}
+
+/** The event that made the case stuck (its reason), if any. */
+export function stuckEvent(c: CaseView): FillEvent | undefined {
+  return c.events.find((e) => e.type === "reason_classified");
+}
+
+/** Where a case sits in the coordinator's queue. */
+export type QueueBucket = "needs_you" | "waiting" | "confirmed";
+
+export function queueBucket(c: CaseView): QueueBucket {
+  if (hasConfirmedFill(c)) return "confirmed";
+  if (c.status === "handed_off" && c.fix !== null) return "needs_you";
+  return "waiting";
+}
+
+/**
+ * Link status between the coordinator and a prescriber (6.12). The approval
+ * happens in the same tap as the first "Send to my coordinator", so any handoff
+ * from that prescriber means approved. `approved` holds approvals made on the
+ * doctor's Profile tab before any handoff (local until Vinh's C7 events).
+ */
+export function prescriberLinked(
+  prescriber: string,
+  cases: CaseView[],
+  approved: Readonly<Record<string, unknown>>,
+): boolean {
+  if (prescriber in approved) return true;
+  return cases.some(
+    (c) => c.rx.prescriber_label === prescriber && c.events.some((e) => e.type === "handoff"),
+  );
+}
+
+export function prescribers(cases: CaseView[]): string[] {
+  return [...new Set(cases.map((c) => c.rx.prescriber_label))];
+}

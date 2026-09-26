@@ -33,3 +33,12 @@ export function money(usd: number): string {
     maximumFractionDigits: 2,
   });
 }
+
+/** How long something has waited: "0:40" under an hour, then "3 h 5 m", then "2 d". */
+export function duration(seconds: number): string {
+  if (!Number.isFinite(seconds)) return "—";
+  const s = Math.max(0, Math.round(seconds));
+  if (s < 3600) return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+  if (s < 86_400) return `${Math.floor(s / 3600)} h ${Math.floor((s % 3600) / 60)} m`;
+  return `${Math.floor(s / 86_400)} d`;
+}
