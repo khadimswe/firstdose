@@ -44,19 +44,20 @@ Legend: [ ] not started · [-] in progress · [x] done · [!] blocked
   3. the fill-status line;
   4. Concierge and Profile.
 - [ ] **6.10** Before/after slide: their App Store home screenshot beside our Home still, credited, "Not affiliated".
-- [ ] **6.2** Coordinator home, `screen/coordinator-home`:
+- [ ] **6.2** Coordinator home, `screen/coordinator-shell`, plus the `/demo` launcher that replaces the index:
   - `/` opens it;
   - summary strip;
   - sorted by time stuck;
   - contact marks (C2);
   - header per W3.
+- [ ] **6.12** Prescribers, `screen/prescribers`: link a prescriber by NPI, and the doctor approves on the phone (the approve sheet also opens on the first handoff). Mock overrides first; live needs Vinh's C7 events.
 - [ ] **6.11** "Waiting on" column in the queue, and a label on the board lanes.
 - [ ] **6.7 UI** Coordinator tiles on `/access` (needs 6.4 and Minh's rollup).
 - [ ] **6.6 UI** "Likely colleagues → Invite", names hidden (needs `/api/npi`).
 - [ ] **6.5 UI** "Raw message" toggle on `/sim` (needs Vinh's RxFill fields).
 - [ ] **6.8** Spanish patient message with `tts.mjs` (needs C3).
 
-**2 PM cut order:** Grok → 6.6 → 6.7 → 6.8 → 6.11 → surfaces 3–4 (shown on the slide instead). **Never cut:** the coordinator queue with its one-tap fix, the Rx Alerts card, the pharmacy re-run, the verified label, and who sees what.
+**2 PM cut order:** Grok → 6.6 → 6.7 → 6.8 → the 6.12 Prescribers page (keep the approve sheet) → 6.11 → surfaces 3–4 (shown on the slide instead). **Never cut:** the coordinator queue with its one-tap fix, the Rx Alerts card, the pharmacy re-run, the verified label, and who sees what.
 
 ## 2:30–9 PM
 

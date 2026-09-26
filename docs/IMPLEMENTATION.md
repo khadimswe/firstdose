@@ -81,11 +81,13 @@ Order after the workshop: 6.0 merges, then 6.3 (if W3 = DocUpdate) and 6.10, the
 
 ### 6.2 Coordinator home (D): `screen/coordinator-home`
 
-- [ ] `/` opens `/coordinator`; the screen index moves to `/screens`.
+- [ ] Build the app shell, `coordinator/layout.tsx`: a sidebar with Queue and Prescribers, and the header per W3.
+- [ ] `/` redirects to `/coordinator`. Today's index becomes `/demo`: one card per device (role, route, side, a QR), the mode, reset, and the watch preview. See `frontend-plan.md`, "v2 structure".
 - [ ] A summary strip: stuck / waiting / fill confirmed this week, derived in `derive.ts` from case state.
 - [ ] Stuck cases sorted by time stuck (oldest first); `useNowSeconds` from #7 keeps it live.
 - [ ] "Reached patient" / "Left message" marks: local state in mock mode until C2 says otherwise.
 - [ ] Header from W3: "FirstDose for DocUpdate" or "An Ascend skill for the practice", with its stand-in label.
+- [ ] Tabs: Needs a fix / Waiting on patient or pharmacy / Fill confirmed. A row click opens a Sheet with the event timeline as it arrived, the eligibility line, the fix and the marks.
 - [ ] Desk table stays at md and up; cards with a pinned fix on a phone.
 - **Done when:** checked at 1440 and 390 on mock, then live.
 
@@ -93,14 +95,27 @@ Order after the workshop: 6.0 merges, then 6.3 (if W3 = DocUpdate) and 6.10, the
 
 Build only if W3 = DocUpdate. If W3 = Ascend, keep the v1 Ascend thread as the doctor surface, move it to phone width, and put the four surfaces on a slide instead.
 
-- [ ] A phone shell at 390×844: a bottom tab bar (Home · Patients · Concierge · Profile), a dark navy header with a purple primary, and `<StandIn>` "Concept: FirstDose inside DocUpdate · Not affiliated" on every screen. No DocUpdate logo, wordmark or screenshot.
+- [ ] A phone shell at 390×844 in `doctor/layout.tsx`, one route per tab (`/doctor`, `/doctor/new`, `/doctor/patients/[id]`, `/doctor/concierge`, `/doctor/profile`; selected case in `?case=`): a bottom tab bar (Home · Patients · Concierge · Profile), a dark navy header with a purple primary, and `<StandIn>` "Concept: FirstDose inside DocUpdate · Not affiliated" on every screen. No DocUpdate logo, wordmark or screenshot.
 - [ ] **Surface 1, Home → Rx Alerts:** one card per `alert_sent`. The anatomy is type · patient · drug · action. The chip is the pharmacy `status_text` as it arrived. The title and button come from `templates.doctor_alert`, and the reason from `templates.reason_short`. The button runs `act("handoff")` and is enabled by `canAct`. The before-visit card sits below (`templates.before_visit_card`). Reuse `thread.ts`'s alert derivation.
 - [ ] **New Rx:** patient → drug and strength → directions → **Sign and send**, with `LabelCard` in order mode, calling `act("prescribe")`.
 - [ ] **Surface 2, Patient → Past Prescriptions:** Sent → At pharmacy → Fill confirmed, or ⚠ Stuck + `reason_short`, driven by `boardStop()`.
 - [ ] **Surface 3, Concierge:** Request Free Samples · Speak with a Rep · **Help my patient start**, which deep-links the `handoff` for the selected case. The other two are inert and labelled stand-ins.
-- [ ] **Surface 4, Profile:** "My coordinator" + Invite. The first handoff opens the same sheet. It's local in mock mode, and persists once 6.4 lands.
+- [ ] **Surface 4, Profile:** "My coordinator" with the coordinator's pending request and **Approve** (6.12). The first handoff opens the same approve sheet.
 - [ ] Retire `AscendThread` and the EHR `OrderPanel` tabs. Move `WristMirror` to `/board`.
 - **Done when:** Maria's and James's paths work at 390×844 on mock, then live. The copy check passes (no invented patient sentences, no "started").
+
+### 6.12 Prescribers: link by NPI, the prescriber approves (D UI, V events)
+
+The CoverMyMeds model, with DocUpdate replacing the fax code. See `frontend-plan.md`, "Prescribers".
+
+- [ ] **D:** `/coordinator/prescribers`:
+  - a table of linked prescribers (prescriber, masked NPI record, state, status, since when);
+  - "Link a prescriber" → NPI → the demo record → "Request approval" → Pending.
+  - The demo prescriber is `rx.prescriber_label` with a code-level `<StandIn>` "Demo prescriber record · not a real NPI". No real NPI or name.
+- [ ] **D:** the approve sheet in `/doctor/profile`, and on the first "Send to my coordinator": one tap approves the delegate, then runs `act("handoff")`.
+- [ ] **D:** in mock mode, the link state lives in the store's overrides, synced across tabs. Seed it as Pending so the demo starts there.
+- [ ] **V (C7):** additive events for live mode, e.g. `coordinator_link_requested` and `coordinator_linked`, with the link state per prescriber. Propose them in PLAN first; together with 6.4 they give Minh's 6.7 its coordinator ids.
+- **Done when:** approving on the phone flips the desktop to Linked, across tabs in mock mode and across two browsers live.
 
 ### 6.4 `coordinator_id` + `coordinator_invited` (V) ⚠️ CONTRACT if it touches mock shapes
 

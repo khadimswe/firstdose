@@ -37,6 +37,7 @@ Legend: [ ] not started · [-] in progress · [x] done · [!] blocked
 ## Phase 6 (parallel with Deem's screens)
 
 - [ ] **6.4** `coordinator_id` on cases plus a `coordinator_invited` event. Additive; propose it in PLAN first (⚠️ CONTRACT if it touches mock shapes). Tell Deem (for 6.3's invite) and Minh (for 6.7's rollup) the payload.
+- [ ] **C7 (6.12)** Prescriber-link events for live mode, e.g. `coordinator_link_requested` and `coordinator_linked`, with the link state per prescriber. The doctor approves on the phone, and the desktop must see it. Additive; propose it in PLAN first.
 - [ ] **6.5** RxFill-shaped pharmacy events: `NotDispensed`, `RxFillIndicator`, status as sent, labelled simulated. Deem adds the "Raw message" toggle on `/sim`.
 - [ ] **C3** A template key for the coordinator-approved patient message and its Spanish version (6.8), or an explicit exception to D2.
 - [ ] Review Minh's `/api/npi` (6.6) if Minh takes it; otherwise build it.
