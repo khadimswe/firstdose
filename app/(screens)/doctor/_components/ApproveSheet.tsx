@@ -12,8 +12,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { isLinked } from "@/components/data/links";
-import { local, useLocal } from "@/components/data/local";
+import { useCoordinatorLinks } from "@/components/data/useCoordinatorLinks";
 import { useEvents } from "@/components/data/useEvents";
 
 export const COORDINATOR_CAN = [
@@ -51,11 +50,17 @@ function ApproveSheet({
   withHandoff,
   onApprove,
   onClose,
+  busy = false,
+  error = null,
 }: {
   open: boolean;
   withHandoff: boolean;
   onApprove: () => void;
   onClose: () => void;
+  /** A live approval write is in flight. */
+  busy?: boolean;
+  /** Why the last live approval write failed; the sheet stays open to retry. */
+  error?: string | null;
 }) {
   return (
     <Sheet open={open} onOpenChange={(o) => !o && onClose()}>
@@ -68,9 +73,18 @@ function ApproveSheet({
         </SheetHeader>
         <div className="px-4">
           <CanList />
+          {error && (
+            <p role="alert" className="pt-3 text-sm text-stuck">
+              {error}
+            </p>
+          )}
         </div>
         <SheetFooter>
-          <Button className="h-12 rounded-full bg-du-purple text-base text-white hover:bg-du-purple/90" onClick={onApprove}>
+          <Button
+            className="h-12 rounded-full bg-du-purple text-base text-white hover:bg-du-purple/90"
+            disabled={busy}
+            onClick={onApprove}
+          >
             {withHandoff ? "Approve and send" : "Approve"}
           </Button>
           <Button variant="ghost" className="h-11 rounded-full" onClick={onClose}>
@@ -88,43 +102,61 @@ function ApproveSheet({
  */
 export function useHandoff() {
   const { cases, act, canAct } = useEvents();
-  const { approved } = useLocal();
+  const links = useCoordinatorLinks();
   const [caseId, setCaseId] = useState<string | null>(null);
 
   const linked = (id: string) => {
     const c = cases.find((x) => x.id === id);
-    return c ? isLinked(c.rx.prescriber_label, cases, approved) : false;
+    return c ? links.linked(c.rx.prescriber_label) : false;
   };
+
+  // Live: attribute the case to the coordinator (idempotent, best effort; the
+  // handoff doesn't depend on it), then hand off. Mock: just hand off.
+  async function send(id: string) {
+    await links.assign(id);
+    void act("handoff", id);
+  }
 
   function request(id: string) {
     if (!canAct("handoff", id)) return;
-    if (linked(id)) void act("handoff", id);
+    if (linked(id)) void send(id);
     else setCaseId(id);
   }
 
-  function approveAndSend() {
+  // Only after the explicit Approve tap: request (if needed) → approve → assign → handoff.
+  // A failed write keeps the sheet open with the error; retrying is safe.
+  async function approveAndSend() {
     const c = cases.find((x) => x.id === caseId);
     if (!c) return;
-    local.approve(c.rx.prescriber_label);
-    void act("handoff", c.id);
+    if (!(await links.approve())) return;
     setCaseId(null);
+    await send(c.id);
   }
 
   const sheet = (
-    <ApproveSheet open={caseId !== null} withHandoff onApprove={approveAndSend} onClose={() => setCaseId(null)} />
+    <ApproveSheet
+      open={caseId !== null}
+      withHandoff
+      busy={links.pending}
+      error={links.error}
+      onApprove={() => void approveAndSend()}
+      onClose={() => setCaseId(null)}
+    />
   );
   return { request, sheet };
 }
 
 /** The same approval from the Profile tab, without a case. */
-export function ProfileApprove({ prescriber, open, onClose }: { prescriber: string; open: boolean; onClose: () => void }) {
+export function ProfileApprove({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const links = useCoordinatorLinks();
   return (
     <ApproveSheet
       open={open}
       withHandoff={false}
+      busy={links.pending}
+      error={links.error}
       onApprove={() => {
-        local.approve(prescriber);
-        onClose();
+        void links.approve().then((ok) => ok && onClose());
       }}
       onClose={onClose}
     />

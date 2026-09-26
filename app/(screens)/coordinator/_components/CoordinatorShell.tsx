@@ -7,8 +7,8 @@ import { Inbox, UsersRound } from "lucide-react";
 import { SideBadge } from "@/components/SideBadge";
 import { Disclosure } from "@/components/Disclosure";
 import { prescribers, queueBucket } from "@/components/data/derive";
-import { inQueue, isLinked } from "@/components/data/links";
-import { useLocal } from "@/components/data/local";
+import { inQueue } from "@/components/data/links";
+import { useCoordinatorLinks } from "@/components/data/useCoordinatorLinks";
 import { useEvents } from "@/components/data/useEvents";
 import { cn } from "@/lib/utils";
 
@@ -16,9 +16,9 @@ import { cn } from "@/lib/utils";
 export function CoordinatorShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { cases } = useEvents();
-  const { approved } = useLocal();
+  const links = useCoordinatorLinks();
 
-  const linked = new Set(prescribers(cases).filter((p) => isLinked(p, cases, approved)));
+  const linked = new Set(prescribers(cases).filter((p) => links.linked(p)));
   const needsYou = cases.filter(
     (c) => inQueue(c, linked) && queueBucket(c) === "needs_you",
   ).length;

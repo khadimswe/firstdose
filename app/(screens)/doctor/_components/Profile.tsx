@@ -5,8 +5,7 @@ import { BadgeCheck, UserRound } from "lucide-react";
 
 import { maskedNpi, prescriberRecord } from "@/components/data/reference";
 import { Button } from "@/components/ui/button";
-import { isLinked } from "@/components/data/links";
-import { useLocal } from "@/components/data/local";
+import { useCoordinatorLinks } from "@/components/data/useCoordinatorLinks";
 import { useEvents } from "@/components/data/useEvents";
 
 import { CanList, ProfileApprove } from "./ApproveSheet";
@@ -14,10 +13,10 @@ import { CanList, ProfileApprove } from "./ApproveSheet";
 /** Surface 4: "My coordinator", the staff account DocUpdate's FAQ says isn't live yet. */
 export function Profile() {
   const { cases } = useEvents();
-  const { approved } = useLocal();
+  const links = useCoordinatorLinks();
   const [open, setOpen] = useState(false);
   const me = cases[0]?.rx.prescriber_label ?? "";
-  const linked = me !== "" && isLinked(me, cases, approved);
+  const linked = me !== "" && links.linked(me);
 
   return (
     <div className="space-y-4">
@@ -70,7 +69,7 @@ export function Profile() {
         </p>
       </section>
 
-      <ProfileApprove prescriber={me} open={open} onClose={() => setOpen(false)} />
+      <ProfileApprove open={open} onClose={() => setOpen(false)} />
     </div>
   );
 }

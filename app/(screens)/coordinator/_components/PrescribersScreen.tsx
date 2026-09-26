@@ -14,8 +14,8 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { prescribers } from "@/components/data/derive";
-import { isLinked } from "@/components/data/links";
 import { local, useLocal } from "@/components/data/local";
+import { useCoordinatorLinks } from "@/components/data/useCoordinatorLinks";
 import { isValidNpi } from "@/components/data/npi";
 import { useEvents } from "@/components/data/useEvents";
 import { cn } from "@/lib/utils";
@@ -47,15 +47,17 @@ function StatusBadge({ linked }: { linked: boolean }) {
 /** Link a prescriber by NPI; the prescriber approves in DocUpdate (6.12, the CoverMyMeds model). */
 export function PrescribersScreen() {
   const { cases } = useEvents();
-  const { approved, requests } = useLocal();
+  const { requests } = useLocal();
+  const links = useCoordinatorLinks();
   const [open, setOpen] = useState(false);
   const [npi, setNpi] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const rows = prescribers(cases).map((p) => {
-    const linked = isLinked(p, cases, approved);
+    const linked = links.linked(p);
+    const since = links.since(p);
     const handoff = cases.find((c) => c.rx.prescriber_label === p && c.events.some((e) => e.type === "handoff"));
-    return { p, linked, since: approved[p] ?? null, viaHandoff: !approved[p] && handoff !== undefined };
+    return { p, linked, since, viaHandoff: since === null && handoff !== undefined };
   });
 
   function submit() {
