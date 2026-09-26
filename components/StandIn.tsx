@@ -14,3 +14,18 @@ export function StandIn({ kind, className }: { kind: StandInKind; className?: st
     </Badge>
   );
 }
+
+/** The same stand-in label as a full-width band, where a real card puts its "not insurance" line. */
+export function StandInBand({ kind, className }: { kind: StandInKind; className?: string }) {
+  return (
+    <div
+      data-standin={kind}
+      className={cn(
+        "bg-foreground px-4 py-2.5 text-center text-sm font-semibold text-background",
+        className,
+      )}
+    >
+      {templates.standin_labels[kind]}
+    </div>
+  );
+}
