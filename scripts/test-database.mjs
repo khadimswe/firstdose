@@ -77,14 +77,19 @@ try {
       assert.equal(readFileSync(output, "utf8"), seed.stdout);
     } finally { if (existsSync(output)) unlinkSync(output); }
   });
-  await check("seed is repeatable and retains placeholder labels", () => {
+  await check("seed is repeatable and retains cached labels", () => {
     sql(seed.stdout); sql(seed.stdout);
     assert.equal(sql("SELECT count(*) FROM patients;"), "2");
     assert.equal(sql("SELECT count(*) FROM drugs;"), "2");
     assert.equal(sql("SELECT count(*) FROM rx_cases;"), "2");
     const expected = JSON.parse(readFileSync(`${root}/mock/labels.json`, "utf8")).labels;
     const actual = JSON.parse(sql("SELECT jsonb_agg(to_jsonb(l) ORDER BY drug_id) FROM labels l;"));
-    assert.deepEqual(actual, expected.sort((a,b) => a.drug_id.localeCompare(b.drug_id)));
+    // PostgreSQL serializes timestamptz with an offset and trimmed fractional zeros.
+    // Compare the same instant while keeping every label section/content check exact.
+    const canonical = rows => rows.map(row => ({ ...row,
+      fetched_at: row.fetched_at === null ? null : new Date(row.fetched_at).toISOString(),
+    })).sort((a,b) => a.drug_id.localeCompare(b.drug_id));
+    assert.deepEqual(canonical(actual), canonical(expected));
     sql("UPDATE labels SET fetched_at='2026-09-26T14:00:00Z', byte_exact=true WHERE drug_id='drug_otezla';");
     sql(seed.stdout);
     assert.equal(sql("SELECT byte_exact FROM labels WHERE drug_id='drug_otezla';"), "t");
