@@ -215,7 +215,7 @@ Spec: `docs/spec-v2-coordinator.md`. Gate: the 11 AM answers decide the lead (W1
 
 | # | Task | Owner | Status | Deps | Notes |
 |---|---|---|---|---|---|
-| 6.0 | Integrate the open PRs: review and merge #8 (labels) and #9 (backend); Deem rebases #4 (QR + #9 login return) and #7 (access/sim design); close #2, #3 and #6 | Deem + Vinh + Minh | 🟡 | none | Order in the v2 brief. Before 11 AM. |
+| 6.0 | Integrate the open PRs: review and merge #8 (labels) and #9 (backend); Deem rebases #4 (QR + #9 login return) and #7 (access/sim design); close #2, #3 and #6 | Deem + Vinh + Minh | 🟡 | none | Order in the v2 brief. Sat 09:44: screens-side reviews posted on #8 (✅) and #9 (✅, with a QR sign-in question). #2, #3 and #6 closed. Rebases of #4 and #7 wait for #8 and #9 to merge. |
 | 6.1 | `/sim` "Seed the week": pre-load 10–15 started/waiting patients | Vinh | ⬜ | none | Build now; helps either pitch |
 | 6.2 | `/coordinator` = home screen: summary strip (stuck / waiting / fill confirmed, per D8), sort by time stuck, "Reached patient / Left message" marks, header per W3 | Deem | ⬜ | 11 AM | Medium. `/` opens it, and the screen index moves to `/screens`. Needs C1 and C2. |
 | 6.3 | `/doctor` becomes the DocUpdate phone view (phone-width): Rx Alerts card with the "Not started" alert type, Past-Rx fill-status line (Sent → Received → Filled / Stuck + reason), Concierge "Help my patient start" checkbox (deep-links the handoff), Profile "My coordinator" invite. Structure not brand; "Concept: FirstDose inside DocUpdate · Not affiliated" on every styled screen. See spec: four surfaces | Deem | ⬜ | 11 AM | Small |

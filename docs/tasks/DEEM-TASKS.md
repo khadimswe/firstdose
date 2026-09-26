@@ -70,6 +70,8 @@ Shared (⚠️ CONTRACT commits, tell Vinh first): `mock/*.json`, `package.json`
   1. Review #8 (labels) and #9 (backend); they merge first.
   2. Rebase #4 (QR) and #7 (access/sim) onto `main`.
   3. Close #2 (folded into the v2 docs PR), #3 and #6.
+
+  Done 09:44: reviews posted and #2, #3, #6 closed. The rebases wait for the merges.
 - [-] v2 docs PR: PLAN.md brief, D7/D8 and the W/C questions; README; spec in fill wording; `docs/frontend-plan.md`; banners on doctor-first docs.
 - [ ] Workshop prep: the spec's questions 1–7, and Keomaria's four (K1: quote permission).
 
