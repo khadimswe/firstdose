@@ -9,6 +9,30 @@ function login(body: Record<string, string>, origin = "https://demo.example") {
 }
 
 describe("demo login", () => {
+  it.each([
+    "/demo", "/doctor/new", "/doctor/profile", "/doctor/concierge",
+    "/doctor/patients/pt_maria", "/doctor/patients/pt_james", "/coordinator/prescribers",
+  ])("returns to the exact v2 screen after login: %s", async next => {
+    const form = demoLoginGet(new Request(`https://demo.example/api/demo-login?next=${encodeURIComponent(next)}`));
+    expect(form.status).toBe(200);
+    expect(await form.text()).toContain(`value="${next}"`);
+    const response = await demoLoginPost(login({ token, next }), env);
+    expect(response.status).toBe(303);
+    expect(response.headers.get("location")).toBe(next);
+    expect(response.headers.get("set-cookie")).toContain("HttpOnly");
+  });
+
+  it.each([
+    "/doctor/patients/pt_unknown", "/doctor/patients/rx_001", "/doctor/patients/pt_maria/edit",
+    "/coordinator/prescribers/unknown", "/doctor/new/api/events",
+  ])("keeps unknown v2 routes outside the login return allowlist: %s", async next => {
+    const form = demoLoginGet(new Request(`https://demo.example/api/demo-login?next=${encodeURIComponent(next)}`));
+    expect(form.status).toBe(400);
+    const response = await demoLoginPost(login({ token, next }), env);
+    expect(response.status).toBe(400);
+    expect(response.headers.has("set-cookie")).toBe(false);
+  });
+
   it("serves a no-script password form with a safe patient return path", async () => {
     const response = demoLoginGet(new Request("https://demo.example/api/demo-login?next=%2Fpatient%2Frx_001"));
     const html = await response.text();

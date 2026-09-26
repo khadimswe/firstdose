@@ -1,102 +1,31 @@
-// Offline verification of a committed label artifact (task 1.10 / A2).
-//
-// Usage: node --import tsx scripts/labels/verify.ts --drug drug_otezla
-//
-// No network access. Exit 0 only when the saved source bytes, provenance
-// identity and generated label all verify together.
-
+// Offline gate: verify saved files, never rebuild the displayed artifact during verification.
 import { readFile } from 'node:fs/promises';
-import { createHash } from 'node:crypto';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { isDeepStrictEqual } from 'node:util';
+import { labelContext } from '@/lib/server/labels/artifacts';
+import { verifyLabel } from '@/lib/server/labels/verify';
+import { receiptMatches } from '@/lib/server/labels/receipt';
 
-import type { Label } from '@/components/data/types';
-import { extractSections } from '@/lib/server/labels/extract';
-import { verifyLabel, type LabelProvenance } from '@/lib/server/labels/verify';
-
-const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
-
-function parseArgv(): string {
-  const argIndex = process.argv.indexOf('--drug');
-  if (argIndex === -1 || argIndex + 1 >= process.argv.length) {
-    console.error('Usage: node --import tsx scripts/labels/verify.ts --drug <drug_id>');
-    process.exit(2);
-  }
-  return process.argv[argIndex + 1];
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
+async function main() {
+  const args = process.argv.slice(2);
+  if (args.length !== 2 || args[0] !== '--drug' || args[1] !== 'drug_otezla') throw new Error('Usage: verify.ts --drug drug_otezla');
+  const drugId = args[1];
+  const dir = resolve(root, 'data/labels', drugId);
+  const json = async (path: string) => JSON.parse(await readFile(path, 'utf8'));
+  const [bytes, label, provenance, rxnorm, receipt] = await Promise.all([
+    readFile(resolve(dir, 'source.xml')), json(resolve(dir, 'label.json')), json(resolve(dir, 'provenance.json')),
+    json(resolve(dir, 'rxnorm.json')), json(resolve(dir, 'verification.json')),
+  ]);
+  const result = verifyLabel(label, bytes, provenance, labelContext(drugId, rxnorm));
+  if (!result.ok) throw new Error(result.errors.join('; '));
+  if (!receiptMatches(label, provenance, rxnorm, receipt)) throw new Error('Saved verification receipt does not match the artifacts');
+  const [labels, catalog] = await Promise.all([json(resolve(root, 'mock/labels.json')), json(resolve(root, 'mock/patients.json'))]);
+  const published = labels.labels.filter((row: { drug_id: string }) => row.drug_id === drugId);
+  if (published.length !== 1 || !isDeepStrictEqual(published[0], label)) throw new Error('Published mock label differs from verified saved artifact');
+  const drugs = catalog.drugs.filter((row: { id: string }) => row.id === drugId);
+  if (drugs.length !== 1 || drugs[0].rxcui !== provenance.rxcui || drugs[0].dailymed_setid !== provenance.setid) throw new Error('Published catalog drug identity differs from verified provenance');
+  console.log(`Offline verification OK: ${drugId}; source, identity, full sections, receipt and published fixtures match.`);
 }
-
-async function main(): Promise<void> {
-  const drugId = parseArgv();
-  const dir = resolve(ROOT, 'data/labels', drugId);
-
-  let sourceXml: string;
-  let provenanceRaw: string;
-  try {
-    sourceXml = await readFile(resolve(dir, 'source.xml'), 'utf8');
-    provenanceRaw = await readFile(resolve(dir, 'provenance.json'), 'utf8');
-  } catch {
-    console.error(`No committed artifacts for ${drugId} under data/labels/${drugId}/`);
-    process.exit(2);
-  }
-
-  const provenance: LabelProvenance = {
-    ...(JSON.parse(provenanceRaw) as Record<string, unknown>),
-    extraction_method: 'spl-section-text-v1',
-    section_sha256: {},
-  } as LabelProvenance;
-
-  // Rebuild the label from the saved source, deterministically.
-  const results = extractSections(sourceXml);
-  const errors: string[] = [];
-  const sections: Label['sections'] = [];
-  for (const result of results) {
-    if (result.status === 'present') sections.push(result.section);
-    else if (result.status === 'absent' && result.loinc === '34066-1') {
-      sections.push({ loinc: '34066-1', title: 'BOXED WARNING', text: null });
-    } else if (result.status === 'absent') {
-      errors.push(`mandatory section ${result.loinc} is absent from the saved source`);
-    } else if (result.status === 'invalid') {
-      errors.push(`section ${result.loinc} is invalid: ${result.detail}`);
-    }
-  }
-  if (errors.length > 0) {
-    console.error(`Offline verification failed for ${drugId}:`);
-    for (const error of errors) console.error(`- ${error}`);
-    process.exit(1);
-  }
-
-  const bytes = new TextEncoder().encode(sourceXml);
-  const sourceHash = createHash('sha256').update(bytes).digest('hex');
-  if (sourceHash !== provenance.source_sha256) {
-    console.error(
-      `Offline verification failed for ${drugId}: saved bytes hash ${sourceHash} != provenance ${provenance.source_sha256}`,
-    );
-    process.exit(1);
-  }
-
-  const label: Label = {
-    drug_id: drugId,
-    setid: provenance.setid,
-    fetched_at: provenance.fetched_at,
-    byte_exact: true,
-    sections,
-  };
-
-  const result = verifyLabel(label, bytes, provenance);
-  if (!result.ok) {
-    console.error(`Offline verification failed for ${drugId}:`);
-    for (const error of result.errors) console.error(`- ${error}`);
-    process.exit(1);
-  }
-
-  console.log(`Offline verification OK for ${drugId}`);
-  for (const section of sections) {
-    const length = section.text === null ? 'absent' : `${section.text.length} chars`;
-    console.log(`- ${section.loinc} ${section.title}: ${length}`);
-  }
-}
-
-main().catch((error: unknown) => {
-  console.error(String(error));
-  process.exit(1);
-});
+main().catch(error => { console.error(`Offline verification failed: ${error instanceof Error ? error.message : 'invalid artifacts'}`); process.exitCode = 1; });

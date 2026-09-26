@@ -64,6 +64,16 @@ async function main() {
   const fill = await command({ kind: "fire", ids: ["ev_11"] });
   assert.deepEqual(fill.inserted.map(e => e.id), ["ev_11"]);
   assert.equal(fill.inserted[0].status_text, "Dispensed");
+  assert.equal(fill.inserted[0].wrist, "Maria: Otezla pharmacy fill confirmed.");
+  await command({ kind: "fire", ids: ["ev_11"] });
+  const finalQueue = await query<{ script_id: string; wrist: string }[]>(
+    `SELECT jsonb_agg(jsonb_build_object('script_id', script_id, 'wrist', wrist) ORDER BY script_id) FROM notification_outbox WHERE run_id='${state.run_id}';`,
+  );
+  assert.deepEqual(finalQueue, [
+    { script_id: "ev_06", wrist: appAlerts[0].wrist },
+    { script_id: "ev_11", wrist: fill.inserted[0].wrist },
+  ]);
+  console.log("PASS independent fill queues one second wrist alert despite duplicate command");
   assert.ok(fill.snapshot.events.every(e => !["started", "recovered"].includes(e.type)));
   assert.ok(fill.snapshot.events.every((e, i, all) => i === 0 || Date.parse(String(e.at)) > Date.parse(String(all[i - 1].at))));
   console.log("PASS integrated independent pharmacy signal and ordered timestamps");

@@ -17,7 +17,7 @@ describe('getLabel (bundled cache facade)', () => {
     expect(boxed?.text).toBeNull();
     const indications = label?.sections.find((s) => s.loinc === '34067-9');
     expect(indications?.text).toContain('OTEZLA');
-    expect(indications?.text).toContain('phosphodiesterase 4');
+    expect(indications?.text).toContain('psoriatic arthritis');
   });
 
   it('returns null for an unknown drug id', async () => {
@@ -37,5 +37,19 @@ describe('getLabel (bundled cache facade)', () => {
     await getLabel('drug_otezla');
     expect(fetchSpy).not.toHaveBeenCalled();
     fetchSpy.mockRestore();
+  });
+
+  it('fails closed when bundled label text changes without its verified receipt', async () => {
+    vi.resetModules();
+    const candidate = await import('@/data/labels/drug_otezla/label.json');
+    const changed = structuredClone(candidate.default);
+    changed.sections[1].text += 'X';
+    vi.doMock('@/data/labels/drug_otezla/label.json', () => ({ default: changed }));
+    try {
+      const { getLabel } = await import('@/lib/server/label');
+      expect((await getLabel('drug_otezla'))?.byte_exact).toBe(false);
+    } finally {
+      vi.doUnmock('@/data/labels/drug_otezla/label.json'); vi.resetModules();
+    }
   });
 });
