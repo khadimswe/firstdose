@@ -17,6 +17,7 @@ function fixture() {
     load: vi.fn(async () => []),
     subscribe: vi.fn((onInsert, onRun, onError, onSync) => { insert = onInsert; run = onRun!; fail = onError!; synced = onSync!; return unsubscribe; }),
     act: vi.fn(async () => {}), fire: vi.fn(async () => {}), reset: vi.fn(async () => {}),
+    handoffInRun: vi.fn(async () => {}),
     accessSummary: vi.fn(async () => ({ recovered: 0, median_ttff_seconds: null, reason_tally: {} })),
   } satisfies PollingEventSource;
   const store = createLiveStore({ source: async () => source });

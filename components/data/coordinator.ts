@@ -32,11 +32,11 @@ export function useCoordinator() {
   const state = useSyncExternalStore(live ? coordinatorLive.subscribe : noopSubscribe, live ? coordinatorLive.getSnapshot : empty, empty);
   return { ...state, live, refresh: coordinatorLive.refresh, request: () => coordinatorLive.command("request"), approve: coordinatorLive.approve,
     linked: (prescriber: string, cases: CaseView[], approved: Record<string, number>) => coordinatorLinked(prescriber, cases, approved, state, live),
-    handoff: (c: CaseView) => coordinatorLive.approveAndHandoff(c.id, async runId => {
+    handoff: (c: CaseView, expectedRun: string) => coordinatorLive.approveAndHandoff(c.id, async runId => {
       const source = await sharedSource();
       const current = coordinatorLive.getSnapshot();
       if (!current.ready || current.snapshot?.run_id !== runId) throw new Error("The run changed. Review the new run before sending.");
-      await source.act("handoff", c.rx, c.fix);
-    }),
+      await source.handoffInRun(c.id, runId);
+    }, expectedRun),
   };
 }

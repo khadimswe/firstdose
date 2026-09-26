@@ -47,13 +47,7 @@ async function currentRun(): Promise<string> {
 }
 
 /** A proposal remembers the run it was recorded in, so Confirm can refuse it after a reset. */
-async function propose(audio: Blob): Promise<{ result: VoiceResult; run?: string }> {
-  let run: string;
-  try {
-    run = await currentRun();
-  } catch (error) {
-    return { result: voiceResult((error as { status?: number }).status ?? 502, { error: "voice_unavailable" }) };
-  }
+async function propose(audio: Blob, run: string): Promise<{ result: VoiceResult; run: string }> {
   const form = new FormData();
   form.set("audio", audio, audio.type.includes("wav") ? "recording.wav" : "recording");
   const response = await fetch("/api/voice", {
@@ -70,29 +64,61 @@ async function propose(audio: Blob): Promise<{ result: VoiceResult; run?: string
  * propose a case, and hand off only after the doctor taps Confirm. Confirm goes
  * through the same handoff as the button, so the approval sheet still appears.
  */
-export function VoiceHandoff({ onConfirm }: { onConfirm: (caseId: string) => void }) {
+export function VoiceHandoff({ onConfirm }: { onConfirm: (caseId: string, runId: string) => boolean }) {
   const { cases, canAct } = useEvents();
   const [state, setState] = useState<State>({ step: "idle" });
   const recorder = useRef<MediaRecorder | null>(null);
   const stopTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const recordingRun = useRef<string | null>(null);
+  const operation = useRef(0);
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    let disposed = false;
+    let unsubscribe: (() => void) | undefined;
+    const invalidate = () => { operation.current++; };
+    void import("@/lib/realtime").then(({ default: source }) => {
+      if (disposed) return;
+      unsubscribe = source.subscribe(() => {}, run => {
+        if (!recordingRun.current || run === recordingRun.current) return;
+        invalidate();
+        recordingRun.current = null;
+        if (stopTimer.current) clearTimeout(stopTimer.current);
+        if (recorder.current?.state === "recording") recorder.current.stop();
+        recorder.current?.stream.getTracks().forEach(t => t.stop());
+        setState({ step: "result", kind: "error", message: "This case changed after you spoke. Tap to speak again." });
+      });
+    });
+    return () => {
+      disposed = true;
+      invalidate();
+      unsubscribe?.();
       if (stopTimer.current) clearTimeout(stopTimer.current);
       recorder.current?.stream.getTracks().forEach((t) => t.stop());
-    },
-    [],
-  );
+    };
+  }, []);
 
   async function start() {
     if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
       setState({ step: "result", kind: "error", message: "Voice needs a browser that can record from the microphone." });
       return;
     }
+    const ticket = ++operation.current;
+    setState({ step: "sending" });
+    let run: string;
+    try {
+      run = await currentRun();
+      if (ticket !== operation.current) return;
+      recordingRun.current = run;
+    } catch {
+      if (ticket === operation.current) setState({ step: "result", kind: "error", message: "Couldn't load the current case. Refresh before speaking again." });
+      return;
+    }
     let stream: MediaStream;
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      if (ticket !== operation.current) { stream.getTracks().forEach(t => t.stop()); return; }
     } catch (error) {
+      if (ticket !== operation.current) return;
       const denied = (error as { name?: string }).name === "NotAllowedError";
       setState({
         step: "result",
@@ -110,12 +136,16 @@ export function VoiceHandoff({ onConfirm }: { onConfirm: (caseId: string) => voi
     rec.onstop = async () => {
       stream.getTracks().forEach((t) => t.stop());
       if (stopTimer.current) clearTimeout(stopTimer.current);
+      if (ticket !== operation.current) return;
       setState({ step: "sending" });
       try {
         const audio = await toUploadable(new Blob(chunks, { type: rec.mimeType || mimeType }));
-        const { result, run } = await propose(audio);
+        if (ticket !== operation.current) return;
+        const { result } = await propose(audio, run);
+        if (ticket !== operation.current) return;
         setState({ step: "result", run, ...result });
       } catch {
+        if (ticket !== operation.current) return;
         setState({ step: "result", kind: "error", message: "Voice isn't available right now. Use the Send button instead." });
       }
     };
@@ -132,13 +162,18 @@ export function VoiceHandoff({ onConfirm }: { onConfirm: (caseId: string) => voi
   // Same-ID cases exist in every run, so a proposal from before a reset must not
   // hand off in the new run: re-check the active run right before confirming.
   async function confirm(caseId: string, run: string | undefined) {
+    const ticket = operation.current;
     setState({ step: "sending" });
     const now = await currentRun().catch(() => null);
+    if (ticket !== operation.current) return;
     if (!run || now !== run) {
       setState({ step: "result", kind: "error", message: "This case changed after you spoke. Tap to speak again." });
       return;
     }
-    onConfirm(caseId);
+    if (!onConfirm(caseId, run)) {
+      setState({ step: "result", kind: "error", message: "This case changed. Review the current alert before sending." });
+      return;
+    }
     setState({ step: "idle" });
   }
 

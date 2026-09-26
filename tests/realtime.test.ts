@@ -14,6 +14,26 @@ describe("protected polling event source", () => {
   beforeEach(() => vi.useFakeTimers());
   afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); });
 
+  it("refuses a handoff recorded in an older run after the browser sees a reset", async () => {
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValueOnce(snapshot(RUN_B));
+    const source = createPollingEventSource({ fetch: fetcher });
+    await source.load();
+    await expect(source.handoffInRun(rx.id, RUN_A)).rejects.toMatchObject({ code: "stale_run" });
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
+  it("sends the approved run to the server even when a remote reset has not been polled", async () => {
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValueOnce(snapshot(RUN_A))
+      .mockResolvedValueOnce(Response.json({ error: "stale_run" }, { status: 409 }))
+      .mockResolvedValueOnce(snapshot(RUN_B));
+    const source = createPollingEventSource({ fetch: fetcher });
+    await source.load();
+    await expect(source.handoffInRun(rx.id, RUN_A)).rejects.toMatchObject({ code: "stale_run" });
+    const posts = fetcher.mock.calls.filter(([, init]) => init?.method === "POST");
+    expect(posts).toHaveLength(1);
+    expect(new Headers(posts[0][1]?.headers).get("x-firstdose-run")).toBe(RUN_A);
+  });
+
   it("loads through same-origin cookies and conditionally revalidates with 304", async () => {
     const fetcher = vi.fn<typeof fetch>().mockResolvedValueOnce(snapshot(RUN_A, 1, [row("ev_01")])).mockResolvedValueOnce(new Response(null, { status: 304 }));
     const source = createPollingEventSource({ fetch: fetcher });

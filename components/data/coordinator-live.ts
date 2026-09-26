@@ -123,13 +123,19 @@ export function createCoordinatorLiveStore(options: {
     },
     command: (action: CoordinatorCommand["action"], caseId?: string) => perform(`${action}:${caseId ?? ""}`, write => write(action, caseId)),
     approve: () => perform("approve-profile", write => approve(write)),
-    approveAndHandoff: (caseId: string, handoff: (runId: string) => Promise<void>) => perform(`handoff:${caseId}`, async (write, valid) => {
-      await approve(write);
-      if (!valid()) throw new LinkError("The run was reset. Review the new run.");
-      if (!state.snapshot?.cases.some(row => row.case_id === caseId && row.coordinator_id === "coord_demo")) await write("assign", caseId);
-      if (!state.snapshot?.cases.some(row => row.case_id === caseId && row.coordinator_id === "coord_demo")) throw new LinkError("Case access was not confirmed. Refresh and try again.");
-      if (!valid()) throw new LinkError("The run was reset. Review the new run.");
-      await handoff(state.snapshot!.run_id);
-    }),
+    approveAndHandoff: (caseId: string, handoff: (runId: string) => Promise<void>, expectedRun?: string) => {
+      if (expectedRun && state.snapshot?.run_id !== expectedRun) {
+        update({ error: "The run changed. Review the new run before sending." });
+        return Promise.resolve(false);
+      }
+      return perform(`handoff:${caseId}`, async (write, valid) => {
+        await approve(write);
+        if (!valid()) throw new LinkError("The run was reset. Review the new run.");
+        if (!state.snapshot?.cases.some(row => row.case_id === caseId && row.coordinator_id === "coord_demo")) await write("assign", caseId);
+        if (!state.snapshot?.cases.some(row => row.case_id === caseId && row.coordinator_id === "coord_demo")) throw new LinkError("Case access was not confirmed. Refresh and try again.");
+        if (!valid()) throw new LinkError("The run was reset. Review the new run.");
+        await handoff(state.snapshot!.run_id);
+      });
+    },
   };
 }

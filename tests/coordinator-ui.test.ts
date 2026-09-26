@@ -6,11 +6,12 @@ import { CATALOG, SCRIPT } from "@/components/data/catalog";
 import { deriveCases } from "@/components/data/derive";
 import { voiceResult } from "@/app/(screens)/doctor/_components/voice";
 
-const ui = vi.hoisted(() => ({ cases: [] as CaseView[], live: true, linked: false, pending: false, ready: true,
+const ui = vi.hoisted(() => ({ cases: [] as CaseView[], live: true, linked: false, pending: false, ready: true, run: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
   act: vi.fn(async () => {}), handoff: vi.fn(async () => true), localApprove: vi.fn(), request: vi.fn(async () => true), approve: vi.fn(async () => true) }));
 vi.mock("@/components/data/useEvents", () => ({ useEvents: () => ({ cases: ui.cases, canAct: () => true, act: ui.act }) }));
 vi.mock("@/components/data/local", () => ({ useLocal: () => ({ approved: { [ui.cases[0]?.rx.prescriber_label ?? ""]: 1 }, marks: {}, requests: [] }), local: { approve: ui.localApprove } }));
-vi.mock("@/components/data/coordinator", async () => { const { CATALOG, isWeekCase } = await import("@/components/data/catalog"); return { DEMO_PRESCRIBER: CATALOG.cases.find(row => !isWeekCase(row.id))!.prescriber_label, useCoordinator: () => ({
+vi.mock("@/components/data/coordinator", async () => { const { CATALOG, isWeekCase } = await import("@/components/data/catalog"); return { DEMO_PRESCRIBER: CATALOG.cases.find(row => !isWeekCase(row.id))!.prescriber_label,
+  coordinatorLive: { getSnapshot: () => ({ ready: ui.ready, snapshot: { run_id: ui.run } }), subscribe: () => () => {} }, useCoordinator: () => ({
   live: ui.live, ready: ui.ready, pending: ui.pending, error: null, loginPath: null, snapshot: { links: [], events: [], cases: [] },
   linked: () => ui.linked, handoff: ui.handoff, request: ui.request, approve: ui.approve, refresh: vi.fn(),
 }) }; });
@@ -42,11 +43,16 @@ describe("coordinator approval UI", () => {
     const proposal = voiceResult(200, { transcript: "send Maria to my coordinator", intent: "SEND_TO_COORDINATOR", case_id: "rx_001" });
     expect(proposal.kind).toBe("proposal"); if (proposal.kind === "proposal") api.request(proposal.caseId);
     await Promise.resolve();
-    expect(ui.handoff).toHaveBeenCalledExactlyOnceWith(ui.cases.find(row => row.id === "rx_001"));
+    expect(ui.handoff).toHaveBeenCalledExactlyOnceWith(ui.cases.find(row => row.id === "rx_001"), ui.run);
     expect(ui.act).not.toHaveBeenCalled(); expect(ui.localApprove).not.toHaveBeenCalled();
   });
   it("does not send an unapproved voice proposal before the approval sheet is confirmed", () => {
     handoffHook().request("rx_001"); expect(ui.handoff).not.toHaveBeenCalled(); expect(ui.act).not.toHaveBeenCalled();
+  });
+  it("refuses a voice selection from another run before showing approval or sending", () => {
+    ui.linked = true;
+    expect(handoffHook().request("rx_001", "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb")).toBe(false);
+    expect(ui.handoff).not.toHaveBeenCalled(); expect(ui.act).not.toHaveBeenCalled();
   });
   it("keeps the offline linked handoff on the existing mock action", () => {
     ui.live = false; ui.linked = true; handoffHook().request("rx_001");
