@@ -4,7 +4,9 @@
 
 This dashboard is the execution source of truth. Keep presentation work in `docs/presentation/`; freeze the other planning/audit documents as reference snapshots. Do not maintain parallel schedules. This local revision responds to review and awaits team feedback; it does not change the shared mock contract or merge itself into main.
 
-**Synced source:** main `b11a01e` includes state-based button guards and replay/autoplay; backend remains pending. `/api/sim/fire` is standardized as `{ ids: string[] }` in `docs/architecture.md`.
+**Synced source:** this worktree starts from main `8687bb9`, including Minh's merged implementation guide. Vinh's `backend/workflow-foundation` now has a locally tested router, pure command planner and offline-ready ntfy transport/CLI. Supabase, HTTP routes and Realtime remain pending. `/api/sim/fire` is standardized as `{ ids: string[] }` in `docs/architecture.md`.
+
+**Local check (Sat Sep 26, 1:47 AM ET):** 131 tests, lint and production build pass. No credentials configured, external notification sent, or physical watch receipt verified. Code remains on the isolated local branch for review; shared package additions are Vitest/tsx and Node 22 types, preserving the existing frontend dependencies. See [Vinh's current handoff](docs/tasks/VIHN-TASKS.md#current-local-foundation).
 
 **Immediate work:** Vinh tests the physical ntfy -> iPhone -> Garmin path and leads the minimal contract/backend; Minh verifies and caches Otezla label content; Deem deploys the current mock build and wires the existing hook when the adapter is ready. No new screens are required for the first gate.
 
@@ -102,7 +104,7 @@ Current objective, scope and claim boundaries: [product proposal](docs/product-p
 | 0.5 | Architecture doc | `docs/architecture.md` | **Vinh** reviews | 🟡 | 0.4 | Deem drafted. Vinh corrects routes/tables to match his build. |
 | 0.6 | Keys (each person signs up, keys move by AirDrop only) | local `.env` | **Vinh**: Supabase, Tiger Data, Gemini, xAI. **Deem**: ElevenLabs + .Tech (MLH), Vercel, HexLabs OpenAI | ⬜ | n/a | |
 | 0.7 | Contract fixes: add `ev_21b` (James `fix_sent` BRIDGE_SAMPLE); `wrist.started` → `"{patient_short} started {drug}. $0 with copay card."` | `mock/events.json`, `mock/templates.json` | **Deem** | ✅ | 0.4 | ⚠️ CONTRACT commit. Tell Vinh first. |
-| 0.8 | **Gate:** ntfy POST → iPhone → Garmin FR55 buzz with text | `scripts/ntfy-smoke.sh` | **Vinh** | ⬜ | 0.6 | Garmin Connect open. Body ≤ 200 chars. |
+| 0.8 | **Gate:** ntfy POST → iPhone → Garmin FR55 buzz with text | `scripts/ntfy-smoke.ts` | **Vinh** | 🟡 | 0.6 | Sep 26 1:47 AM ET: dry-run CLI prepared; credentials and physical-device check pending. Explicit --send required. |
 | 0.9 | Register team on HexLabs; ask #qna if Notability is a challenge or sponsor track | n/a | **Deem** | ⬜ | n/a | |
 
 ### Phase 1: Maria core loop (Saturday morning target; recheck around 7 AM)
@@ -116,11 +118,11 @@ Current objective, scope and claim boundaries: [product proposal](docs/product-p
 | 1.5 | `/coordinator`: work queue, ONE fix button per case | `app/(screens)/coordinator/**` | **Deem** | ✅ | 1.1 | Desk-first table (md and up); cards + pinned fix button on a phone (390×844). |
 | 1.6 | `/patient/[id]`: Wallet pass stand-in, "Use at pharmacy" | `app/(screens)/patient/[id]/**` | **Deem** | ✅ | 1.1 | No barcode, BIN/PCN or member number. |
 | 1.7 | Supabase schema: `patients`, `drugs`, `rx_cases`, `fill_events`, `labels`; seed from `mock/` | `supabase/migrations/**`, `scripts/seed.ts` | **Vinh** | ⬜ | 0.4, 0.6 | Field names identical to `mock/`. |
-| 1.8 | Router + table test (every reason × insurance; Medicare never gets a copay card) | `lib/server/router.ts`, `tests/router.test.ts` | **Vinh** | ⬜ | 0.4 | Pure function over `reasons.json → router.rows`. No AI. |
+| 1.8 | Router + table test (every reason × insurance; Medicare never gets a copay card) | `lib/server/router.ts`, `tests/router.test.ts` | **Vinh** | 🟡 | 0.4 | Sep 26 1:47 AM ET: local implementation reviewed, 86 tests pass; explicit card/bridge eligibility gates; owner review/merge pending. |
 | 1.9 | `lib/realtime.ts` (implements 1.2) + `/api/sim/fire`, `/api/sim/reset` | `lib/realtime.ts`, `app/api/sim/**` | **Vinh** | ⬜ | 1.2, 1.7 | Realtime channel `fill_events`, insert only. |
 | 1.10 | Verified cached label pipeline and endpoint | `lib/server/label.ts`, `lib/server/labels/**`, `tests/labels/**` | **Minh** | ⬜ | 0.6 | Handoff A1-A3; Otezla first; identity/fidelity review before badge and shared fixture update. |
-| 1.11 | Action routes: `/api/rx`, `/api/handoff`, `/api/fix`, `/api/patient/use` | `app/api/**` | **Vinh** | ⬜ | 1.7, 1.8 | Guarded transitions so a double tap can't double-fire. |
-| 1.12 | ntfy on `alert_sent` and `started` | `lib/server/ntfy.ts` | **Vinh** | ⬜ | 0.8, 1.9 | Action button → `/api/handoff`. |
+| 1.11 | Action routes: `/api/rx`, `/api/handoff`, `/api/fix`, `/api/patient/use` | `app/api/**`, `lib/server/workflow.ts` | **Vinh** | 🟡 | 1.7, 1.8 | Sep 26 1:47 AM ET: pure planner reviewed, 25 tests pass; acknowledgment separate from pharmacy confirmation. HTTP and atomic persistence still pending. |
+| 1.12 | ntfy delivery for reviewed alerts and pharmacy confirmation | `lib/server/ntfy.ts` | **Vinh** | 🟡 | 0.8, 1.9 | Sep 26 1:47 AM ET: bounded transport and dry-run CLI implemented/tested locally; transactional delivery, outcome copy and physical verification pending. No iOS HTTP action assumed. |
 | 1.13 | Wire `useEvents()` to `lib/realtime.ts`: live source, buttons enabled by case state | `components/data/**` | **Deem** | 🟡 | 1.9 | Built on local branch `feat/live-source`, tested against a stand-in `EventSource`; merges as soon as 1.9 lands. Button guards already on `main`. |
 
 **CORE CHECKPOINT, Saturday morning:** Maria across two devices: prescribe -> barrier -> physical wrist alert -> reviewed coordinator handoff -> resource acknowledgment (still pending) -> separate simulated pharmacy confirmation -> first fill observed. If it fails, stop optional provider work and fix the loop.
