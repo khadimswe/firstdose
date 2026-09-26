@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
-import { CoordinatorScreen } from "./_components/CoordinatorScreen";
+import { QueueScreen } from "./_components/QueueScreen";
 
-export const metadata: Metadata = { title: "Coordinator · FirstDose" };
+export const metadata: Metadata = { title: "Access queue · FirstDose" };
 
 export default function CoordinatorPage() {
-  return <CoordinatorScreen />;
+  return <QueueScreen />;
 }

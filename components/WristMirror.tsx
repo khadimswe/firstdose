@@ -13,7 +13,7 @@ export function WristMirror({ text, compact }: { text: string | null; compact?: 
         {text ?? <span className="text-neutral-500">No alerts</span>}
       </div>
       <figcaption className="text-center text-xs text-muted-foreground">
-        Notification preview · Garmin via ntfy
+        Notification preview · watch via ntfy · not proof of receipt
       </figcaption>
     </figure>
   );
