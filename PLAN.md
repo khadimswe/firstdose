@@ -110,7 +110,7 @@ Current objective, scope and claim boundaries: [product proposal](docs/product-p
 | 0.3 | CI: lint, build, `npm test --if-present`, gitleaks, tracked-file gate, mock JSON gate | `.github/workflows/ci.yml` | **Deem** | ✅ | 0.2 | Not required on `main` during the event. |
 | 0.4 | Data contract | `mock/*.json` | **both** | 🟡 | 0.1 | 0.7 fixture edits landed. Remaining agreement: acknowledgment versus fill confirmation, eligibility evidence, alert semantics, run/reset identity and label provenance. |
 | 0.5 | Architecture doc | `docs/architecture.md` | **Vinh** reviews | 🟡 | 0.4 | Deem drafted. Vinh corrects routes/tables to match his build. |
-| 0.6 | Keys (each person signs up, keys move by AirDrop only) | local `.env` | **Vinh**: Supabase, Tiger Data, Gemini, xAI. **Deem**: ElevenLabs + .Tech (MLH), Vercel, HexLabs OpenAI | 🟡 | n/a | September 26: Supabase and ntfy verified. Gemini, Tiger, xAI and ElevenLabs settings absent in both local checkouts; teammate accounts unknown. App URL remains localhost. Preserve product scope; confirm entry limits before prize-only setup. |
+| 0.6 | Keys (each person signs up, keys move by AirDrop only) | local `.env` | **Vinh**: Supabase, Tiger Data, Gemini, xAI. **Deem**: ElevenLabs + .Tech (MLH), Vercel, HexLabs OpenAI | 🟡 | n/a | September 26: Supabase and ntfy verified. Gemini key added in backend worktree; read-only models.list HTTP 200 (44 generation-capable models, no further page). No generation/quota or classifier verification yet. Tiger, xAI and ElevenLabs remain unconfigured locally; teammate accounts unknown. App URL remains localhost. Confirm entry limits before prize-only setup. |
 | 0.7 | Contract fixes: add `ev_21b` (James `fix_sent` BRIDGE_SAMPLE); `wrist.started` → `"{patient_short} started {drug}. $0 with copay card."` | `mock/events.json`, `mock/templates.json` | **Deem** | ✅ | 0.4 | ⚠️ CONTRACT commit. Tell Vinh first. |
 | 0.8 | **Gate:** ntfy POST → iPhone → Garmin FR55 buzz with text | `scripts/ntfy-smoke.ts` | **Vinh** | ✅ | 0.6 | September 26: ntfy accepted smoke request; user confirmed iPhone and Garmin FR55 receipt after enabling watch app notifications. Workflow-triggered alerts remain pending. |
 | 0.9 | Register team on HexLabs; ask #qna if Notability is a challenge or sponsor track | n/a | **Deem** | ⬜ | n/a | |
@@ -221,7 +221,7 @@ A sponsor tool is named in the writeup only if 5.1 finds it called in code. **Lo
 ## Open Questions
 
 - [ ] **Q1:** Does Medvantx or Spark already detect never-filled patients? Ask at the 11 AM workshop. Needs both.
-- [ ] **Q2:** Which Gemini model ID is live? List models at H0 and pin it. Needs Vinh.
+- [ ] **Q2:** Gemini model list verified September 26 (HTTP 200); gemini-2.5-flash and gemini-3.8-flash are among returned generateContent models. Minh must select/pin a model and verify constrained generation during Phase 2. Model listing alone does not prove quota or classifier behavior.
 - [ ] **Q3:** Is Notability a challenge or a third sponsor track? Ask #qna. Needs Deem.
 - [ ] **Q4:** Which `.tech` domain is free (`getfirstdose.tech`, `firstdose-rx.tech`)? Needs Deem.
 
