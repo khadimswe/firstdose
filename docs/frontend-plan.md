@@ -76,6 +76,14 @@ Rules for every change:
 
 ### v2 structure: devices and routes
 
+**Built, Sat 12:10** (stacked on #9):
+- #11: the coordinator shell, Queue with case Sheet, and `/demo`;
+- #12: the DocUpdate phone view with approve-and-send;
+- #13: Prescribers;
+- #14: the board's "Waiting on".
+
+The watch is an Apple Watch paired to the doctor's iPhone, and it buzzes only while the phone is locked (PLAN C8). A TestFlight wrapper for `/doctor` comes last (6.13, Stephen).
+
 There are two dashboards, on opposite sides of the privacy line, by design:
 - **The coordinator's workspace** (desktop, practice side, with patient names). DocUpdate connects here: every "Send to my coordinator" lands in its queue.
 - **Market Access** (`/access`, Ascend side, counts only).
@@ -86,7 +94,7 @@ Everything else is a device the story runs on, or backstage.
 |---|---|---|---|
 | Desktop / laptop | `/coordinator/*`, an app shell with a sidebar | Access coordinator (Judge 1) | Practice |
 | iPhone | `/doctor/*`, a phone shell with bottom tabs (DocUpdate concept) | Doctor (Judge 2) | Practice |
-| Garmin FR55 | No screen: two ntfy texts from `templates.wrist` (stuck, fill confirmed). Output only; the tap happens on the phone | Doctor | Practice |
+| Apple Watch | No screen: two ntfy texts from `templates.wrist` (stuck, fill confirmed), mirrored from the doctor's locked iPhone. Output only; the tap happens on the phone | Doctor | Practice |
 | Judge's own phone | `/patient/[id]` via QR | Maria | Practice |
 | Second monitor (optional) | `/board`, which also shows the `WristMirror` preview | Audience | — |
 | Slide or laptop | `/access` | Market Access | Ascend |
