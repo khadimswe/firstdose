@@ -226,12 +226,14 @@ Implement [Minh handoff B1-B2](tasks/MINH-TASKS.md#b1-pure-reason-parser-and-tes
 
 ### Task 4.1 (V): Grok voice handoff
 
+Conditional Phase 4 work after the tap path passes. SpaceXAI is a candidate entry, not confirmed eligibility; see `research/tracks-and-requirements.md`. No voice implementation or current model ID has been verified here.
+
 **Files:** `lib/server/voice.ts`, `app/api/voice/route.ts`, `tests/voice.test.ts`
 
 **Interface:** `POST /api/voice` (multipart audio) → `{ transcript, intent: "SEND_TO_COORDINATOR" | null, case_id: string | null }`
 
 - [ ] **Step 1: Failing test** (STT mocked): "send maria to my coordinator" → `{ intent: "SEND_TO_COORDINATOR", case_id: "rx_001" }`; "send james to my coordinator" → `rx_002`; anything else → `intent: null` and no side effect.
-- [ ] **Step 2: Implement:** POST audio to xAI STT (`grok-voice-transcribe-2.0`) with keyterms `["Maria", "James", "Otezla", "Humira", "coordinator"]`. Intent = regex on the transcript, not a model. On a match, call the same function as `/api/handoff`.
+- [ ] **Step 2: Implement:** first verify the current official xAI transcription endpoint, supported model and any keyterm option. Transcribe the audio and resolve only a permitted case/intent; return the suggestion without executing it. After the user reviews and explicitly confirms, invoke the existing `/api/handoff` command. Reject ambiguous case matches.
 - [ ] **Step 3:** PASS. Record one live run with keyterms and one without for the video. Commit `feat(voice): grok stt handoff`.
 
 ### Task 4.6 (V, stretch): Connect IQ widget
