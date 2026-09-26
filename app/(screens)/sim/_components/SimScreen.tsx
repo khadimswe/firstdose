@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+import { PatientQr, usePatientUrl } from "@/components/PatientQr";
 import { StandIn } from "@/components/StandIn";
 import { Button } from "@/components/ui/button";
 import { playBeats } from "@/components/data/replay";
@@ -11,6 +13,7 @@ import { BeatRow } from "./BeatRow";
 
 export function SimScreen() {
   const { script, beats, fired, firedIds, cases, fire, reset } = useEvents();
+  const { url: patientUrl, local } = usePatientUrl();
 
   const who = new Map(cases.map((c) => [c.id, `${c.patient.display_short} · ${c.drug.brand}`]));
   const remaining = beats.filter((b) => !b.events.every((e) => firedIds.has(e.id)));
@@ -93,6 +96,23 @@ export function SimScreen() {
           <span className="font-mono">?replay=1</span> loops the script in that tab alone.
         </p>
       </div>
+
+      <section className="flex flex-wrap items-center gap-4 rounded-xl border p-4">
+        <PatientQr size={96} className="shrink-0" />
+        <div className="space-y-1 text-sm">
+          <p className="font-medium">Scan to become Maria.</p>
+          <p className="font-mono text-xs break-all text-muted-foreground">{patientUrl}</p>
+          {local && (
+            <p className="text-xs text-stuck">
+              This is localhost: phones can&apos;t open it. Use the deployed site or this
+              laptop&apos;s network address.
+            </p>
+          )}
+          <Link href="/qr" className="text-xs underline">
+            Print the big QR card
+          </Link>
+        </div>
+      </section>
 
       <ol className="space-y-3">
         {beats.map((b, i) => (

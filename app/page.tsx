@@ -10,6 +10,7 @@ const SCREENS = [
   { href: "/patient/rx_002", who: "James (phone)", what: "Status" },
   { href: "/board", who: "Big screen", what: "Relay Board and price counter" },
   { href: "/access", who: "Market Access", what: "Patients recovered, time to first fill, reasons" },
+  { href: "/qr", who: "Table card (print)", what: "Big QR to /patient/rx_001 on this deployment" },
 ] as const;
 
 export default function Home() {
