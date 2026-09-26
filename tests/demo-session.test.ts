@@ -31,7 +31,8 @@ describe("private demo session", () => {
   it("rejects tampering, expiration, duplicated cookies and rotated tokens", () => {
     const cookie = pair(issueDemoCookie(request(), env, now));
     expect(demoAccess(request(cookie.slice(0, -1) + (cookie.endsWith("a") ? "b" : "a")), env, now)).toBe(null);
-    expect(demoAccess(request(cookie), env, now + 12 * 60 * 60 * 1000 + 1)).toBe(null);
+    expect(demoAccess(request(cookie), env, now + 7 * 24 * 60 * 60 * 1000 + 1)).toBe(null);
+    expect(demoAccess(request(cookie), env, now + 6 * 24 * 60 * 60 * 1000)).toBe("session");
     expect(demoAccess(request(`${cookie}; ${cookie}`), env, now)).toBe(null);
     expect(demoAccess(request(cookie), { FIRSTDOSE_DEMO_TOKEN: token + "rotated" }, now)).toBe(null);
   });
