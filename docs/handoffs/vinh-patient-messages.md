@@ -1,5 +1,7 @@
 # Patient message delivery, Phase 6.8 / C3
 
+**Current checkpoint, September 26:** This module is merged. Hosted browser acceptance is recorded in [deployed acceptance](deployed-acceptance.md); it supersedes the implementation-time merge/deployment pending notes below. Physical-device acceptance remains separate. [PR #40](https://github.com/khadimswe/firstdose/pull/40) contains the subsequent frontend repairs and is awaiting review/merge. Original implementation evidence and setup instructions are retained below; do not repeat hosted setup merely because an older checklist says pending.
+
 This branch builds on main `47eb5ea` and reuses the two feature commits from Deem's PR #21 (`af8dcb3`, `560d864`), without importing its PLAN statuses. The user authorized implementing the proposed C3 addition locally for review. The English/Spanish templates and committed ElevenLabs recordings are unchanged from that proposal. This is in-app delivery to the existing fictional patient card; no SMS, email, new synthesis or external message provider is called.
 
 ## Behavior

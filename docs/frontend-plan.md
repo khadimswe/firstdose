@@ -1,5 +1,7 @@
 # Frontend plan (Deem)
 
+**Frontend audit follow-up, September 26:** [PR #40](https://github.com/khadimswe/firstdose/pull/40) adds responsive layouts, main-content/route focus, sheet return focus, search feedback, contrast, named QR images and keyboard table scrolling. It is verified locally and in CI/preview, awaiting owner review/merge. See [repair checks](handoffs/frontend-audit-fixes.md) and [hosted acceptance](handoffs/deployed-acceptance.md).
+
 The approved plan for the six screens and their data layer, as built on `main`. Status lives in `PLAN.md`; task steps in `docs/IMPLEMENTATION.md`.
 
 ## Data layer: one hook
@@ -17,7 +19,7 @@ Screens read and write only through `useEvents()` (`components/data/useEvents.ts
 | `catalog.ts` | The only module that imports `mock/*.json` (templates excepted) |
 | `store.ts` | Mock source: fired event ids in `localStorage`; other tabs on the machine follow via the `storage` event |
 | `derive.ts` | Pure functions: `deriveCases`, `boardStop`, `beats` (bursts ≤ 2 s apart), `accessSummary`, `calendarDaysBetween`, `atSeconds` |
-| `mode.ts` | Mock until task 1.13 wires the live source |
+| `mode.ts` | Build-time mock/live selection; production uses the merged live source |
 | `components/copy/` | `templates.json` typed, `fill()` for `{variables}`, `money()`, `clock()` |
 
 Rules the layer enforces:
@@ -84,7 +86,7 @@ Rules for every change:
 - #13: Prescribers;
 - #14: the board's "Waiting on".
 
-The watch is an Apple Watch paired to the doctor's iPhone, and it buzzes only while the phone is locked (PLAN C8). A TestFlight wrapper for `/doctor` comes last (6.13, Stephen).
+The watch is an Apple Watch paired to the doctor's iPhone, and it buzzes only while the phone is locked (PLAN C8). The wrapper source is merged in PR #30 (6.13, Vinh / Mac operator); signing, install and device acceptance remain. Stephen is not on the project.
 
 There are two dashboards, on opposite sides of the privacy line, by design:
 - **The coordinator's workspace** (desktop, practice side, with patient names). DocUpdate connects here: every "Send to my coordinator" lands in its queue.
@@ -141,7 +143,7 @@ Each phone tab is a real URL, so stills, the video and the `/demo` QRs can open 
 3. One tap approves the delegate and hands Maria off.
 4. On the desktop, Prescribers flips to Linked and Maria lands at the top of the queue.
 
-In mock mode, the link state and the contact marks live in the local store's overrides, synced across tabs like fired events. In live mode they need events (PLAN C7), or the desktop won't see the phone's approval.
+In mock mode, the link state and the contact marks live in the local store's overrides, synced across tabs like fired events. In live mode, coordinator links now use persisted run-scoped events (PLAN C7); Profile approval reaches the desktop before handoff. Contact marks remain local in both modes, as disclosed on the case sheet.
 
 ### What gets rebuilt, what gets reused
 

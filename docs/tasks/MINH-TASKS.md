@@ -10,34 +10,18 @@
 
 **Specs:** [PLAN.md](../../PLAN.md), [architecture](../architecture.md), `components/data/types.ts`, `mock/labels.json`, `mock/patients.json`, `mock/reasons.json`. This handoff supersedes the older Minh task descriptions in IMPLEMENTATION.md, including its normalized-XML verification shortcut. It does not silently approve shared-contract changes.
 
-## Now: state and v2 (Phase 6) additions
+## Current handoff - September 26
 
-`PLAN.md` is the source of truth. The v2 product is in `docs/spec-v2-coordinator.md`. The detailed A/B/C steps below still apply unchanged.
+[PLAN.md](../../PLAN.md) owns status. The detailed A/B/C steps below are retained implementation and review references, not a fresh backlog. The old PR #8 review records the issues at that SHA; it does not describe the currently verified Otezla artifact.
 
-**State.** PR #8 (`data/verified-labels`) carries A1–A3 for Otezla. Vinh's review (in #9's copy of this file) requires changes before merge or any green badge:
-1. Fix the build type errors.
-2. Preserve the XML bytes across checkout (scoped `.gitattributes`).
-3. Verify the committed `label.json`, not a rebuild.
-4. Reject malformed evidence (section count and order, method, hashes, identity).
-5. Agree full sections versus highlights explicitly.
-6. Keep the endpoint unverified until the gate passes.
+- Otezla verification and rendered source text pass; Humira remains an explicit placeholder.
+- Gemini classifier PR #23 and integration PR #39 are merged. The hosted Maria/James audit passed; the classifier returns an allowlisted reason or null and the router still owns the action.
+- Tiger replay and checkpoint-aware summaries are live. Hosted seed returned 8 fills / median 60 seconds / reason counts 2,2,2; reset returned zero/null/empty.
+- Tasks 6.6 (NPPES lookup) and 6.7 (coordinator rollup) are cut. Do not implement them from older checklist text.
+- Remaining: owner sign-off on label/model/metric claims and any explicitly chosen Humira follow-up. Physical-device and native language checks remain with the team.
+- Frontend audit repairs are in draft PR #40; no Minh module or shared fixture change is required.
 
-Keep one vitest config (Vinh's `vitest.config.mts`, Vitest 5) and regenerate the lockfile with npm.
-
-**Your end-to-end list, in order:**
-- [ ] **1.10** Fix #8's six items; Deem and Vinh re-review; merge after #9 lands, or before if it's ready first.
-- [ ] Agree the label display path with Vinh and Deem. Vinh proposes reviewed fixtures bundled into the catalog in both modes, with your endpoint for verification. The label must show in the live flow; that's Phase 1 gate 2.
-- [ ] **2.5** Gemini (B1–B2): pin a model from the verified list; enum or null only.
-- [ ] **2.3** Tiger (C1–C3): a run-aware projection of confirmed first fills and time to first fill; no patient fields.
-- [ ] **6.7** The `/access` tiles expect two aggregate numbers: coordinators active this week, and fixes per coordinator. On the same projection, a rollup of coordinators active this week and fixes per coordinator. Needs Vinh's 6.4 `coordinator_id` and `coordinator_invited`. Deem builds the two tiles on `/access`.
-- [ ] **6.6** (proposed owner; confirm with Vinh) `GET /api/npi?zip=&taxonomy=`. The frontend already has an NPI check-digit helper (`components/data/npi.ts`, PR #13); reuse it for input validation:
-  - calls the NPPES v2.1 API, with a cache and a rate limit;
-  - verify the response field names against a live call (the teardown's names are secondhand);
-  - return the taxonomy and address line only; no names to the screen;
-  - run it from the deployed app;
-  - second in the cut order.
-- [ ] **1.10b** The Humira label (repeat A) only after Otezla passes. It fills James's boxed warning on the before-visit card (2.2).
-- [ ] **5.1** Give Vinh the evidence for the label, Gemini and Tiger claims at the 9 PM freeze.
+Evidence: [deployed acceptance](../handoffs/deployed-acceptance.md), [Phase 2 integration](../handoffs/vinh-phase2-live.md), [frontend repairs](../handoffs/frontend-audit-fixes.md).
 
 ## 0. Start here
 

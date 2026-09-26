@@ -1,5 +1,7 @@
 # Seed the week: Vinh backend and Deem wiring
 
+**Current checkpoint, September 26:** This module is merged. Hosted browser acceptance is recorded in [deployed acceptance](deployed-acceptance.md); it supersedes the implementation-time merge/deployment pending notes below. Physical-device acceptance remains separate. [PR #40](https://github.com/khadimswe/firstdose/pull/40) contains the subsequent frontend repairs and is awaiting review/merge. Original implementation evidence and setup instructions are retained below; do not repeat hosted setup merely because an older checklist says pending.
+
 Task 6.1, branch `backend/seed-week`, with main `4c80650` merged alongside the Phase 2 retained-run reader. This delivers the backend, catalog data and adapter method. The simulator button and catalog/store wiring remain Deem's work; the actual screen is not yet seeded by this branch. The PR adds no screen changes beyond those already merged into main.
 
 ## Fixed fixture and counts

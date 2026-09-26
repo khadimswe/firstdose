@@ -1,5 +1,7 @@
 > **Superseded 2026-09-26 09:40:** the writeup is rewritten around the coordinator at the 9 PM claims freeze (PLAN 5.4). Source of truth until then: `docs/spec-v2-coordinator.md`. Screen claims follow PLAN D8 (fill wording).
 
+**Current engineering evidence, September 26:** Use [deployed acceptance](handoffs/deployed-acceptance.md) and the updated [claims register](presentation/claims-and-evidence.md). Production is live with Gemini/Tiger and patient audio; frontend repairs are in draft PR #40. This legacy submission draft still needs an editorial rewrite and release sign-off before publication.
+
 # About FirstDose
 
 *Devpost "About the project" draft. Freeze claims Sat 9 PM. Every number here is traced in the sourced facts sheet in `notes/` (shared by DM, not in the repo).*

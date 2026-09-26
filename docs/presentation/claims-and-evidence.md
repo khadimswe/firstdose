@@ -1,21 +1,27 @@
 # Presentation claims and evidence
 
-Updated Sat Sep 26, 2026, 13:05 (Deem). This register governs factual wording in the slides, poster, video, README and Devpost. If a claim isn't here with evidence, it doesn't go on a slide. Each new verification records the commit, mode, date and result.
+Updated September 26, 2026 after the hosted audit and frontend repair publication. This register governs factual wording in the slides, poster, video, README and Devpost. If a claim isn't here with evidence, it doesn't go on a slide. Each new verification records the commit, mode, date and result.
 
-## What's built and verified (main `4c80650`)
+## Current verified engineering state - September 26
+
+Hosted audit baseline: main `2ebc3ed` after #39. Current main `ba3c439` adds status docs. [Acceptance record](../handoffs/deployed-acceptance.md) separates browser proof, device proof and the pending frontend PR.
 
 | Claim | Evidence | Allowed wording |
 |---|---|---|
-| All PRs through #15 are merged; CI is green | GitHub checks on every PR; locally 339 tests, lint, and mock + live builds pass (Deem, 13:00) | "All the code is on main and the checks pass" |
-| The v2 screens exist | Coordinator Queue and Prescribers, the DocUpdate-style phone view, board, access, sim, `/demo`, `/qr`. Checked in Chrome at 1440 and 390×844 in mock mode; production serves them at firstdose.vercel.app (mock) | "Built and running" |
-| The live workflow works end to end in browsers | #15 (Vinh): the full v2 flow across three independent browser sessions against hosted Supabase; 14 PostgreSQL checks | "Works live across browsers". **Not yet**: "on two physical devices"; the deployed live run is still open |
-| The patient's tap is acknowledgment only | #9 and #15 tests; the board and access count only the separate pharmacy confirmation | "The tap isn't a fill; the pharmacy confirms the fill" |
-| Otezla's label is verbatim DailyMed | #15: the full saved narratives, RxCUI 1492746, and the build verifies the saved XML, RxNorm and artifact | "Verbatim from DailyMed, verified" for **Otezla only**. Humira still shows the placeholder |
-| No mock or demo wording on product screens | `tests/no-fake-labels.test.ts`; a browser text scan of 13 product routes (Sat 13:45) | "Synthetic data, real public reference data" |
-| Watch alerts | #15: the reason alert and the pharmacy-fill alert were accepted once, and the user confirmed both on iPhone and Garmin | "Buzzes the doctor's wrist" (Garmin). The Apple Watch path is C8, still to check |
-| Prescriber approval | Mock: approving on the phone flips the desktop to Linked across tabs (Chrome). Live: the approval travels with the first handoff | "The doctor approves the coordinator in one tap." Don't show a Profile-only approval reaching the desktop in live mode until C7 |
-| Gemini, Tiger, ElevenLabs, Grok | Not merged (Grok is draft #16) | Don't name them as working until 5.1 finds them called in code |
-| A seeded week in the queue | Draft #17 | Until it merges, the queue opens with only Maria and James |
+| Production uses a shared live backend | Actual authenticated Maria/James browser workflows, coordinator approvals, messages, seed and reset passed | "Live shared demo with fictional patients and simulated pharmacy/hub events" |
+| Acknowledgment is separate from fill | Patient message/card actions remain pending until the independent pharmacy event | "The pharmacy confirms the fill; a tap does not" |
+| Otezla's displayed text is source-verified | Build verifier and exact rendered artifact comparison passed | "Verified DailyMed label for Otezla"; Humira remains a placeholder |
+| Coordinator approval persists before prescribing | Profile approval reached the independent coordinator session; reload/reset passed | "Shared run-scoped approval and assignment"; not real role-separated accounts or NPI verification |
+| Seeded opening | Hosted queue 3 needing a fix / 2 waiting / 8 confirmed; separate background prescriber | Use these actual counts, not the old proposed 11 fills |
+| Gemini reason classification | #23/#39 merged; provider smoke and hosted workflows recorded in the Phase 2/acceptance handoffs | "Gemini maps a source note to an allowlisted reason or null; rules pick the fix" |
+| Tiger fill metrics | Hosted summary 8 fills / median 60 seconds / reasons 2,2,2; reset zero/null/empty | "Tiger provides run-scoped confirmed-fill metrics"; coordinator rollup 6.7 is cut |
+| ElevenLabs patient audio | Approved English/Spanish Otezla message audio decoded and played in deployed browsers | "Templated patient message audio plays in the app"; native Spanish and physical-phone listening remain |
+| Notification receipt | Historical iPhone/Garmin evidence exists; latest user confirms a direct test on both devices without naming the watch model | Do not claim the complete latest workflow or Apple Watch C8 was physically verified |
+| Grok voice | Backend and UI merged; synthetic-provider and permission-denial checks exist | Human microphone/confirmation demonstration and Cursor evidence remain separate |
+| Frontend repairs | Draft #40 application `c1fd445`: 724 tests, both builds, lint, three-engine checks, 57 axe scans and CI/preview pass | "Implemented and verified on the branch"; not yet merged/live, not complete accessibility conformance |
+| TestFlight | #30 source merged; six Swift navigation-policy tests pass | "Wrapper prepared"; no signed/installed iOS build claimed |
+
+Physical two-device/watch, native language/audio, owner claim sign-off and release approval remain. NPPES lookup 6.6 and coordinator analytics 6.7 are cut. The older engineering readiness table is superseded; external research facts below retain their original sources and dates.
 
 ## Pitch facts and their sources
 

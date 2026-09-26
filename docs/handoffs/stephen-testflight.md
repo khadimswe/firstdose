@@ -2,9 +2,11 @@
 
 Updated September 26, 2026. Stephen is not on this project. This is now a self-service handoff for whoever has the team's Mac and Apple Developer account. The filename stays stable for existing links. PLAN.md remains the execution dashboard.
 
+PR #30 is merged, and the web deployment has passed hosted browser acceptance ([record](deployed-acceptance.md)). A signed, installed TestFlight build remains unverified.
+
 The wrapper source is in [`ios/`](../../ios/). It loads `https://firstdose.vercel.app/doctor` in a persistent `WKWebView`, with the existing web interface and its fictional-data disclosures. The app is named **FirstDose Rx** and has an original navy “FD” icon generated locally. It has no third-party SDKs, native push, native analytics, or embedded access code.
 
-**Readiness:** source and reproducible XcodeGen configuration are prepared. Six Swift navigation-policy tests passed in a disposable Swift 6 Linux container. Swift syntax parsing and plist/asset-JSON/YAML parsing passed on Windows. These checks do **not** establish an iOS build, visual layout, microphone capture, session persistence on an iPhone, App Store Connect acceptance, or a TestFlight installation. Those require the Mac/device steps below. Finish the live web deployment before the phone acceptance check.
+**Readiness:** source and reproducible XcodeGen configuration are prepared. Six Swift navigation-policy tests passed in a disposable Swift 6 Linux container. Swift syntax parsing and plist/asset-JSON/YAML parsing passed on Windows. These checks do **not** establish an iOS build, visual layout, microphone capture, session persistence on an iPhone, App Store Connect acceptance, or a TestFlight installation. Those require the Mac/device steps below. Use the deployed live web app for the phone acceptance check; no native acceptance is implied by the browser audit.
 
 ## Behavior and boundaries
 

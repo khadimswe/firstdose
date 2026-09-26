@@ -1,5 +1,7 @@
 # Phase 5 claims and release audit
 
+**Historical audit:** Findings below describe commits `158b5a9` and `22b78f0`, not the current deployment. The later [deployed acceptance record](handoffs/deployed-acceptance.md) supersedes the old `demo_not_configured`, missing-integration and deployed-check pending observations. The original evidence is preserved; claims freeze still requires the listed human/owner checks as reconciled in the current record.
+
 Vinh, September 26, 2026. Initial audit 13:25–13:31 ET at `158b5a9`; publication review around 13:53 ET updates the audited application commit to **`22b78f0643f0300866afa9b6177a1394cf3eb9b7`**, fetched `origin/main`. Audit branch: `audit/vinh-phase5`. `PLAN.md` remains the execution dashboard; this is evidence for task 5.1, not another schedule.
 
 **Claims freeze is not cleared.** The source audit and history scan are complete, but deployed live configuration, physical-device checks, owner review and presentation corrections remain open. Code presence, local tests, historical user reports and fresh deployed observations are distinguished below. Later merges require a delta audit before recording.

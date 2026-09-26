@@ -1,5 +1,7 @@
 # FirstDose v2: The Coordinator's Daily Queue
 
+**September 26 implementation checkpoint:** The shared web workflow, seed 3/2/8, coordinator approval/messages and Gemini/Tiger are deployed and browser-verified. [PR #40](https://github.com/khadimswe/firstdose/pull/40) contains frontend audit repairs awaiting review/merge. [Acceptance evidence](handoffs/deployed-acceptance.md) distinguishes browser proof from physical devices, native Spanish/audio and TestFlight. Tasks 6.6/6.7 are cut; historical schedule rows below are not instructions to restore them.
+
 Sat Sep 26, 2026 · Deem · Supersedes the doctor-first spec. The lead is locked (PLAN D7): an Ascend skill that shows up in DocUpdate; the coordinator's queue opens the demo and the doctor stays the accountable HCP.
 
 ## Where this fits in the repo (read this first)
@@ -35,7 +37,7 @@ DocUpdate already promises "direct access to reps, samples and patient support."
 
 | Person | How often | What they see | What they do |
 |---|---|---|---|
-| **Access coordinator** (main user) | Every workday, first thing | Morning summary ("3 stuck, 2 waiting, 11 fills confirmed this week"), then a queue sorted by who's slipping soonest, each with a reason | One fix per stuck patient (re-send copay card, request bridge sample, connect to access support); mark "Reached patient" / "Left message" |
+| **Access coordinator** (main user) | Every workday, first thing | Morning summary ("3 needing a fix, 2 waiting, 8 fills confirmed this week"), then a queue sorted by who's slipping soonest, each with a reason | One fix per stuck patient (re-send copay card, request bridge sample, connect to access support); mark "Reached patient" / "Left message" |
 | **Doctor** | A few alerts a week, plus before visits | Alert when a fix needs them; note before a follow-up: "James Carter: Humira first fill confirmation is still pending. Review fill status before the visit." | One tap: "Send to my coordinator" (first time: "Invite your coordinator"). Watch buzzes only when it matters |
 | **Patient** | Once, when stuck | Copay card or support link on their phone | "Use at pharmacy" |
 | **Market Access** (buyer) | Weekly | First fills confirmed, time to first fill, stuck reasons. No names | Pays per confirmed first fill, never per prescription |
@@ -144,7 +146,7 @@ Full teardown: `docs/research/docupdate-teardown.md`. The judge wants proof we k
 
 | Time | What happens | What we say |
 |---|---|---|
-| 0:00 | Desktop: the coordinator queue, Monday morning. "3 stuck, 2 waiting, 11 fills confirmed" | "Impiricus reaches the doctor who writes the prescription. This is the person who gets the patient on it. She opens this every morning." |
+| 0:00 | Desktop: the coordinator queue, Monday morning. "3 needing a fix, 2 waiting, 8 fills confirmed" | "Impiricus reaches the doctor who writes the prescription. This is the person who gets the patient on it. She opens this every morning." |
 | 0:20 | Judge 1, on the DocUpdate phone view: New Rx → Maria → Otezla → Sign and send. Real DailyMed label on the order. Then they lock the phone and set it down, as a doctor would between patients | "DocUpdate sends the script. Today, that's where the story ends." |
 | 0:40 | Pharmacy: declined at the quoted price. The Apple Watch buzzes. Judge 1 unlocks the phone: Rx Alerts shows **Not dispensed / returned to stock · Maria Lopez · Otezla** | "A patient who never started looks exactly like a drug that doesn't work." |
 | 0:55 | Judge 1 taps "Send to my coordinator." First time only, a sheet: "Your access coordinator asked to work on your patients' access. Approve?" One tap approves the delegate and hands Maria off. On the desktop, Prescribers flips from Pending to Linked | "One tap just brought the person who gets patients started into the Impiricus network. Staff accounts, the way CoverMyMeds does them, except the doctor approves inside the app they already verified with." |

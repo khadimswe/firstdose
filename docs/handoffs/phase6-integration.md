@@ -1,5 +1,7 @@
 # Phase 6 web integration
 
+**Current checkpoint, September 26:** This module is merged. Hosted browser acceptance is recorded in [deployed acceptance](deployed-acceptance.md); it supersedes the implementation-time merge/deployment pending notes below. Physical-device acceptance remains separate. [PR #40](https://github.com/khadimswe/firstdose/pull/40) contains the subsequent frontend repairs and is awaiting review/merge. Original implementation evidence and setup instructions are retained below; do not repeat hosted setup merely because an older checklist says pending.
+
 September 26, 2026. `PLAN.md` remains the execution dashboard. This change connects the merged coordinator backend and RxFill projection to the web UI, incorporates PR #21's exact patient-message templates/audio, and adds private run-scoped message persistence. Gemini, Tiger analytics and NPPES remain outside this integration; the user asked us to leave Minh's work separate.
 
 ## Behavior to review

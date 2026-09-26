@@ -1,17 +1,19 @@
 # FirstDose: implementation, end to end
 
+**September 26 checkpoint:** These are implementation reference steps, not current unchecked work orders. The shared web workflow, Gemini/Tiger and patient messages are merged and deployed; iOS source is merged. Tasks 6.6/6.7 are cut. PR #40 contains verified frontend repairs awaiting review/merge. Consult [PLAN.md](../PLAN.md) and [deployed acceptance](handoffs/deployed-acceptance.md) before repeating setup or implementation.
+
 > Companion to `../PLAN.md` (status, owners, decisions) and `spec-v2-coordinator.md` (the product). Task numbers match the PLAN dashboard. Each person's checklist is in `tasks/`. Read `../AGENTS.md` (Next.js 16) before any route code.
 
 **Goal (v2):** FirstDose is the access coordinator's daily queue. When a new prescription stalls, the pharmacy or hub status becomes a reason, and the doctor sees it on the phone (the DocUpdate view) and on the wrist. One tap hands it to the coordinator, who applies the one fix the rule picks. A separate pharmacy confirmation closes the loop, and Market Access sees aggregate first fills only.
 
 **Architecture:**
 - One Next.js 16 app on Vercel serves the screens and all API routes.
-- Supabase Postgres holds immutable run and event history. Clients read `GET /api/events` snapshots through `lib/realtime.ts`: 1.5 s polling with run/revision ETags, plus a refresh after each command. It is not a Realtime channel. See `backend-core.md` (arrives with PR #9).
+- Supabase Postgres holds immutable run and event history. Clients read `GET /api/events` snapshots through `lib/realtime.ts`: 1.5 s polling with run/revision ETags, plus a refresh after each command. It is not a Realtime channel. See `backend-core.md` (merged).
 - Commands go through guarded server routes behind a demo session cookie. The router is a pure function; ntfy delivery runs through a claim-once outbox.
 - Tiger Data gets a name-free projection for aggregates (Minh). Gemini maps a note to a reason enum or null (Minh).
 - Screens read only `useEvents()`. `NEXT_PUBLIC_DATA_SOURCE=mock` (the default) drives everything from `mock/*.json` with zero network.
 
-**Owners:** **V** = Vinh (workflow, schema, router, simulator, ntfy/watch, voice). **M** = Minh (labels, Gemini, Tiger, NPPES proposed). **D** = Deem (screens, components, hook consumers, design, docs, demo, presentation, submission). Every task has one owner.
+**Owners:** **V** = Vinh (workflow, schema, router, simulator, ntfy/watch, voice). **M** = Minh (labels, Gemini, Tiger; NPPES task 6.6 cut). **D** = Deem (screens, components, hook consumers, design, docs, demo, presentation, submission). Every task has one owner.
 
 ## Global constraints
 
@@ -75,7 +77,7 @@ Order after the workshop: 6.0 merges, then 6.3 (if W3 = DocUpdate) and 6.10, the
 
 ### 6.1 Seed the week (V)
 
-- [ ] Pre-load 10–15 fictional cases (fill confirmed, waiting, stuck) so the queue looks like a real Monday: "3 stuck, 2 waiting, 11 fills confirmed".
+- [ ] Pre-load 10–15 fictional cases (fill confirmed, waiting, stuck) so the queue looks like a real Monday: "3 needing a fix, 2 waiting, 8 fills confirmed".
 - [ ] **Decide C1 with Deem first:** what the seeded patients are called, and where they live in mock mode. Deem's proposal: a separate seed fixture, with names Deem approves, under the "Fictional test records · no PHI" stand-in. Don't change the shapes of `mock/*.json`.
 - **Done when:** a reset plus "Seed the week" gives the same queue in mock and live mode.
 
