@@ -1,5 +1,7 @@
 # Workflow persistence
 
+**September 26 acceptance:** The deployed workflow, coordinator links, messages, seeded catalog and Tiger replay passed the [hosted browser audit](../docs/handoffs/deployed-acceptance.md). PR #40 is frontend-only and needs no migration or environment change. Check actual migration history before applying anything; this note is not an instruction to reapply existing migrations.
+
 Apply the SQL files in `migrations/` in timestamp order through the reviewed Supabase migration process, followed by the generated seed. The scripts here do not automatically apply hosted migrations; deployment evidence belongs in `PLAN.md`. The migrations expect Supabase's `anon`, `authenticated`, and `service_role` roles; service_role must retain its usual BYPASSRLS attribute.
 
 Generate catalog SQL with `node --import tsx scripts/seed.ts --output supabase/seed.sql` (or omit `--output` for stdout). Review before applying. The generator reads only repository fixtures and does not connect to a database. Repeated seeds update catalog records but preserve existing label rows, including any verified label cache. It seeds no workflow events and makes no label-verification claims.

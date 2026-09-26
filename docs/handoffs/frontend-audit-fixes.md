@@ -1,5 +1,7 @@
 # Frontend audit fixes
 
+**Publication:** [draft PR #40](https://github.com/khadimswe/firstdose/pull/40), application commit `c1fd445`, is mergeable. Both GitHub CI runs and the Vercel preview passed. Owner review, merge and deployed repair acceptance remain. The earlier hosted workflow audit is summarized in [deployed acceptance](deployed-acceptance.md).
+
 September 26, 2026. Based on main `2ebc3ed`, following the deployed frontend audit.
 
 ## Changes

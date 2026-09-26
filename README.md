@@ -2,7 +2,7 @@
 
 **Impiricus reaches the doctor who writes the prescription. FirstDose reaches the person who gets the patient on it, every day.**
 
-**Live demo:** [firstdose.vercel.app](https://firstdose.vercel.app). It runs in mock mode: scripted fictional cases, synced between tabs of one browser. Open `/sim` to drive it.
+**Live demo:** [firstdose.vercel.app](https://firstdose.vercel.app). Production uses the shared hosted Supabase run behind the private demo sign-in. Pharmacy and hub events remain simulated; `/sim` drives those events. Local mock mode is available for offline rehearsal.
 
 FirstDose is the access coordinator's daily work queue. It was built at HackGT 13 by **Vinh, Minh and Deem** as a proposed Impiricus workflow.
 
@@ -26,7 +26,7 @@ Spec: [docs/spec-v2-coordinator.md](docs/spec-v2-coordinator.md). Research: [Doc
 | **Patient** | Once, when stuck | Opens the savings card on their phone and taps "Use at pharmacy" |
 | **Market Access** (buyer) | Weekly | Sees aggregate counts only: first fills confirmed, time to first fill, stuck reasons. Pays per confirmed first fill, never per prescription |
 
-## The demo (target)
+## The demo workflow
 
 1. The coordinator's Monday-morning queue is on the desktop.
 2. On a phone styled as DocUpdate (a labelled concept, not affiliated), the doctor prescribes Otezla for Maria. The order shows the source-checked DailyMed label.
@@ -46,30 +46,19 @@ Screens say "first fill pending" and "pharmacy fill confirmed". A fill signal do
   - DocUpdate (our phone view copies its structure, never its brand, and says "Concept: FirstDose inside DocUpdate · Not affiliated"), Ascend, the Wallet, QPharma and Medvantx;
   - prices;
   - patients, which are fictional (no PHI).
-- **Real, or being built (status in PLAN.md):**
-  - RxNorm and a verified DailyMed label (PR #8);
-  - Supabase persisted workflow and live wiring (PR #9);
-  - the ntfy → iPhone → Garmin alert;
-  - ElevenLabs audio;
-  - later, Gemini (note → reason code only) and Tiger Data (aggregate time to first fill).
+- **Implemented:** verified cached Otezla/DailyMed labels; shared Supabase workflow; coordinator approvals and messages; Gemini reason classification; Tiger fill summaries; ntfy notifications; English/Spanish ElevenLabs message assets.
+- **Evidence boundaries:** hosted browser workflows and audio playback passed. Physical two-device/watch acceptance and native Spanish review remain explicit checks. The iOS wrapper source is merged; an installed TestFlight build is not established. See the [acceptance record](docs/handoffs/deployed-acceptance.md).
 
 The router never changes a prescription. It only removes access barriers, and Medicare and Medicaid patients never get a manufacturer copay card.
 
 ## Current state
 
-- **On `main`:**
-  - the v2 screens: the coordinator's Queue and Prescribers, the DocUpdate-style phone view with approve-and-send, the board, access, sim, and `/demo` (which device runs which screen);
-  - the persisted Supabase workflow with guarded commands;
-  - Otezla's verified DailyMed label;
-  - both watch alerts (receipt confirmed on iPhone and Garmin).
+- **Live on main:** coordinator and doctor screens, shared approvals/assignments, seeded week (3 need a fix / 2 waiting / 8 confirmed), RxFill inspection, templated patient messages, Otezla verification, Gemini classification and Tiger fill summaries. PRs #30, #32, #35 and #39 are merged; #30 provides iOS source only.
+- **Awaiting review/merge:** [PR #40](https://github.com/khadimswe/firstdose/pull/40) repairs eight frontend audit groups. At its application commit, 724 tests, lint, both builds, browser regressions and 57 axe scans passed; CI and the Vercel preview are green. These changes are not yet live.
+- **Still to record:** physical two-device and intended-watch workflow, native Spanish/audio review, Mac/TestFlight installation, rehearsal and submission. Phase 6 is not closed.
+- **Cut:** NPPES lookup (6.6) and coordinator-specific analytics (6.7). Existing Tiger fill metrics remain.
 
-  Production at firstdose.vercel.app runs in mock mode.
-- **Next:**
-  - the deployed live run on two phones;
-  - the seeded week (#17);
-  - Gemini and Tiger analytics;
-  - the Spanish patient message (ElevenLabs);
-  - a TestFlight build of the doctor's phone.
+The [hosted acceptance record](docs/handoffs/deployed-acceptance.md) separates deployed proof from local checks and human acceptance. The completed audit reset the shared run; request and approve the coordinator link again for the next demo.
 
 ## Screens
 
@@ -98,7 +87,7 @@ We work on short module branches and merge reviewed PRs into `main` (see the [br
 - [PLAN.md: status, owners, gates and decisions](PLAN.md)
 - [Frontend plan: screens, the data layer and the design research](docs/frontend-plan.md)
 - [Architecture and frontend contract](docs/architecture.md) and [who sees what](docs/who-sees-what.md)
-- [Presentation pack](docs/presentation/README.md) (being rewritten around the coordinator, task 6.9) and the [claims register](docs/presentation/claims-and-evidence.md)
+- [Presentation pack](docs/presentation/README.md) and the [claims register](docs/presentation/claims-and-evidence.md)
 - [Tracks, sponsors and requirements](docs/research/tracks-and-requirements.md)
 
 ## Run it
@@ -108,8 +97,8 @@ npm ci
 npm run dev        # http://localhost:3000
 ```
 
-Every screen runs on `mock/` data with no backend (`NEXT_PUBLIC_DATA_SOURCE=mock`, the default); open `/sim` to drive it. Live mode (`supabase`) arrives with PR #9. It is set at build time, and its server settings stay private. Never put secrets in `NEXT_PUBLIC_*` variables or commit `.env`.
+Every screen runs on `mock/` data with no backend (`NEXT_PUBLIC_DATA_SOURCE=mock`, the default); open `/sim` to drive it. Live mode (`supabase`) is implemented and deployed. It is set at build time, and its server settings stay private. Never put secrets in `NEXT_PUBLIC_*` variables or commit `.env`.
 
 ## Verification
 
-CI runs lint, build, gitleaks and the mock-contract gate on every PR. These still need their own recorded checks before any claim: physical watch delivery, source fidelity of the label, and synchronization across two real devices (see PLAN.md → Phase 1 checkpoint and 5.1 claims audit).
+CI runs lint, build, tests, gitleaks and mock-contract checks on every PR. See the [frontend repair checks](docs/handoffs/frontend-audit-fixes.md) for repeatable browser regressions and [deployed acceptance](docs/handoffs/deployed-acceptance.md) for the hosted audit. Automated browser checks do not replace physical-device acceptance.

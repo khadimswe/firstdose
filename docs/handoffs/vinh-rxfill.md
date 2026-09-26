@@ -1,5 +1,7 @@
 # Vinh → Deem: simulated RxFill vocabulary (6.5)
 
+**Current checkpoint, September 26:** This module is merged. Hosted browser acceptance is recorded in [deployed acceptance](deployed-acceptance.md); it supersedes the implementation-time merge/deployment pending notes below. Physical-device acceptance remains separate. [PR #40](https://github.com/khadimswe/firstdose/pull/40) contains the subsequent frontend repairs and is awaiting review/merge. Original implementation evidence and setup instructions are retained below; do not repeat hosted setup merely because an older checklist says pending.
+
 September 26, 2026. Additive presentation module: `lib/rxfill.ts`. Deem owns the `/sim` raw-message toggle; this branch supplies its data projection. No mock contract, workflow, store, screen or package changes. No transport integration or certified NCPDP payload is claimed.
 
 Publication base: `origin/main` at `4c80650`, including merged PRs #15 and #7, corrected label artifacts and the prebuild verification receipt. This branch no longer depends on the unpublished seed-week branch and can target main directly. The original local branch is retained as `backup/rxfill-events-before-pr15-20260926`.

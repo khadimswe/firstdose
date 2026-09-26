@@ -1,5 +1,7 @@
 # Voice handoff backend
 
+**Current checkpoint, September 26:** Backend PR #16 and the microphone UI are merged. The deployed frontend audit exercised permission denial; earlier synthetic-audio provider results below are not human microphone proof. Human voice/confirmation and physical workflow-alert acceptance remain; see [deployed acceptance](handoffs/deployed-acceptance.md).
+
 Task 4.1's backend is implemented on `backend/voice-handoff`, synchronized with main at `54c3d22` after the backend prerequisite and coordinator shell landed. `PLAN.md` remains the execution dashboard. This slice adds transcription and a proposed handoff; microphone capture and confirmation UI belong to Deem.
 
 ## Provider contract

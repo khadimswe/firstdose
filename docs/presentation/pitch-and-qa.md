@@ -1,5 +1,7 @@
 # Pitch, slide copy and judge questions (v2)
 
+**Recording checkpoint, September 26:** The [claims register](claims-and-evidence.md) now records deployed Gemini/Tiger, shared approvals/messages and browser playback. [PR #40](https://github.com/khadimswe/firstdose/pull/40) repairs are branch-verified, not yet live. Physical-device/watch, native Spanish/audio and TestFlight acceptance remain open. Do not present this script as a record of those unperformed checks.
+
 Sat Sep 26, 2026 · Deem. Paste-ready content, not a rendered deck. The 4-minute demo script is in `../spec-v2-coordinator.md`. Every fact below must match a row in [claims and evidence](claims-and-evidence.md); every number carries its source there.
 
 **One line:** "Impiricus reaches the doctor who writes the prescription. FirstDose reaches the person who gets the patient on it, every day."
@@ -68,7 +70,7 @@ Sat Sep 26, 2026 · Deem. Paste-ready content, not a rendered deck. The 4-minute
 - **What it does:** Catches the prescriptions that stall, says why, routes the one fix that matches, and tells the doctor only when it matters.
 - **Where it lives:** An Impiricus Ascend skill that shows up in DocUpdate. The coordinator works a desktop queue; the doctor approves on the phone.
 - **Disclosure:** Synthetic patients and pharmacy activity; Impiricus, Wallet and partner names shown as a concept (PLAN D3). A pharmacy fill confirmation doesn't prove a first dose. "Concept: FirstDose inside DocUpdate · Not affiliated."
-- **Team:** Vinh: workflow, backend and watch. Minh: verified labels, AI and analytics. Deem: screens, product and presentation. Stephen: iPhone build.
+- **Team:** Vinh: workflow, backend and watch. Minh: verified labels, AI and analytics. Deem: screens, product and presentation. Vinh / Mac operator: iPhone wrapper build and signing; device acceptance remains.
 - **QR:** firstdose.vercel.app. Test it on a stranger's phone before printing (4.4).
 
 ## Judge questions
@@ -88,7 +90,7 @@ Sat Sep 26, 2026 · Deem. Paste-ready content, not a rendered deck. The 4-minute
 | Won't doctors ignore more alerts? | They get only the alerts that need them, plus a note before the visit. Silence means it worked. |
 | Does the patient's tap mean they took it? | No. The tap is acknowledgment only. A separate pharmacy confirmation records the fill, and even that doesn't prove a first dose. |
 | Medicare patients? | The router never sends a manufacturer copay card to Medicare, Medicaid or TRICARE patients. It routes them to access support. |
-| What does AI do? | Gemini's job (Minh, in progress) is to map a messy pharmacy or hub note to a reason code, or "unknown". Until it ships, say that the demo's reason comes from the scripted event. Rules pick the fix either way. No AI writes drug or patient text. |
+| What does AI do? | The live Gemini classifier maps the pharmacy or hub source note to an allowlisted reason or null; provider failure also stays null. Rules pick the fix either way. No AI writes drug or patient text. |
 | Is the label real? | Otezla's, yes: verbatim DailyMed text, verified against the saved source, with RxCUI 1492746, shown on the New Rx screen. Humira's label isn't verified yet, so James's card shows the red placeholder badge. |
 | What's real and what's simulated? | Real: the workflow backend, Otezla's verified label, the ntfy watch alerts (receipt confirmed on a Garmin; the Apple Watch check is C8), and the screens. Simulated and labelled: the pharmacy and hub events, DocUpdate, Ascend, the Wallet, QPharma and Medvantx, and prices. |
 | How do you prove it works? | The demo proves the workflow. A pilot would measure confirmed first fills and time to first fill against a comparison group; we don't claim causal or clinical benefit. |
@@ -96,7 +98,7 @@ Sat Sep 26, 2026 · Deem. Paste-ready content, not a rendered deck. The 4-minute
 ## Sponsor openings (only with the evidence in the claims register)
 
 - **Impiricus:** "Your FAQ says staff accounts are on the roadmap. Here's what the first one does, and the doctor still approves it."
-- **Gemini** (merged #23/#39; live mode classifies the pharmacy note. If Gemini fails, the case stays unclassified, gets no doctor alert and routes to access support, so keep the mock fallback ready): "Gemini does one narrow job: turn a pharmacy or hub note into a reason code, or unknown. Rules choose the action."
-- **Tiger Data** (merged #37/#39; /access reads the live Tiger summary): "The event history answers confirmed first fills and time to first fill. Here's the query."
-- **ElevenLabs** (pre-generated EN/ES mp3s for the Otezla message; play it on stage to prove it): "The coordinator approves a templated message, and ElevenLabs voices it in the patient's language."
+- **Gemini** (live; Minh's sign-off #44. If Gemini fails, the case stays unclassified, gets no doctor alert and routes to access support, so keep the mock fallback ready): "Gemini does one narrow job: turn a pharmacy or hub note into a reason code, or unknown. Rules choose the action."
+- **Tiger Data** (hosted fill summary verified): "The event history answers confirmed first fills and time to first fill. Here's the query."
+- **ElevenLabs** (pre-generated EN/ES mp3s for the Otezla message; browser playback verified; native Spanish/phone review pending): "The coordinator approves a templated message, and ElevenLabs voices it in the patient's language."
 - **SpaceXAI** (entered on Grok; we make no Cursor claim): "Grok transcribes a spoken handoff that the doctor confirms before anything happens."

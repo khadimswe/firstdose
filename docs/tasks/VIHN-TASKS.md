@@ -1,65 +1,28 @@
 # Vinh Tasks
 
-Personal checklist. `PLAN.md` is the source of truth; steps for each task are in `docs/IMPLEMENTATION.md`. The backend contract is `docs/backend-core.md` (PR #9); routes and tables are in `docs/architecture.md`. Product: `docs/spec-v2-coordinator.md`.
+Updated September 26, 2026. [PLAN.md](../../PLAN.md) is the execution dashboard. [Implementation steps](../IMPLEMENTATION.md) and [backend contract](../backend-core.md) are references; the old PR #9 checklist has been superseded by merged and deployed work.
 
-Legend: [ ] not started · [-] in progress · [x] done · [!] blocked
+## Implemented and verified
 
-**Lane:** `lib/server/**`, `lib/realtime.ts`, `app/api/**`, `supabase/**`, `scripts/**`, `garmin/**`, and tests for your modules. Minh's label, classifier, analytics and NPPES modules are exceptions. Shared, tell Deem first: `mock/*.json`, `package.json`, `docs/architecture.md`. Never touch `app/(screens)/**` or `components/**`; ask Deem via `docs/for-vihn.md`.
+- Supabase schema, deterministic router, guarded commands, polling/reset, Otezla display and notification outbox are merged. Hosted Maria and James browser workflows passed after PR #39.
+- Seeded week and separate background prescriber: 3 needing a fix, 2 waiting, 8 confirmed. Interactive approval remains explicit.
+- Coordinator request/approval/assignment and patient messages persist across independent sessions. RxFill inspection is merged. The audit exercised English/Spanish message playback and reset.
+- Gemini/Tiger are integrated in #39; the hosted summary and reset were verified. Minh owns those modules and final claim review.
+- Voice backend and capture/confirmation UI are merged; synthetic-provider and permission-denial checks do not establish a human microphone demonstration.
+- TestFlight wrapper source is merged in #30. Mac signing/build/install remain.
+- Frontend repairs are merged in [PR #40](https://github.com/khadimswe/firstdose/pull/40). 724 tests, lint, live/mock builds and browser checks pass; CI/preview are green at the application commit. Deem's review/merge and deployed repair acceptance remain.
 
----
+Full evidence and boundaries: [deployed acceptance](../handoffs/deployed-acceptance.md).
 
-## State (from PR #9, not yet merged)
+## Remaining work
 
-- [x] 0.8 ntfy → iPhone → Garmin, confirmed by the user.
-- [-] 1.7 schema and seed · 1.8 router · 1.9 live source (polling + ETags) · 1.11 guarded routes. All built and tested in #9 (252 tests, 14 DB checks, a two-browser Maria run). They wait on review and merge.
-- [-] 1.12 ntfy: both reason and pharmacy-confirmation alerts are implemented; provider accepted each once and the user confirmed both on iPhone/Garmin. Integrated deployment remains pending.
-- [-] 1.13 live hook, integrated in #9 from Deem's #6 design.
+- [x] #40 is merged. Verify the deployed fixes during the two-device run.
+- [ ] Record the physical two-device HTTPS workflow and both alerts on the intended watch; Apple Watch C8 needs its own locked-iPhone check. Earlier notification confirmations do not establish this whole run.
+- [ ] Review human voice capture/confirmation if demonstrated, and complete the native Spanish/audible-phone check with Deem.
+- [ ] A Mac operator builds/signs/installs the wrapper and records TestFlight acceptance. Stephen is not on the project.
+- [ ] Complete claim sign-off, rehearsal, footage and submission checks with the team. No completed release or Phase 6 closure is claimed.
 
-## What the v2 screens need from you (PRs #11–#14, stacked on #9)
-
-- [ ] Review #11–#14 as the affected owner. They only touch screens and components, plus one new test file (`tests/coordinator-views.test.ts`).
-- [ ] **C9, urgent for the opening shot:** 6.1 Seed the week.
-  - Use the names in PLAN C1, all under an already-linked prescriber, not "Dr. Demo (judge 1)".
-  - Without the seed, the queue opens empty.
-- [ ] **C7:** link events so the phone's Approve reaches the desktop in live mode. Until then, the approval travels with the first handoff, which is enough for the demo.
-- [ ] **C8:** the demo watch is an Apple Watch paired to the doctor's iPhone. Confirm both alerts arrive on it with the phone locked.
-- [ ] **C5:** decide between the patient-only path and the demo code.
-
-## Now → 11 AM
-
-- [ ] **6.1** Seed the week: 10–15 fictional cases so the queue reads "3 stuck, 2 waiting, 11 fills confirmed". Settle **C1** with Deem first: names, and where they live in mock mode. Don't change `mock/*.json` shapes.
-- [ ] Fix whatever Deem's #9 review raised, including the QR sign-in friction: on the judge's phone, a team member types the private code. Decide whether a patient-scoped, read-and-acknowledge-only path is acceptable, or keep the login.
-
-## 6.0 Integration
-
-- [ ] Rebase #9 onto `main`.
-  - `PLAN.md`: keep `main`'s v2 brief and Phase 6, and carry over your status rows (0.4–0.9, 1.7–1.12).
-  - `docs/IMPLEMENTATION.md` and `docs/tasks/*`: take `main`'s versions and re-add facts that are only yours.
-- [ ] Keep one vitest config (`vitest.config.mts`, Vitest 5) when #8 lands. Regenerate the lockfile with npm.
-- [ ] Set the private Vercel env for live mode (Supabase secret, demo token, ntfy). Deem flips `NEXT_PUBLIC_DATA_SOURCE=supabase` and redeploys.
-
-## Phase 1 gates (the core must pass before optional work)
-
-- [x] **1.12b** Second wrist alert on the separate pharmacy confirmation (`wrist.fill_confirmed`): c51b23f; user confirmed iPhone and Garmin receipt.
-- [ ] Two physical devices on the HTTPS origin, following `docs/handoffs/deem-phase1.md`. Record the result in PLAN.md.
-- [-] Verified Otezla fixture is bundled into the catalog in both modes and shown directly before prescribing; corrected verification passes. Affected-owner integration review remains.
-
-## Phase 6 (parallel with Deem's screens)
-
-- [ ] **6.4** `coordinator_id` on cases plus a `coordinator_invited` event. Additive; propose it in PLAN first (⚠️ CONTRACT if it touches mock shapes). Tell Deem (for 6.3's invite) and Minh (for 6.7's rollup) the payload.
-- [ ] **C7 (6.12)** Prescriber-link events for live mode, e.g. `coordinator_link_requested` and `coordinator_linked`, with the link state per prescriber. The doctor approves on the phone, and the desktop must see it. Additive; propose it in PLAN first.
-- [ ] **6.5** RxFill-shaped pharmacy events: `NotDispensed`, `RxFillIndicator`, status as sent, labelled simulated. Deem adds the "Raw message" toggle on `/sim`.
-- [ ] **C3** A template key for the coordinator-approved patient message and its Spanish version (6.8), or an explicit exception to D2.
-- [x] ~~Review Minh's `/api/npi` (6.6)~~ cut Sat 4:30 PM.
-
-## 2 PM onwards
-
-- [ ] **4.1** Grok voice handoff (first in the cut order). Verify the current xAI endpoint and model first; confirm before handoff.
-- [ ] **4.6** Connect IQ widget (stretch). Go/no-go at 2 PM.
-- [ ] **4.7** Dry runs: run `/sim` and the pharmacy, and wear the watch when there is one judge.
-- [ ] 6 PM footage: the watch close-up, twice.
-- [ ] **5.1** Claims audit at the 9 PM freeze: every named product is called in code (file and line); `.env.example` parity; gitleaks on full history.
-- [ ] **5.3** Video edit once the backend is frozen.
+The audit ended with zero events/links/messages. For the next demo, request and approve the interactive coordinator link again; coordinate any reset of a shared run. No new migration or environment change is required by #40. NPPES (6.6) and coordinator analytics (6.7) are cut.
 
 ## Hard rules
 

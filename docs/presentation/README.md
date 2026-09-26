@@ -1,5 +1,7 @@
 # FirstDose presentation pack
 
+**September 26 checkpoint:** Hosted Maria/James workflows, seed counts and Tiger summaries passed. [Frontend repairs](../handoffs/frontend-audit-fixes.md) are in draft PR #40, not yet live. Use the updated [claims register](claims-and-evidence.md) and [acceptance record](../handoffs/deployed-acceptance.md) for recording boundaries.
+
 Being rewritten around the coordinator after the 11 AM workshop (PLAN task 6.9). Nothing here claims a rendered deck or video.
 
 Read in this order:

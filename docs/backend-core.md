@@ -1,5 +1,7 @@
 # Maria persistence and command API
 
+**Current checkpoint, September 26:** This backend and Otezla integration are merged and deployed; [hosted acceptance](handoffs/deployed-acceptance.md) supersedes the original branch/merge-pending paragraph below. Physical-device verification remains open. Later coordinator/message and classifier/analytics behavior is documented in `handoffs/phase6-integration.md` and `handoffs/vinh-phase2-live.md`.
+
 This is the Phase 1 backend on `backend/maria-core`. `PLAN.md` remains the execution dashboard. Persistence, protected routes, browser sessions, fast polling and template-backed app alerts are implemented. Frontend integration is now implemented using the hook/store seam from Deem PR #6. The full screen flow is tested in independent phone/tablet browser sessions against hosted Supabase. Affected-owner review, reviewed labels and the physical two-device checkpoint remain required before the phase closes.
 
 ## Database boundary
@@ -21,7 +23,7 @@ The reason alert is template-backed; `alert_sent` records creation of the app al
 
 Command and snapshot endpoints require a demo session cookie or `Authorization: Bearer <FIRSTDOSE_DEMO_TOKEN>` for CLI clients. Configure a private random token of at least 32 characters, separate from Supabase credentials. An unset/short token fails closed with 503. Never put the token in a URL, `NEXT_PUBLIC_*`, committed code or a public bundle. This is shared fictional-demo access, not per-patient or per-role authorization.
 
-Browsers open `/api/demo-login?next=/patient/rx_001` (or another screen path). Staff enter the private code into the server-rendered password form once per device. POST exchanges it for a signed, 12-hour HttpOnly/SameSite=Strict cookie; HTTPS/production adds Secure and the `__Host-` prefix. The cookie contains an expiry/nonce/signature, not the master token. Rotation of `FIRSTDOSE_DEMO_TOKEN` invalidates issued sessions. The form returns to the QR destination without putting credentials in the QR or URL. Cookie mutations and login require an exact same-origin Origin header; the login form keeps `Referrer-Policy: same-origin` so browser POSTs retain that header. A bearer remains available for private CLI checks.
+Browsers open `/api/demo-login?next=/patient/rx_001` (or another screen path). Staff enter the private code into the server-rendered password form once per device. POST exchanges it for a signed, 7-day HttpOnly/SameSite=Strict cookie; HTTPS/production adds Secure and the `__Host-` prefix. The cookie contains an expiry/nonce/signature, not the master token. Rotation of `FIRSTDOSE_DEMO_TOKEN` invalidates issued sessions. The form returns to the QR destination without putting credentials in the QR or URL. Cookie mutations and login require an exact same-origin Origin header; the login form keeps `Referrer-Policy: same-origin` so browser POSTs retain that header. A bearer remains available for private CLI checks.
 
 Read `GET /api/events` to obtain `{ run_id, revision, events }`. Every POST requires the observed run UUID in `X-FirstDose-Run` and `Content-Type: application/json`. JSON bodies are limited to 8 KiB and reject extra command fields. Cross-origin browser requests are rejected. Responses disable caching and successful responses include `X-FirstDose-Run` and `X-FirstDose-Revision`.
 

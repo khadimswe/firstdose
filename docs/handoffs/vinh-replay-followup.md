@@ -1,5 +1,7 @@
 # Replay and summary freshness: Vinh's integration seam
 
+**Current checkpoint, September 26:** This module is merged. Hosted browser acceptance is recorded in [deployed acceptance](deployed-acceptance.md); it supersedes the implementation-time merge/deployment pending notes below. Physical-device acceptance remains separate. [PR #40](https://github.com/khadimswe/firstdose/pull/40) contains the subsequent frontend repairs and is awaiting review/merge. Original implementation evidence and setup instructions are retained below; do not repeat hosted setup merely because an older checklist says pending.
+
 Update: the modules are now connected in `integration/phase2-live`; see [current implementation, evidence and hosted acceptance gate](vinh-phase2-live.md). The preparation checkpoint below is retained for the original contract.
 
 Branch `backend/replay-followup`, based on main `3851e1d`. This prepares the workflow and polling adapter for Minh's C3 replay module. Tiger projection, storage, query and the summary route remain Minh's modules; none is replaced with simulated success.

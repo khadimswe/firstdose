@@ -1,5 +1,7 @@
 # Deem Tasks
 
+**Current acceptance, September 26:** Hosted Maria/James workflows, coordinator approval, messages/audio, seed 3/2/8 and Tiger summaries passed in browsers. [Draft PR #40](https://github.com/khadimswe/firstdose/pull/40) fixes the eight frontend audit groups and awaits your affected-owner review/merge, then deployed verification. Its 724 tests, lint, live/mock builds, browser checks and CI/preview passed. Physical two-device/watch, native Spanish/audio and TestFlight checks remain; see [acceptance](../handoffs/deployed-acceptance.md).
+
 Personal checklist. `PLAN.md` is the source of truth; steps for each task are in `docs/IMPLEMENTATION.md`. Product: `docs/spec-v2-coordinator.md`.
 
 Legend: [ ] not started · [-] in progress · [x] done · [!] blocked

@@ -1,6 +1,6 @@
 # Phase 2 live integration
 
-`integration/phase2-live` combines Minh's classifier and analytics with the backend wiring prepared in PRs #17 and #26. Merge `b9418dd` includes main's Tiger PR #37. Hosted Tiger and retained Supabase replay checks passed on September 26 after local credentials were configured. Deployed browser acceptance remains pending.
+`integration/phase2-live` combines Minh's classifier and analytics with the backend wiring prepared in PRs #17 and #26. Merge `b9418dd` includes main's Tiger PR #37. Hosted Tiger and retained Supabase replay checks passed on September 26 after local credentials were configured. PR #39 is merged. The subsequent deployed browser audit verified the Maria/James workflow and hosted Tiger summaries; see [deployed acceptance](deployed-acceptance.md). Physical-device and final claims sign-off remain separate.
 
 ## Workflow and Gemini
 
@@ -49,7 +49,7 @@ Hosted evidence on September 26, using the integration code at `b9418dd`:
 - Production `readLiveAccessSummary` and authenticated summary handler passed against the active empty run, including exact summary, run/revision headers and no-store. Unauthenticated requests returned 401, stale revision 409 and missing HMAC configuration 503. The missing configuration was injected only into the test process and restored.
 - The hosted workflow snapshot was unchanged. These checks called backend functions and the handler locally against hosted providers; they do not establish deployed Next `after` execution or browser acceptance.
 
-Before declaring tasks 2.3/2.5 fully deployed:
+Original pre-deployment checklist (deployment/browser items subsequently verified in [deployed acceptance](deployed-acceptance.md); owner sign-off remains):
 
 1. Minh reviews the integration of his modules and shared `pg`, `@types/pg`, `@google/genai` dependencies. Deem reviews current/unavailable display behavior and the null-classification handoff path.
 2. Configure the deployment with private `TIGER_DATABASE_URL`, the same stable `ANALYTICS_HMAC_KEY`, `GEMINI_API_KEY` and the tested model pin. Local configuration is complete. Preserve the HMAC key for existing runs; changing it correctly conflicts with immutable existing projections.
