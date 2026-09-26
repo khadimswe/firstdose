@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "vitest run",
+    "smoke:workflow": "node --import tsx scripts/workflow-smoke.ts",
+    "smoke:watch": "node --env-file-if-exists=.env --import tsx scripts/ntfy-smoke.ts"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
@@ -21,12 +24,14 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^22.20.4",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.6",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tsx": "^4.23.15",
+    "typescript": "^5",
+    "vitest": "^5.0.2"
   }
 }
