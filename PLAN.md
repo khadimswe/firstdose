@@ -12,7 +12,7 @@ This dashboard is the execution source of truth. Keep presentation work in `docs
 
 **Synced source:** this worktree starts from main `8687bb9`, including Minh's merged implementation guide. Vinh's `backend/workflow-foundation` now has a locally tested router, pure command planner and offline-ready ntfy transport/CLI. Supabase, HTTP routes and Realtime remain pending. `/api/sim/fire` is standardized as `{ ids: string[] }` in `docs/architecture.md`.
 
-**Local verification, September 26:** 131 module tests, lint, production build and workflow smoke passed. Supabase credentials and the standalone physical watch test are now verified. Backend implementation files remain uncommitted in the isolated worktree; status commits are local and have not been pushed. Shared package additions are Vitest/tsx and Node 22 types, preserving existing frontend dependencies. Integration review reproduced missing doctor alerts, an unfinished final board stop and an access count of zero after pharmacy confirmation; Phase 1 has not passed. See [Vinh's current handoff](docs/tasks/VIHN-TASKS.md#current-local-foundation).
+**Local verification, September 26:** 131 module tests and workflow smoke passed again before checkpoint commit `5072d88`; lint and production build passed in the preceding check. Supabase credentials and the standalone physical watch test are verified. Backend groundwork is now committed on the isolated branch; nothing from this branch has been pushed. Shared package additions are Vitest/tsx and Node 22 types, preserving existing frontend dependencies. Integration review reproduced missing doctor alerts, an unfinished final board stop and an access count of zero after pharmacy confirmation; Phase 1 has not passed. See [Vinh's current handoff](docs/tasks/VIHN-TASKS.md#current-local-foundation).
 
 **Immediate work:** finish remaining Phase 0 provider configuration, shared-contract agreement and registration/category confirmation. Vinh coordinates setup evidence from Minh and Deem; do not start more implementation from subsequent phases while this gate remains open.
 
@@ -29,6 +29,8 @@ This dashboard is the execution source of truth. Keep presentation work in `docs
 ### Selected technology coverage
 
 Every selected entry must have actual technology use and proof before submission. Core and supporting technologies are not all sponsor requirements. No unrelated sponsor stack additions are requested.
+
+**Category rule check, September 26:** the [public rules](https://hackgt13.devpost.com/rules) permit multiple categories but give no numeric cap. Saved organizer guidance reports two sponsor tracks; the provisional allocation is Impiricus + SpaceXAI, with A Marina's Mission as the general track. Do not assume MLH entries are exempt from that cap. Gemini, Tiger Data, ElevenLabs and .Tech are listed by [MLH](https://www.mlh.com/events/hackgt-13/prizes), but entry compatibility must be confirmed through current organizer/submission instructions. Notability and Create-X are not committed entries. The technology table below is a build plan, not an approved set of prize selections. Defer account setup driven solely by an unconfirmed prize requirement until this is resolved.
 
 | Technology / entry | Owner | Completion evidence |
 |---|---|---|
@@ -108,7 +110,7 @@ Current objective, scope and claim boundaries: [product proposal](docs/product-p
 | 0.3 | CI: lint, build, `npm test --if-present`, gitleaks, tracked-file gate, mock JSON gate | `.github/workflows/ci.yml` | **Deem** | ✅ | 0.2 | Not required on `main` during the event. |
 | 0.4 | Data contract | `mock/*.json` | **both** | 🟡 | 0.1 | 0.7 fixture edits landed. Remaining agreement: acknowledgment versus fill confirmation, eligibility evidence, alert semantics, run/reset identity and label provenance. |
 | 0.5 | Architecture doc | `docs/architecture.md` | **Vinh** reviews | 🟡 | 0.4 | Deem drafted. Vinh corrects routes/tables to match his build. |
-| 0.6 | Keys (each person signs up, keys move by AirDrop only) | local `.env` | **Vinh**: Supabase, Tiger Data, Gemini, xAI. **Deem**: ElevenLabs + .Tech (MLH), Vercel, HexLabs OpenAI | 🟡 | n/a | September 26: Supabase publishable/secret keys verified read-only; remaining selected-provider setup not yet verified. |
+| 0.6 | Keys (each person signs up, keys move by AirDrop only) | local `.env` | **Vinh**: Supabase, Tiger Data, Gemini, xAI. **Deem**: ElevenLabs + .Tech (MLH), Vercel, HexLabs OpenAI | 🟡 | n/a | September 26: Supabase and ntfy verified. Gemini, Tiger, xAI and ElevenLabs settings absent in both local checkouts; teammate accounts unknown. App URL remains localhost. Preserve product scope; confirm entry limits before prize-only setup. |
 | 0.7 | Contract fixes: add `ev_21b` (James `fix_sent` BRIDGE_SAMPLE); `wrist.started` → `"{patient_short} started {drug}. $0 with copay card."` | `mock/events.json`, `mock/templates.json` | **Deem** | ✅ | 0.4 | ⚠️ CONTRACT commit. Tell Vinh first. |
 | 0.8 | **Gate:** ntfy POST → iPhone → Garmin FR55 buzz with text | `scripts/ntfy-smoke.ts` | **Vinh** | ✅ | 0.6 | September 26: ntfy accepted smoke request; user confirmed iPhone and Garmin FR55 receipt after enabling watch app notifications. Workflow-triggered alerts remain pending. |
 | 0.9 | Register team on HexLabs; ask #qna if Notability is a challenge or sponsor track | n/a | **Deem** | ⬜ | n/a | |
