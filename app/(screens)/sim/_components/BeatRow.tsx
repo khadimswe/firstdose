@@ -1,60 +1,83 @@
-import { SideBadge } from "@/components/SideBadge";
+import { CheckCircle2, Circle, CircleDashed, CircleDot } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { clock } from "@/components/copy/fill";
 import type { Beat } from "@/components/data/types";
 import { cn } from "@/lib/utils";
 
+import { ACTOR_LABEL, beatRange, beatSummary } from "./labels";
+
+export type BeatState = "fired" | "partial" | "next" | "pending";
+
+/** One beat in the run list: status, what it does, when, and a Fire button. */
 export function BeatRow({
   beat,
-  n,
-  who,
-  firedIds,
-  isNext,
+  state,
+  selected,
+  flash,
+  onSelect,
   onFire,
 }: {
   beat: Beat;
-  n: number;
-  who: string;
-  firedIds: ReadonlySet<string>;
-  isNext: boolean;
+  state: BeatState;
+  selected: boolean;
+  flash: boolean;
+  onSelect: () => void;
   onFire: () => void;
 }) {
-  const done = beat.events.every((e) => firedIds.has(e.id));
+  const Icon =
+    state === "fired" ? CheckCircle2 : state === "partial" ? CircleDashed : state === "next" ? CircleDot : Circle;
+  const statusText = beat.events.find((e) => e.status_text)?.status_text;
+  const reject = beat.events.find((e) => e.reject_code)?.reject_code;
+  const actors = [...new Set(beat.events.map((e) => e.actor))];
 
   return (
-    <Card size="sm" className={cn(isNext && "ring-2 ring-foreground", done && "opacity-60")}>
-      <CardHeader>
-        <CardTitle className="font-mono text-sm">
-          {n}. {beat.case_id} · {who}
-        </CardTitle>
-        <CardAction>
-          <Button onClick={onFire} disabled={done} variant={isNext ? "default" : "outline"}>
-            {done ? "Fired" : "Fire"}
-          </Button>
-        </CardAction>
-      </CardHeader>
-      <CardContent>
-        <table className="w-full text-left text-xs">
-          <tbody>
-            {beat.events.map((e) => (
-              <tr key={e.id} className="border-t align-top">
-                <td className="w-5 py-1">{firedIds.has(e.id) ? "✓" : "○"}</td>
-                <td className="w-14 py-1 font-mono">{e.id}</td>
-                <td className="w-24 py-1">{e.actor}</td>
-                <td className="w-36 py-1 font-mono">{e.type}</td>
-                <td className="py-1">
-                  {e.status_text && <div className="font-medium">{e.status_text}</div>}
-                  {e.reject_code && <div>Reject {e.reject_code}</div>}
-                  <div className="text-muted-foreground">{e.note}</div>
-                </td>
-                <td className="w-40 py-1 text-right">
-                  <SideBadge side={e.side} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </CardContent>
-    </Card>
+    <li
+      data-beat={beat.id}
+      className={cn(
+        "group flex items-start gap-3 border-l-2 border-transparent px-4 py-3 transition-colors duration-700",
+        selected ? "border-l-foreground bg-muted" : "hover:bg-muted/60",
+        flash && "bg-ascend/10",
+      )}
+    >
+      <Icon
+        aria-label={state}
+        className={cn(
+          "mt-0.5 size-4 shrink-0",
+          state === "fired" && "text-foreground",
+          state === "next" && "text-foreground",
+          (state === "pending" || state === "partial") && "text-muted-foreground",
+        )}
+      />
+      <button type="button" onClick={onSelect} className="min-w-0 flex-1 space-y-1 text-left">
+        <div className="flex flex-wrap items-baseline gap-x-2">
+          <span className="font-mono text-xs text-muted-foreground">{beatRange(beat)}</span>
+          <span className={cn("text-sm font-medium", state === "fired" && "text-muted-foreground")}>
+            {beatSummary(beat)}
+          </span>
+        </div>
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+          {actors.map((a) => (
+            <span key={a} className="rounded bg-muted px-1.5 py-0.5 group-hover:bg-background">
+              {ACTOR_LABEL[a]}
+            </span>
+          ))}
+          {statusText && <span className="font-mono">{statusText}</span>}
+          {reject && <span className="font-mono text-stuck">Reject {reject}</span>}
+        </div>
+      </button>
+      <span className="mt-0.5 font-mono text-xs text-muted-foreground tabular-nums">
+        {clock(beat.events[0].at)}
+      </span>
+      <Button
+        size="xs"
+        variant={state === "next" ? "default" : "outline"}
+        disabled={state === "fired"}
+        onClick={onFire}
+        className="w-14"
+      >
+        {state === "fired" ? "Fired" : "Fire"}
+      </Button>
+    </li>
   );
 }
