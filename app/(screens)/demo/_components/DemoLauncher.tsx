@@ -5,7 +5,9 @@ import { useSyncExternalStore } from "react";
 import { ChartColumn, Monitor, QrCode, SlidersHorizontal, Smartphone, Tv, Watch } from "lucide-react";
 
 import { PatientQr } from "@/components/PatientQr";
+import { ModeBadge } from "@/components/ModeBadge";
 import { SideBadge } from "@/components/SideBadge";
+import { CATALOG, QR_CASE_ID } from "@/components/data/catalog";
 import { WristMirror } from "@/components/WristMirror";
 import { Button } from "@/components/ui/button";
 import { useEvents } from "@/components/data/useEvents";
@@ -20,6 +22,11 @@ type Device = {
   side: Side | null;
   qr?: boolean;
 };
+
+// The patient the QR opens, from the data.
+const QR_PATIENT =
+  CATALOG.patients.find((p) => p.id === CATALOG.cases.find((c) => c.id === QR_CASE_ID)?.patient_id)?.display_short ??
+  "Patient";
 
 const DEVICES: Device[] = [
   {
@@ -49,9 +56,9 @@ const DEVICES: Device[] = [
   {
     icon: QrCode,
     device: "Judge's own phone",
-    who: "Maria (patient)",
-    href: "/patient/rx_001",
-    how: "The judge scans this QR (or the printed card at /qr) and becomes Maria. A phone with no session signs in first.",
+    who: `${QR_PATIENT} (patient)`,
+    href: `/patient/${QR_CASE_ID}`,
+    how: `Anyone at the table scans this QR (or the printed card at /qr) and opens ${QR_PATIENT}'s card. A phone with no session signs in first.`,
     side: "practice",
     qr: true,
   },
@@ -83,7 +90,7 @@ const DEVICES: Device[] = [
 
 const noop = () => () => {};
 
-/** Team setup page: which screen goes on which device. Not shown to judges. */
+/** Team setup page: which screen goes on which device. Operator tool, not a product screen. */
 export function DemoLauncher() {
   const { mode, fired } = useEvents();
   const origin = useSyncExternalStore(noop, () => window.location.origin, () => "");
@@ -91,11 +98,12 @@ export function DemoLauncher() {
 
   return (
     <main className="mx-auto w-full max-w-5xl space-y-8 p-6 md:p-10">
+      <ModeBadge />
       <header className="space-y-2">
         <h1 className="text-2xl font-semibold tracking-tight">FirstDose demo setup</h1>
         <p className="text-muted-foreground">
           One laptop, one iPhone, one Apple Watch. Data:{" "}
-          <span className="font-mono">{mode === "mock" ? "mock (this browser only)" : "live"}</span>
+          <span className="font-mono">{mode === "mock" ? "offline (this browser only)" : "live"}</span>
         </p>
       </header>
 

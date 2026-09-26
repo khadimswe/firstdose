@@ -78,7 +78,7 @@ function accept(snapshot: CoordinatorSnapshot) {
 function fail(error: unknown) {
   const status = (error as HttpFailure)?.status;
   set({
-    error: status === 401 ? "Sign in to the demo to continue." : "Couldn't reach the coordinator link service. Try again.",
+    error: status === 401 ? "Sign in to continue." : "Couldn't reach the coordinator link service. Try again.",
     loginPath: status === 401 ? "/api/demo-login" : null,
   });
 }

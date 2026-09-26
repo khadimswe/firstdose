@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { Fragment, useEffect, useRef, useState } from "react";
 
-import { PatientQr, usePatientUrl } from "@/components/PatientQr";
+import { PatientQr, qrCaption, usePatientUrl } from "@/components/PatientQr";
 import { StandIn } from "@/components/StandIn";
 import { StatusPill } from "@/components/StatusPill";
 import { Button } from "@/components/ui/button";
 import { playBeats } from "@/components/data/replay";
-import { isWeekCase } from "@/components/data/catalog";
+import { ModeBadge } from "@/components/ModeBadge";
+import { WEEK_SUMMARY, isWeekCase } from "@/components/data/catalog";
 import { useEvents } from "@/components/data/useEvents";
 import type { Beat } from "@/components/data/types";
 
@@ -157,6 +158,7 @@ export function SimScreen() {
 
   return (
     <main className="mx-auto w-full max-w-7xl space-y-6 px-6 py-8">
+      <ModeBadge />
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold tracking-tight">Operator console</h1>
@@ -233,8 +235,8 @@ export function SimScreen() {
                 <p className="font-medium text-foreground">Seed the week</p>
                 <p className="text-muted-foreground">
                   {weekSeeded
-                    ? "Seeded: 13 fictional background cases are in the coordinator's queue."
-                    : "Adds 13 fictional background cases to an empty run: 3 need a fix, 2 waiting, 8 filled."}
+                    ? `Seeded: ${WEEK_SUMMARY.cases} background cases are in the coordinator's queue.`
+                    : `Adds ${WEEK_SUMMARY.cases} synthetic background cases to an empty run: ${WEEK_SUMMARY.needsYou} need a fix, ${WEEK_SUMMARY.waiting} waiting, ${WEEK_SUMMARY.confirmed} filled.`}
                 </p>
               </div>
               <Button size="sm" variant="outline" disabled={!canSeed} onClick={() => void seedWeek()}>
@@ -298,7 +300,7 @@ export function SimScreen() {
           <section className="flex items-center gap-4 rounded-2xl border bg-card p-4">
             <PatientQr size={84} className="shrink-0" />
             <div className="min-w-0 space-y-1 text-sm">
-              <p className="font-medium">Scan to become Maria.</p>
+              <p className="font-medium">{qrCaption()}</p>
               <p className="truncate font-mono text-xs text-muted-foreground">{patientUrl}</p>
               {local && (
                 <p className="text-xs text-stuck">

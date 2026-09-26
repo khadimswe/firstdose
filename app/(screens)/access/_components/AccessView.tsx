@@ -1,8 +1,9 @@
 "use client";
 
 import { SideBadge } from "@/components/SideBadge";
-import { StandIn } from "@/components/StandIn";
+import { Disclosure } from "@/components/Disclosure";
 import { WhoSeesWhat } from "@/components/WhoSeesWhat";
+import { fill } from "@/components/copy/fill";
 import { templates } from "@/components/copy/templates";
 import { useIncrease, useTween } from "@/components/liveHooks";
 import type { AccessSummary, Catalog, ReasonKey } from "@/components/data/types";
@@ -41,6 +42,47 @@ function Tile({
   );
 }
 
+export type Market = {
+  state: string;
+  prescribing: { source: string; year: number; rows: { brand: string; drug_id: string; prescribers: number; claims: number }[] };
+  formulary: { source: string; year: number; rows: { drug_id: string; covered_share: number; pa_share_of_covered: number }[] };
+};
+
+const count = (n: number) => n.toLocaleString("en-US");
+const pct = (x: number) => `${Math.round(x * 100)}%`;
+
+/** Real public context for the buyer: statewide Part D prescribing and formulary prior-auth rules. */
+function MarketTile({ market }: { market: Market }) {
+  const m = templates.market;
+  return (
+    <Tile label={m.title}>
+      <ul className="grid gap-4 md:grid-cols-2">
+        {market.prescribing.rows.map((r) => {
+          const f = market.formulary.rows.find((x) => x.drug_id === r.drug_id);
+          return (
+            <li key={r.drug_id} className="space-y-1">
+              <p className="font-medium">{r.brand}</p>
+              <p className="text-2xl font-semibold tabular-nums">
+                {count(r.prescribers)} <span className="text-base font-normal text-muted-foreground">{m.prescribers}</span>{" "}
+                · {count(r.claims)} <span className="text-base font-normal text-muted-foreground">{m.claims}</span>
+              </p>
+              {f && (
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-semibold text-foreground">{pct(f.pa_share_of_covered)}</span> {m.pa_share}
+                </p>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+      <p className="text-xs text-muted-foreground">
+        {fill(m.source_line, { source: market.prescribing.source, year: market.prescribing.year })} ·{" "}
+        {fill(m.source_line, { source: market.formulary.source, year: market.formulary.year })}
+      </p>
+    </Tile>
+  );
+}
+
 /**
  * Renders only aggregate props. The shared practice demo still loads case data;
  * this view is not an implemented authorization boundary for an external buyer.
@@ -51,6 +93,7 @@ export function AccessView({
   source,
   error,
   updatedAgo,
+  market,
 }: {
   summary: AccessSummary;
   reasons: Catalog["reasons"];
@@ -59,6 +102,8 @@ export function AccessView({
   error: string | null;
   /** Seconds since the summary last changed on this screen; null before the first render. */
   updatedAgo: number | null;
+  /** Real public aggregates (CMS), with source and year. No practice data. */
+  market?: Market;
 }) {
   const t = templates.access_screen;
 
@@ -90,7 +135,6 @@ export function AccessView({
         </div>
         <div className="flex items-center gap-2">
           <SideBadge side="ascend" />
-          <StandIn kind="ascend" />
         </div>
       </header>
 
@@ -111,7 +155,6 @@ export function AccessView({
             <span className="text-7xl font-semibold tracking-tight tabular-nums">
               {ttff === null ? "—" : duration(ttffShown)}
             </span>
-            {ttff !== null && <StandIn kind="price" />}
           </div>
         </Tile>
 
@@ -144,7 +187,10 @@ export function AccessView({
 
       <p className="text-sm text-muted-foreground">{t.footer}</p>
 
+      {market && <MarketTile market={market} />}
+
       <WhoSeesWhat />
+      <Disclosure />
     </main>
   );
 }

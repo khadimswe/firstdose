@@ -2,9 +2,9 @@
 
 import { Phone, PhoneMissed } from "lucide-react";
 
-import { DemoPrice } from "@/components/DemoPrice";
+import { Disclosure } from "@/components/Disclosure";
+import { Price } from "@/components/Price";
 import { ReasonChip } from "@/components/ReasonChip";
-import { StandIn } from "@/components/StandIn";
 import { StatusPill } from "@/components/StatusPill";
 import { Button } from "@/components/ui/button";
 import {
@@ -84,7 +84,7 @@ export function CaseSheet({
                 )}
                 <div className="flex flex-wrap items-center gap-2">
                   <ReasonChip statusText={c.statusText} rejectCode={c.rejectCode} catalog={catalog} />
-                  {c.quoteUsd !== null && <DemoPrice usd={c.quoteUsd} className="text-sm" />}
+                  {c.quoteUsd !== null && <Price usd={c.quoteUsd} className="text-sm" />}
                 </div>
               </Section>
 
@@ -149,7 +149,7 @@ export function CaseSheet({
             </div>
 
             <SheetFooter className="border-t">
-              <StandIn kind="patients" />
+              <Disclosure />
             </SheetFooter>
           </>
         )}

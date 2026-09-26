@@ -1,0 +1,11 @@
+{
+  "_comment": "Synthetic practice identity. Names match no NPPES record (checked 2026-09-26, national). NPIs have a valid check digit and are unassigned in NPPES (result_count 0 on 2026-09-26); re-check before reuse.",
+  "city": "Atlanta",
+  "state": "GA",
+  "zip": "30309",
+  "pharmacy_label": "Retail pharmacy · Atlanta, GA 30309",
+  "prescribers": [
+    { "label": "Dr. Nadia Okafor", "specialty": "Dermatology", "taxonomy": "207N00000X", "npi": "1273645915" },
+    { "label": "Dr. Colin Mercer", "specialty": "Rheumatology", "taxonomy": "207RR0500X", "npi": "1908462736" }
+  ]
+}

@@ -4,6 +4,7 @@ import labelsJson from "@/mock/labels.json";
 import patientsJson from "@/mock/patients.json";
 import reasonsJson from "@/mock/reasons.json";
 
+import { deriveCases, queueBucket } from "./derive";
 import type { Catalog, FillEvent } from "./types";
 import { WEEK_ACTIONS, WEEK_CASES, WEEK_EVENTS, WEEK_PATIENTS } from "@/lib/demo-week";
 import { fill, money } from "@/components/copy/fill";
@@ -56,4 +57,15 @@ export const WEEK_EVENT_IDS: readonly string[] = WEEK_EVENTS.map((e) => e.id);
 export const ALL_EVENTS: FillEvent[] = (() => {
   const seen = new Set<string>();
   return [...WEEK_EVENTS, ...WEEK_ACTIONS, ...SCRIPT].filter((e) => !seen.has(e.id) && seen.add(e.id));
+})();
+
+/** The case the patient QR opens: the scripted case whose savings card is issued. */
+export const QR_CASE_ID: string =
+  SCRIPT.find((e) => e.type === "copay_card_sent")?.case_id ?? CATALOG.cases[0].id;
+
+/** What "Seed the week" adds, counted from the fixture (never typed into the UI). */
+export const WEEK_SUMMARY = (() => {
+  const week = deriveCases(CATALOG, WEEK_EVENTS).filter((c) => isWeekCase(c.id));
+  const n = (b: string) => week.filter((c) => queueBucket(c) === b).length;
+  return { cases: WEEK_CASES.length, needsYou: n("needs_you"), waiting: n("waiting"), confirmed: n("confirmed") };
 })();

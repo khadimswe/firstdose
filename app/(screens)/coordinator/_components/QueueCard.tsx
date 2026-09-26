@@ -1,4 +1,4 @@
-import { DemoPrice } from "@/components/DemoPrice";
+import { Price } from "@/components/Price";
 import { ReasonChip } from "@/components/ReasonChip";
 import { StatusPill } from "@/components/StatusPill";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -43,11 +43,11 @@ export function QueueCard({
         <ReasonChip statusText={c.statusText} rejectCode={c.rejectCode} catalog={catalog} />
         {c.quoteUsd !== null && (
           <div className="flex flex-wrap items-center gap-2">
-            <DemoPrice usd={c.quoteUsd} />
+            <Price usd={c.quoteUsd} />
             {c.amountUsd !== null && c.amountUsd !== c.quoteUsd && (
               <>
                 <span aria-hidden>→</span>
-                <DemoPrice usd={c.amountUsd} className="font-semibold text-started" />
+                <Price usd={c.amountUsd} className="font-semibold text-started" />
               </>
             )}
           </div>

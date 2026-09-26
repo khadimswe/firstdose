@@ -15,3 +15,15 @@ Deem appends here instead of touching your code. Clear a line when it's done.
 - [ ] **Contact marks (C2).** "Reached patient / Left message" are local to the coordinator's browser for now.
 - [ ] **Apple Watch (C8).** The doctor's iPhone runs `/doctor` from the home screen and ntfy. iOS sends notifications to the Apple Watch only while the iPhone is locked, so please test both alerts that way.
 - [ ] **Tests.** `tests/frontend-derive.test.ts` still imports `app/(screens)/doctor/_components/thread.ts`, so I kept that file. New pure tests are in `tests/coordinator-views.test.ts`.
+
+## Synthetic data and relabel (Deem, Sat 13:50): what touches your side
+
+- [ ] **Review the ⚠️ CONTRACT values in `feat/synthetic-data`.** Shapes are unchanged.
+  - `mock/patients.json`, `data/demo-week.json`: "(demo)" suffixes are gone; prescribers are synthetic "Dr. Nadia Okafor" (live cases) and "Dr. Colin Mercer" (seeded week); `phone_label` is plain text; Humira `rxcui` is **1872980**.
+  - `mock/reasons.json`: `fixes[].via` without "(stand-in)".
+  - `mock/templates.json`: price and reason copy without "demo" (the watch now reads "Declined at price ($410)."); additive `disclosure`, `qr` and `market` keys.
+  - I updated the two watch-text expectations in `tests/workflow.test.ts` and `tests/commands.test.ts`.
+- [ ] **Hosted catalog:** re-run `scripts/seed.ts` so `rx_cases.prescriber_label` and the seeded rows match the new names.
+- [ ] **Your sign-in page** (`lib/server/demo-login.ts`) still says "FirstDose demo access", "Open the FirstDose demo" and "Demo access code". Could it be "FirstDose sign-in", "Sign in to FirstDose" and "Access code"? The route path can stay.
+- [ ] **Optional:** the server event notes "(stand-in)" in `lib/server/workflow.ts` show only in `/sim`, so there's no product-screen impact.
+- [ ] **Otezla 30 mg NDC is 55513-0137-60** (0497 is the 20 mg), if anything server-side keys on NDC.

@@ -11,9 +11,9 @@
   },
 
   "fixes": {
-    "RESEND_COPAY_CARD": { "label": "Re-send copay card",        "via": "Impiricus Wallet (stand-in)",           "needs_commercial_insurance": true },
-    "BRIDGE_SAMPLE":     { "label": "Request bridge sample",     "via": "QPharma / Medvantx (stand-in)",         "needs_commercial_insurance": false },
-    "ACCESS_SUPPORT":    { "label": "Connect to access support", "via": "Manufacturer access team via Ascend (stand-in)", "needs_commercial_insurance": false }
+    "RESEND_COPAY_CARD": { "label": "Re-send copay card",        "via": "Impiricus Wallet",           "needs_commercial_insurance": true },
+    "BRIDGE_SAMPLE":     { "label": "Request bridge sample",     "via": "QPharma / Medvantx",         "needs_commercial_insurance": false },
+    "ACCESS_SUPPORT":    { "label": "Connect to access support", "via": "Manufacturer access team via Ascend", "needs_commercial_insurance": false }
   },
 
   "router": {

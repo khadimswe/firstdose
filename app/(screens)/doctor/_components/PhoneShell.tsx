@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ClipboardList, MessagesSquare, UserRound } from "lucide-react";
 
+import { Disclosure } from "@/components/Disclosure";
 import { standInLabel } from "@/components/copy/standins";
 import { cn } from "@/lib/utils";
 
@@ -29,7 +30,10 @@ export function PhoneShell({ children }: { children: React.ReactNode }) {
         >
           {standInLabel("docupdate")}
         </p>
-        <main className="flex-1 px-4 pt-2 pb-44">{children}</main>
+        <main className="flex-1 px-4 pt-2 pb-44">
+          {children}
+          <Disclosure className="pt-6 text-center text-white/45" />
+        </main>
       </div>
       <nav
         aria-label="DocUpdate"

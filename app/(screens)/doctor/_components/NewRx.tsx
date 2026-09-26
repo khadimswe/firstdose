@@ -5,7 +5,8 @@ import { useState } from "react";
 import { ChevronLeft, CircleCheck } from "lucide-react";
 
 import { LabelCard } from "@/components/LabelCard";
-import { StandIn } from "@/components/StandIn";
+import { PRACTICE } from "@/components/data/reference";
+import { templates } from "@/components/copy/templates";
 import { Button } from "@/components/ui/button";
 import { liveCases } from "@/components/data/links";
 import { useEvents } from "@/components/data/useEvents";
@@ -83,7 +84,7 @@ export function NewRx() {
       </Step>
 
       <Step n={3} title="Pharmacy">
-        <StandIn kind="pharmacy" />
+        <p className="text-sm">{PRACTICE.pharmacy_label}</p>
       </Step>
 
       <Step n={4} title="Savings card">
@@ -91,7 +92,7 @@ export function NewRx() {
           <span>
             {c.drug.copay_program.name} · {c.drug.copay_program.patient_pays_label}
           </span>
-          <StandIn kind="wallet" />
+          <span className="text-muted-foreground">· {templates.patient_card.standin}</span>
         </div>
         {cardSent && <p className="text-xs text-muted-foreground">Sent with the prescription</p>}
       </Step>

@@ -1,6 +1,5 @@
 "use client";
 
-import { StandIn } from "@/components/StandIn";
 import { useTween } from "@/components/liveHooks";
 import { fill, money } from "@/components/copy/fill";
 import { templates } from "@/components/copy/templates";
@@ -27,7 +26,6 @@ export function PriceCounter({ c }: { c: CaseView & { quoteUsd: number } }) {
         >
           {money(shown)}
         </span>
-        <StandIn kind="price" className="h-7 px-3 text-base" />
       </div>
       <p className="text-2xl">
         {target === c.quoteUsd
