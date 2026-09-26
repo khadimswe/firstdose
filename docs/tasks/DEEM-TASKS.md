@@ -18,7 +18,7 @@ Legend: [ ] not started · [-] in progress · [x] done · [!] blocked
 
 ## Now → 11 AM workshop
 
-- [ ] **3.1** Ask the spec's questions 1–7 in order, plus Keomaria's four. Write the answers under PLAN → Open Questions.
+- [x] **3.1** Workshop answers taken from public research (`docs/research/public-sources-briefing.md`); PLAN W1–W7 filled and D7 locked. Still ask the rep in person if you can, plus Keomaria's four.
   - W6 (Q6) decides the lead.
   - W3 (Q3) decides the header, and whether `/doctor` becomes the DocUpdate view.
   - W1 (Q1) decides the pitch.
@@ -38,20 +38,22 @@ Legend: [ ] not started · [-] in progress · [x] done · [!] blocked
 
 ## 12–2 PM build (one branch per screen, mock first, then live)
 
-- [ ] **6.3** DocUpdate phone view, `screen/doctor-docupdate`, **only if W3 = DocUpdate**. Otherwise move the Ascend thread to phone width. Priority order:
+- [-] **6.3** DocUpdate phone view: **PR #12** (W3 answered: an Ascend skill that shows up in DocUpdate). Otherwise move the Ascend thread to phone width. Priority order:
   1. Rx Alerts card;
   2. New Rx with the label;
   3. the fill-status line;
   4. Concierge and Profile.
 - [ ] **6.10** Before/after slide: their App Store home screenshot beside our Home still, credited, "Not affiliated".
-- [ ] **6.2** Coordinator home, `screen/coordinator-shell`, plus the `/demo` launcher that replaces the index:
+- [-] **6.2** Coordinator home: **PR #11**, plus the `/demo` launcher that replaces the index:
   - `/` opens it;
   - summary strip;
   - sorted by time stuck;
   - contact marks (C2);
   - header per W3.
-- [ ] **6.12** Prescribers, `screen/prescribers`: link a prescriber by NPI, and the doctor approves on the phone (the approve sheet also opens on the first handoff). Mock overrides first; live needs Vinh's C7 events.
-- [ ] **6.11** "Waiting on" column in the queue, and a label on the board lanes.
+- [-] **6.12** Prescribers: **PR #13** (approve sheet in #12): link a prescriber by NPI, and the doctor approves on the phone (the approve sheet also opens on the first handoff). Mock overrides first; live needs Vinh's C7 events.
+- [-] **6.11** "Waiting on": the queue column is in #11, the board lanes in **PR #14**.
+- [ ] Merge the stack after #9: #11 → #12 → #13 → #14. Each one retargets to `main` as the one below merges.
+- [ ] After #9: rebase #4 and add the patient QR to `/demo`'s Maria card.
 - [ ] **6.7 UI** Coordinator tiles on `/access` (needs 6.4 and Minh's rollup).
 - [ ] **6.6 UI** "Likely colleagues → Invite", names hidden (needs `/api/npi`).
 - [ ] **6.5 UI** "Raw message" toggle on `/sim` (needs Vinh's RxFill fields).

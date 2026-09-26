@@ -29,8 +29,8 @@ Keep one vitest config (Vinh's `vitest.config.mts`, Vitest 5) and regenerate the
 - [ ] Agree the label display path with Vinh and Deem. Vinh proposes reviewed fixtures bundled into the catalog in both modes, with your endpoint for verification. The label must show in the live flow; that's Phase 1 gate 2.
 - [ ] **2.5** Gemini (B1–B2): pin a model from the verified list; enum or null only.
 - [ ] **2.3** Tiger (C1–C3): a run-aware projection of confirmed first fills and time to first fill; no patient fields.
-- [ ] **6.7** On the same projection, a rollup of coordinators active this week and fixes per coordinator. Needs Vinh's 6.4 `coordinator_id` and `coordinator_invited`. Deem builds the two tiles on `/access`.
-- [ ] **6.6** (proposed owner; confirm with Vinh) `GET /api/npi?zip=&taxonomy=`:
+- [ ] **6.7** The `/access` tiles expect two aggregate numbers: coordinators active this week, and fixes per coordinator. On the same projection, a rollup of coordinators active this week and fixes per coordinator. Needs Vinh's 6.4 `coordinator_id` and `coordinator_invited`. Deem builds the two tiles on `/access`.
+- [ ] **6.6** (proposed owner; confirm with Vinh) `GET /api/npi?zip=&taxonomy=`. The frontend already has an NPI check-digit helper (`components/data/npi.ts`, PR #13); reuse it for input validation:
   - calls the NPPES v2.1 API, with a cache and a rate limit;
   - verify the response field names against a live call (the teardown's names are secondhand);
   - return the taxonomy and address line only; no names to the screen;

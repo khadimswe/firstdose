@@ -15,6 +15,16 @@ Legend: [ ] not started · [-] in progress · [x] done · [!] blocked
 - [-] 1.12 ntfy: the reason alert is delivered and felt. The pharmacy-confirmation alert is still to do.
 - [-] 1.13 live hook, integrated in #9 from Deem's #6 design.
 
+## What the v2 screens need from you (PRs #11–#14, stacked on #9)
+
+- [ ] Review #11–#14 as the affected owner. They only touch screens and components, plus one new test file (`tests/coordinator-views.test.ts`).
+- [ ] **C9, urgent for the opening shot:** 6.1 Seed the week.
+  - Use the names in PLAN C1, all under an already-linked prescriber, not "Dr. Demo (judge 1)".
+  - Without the seed, the queue opens empty.
+- [ ] **C7:** link events so the phone's Approve reaches the desktop in live mode. Until then, the approval travels with the first handoff, which is enough for the demo.
+- [ ] **C8:** the demo watch is an Apple Watch paired to the doctor's iPhone. Confirm both alerts arrive on it with the phone locked.
+- [ ] **C5:** decide between the patient-only path and the demo code.
+
 ## Now → 11 AM
 
 - [ ] **6.1** Seed the week: 10–15 fictional cases so the queue reads "3 stuck, 2 waiting, 11 fills confirmed". Settle **C1** with Deem first: names, and where they live in mock mode. Don't change `mock/*.json` shapes.
