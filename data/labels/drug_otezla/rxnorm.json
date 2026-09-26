@@ -1,0 +1,98 @@
+{
+  "drugGroup": {
+    "name": null,
+    "conceptGroup": [
+      {
+        "tty": "BPCK",
+        "conceptProperties": [
+          {
+            "rxcui": "1492748",
+            "name": "{4 (apremilast 10 MG Oral Tablet [Otezla]) / 4 (apremilast 20 MG Oral Tablet [Otezla]) / 19 (apremilast 30 MG Oral Tablet [Otezla]) } Pack [Otezla 14-Day 10/20/30 Starter Pack]",
+            "synonym": "Otezla 14-Day 10/20/30 Starter Pack",
+            "tty": "BPCK",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "1605455",
+            "name": "{4 (apremilast 10 MG Oral Tablet [Otezla]) / 4 (apremilast 20 MG Oral Tablet [Otezla]) / 47 (apremilast 30 MG Oral Tablet [Otezla]) } Pack [Otezla 28-Day 10/20/30 Starter Pack]",
+            "synonym": "Otezla 28-Day 10/20/30 Starter Pack",
+            "tty": "BPCK",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "2682430",
+            "name": "{4 (apremilast 10 MG Oral Tablet [Otezla]) / 51 (apremilast 20 MG Oral Tablet [Otezla]) } Pack [Otezla 28-Day 10/20 Starter Pack]",
+            "synonym": "Otezla 28-Day 10/20 Starter Pack",
+            "tty": "BPCK",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "2682432",
+            "name": "{4 (apremilast 10 MG Oral Tablet [Otezla]) / 23 (apremilast 20 MG Oral Tablet [Otezla]) } Pack [Otezla 14-Day 10/20 Starter Pack]",
+            "synonym": "Otezla 14-Day 10/20 Starter Pack",
+            "tty": "BPCK",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "2724367",
+            "name": "{14 (24 HR apremilast 75 MG Extended Release Oral Tablet [Otezla]) / 4 (apremilast 10 MG Oral Tablet [Otezla]) / 4 (apremilast 20 MG Oral Tablet [Otezla]) / 19 (apremilast 30 MG Oral Tablet [Otezla]) } Pack [Otezla 28-Day 10/20/30/75 Starter Pack]",
+            "synonym": "Otezla 28-Day 10/20/30/75 Starter Pack",
+            "tty": "BPCK",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          }
+        ]
+      },
+      {
+        "tty": "SBD",
+        "conceptProperties": [
+          {
+            "rxcui": "1492738",
+            "name": "apremilast 10 MG Oral Tablet [Otezla]",
+            "synonym": "Otezla 10 MG Oral Tablet",
+            "tty": "SBD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "1492742",
+            "name": "apremilast 20 MG Oral Tablet [Otezla]",
+            "synonym": "Otezla 20 MG Oral Tablet",
+            "tty": "SBD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "1492746",
+            "name": "apremilast 30 MG Oral Tablet [Otezla]",
+            "synonym": "Otezla 30 MG Oral Tablet",
+            "tty": "SBD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "2723452",
+            "name": "24 HR apremilast 75 MG Extended Release Oral Tablet [Otezla]",
+            "synonym": "Otezla XR 75 MG 24HR Extended Release Oral Tablet",
+            "tty": "SBD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          }
+        ]
+      }
+    ]
+  }
+}
