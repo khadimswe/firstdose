@@ -119,6 +119,7 @@ Current objective, scope and claim boundaries: [v2 spec](docs/spec-v2-coordinato
 | What a judge must see | Surface | Owner |
 |---|---|---|
 | A coordinator's real Monday | `/coordinator` home on the desktop: summary strip, a queue sorted by time stuck, one-tap fix | Deem (UI) + Vinh (6.1 seed) |
+| A staff account, done right | The doctor approves the coordinator on the phone; the desktop's Prescribers goes Pending → Linked (6.12) | Deem (UI) + Vinh (C7) |
 | FirstDose inside DocUpdate | `/doctor` on a phone: the Rx Alerts card, New Rx with the label, fill status on past prescriptions (6.3), and the before/after slide (6.10) | Deem |
 | A prescription going dark, then getting its fill | Price $410 → $0 and the chime; `/board` on a second screen if one is free | Deem (UI) + Vinh (events) |
 | Physical wow | Garmin buzz on the doctor judge's wrist, twice | Vinh |
@@ -216,8 +217,8 @@ Spec: `docs/spec-v2-coordinator.md` ("the four surfaces"). Steps: `docs/IMPLEMEN
 |---|---|---|---|---|---|
 | 6.0 | Integrate the open PRs: review and merge #8 (labels) and #9 (backend); Deem rebases #4 (QR + #9 login return) and #7 (access/sim design); close #2, #3 and #6 | Deem + Vinh + Minh | 🟡 | none | Order in the v2 brief. Sat 09:44: screens-side reviews posted on #8 (✅) and #9 (✅, with a QR sign-in question). #2, #3 and #6 closed. Rebases of #4 and #7 wait for #8 and #9 to merge. |
 | 6.1 | `/sim` "Seed the week": pre-load 10–15 started/waiting patients | Vinh | ⬜ | none | Build now; helps either pitch |
-| 6.2 | `/coordinator` = home screen: summary strip (stuck / waiting / fill confirmed, per D8), sort by time stuck, "Reached patient / Left message" marks, header per W3 | Deem | ⬜ | 11 AM | Medium. `/` opens it, and the screen index moves to `/screens`. Needs C1 and C2. |
-| 6.3 | `/doctor` becomes the DocUpdate phone view (phone-width): Rx Alerts card with the "Not started" alert type, Past-Rx fill-status line (Sent → Received → Filled / Stuck + reason), Concierge "Help my patient start" checkbox (deep-links the handoff), Profile "My coordinator" invite. Structure not brand; "Concept: FirstDose inside DocUpdate · Not affiliated" on every styled screen. See spec: four surfaces | Deem | ⬜ | W3, 6.0 | Medium: rebuilds the `/doctor` shell (reuses `LabelCard`, the alert derivation, `boardStop`). Only if W3 = DocUpdate; otherwise the Ascend thread moves to phone width. Chip = pharmacy `status_text`; title, reason and button from templates (D8). |
+| 6.2 | `/coordinator` = home screen: summary strip (stuck / waiting / fill confirmed, per D8), sort by time stuck, "Reached patient / Left message" marks, header per W3 | Deem | ⬜ | 11 AM | Medium. An app shell with a sidebar (Queue · Prescribers) and a case Sheet. `/` opens it, and today's index becomes `/demo`, a setup launcher with a QR per device. Needs C1 and C2. Structure: `docs/frontend-plan.md`, "v2 structure". |
+| 6.3 | `/doctor` becomes the DocUpdate phone view (phone-width): Rx Alerts card with the "Not started" alert type, Past-Rx fill-status line (Sent → Received → Filled / Stuck + reason), Concierge "Help my patient start" checkbox (deep-links the handoff), Profile "My coordinator" invite. Structure not brand; "Concept: FirstDose inside DocUpdate · Not affiliated" on every styled screen. See spec: four surfaces | Deem | ⬜ | W3, 6.0 | Medium: rebuilds the `/doctor` shell (reuses `LabelCard`, the alert derivation, `boardStop`). Only if W3 = DocUpdate; otherwise the Ascend thread moves to phone width. Chip = pharmacy `status_text`; title, reason and button from templates (D8). One route per tab (`/doctor`, `/doctor/new`, `/doctor/patients/[id]`, `/doctor/concierge`, `/doctor/profile`). |
 | 6.4 | `coordinator_id` on cases + `coordinator_invited` event | Vinh | ⬜ | none | ⚠️ CONTRACT if it touches mock shapes |
 | 6.5 | RxFill-shaped `/sim` events + "raw message" toggle (`NotDispensed`, `RxFillIndicator`), labelled simulated | Vinh (events), Deem (`/sim` toggle) | ⬜ | none | Mostly relabeling. The toggle lives in #7's console. |
 | 6.6 | `/api/npi`: NPPES lookup + ZIP/taxonomy colleague search, cached; UI "Likely colleagues → Invite", names hidden, "public NPPES record, not users" | Minh (API, proposed; C6), Deem (UI) | ⬜ | 6.2 | Run from deployed app. Verify field names on a live call. |
@@ -226,8 +227,9 @@ Spec: `docs/spec-v2-coordinator.md` ("the four surfaces"). Steps: `docs/IMPLEMEN
 | 6.9 | Rewrite `docs/presentation/*` around the coordinator; market-size slide; align README tagline with Q3 answer | Deem | ⬜ | 11 AM | Also: teardown facts into the claims register with sources, and the GitHub repo description (R1). |
 | 6.10 | Before/after slide: DocUpdate's real App Store home screenshot beside our `/doctor` (credited, "Not affiliated") | Deem | ⬜ | 6.3 | The one-glance pitch |
 | 6.11 | "Waiting on" (whose move): Doctor / Coordinator / Patient / Pharmacy, as a column in the coordinator queue and a label on `/board` lanes | Deem | ⬜ | 6.2 | Small. One derived function. |
+| 6.12 | Prescribers, CoverMyMeds-style: the coordinator links a prescriber by NPI (`/coordinator/prescribers`), and the doctor approves on the phone (`/doctor/profile`, plus an approve sheet on the first "Send to my coordinator"). Pending → Linked. Demo record labelled "Demo prescriber record · not a real NPI" | Deem (UI), Vinh (C7 events) | ⬜ | 6.2, 6.3 | Small–medium. Mock overrides first; live needs C7. The approve sheet is the 0:55 demo beat. |
 
-**v2 cut order (2 PM):** Grok voice → 6.6 NPPES invite → 6.7 tiles → 6.8 voice message → 6.11 "Waiting on" → surfaces 3–4 (shown on the slide instead). **Never cut:** coordinator queue with one-tap fix, the doctor's Rx Alerts card, pharmacy re-run, real DailyMed label, who-sees-what.
+**v2 cut order (2 PM):** Grok voice → 6.6 NPPES invite → 6.7 tiles → 6.8 voice message → the 6.12 Prescribers page (keep the approve sheet) → 6.11 "Waiting on" → surfaces 3–4 (shown on the slide instead). **Never cut:** coordinator queue with one-tap fix, the doctor's Rx Alerts card, pharmacy re-run, real DailyMed label, who-sees-what.
 
 ## Shared Contracts
 
@@ -325,6 +327,7 @@ The DocUpdate-styled screens copy structure: dark navy, a purple primary, the bo
   - The API: NPPES v2.1, cached. Verify the field names against a live call. Return taxonomy and address line only, no names to the screen.
   - It also backs the coordinator's prescriber link (CoverMyMeds-style delegation; see the frontend plan).
   - If neither has time, 6.6 is cut; it's second in the cut order.
+- [ ] **C7 (6.12):** Prescriber-link events for live mode, e.g. `coordinator_link_requested` and `coordinator_linked`, with the link state per prescriber. They extend 6.4, which gives Minh's 6.7 its coordinator ids. Additive; `mock/` shapes unchanged. Needs Vinh + Deem.
 - [ ] **R1 (6.9):** After W3, change the GitHub repo description, which still says "A skill for Impiricus Ascend…". Deem does it by hand.
 
 ---
@@ -338,4 +341,4 @@ The DocUpdate-styled screens copy structure: dark navy, a purple primary, the bo
 5. Every screen runs on `mock/` with zero network before it's merged.
 6. Every number on screen, in the README, video or Devpost comes from the sourced facts sheet in `notes/`.
 
-_Last updated: Sat Sep 26, 11:40 ET by Deem (Q3 Notability answered; C1 names decided; C5 options for Vinh; C6 for Minh and Vinh)._
+_Last updated: Sat Sep 26, 12:05 ET by Deem (frontend structure: 6.12 prescriber linking, C7, coordinator shell and `/demo`, doctor tab routes; earlier: Q3, C1, C5, C6)._
