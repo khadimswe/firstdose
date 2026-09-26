@@ -150,7 +150,7 @@ Current objective, scope and claim boundaries: [product proposal](docs/product-p
 | 4.1 | Grok STT handoff with keyterms + `/api/voice` | `lib/server/voice.ts`, `app/api/voice/**` | **Vinh** | ⬜ | 1.11 | Record actual trials with and without keyterms; do not presume failure. |
 | 4.2 | ElevenLabs "started" line on the board | `public/audio/**` | **Deem** | ⬜ | 2.1 | Pre-generate the mp3; no runtime call. |
 | 4.3 | Design pass on all screens | `app/(screens)/**` | **Deem** | 🟡 | Phase 2 | doctor, patient, coordinator, board done 2026-09-26 00:07; access + sim left. |
-| 4.4 | QR flow on a stranger's phone | n/a | **Deem** | ⬜ | 2.6 | |
+| 4.4 | QR flow on a stranger's phone | n/a | **Deem** | 🟡 | 2.6 | QR built (/board corner, /sim, printable /qr; encodes the page's own origin). Stranger-phone test on the deployed site pending. |
 | 4.5 | **Cut check Sat 2 PM** (see Decisions D5) | n/a | **both** | ⬜ | n/a | |
 | 4.6 | Connect IQ widget (stretch) | `garmin/**` | **Vinh** | ⬜ | 1.12 | Go/no-go at 2 PM. |
 | 4.7 | Dry run with 2 strangers as judges; raw footage at 6 PM | n/a | **both** | ⬜ | all | |

@@ -60,7 +60,7 @@ Shared (⚠️ CONTRACT commits, tell Vinh first): `mock/*.json`, `package.json`
 - [ ] **3.1** Impiricus workshop with Vinh.
 - [ ] **4.2** ElevenLabs "started" mp3.
 - [-] **4.3** Design pass.
-- [ ] **4.4** QR flow on a stranger's phone.
+- [-] **4.4** QR flow on a stranger's phone (QR built; phone test pending).
 - [ ] **4.7** Dry run; drive `/coordinator` at the table.
 
 ## Phase 5 (Sat 9 PM to Sun 6:30 AM)
