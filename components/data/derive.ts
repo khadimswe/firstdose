@@ -14,6 +14,12 @@ export function atSeconds(at: number | string): number {
   return typeof at === "number" ? at : Date.parse(at) / 1000;
 }
 
+/** Whole calendar days between two ISO timestamps, by their own local dates. */
+export function calendarDaysBetween(fromIso: string, toIso: string): number {
+  const day = (iso: string) => Date.parse(iso.slice(0, 10) + "T00:00:00Z");
+  return Math.round((day(toIso) - day(fromIso)) / 86_400_000);
+}
+
 function isDispensedClaim(e: FillEvent) {
   return e.type === "claim_run" && e.status_text === "Dispensed";
 }

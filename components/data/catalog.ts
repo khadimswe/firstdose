@@ -15,4 +15,5 @@ export const CATALOG = {
   labels: labelsJson.labels,
   reasons: reasonsJson.reasons,
   fixes: reasonsJson.fixes,
+  rejectCodes: reasonsJson.status_vocabulary.ncpdp_reject_codes,
 } as Catalog;

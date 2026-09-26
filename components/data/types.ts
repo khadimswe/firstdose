@@ -155,6 +155,8 @@ export type Catalog = {
   labels: Label[];
   reasons: Record<ReasonKey, Reason>;
   fixes: Record<FixKey, Fix>;
+  /** NCPDP reject code → name, e.g. "75" → "Prior Authorization Required". */
+  rejectCodes: Record<string, string>;
 };
 
 /** Events fired together: a burst in mock/events.json whose `at` values are <= 2 s apart. */
