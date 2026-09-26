@@ -54,7 +54,7 @@ A Marina's Mission is the selected social-good track; no Aramco API requirement 
 
 **Schedule:** Deem reports Sunday Sep 27, 8:00 AM ET as the cutoff and 9:30-11:00 AM expo. Keep the Sun 6:30 AM submission buffer. Exact current organizer cutoff/video cap still need source confirmation; see `docs/research/tracks-and-requirements.md`. Submit to Devpost AND expo.hexlabs.org.
 
-**Repo:** `github.com/khadimswe/firstdose`. No visibility change is performed by this plan; check actual settings before describing them.
+**Repo:** `github.com/khadimswe/firstdose`. Public, and it stays public through submission (decided by Deem, Sat Sep 26). Live demo link: README.
 
 **Specs in the repo:** `docs/architecture.md` (flow, tables, API routes, external services), `docs/who-sees-what.md`, `mock/*.json` (data contract). If this file drifts from them, fix this file.
 
@@ -163,7 +163,7 @@ Current objective, scope and claim boundaries: [product proposal](docs/product-p
 | 5.2 | Stills of every judge screen (desktop + phone) from the deployed origin | `docs/stills/` | **Deem** | ⬜ | 2.6 | Look at each one. |
 | 5.3 | Video 2-3 min | `docs/video/` | **Deem** (Vinh edits once backend is frozen) | ⬜ | 5.2 | Done by Sun 5 AM. |
 | 5.4 | Devpost writeup + poster | `docs/submission.md` | **Deem** | ⬜ | 5.1 | |
-| 5.5 | Flip repo public; submit to **Devpost AND expo.hexlabs.org**; reload-verify both | n/a | **Deem** | ⬜ | 5.4 | By Sun 6:30 AM. |
+| 5.5 | Submit to **Devpost AND expo.hexlabs.org**; reload-verify both | n/a | **Deem** | ⬜ | 5.4 | By Sun 6:30 AM. Repo is already public. |
 
 ---
 

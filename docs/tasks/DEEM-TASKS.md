@@ -36,7 +36,7 @@ Shared (⚠️ CONTRACT commits, tell Vinh first): `mock/*.json`, `package.json`
 - [x] **0.3** CI.
 - [x] **0.7** Contract fixes: `ev_21b` + `wrist.started`. ⚠️ CONTRACT.
 - [ ] **0.9** HexLabs team registration; #qna Notability question.
-- [ ] Repo private until submission (it's public now).
+- Repo stays public (decided Sat Sep 26).
 
 ## Phase 1: Core loop (Sat 12 AM to 4 AM)
 - [x] **1.1** Foundation: catalog, `derive.ts`, `useEvents()` mock source, `fill()`, `StandIn`, `LabelCard`, shadcn init. Merge before any screen.
@@ -67,7 +67,7 @@ Shared (⚠️ CONTRACT commits, tell Vinh first): `mock/*.json`, `package.json`
 - [ ] **5.2** Stills of every screen.
 - [ ] **5.3** Video.
 - [ ] **5.4** Writeup + poster.
-- [ ] **5.5** Flip public; submit to Devpost AND expo.hexlabs.org; reload-verify.
+- [ ] **5.5** Submit to Devpost AND expo.hexlabs.org; reload-verify.
 
 ---
 

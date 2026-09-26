@@ -2,6 +2,8 @@
 
 **One missed fill. One accountable next step.**
 
+**Live demo:** [firstdose.vercel.app](https://firstdose.vercel.app) (mock mode: scripted fictional cases, synced between tabs of one browser; open `/sim` to drive it).
+
 FirstDose turns a stuck first fill into a reviewed access task, then checks for a later pharmacy fill signal. Built for HackGT 13 by **Vinh, Minh and Deem**, as a proposed Impiricus HCP workflow.
 
 ## Current state
