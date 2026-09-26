@@ -1,13 +1,13 @@
 # FirstDose v2: The Coordinator's Daily Queue
 
-Sat Sep 26, 2026 · Deem · Supersedes the doctor-first spec. Final lead (coordinator-first or doctor-first) is decided at the 11 AM Impiricus workshop.
+Sat Sep 26, 2026 · Deem · Supersedes the doctor-first spec. The lead is locked (PLAN D7): an Ascend skill that shows up in DocUpdate; the coordinator's queue opens the demo and the doctor stays the accountable HCP.
 
 ## Where this fits in the repo (read this first)
 
 - **This spec changes the story and the screens, not the engine.** The loop, router, mock contract and who-sees-what are unchanged.
 - **Read with it:** `PLAN.md` (v2 tasks are rows 6.x), `docs/architecture.md`, `docs/frontend-plan.md`, `mock/*.json`.
 - **Supersedes:** the doctor-first framing in `docs/presentation/pitch-and-qa.md` (rewritten in 6.9), the v1 spec's "Who it's for" section, and the v1 `/doctor` (iPad EHR + Ascend thread), which becomes the DocUpdate phone view below. The 4-minute demo in this spec is the demo script.
-- **Gate:** no screen changes before the 11 AM workshop answers, except 6.1 (seed the week). Q6's answer picks the lead (coordinator vs doctor); Q3's answer picks the header (DocUpdate vs Ascend); Q1's answer shapes the pitch (what the first staff account does). PLAN.md tracks them as W6, W3 and W1.
+- **Gate: answered.** The workshop questions are answered from public sources in `docs/research/public-sources-briefing.md` (PLAN W1–W7). Product home: an Ascend skill that shows up in DocUpdate. HCP: staff operate, the prescriber stays accountable. First staff account: works the queue, the doctor approves. Built in PRs #11–#14.
 - **Status updates:** tick the 6.x rows in `PLAN.md` with `status:` commits, same as every other task.
 - **Screen copy (PLAN D8):** screens use the templates' fill wording, "first fill pending" and "pharmacy fill confirmed". Nothing on screen claims a patient started or recovered. "A patient who never started looks exactly like a drug that doesn't work" stays as the spoken problem statement. The demo and lines below follow this.
 
@@ -138,20 +138,20 @@ Full teardown: `docs/research/docupdate-teardown.md`. The judge wants proof we k
 
 ## The 4-minute demo
 
-**The table.** Laptop or big screen = the coordinator's desktop queue (`/coordinator`). An iPhone = the doctor's DocUpdate view (`/doctor`, surfaces 1–4). The judge's own phone = Maria (`/patient/rx_001` via QR). Vinh runs `/sim` and the pharmacy from his laptop. `/board` goes on a second monitor only if one is free. The watch is on the doctor judge's wrist.
+**The table.** Laptop or big screen = the coordinator's desktop queue (`/coordinator`). An iPhone = the doctor's DocUpdate view (`/doctor`, surfaces 1–4, opened from the home screen; a TestFlight build later). An Apple Watch paired to that iPhone gets the ntfy alerts, and iOS sends them to the watch only while the phone is locked. The judge's own phone = Maria (`/patient/rx_001` via QR). Vinh runs `/sim` and the pharmacy from his laptop. `/board` goes on a second monitor only if one is free. Setup: `/demo`.
 
-**Casting.** Judge 1 = coordinator. Judge 2 = doctor (phone + watch), then becomes Maria via QR. With one judge: they play the coordinator, Vinh plays the doctor and wears the watch, and a spare phone plays Maria.
+**Casting** (matches the demo record "Dr. Demo (judge 1)"). Judge 1 = doctor (iPhone + Apple Watch), then becomes Maria via QR on their own phone. Judge 2 = coordinator at the laptop. With one judge: they play the coordinator, Vinh plays the doctor and wears the watch, and a spare phone plays Maria.
 
 | Time | What happens | What we say |
 |---|---|---|
 | 0:00 | Desktop: the coordinator queue, Monday morning. "3 stuck, 2 waiting, 11 fills confirmed" | "Impiricus reaches the doctor who writes the prescription. This is the person who gets the patient on it. She opens this every morning." |
-| 0:20 | Judge 2, on the DocUpdate phone view: New Rx → Maria → Otezla → Sign and send. Real DailyMed label on the order | "DocUpdate sends the script. Today, that's where the story ends." |
-| 0:40 | Pharmacy: declined at the quoted price. The phone's Rx Alerts shows **Not dispensed · Maria Lopez · Otezla**. The watch buzzes | "A patient who never started looks exactly like a drug that doesn't work." |
-| 0:55 | Judge 2 taps "Send to my coordinator." First time only, a sheet: "Your access coordinator asked to work on your patients' access. Approve?" One tap approves the delegate and hands Maria off. On the desktop, Prescribers flips from Pending to Linked | "One tap just brought the person who gets patients started into the Impiricus network. Staff accounts, the way CoverMyMeds does them, except the doctor approves inside the app they already verified with." |
-| 1:10 | Maria jumps to the top of Judge 1's queue with the reason and one fix: "Re-send copay card (commercial: eligible)." Judge 1 taps it | "One tap, not three phone calls." |
-| 1:25 | Hand Judge 2 the QR: "Now you're Maria." Their phone gets the card | — |
-| 1:35 | Judge 2 taps "Use at pharmacy": acknowledged, fill still pending. Vinh fires the separate pharmacy confirmation: price $410 → $0 (demo), chime, the phone's Past Rx line reads **Fill confirmed**, watch: "Maria: Otezla pharmacy fill confirmed" | "The doctor heard about it twice: when it broke, and when it was fixed." |
-| 2:00 | James on Humira: 75 Prior Authorization Required, unable to reach after 3 calls. Judge 1 taps "Connect to access support" | "Different reason, different fix. The rule picks it, not AI." |
+| 0:20 | Judge 1, on the DocUpdate phone view: New Rx → Maria → Otezla → Sign and send. Real DailyMed label on the order. Then they lock the phone and set it down, as a doctor would between patients | "DocUpdate sends the script. Today, that's where the story ends." |
+| 0:40 | Pharmacy: declined at the quoted price. The Apple Watch buzzes. Judge 1 unlocks the phone: Rx Alerts shows **Not dispensed / returned to stock · Maria Lopez · Otezla** | "A patient who never started looks exactly like a drug that doesn't work." |
+| 0:55 | Judge 1 taps "Send to my coordinator." First time only, a sheet: "Your access coordinator asked to work on your patients' access. Approve?" One tap approves the delegate and hands Maria off. On the desktop, Prescribers flips from Pending to Linked | "One tap just brought the person who gets patients started into the Impiricus network. Staff accounts, the way CoverMyMeds does them, except the doctor approves inside the app they already verified with." |
+| 1:10 | Maria jumps to the top of Judge 2's queue with the reason and one fix: "Re-send copay card (commercial: eligible)." Judge 2 taps it | "One tap, not three phone calls." |
+| 1:25 | Hand Judge 1 the QR: "Now you're Maria." Their own phone gets the card | — |
+| 1:35 | Judge 1 taps "Use at pharmacy": acknowledged, fill still pending. Vinh fires the separate pharmacy confirmation: price $410 → $0 (demo), chime, the phone's Past Rx line reads **Fill confirmed**, watch: "Maria: Otezla pharmacy fill confirmed" | "The doctor heard about it twice: when it broke, and when it was fixed." |
+| 2:00 | James on Humira: 75 Prior Authorization Required, unable to reach after 3 calls. Judge 2 taps "Connect to access support" | "Different reason, different fix. The rule picks it, not AI." |
 | 2:30 | The phone's Home shows the before-visit card: "James Carter: Humira first fill confirmation is still pending. Review fill status before the visit." Boxed warning shown verbatim once Humira's label is verified | "This is the only thing the doctor needs to read." |
 | 2:50 | `/access`: first fills confirmed, time to first fill, coordinators active. Who-sees-what | "Market Access pays per confirmed first fill. Impiricus gets a daily user it never had." |
 | 3:15 | The before/after slide (6.10): DocUpdate's App Store home screen beside ours | "One alert type, one status line, one checkbox, one profile row. Not a new app." |

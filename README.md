@@ -15,7 +15,7 @@ After a prescription is sent, nobody in the office can see whether the patient s
 
 Inside DocUpdate it adds four things, not a new app: one alert type, one fill-status line, one Concierge checkbox and one "My coordinator" profile row. The doctor sees those on the phone; the coordinator works the queue on a desktop, which DocUpdate can't do today.
 
-Spec: [docs/spec-v2-coordinator.md](docs/spec-v2-coordinator.md). Research: [DocUpdate teardown](docs/research/docupdate-teardown.md). Two things are decided at the Impiricus workshop (PLAN.md → W6 and W3): whether we lead with the coordinator or the doctor, and whether it lives inside DocUpdate or in Ascend as a skill.
+Spec: [docs/spec-v2-coordinator.md](docs/spec-v2-coordinator.md). Research: [DocUpdate teardown](docs/research/docupdate-teardown.md). It's an Impiricus Ascend skill that shows up in DocUpdate (PLAN.md → D7; the reasoning is in the [public-sources briefing](docs/research/public-sources-briefing.md)).
 
 ## Who uses it
 
@@ -62,7 +62,8 @@ The router never changes a prescription. It only removes access barriers, and Me
   - #8, the verified Otezla label (Minh);
   - #9, the persisted backend and live wiring (Vinh);
   - #4, the patient QR, and #7, the access/sim design (Deem).
-- **Next:** Phase 6 after the 11 AM workshop: the coordinator home, the DocUpdate phone view for the doctor, the before/after slide, coordinator tiles, the colleague invite and the patient voice message.
+- **Built, in review:** #11–#14 (stacked on #9) cover the v2 screens: the coordinator's Queue and Prescribers, the DocUpdate phone view with approve-and-send, the board's "Waiting on", and `/demo` (which device runs which screen).
+- **Next:** the before/after slide, coordinator tiles, the colleague invite, the patient voice message and a TestFlight wrapper for the doctor's phone.
 
 ## Screens
 
