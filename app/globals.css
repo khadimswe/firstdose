@@ -14,6 +14,10 @@
   --color-started: var(--started);
   --color-practice: var(--practice);
   --color-ascend: var(--ascend);
+  /* DocUpdate concept screens (PLAN D9): structure only, never their brand assets */
+  --color-du-navy: oklch(0.25 0.07 277);
+  --color-du-navy-2: oklch(0.31 0.08 277);
+  --color-du-purple: oklch(0.58 0.2 290);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
