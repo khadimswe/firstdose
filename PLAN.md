@@ -167,6 +167,25 @@ Current objective, scope and claim boundaries: [product proposal](docs/product-p
 
 ---
 
+
+## Phase 6 — v2 pivot: the coordinator's daily queue (Sat, after the 11 AM workshop)
+
+Spec: `docs/spec-v2-coordinator.md`. Gate: 11 AM answers decide the lead and header. Engine, router and `mock/` shapes unchanged.
+
+| # | Task | Owner | Status | Deps | Notes |
+|---|---|---|---|---|---|
+| 6.1 | `/sim` "Seed the week": pre-load 10–15 started/waiting patients | Vinh | ⬜ | none | Build now; helps either pitch |
+| 6.2 | `/coordinator` = home screen: summary strip (stuck/waiting/started), sort by time stuck, "Reached patient / Left message" marks, header per Q3 answer | Deem | ⬜ | 11 AM | Medium |
+| 6.3 | `/doctor` shrinks to alerts inbox + before-visit card; order panel labelled "Sent from DocUpdate (stand-in)"; first handoff shows "Invite your coordinator" | Deem | ⬜ | 11 AM | Small |
+| 6.4 | `coordinator_id` on cases + `coordinator_invited` event | Vinh | ⬜ | none | ⚠️ CONTRACT if it touches mock shapes |
+| 6.5 | RxFill-shaped `/sim` events + "raw message" toggle (`NotDispensed`, `RxFillIndicator`), labelled simulated | Vinh | ⬜ | none | Mostly relabeling |
+| 6.6 | `/api/npi`: NPPES lookup + ZIP/taxonomy colleague search, cached; UI "Likely colleagues → Invite", names hidden, "public NPPES record, not users" | Vinh or Minh (API), Deem (UI) | ⬜ | 6.2 | Run from deployed app |
+| 6.7 | `/access` tiles: coordinators active this week, fixes per coordinator (Tiger rollup) | Minh (data), Deem (UI) | ⬜ | 2.3 | Retention proof |
+| 6.8 | ElevenLabs: coordinator-approved patient message, templated, voiced in patient's language (Spanish for Maria) | Deem | ⬜ | 6.2 | Replaces the plain "started" mp3 job |
+| 6.9 | Rewrite `docs/presentation/*` around the coordinator; market-size slide from the spec | Deem | ⬜ | 11 AM | 12–2 PM window |
+
+**v2 cut order (2 PM):** Grok voice → 6.6 NPPES invite → 6.7 tiles → 6.8 voice message → board "whose move" labels. **Never cut:** coordinator queue with one-tap fix, doctor alert, pharmacy re-run, real DailyMed label, who-sees-what.
+
 ## Shared Contracts
 
 Full detail in `docs/architecture.md`. Summary:

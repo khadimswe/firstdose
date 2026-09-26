@@ -1,3 +1,5 @@
+> **Superseded 2026-09-26 09:20:** the demo is now coordinator-first. Source of truth: `docs/spec-v2-coordinator.md` (The 4-minute demo). This file gets rewritten after the 11 AM workshop.
+
 # FirstDose demo script
 
 Prepared September 26, 2026. Two-minute and four-minute formats are internal rehearsal targets; the official cap remains unconfirmed. This is a script and capture plan, not a recording or evidence that the target build works.

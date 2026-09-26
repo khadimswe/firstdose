@@ -2,6 +2,14 @@
 
 Sat Sep 26, 2026 · Deem · Supersedes the doctor-first spec. Final lead (coordinator-first or doctor-first) is decided at the 11 AM Impiricus workshop.
 
+## Where this fits in the repo (read this first)
+
+- **This spec changes the story and the screens, not the engine.** The loop, router, mock contract and who-sees-what are unchanged.
+- **Read with it:** `PLAN.md` (v2 tasks are rows 6.x), `docs/architecture.md`, `docs/frontend-plan.md`, `mock/*.json`.
+- **Supersedes:** the doctor-first framing in `docs/presentation/demo-script.md` and `pitch-and-qa.md` (banners added; they get rewritten 12–2 PM after the workshop), and the v1 spec's "Who it's for" section.
+- **Gate:** no screen changes before the 11 AM workshop answers, except 6.1 (seed the week). Q1's answer picks the lead (coordinator vs doctor); Q3's answer picks the header (DocUpdate vs Ascend).
+- **Status updates:** tick the 6.x rows in `PLAN.md` with `status:` commits, same as every other task.
+
 ## The idea
 
 FirstDose becomes the access coordinator's daily work queue, and the doctor only hears about it when it matters.
