@@ -61,7 +61,7 @@
 | 0.4 | Data contract | `mock/*.json` | **both** | 🟡 | 0.1 | Two fixes pending (see 0.7). Frozen after. |
 | 0.5 | Architecture doc | `docs/architecture.md` | **Vihn** reviews | 🟡 | 0.4 | Deem drafted. Vihn corrects routes/tables to match his build. |
 | 0.6 | Keys (each person signs up, keys move by AirDrop only) | local `.env` | **Vihn**: Supabase, Tiger Data, Gemini, xAI. **Deem**: ElevenLabs + .Tech (MLH), Vercel, HexLabs OpenAI | ⬜ | n/a | |
-| 0.7 | Contract fixes: add `ev_21b` (James `fix_sent` BRIDGE_SAMPLE); `wrist.started` → `"{patient_short} started {drug}. $0 with copay card."` | `mock/events.json`, `mock/templates.json` | **Deem** | ⬜ | 0.4 | ⚠️ CONTRACT commit. Tell Vihn first. |
+| 0.7 | Contract fixes: add `ev_21b` (James `fix_sent` BRIDGE_SAMPLE); `wrist.started` → `"{patient_short} started {drug}. $0 with copay card."` | `mock/events.json`, `mock/templates.json` | **Deem** | ✅ | 0.4 | ⚠️ CONTRACT commit. Tell Vihn first. |
 | 0.8 | **Gate:** ntfy POST → iPhone → Garmin FR55 buzz with text | `scripts/ntfy-smoke.sh` | **Vihn** | ⬜ | 0.6 | Garmin Connect open. Body ≤ 200 chars. |
 | 0.9 | Register team on HexLabs; ask #qna if Notability is a challenge or sponsor track | n/a | **Deem** | ⬜ | n/a | |
 
@@ -69,12 +69,12 @@
 
 | # | Component | File(s) | Owner | Status | Deps | Notes |
 |---|---|---|---|---|---|---|
-| 1.1 | Frontend foundation: catalog, `derive.ts`, `useEvents()` (mock source), `fill()`, `StandIn`, `LabelCard`, shadcn init | `components/data/**`, `components/copy/**`, `components/*.tsx` | **Deem** | ⬜ | 0.4 | No `?replay` or Autoplay yet. Merge before any screen. |
-| 1.2 | `EventSource` interface published to Vihn | `components/data/types.ts` | **Deem** | ⬜ | 1.1 | ⚠️ CONTRACT. Vihn implements it in 1.9. |
-| 1.3 | `/sim` bare: Reset + Fire per beat | `app/(screens)/sim/**` | **Deem** | ⬜ | 1.1 | Drives every other screen in a second tab. |
-| 1.4 | `/doctor`: prescribe → label card → alert → "Send to my coordinator" | `app/(screens)/doctor/**` | **Deem** | ⬜ | 1.1 | iPad 1180×820. Never suggests a drug. |
-| 1.5 | `/coordinator`: queue card, ONE fix button | `app/(screens)/coordinator/**` | **Deem** | ⬜ | 1.1 | Phone 390×844. |
-| 1.6 | `/patient/[id]`: Wallet pass stand-in, "Use at pharmacy" | `app/(screens)/patient/[id]/**` | **Deem** | ⬜ | 1.1 | No barcode, BIN/PCN or member number. |
+| 1.1 | Frontend foundation: catalog, `derive.ts`, `useEvents()` (mock source), `fill()`, `StandIn`, `LabelCard`, shadcn init | `components/data/**`, `components/copy/**`, `components/*.tsx` | **Deem** | ✅ | 0.4 | No `?replay` or Autoplay yet. Merge before any screen. |
+| 1.2 | `EventSource` interface published to Vihn | `components/data/types.ts` | **Deem** | ✅ | 1.1 | ⚠️ CONTRACT. Vihn implements it in 1.9. |
+| 1.3 | `/sim` bare: Reset + Fire per beat | `app/(screens)/sim/**` | **Deem** | ✅ | 1.1 | Drives every other screen in a second tab. |
+| 1.4 | `/doctor`: prescribe → label card → alert → "Send to my coordinator" | `app/(screens)/doctor/**` | **Deem** | ✅ | 1.1 | iPad 1180×820. Never suggests a drug. |
+| 1.5 | `/coordinator`: queue card, ONE fix button | `app/(screens)/coordinator/**` | **Deem** | ✅ | 1.1 | Phone 390×844. |
+| 1.6 | `/patient/[id]`: Wallet pass stand-in, "Use at pharmacy" | `app/(screens)/patient/[id]/**` | **Deem** | ✅ | 1.1 | No barcode, BIN/PCN or member number. |
 | 1.7 | Supabase schema: `patients`, `drugs`, `rx_cases`, `fill_events`, `labels`; seed from `mock/` | `supabase/migrations/**`, `scripts/seed.ts` | **Vihn** | ⬜ | 0.4, 0.6 | Field names identical to `mock/`. |
 | 1.8 | Router + table test (every reason × insurance; Medicare never gets a copay card) | `lib/server/router.ts`, `tests/router.test.ts` | **Vihn** | ⬜ | 0.4 | Pure function over `reasons.json → router.rows`. No AI. |
 | 1.9 | `lib/realtime.ts` (implements 1.2) + `/api/sim/fire`, `/api/sim/reset` | `lib/realtime.ts`, `app/api/sim/**` | **Vihn** | ⬜ | 1.2, 1.7 | Realtime channel `fill_events`, insert only. |
@@ -88,10 +88,10 @@
 
 | # | Component | File(s) | Owner | Status | Deps | Notes |
 |---|---|---|---|---|---|---|
-| 2.1 | `/board` Relay Board: lanes, red stop, price counter, WebAudio chime | `app/(screens)/board/**` | **Deem** | ⬜ | 1.1 | 1920×1080 dark. Sound needs one click to enable. |
-| 2.2 | James case on every screen + before-visit card with real boxed warning | `app/(screens)/doctor/**` | **Deem** | ⬜ | 1.4, 1.10 | Template only, never free text. |
+| 2.1 | `/board` Relay Board: lanes, red stop, price counter, WebAudio chime | `app/(screens)/board/**` | **Deem** | ✅ | 1.1 | 1920×1080 dark. Sound needs one click to enable. |
+| 2.2 | James case on every screen + before-visit card with real boxed warning | `app/(screens)/doctor/**` | **Deem** | ✅ | 1.4, 1.10 | Template only, never free text. |
 | 2.3 | Tiger Data: `fill_events` hypertable + `daily_ttff` + `/api/access/summary` | `lib/server/tiger.ts`, `app/api/access/**` | **Vihn** | ⬜ | 1.7 | Dual-write, no patient names. |
-| 2.4 | `/access`: KPI tiles, reason bars, who-sees-what | `app/(screens)/access/**` | **Deem** | ⬜ | 1.1, 2.3 | Type has no patient fields. |
+| 2.4 | `/access`: KPI tiles, reason bars, who-sees-what | `app/(screens)/access/**` | **Deem** | ✅ | 1.1, 2.3 | Type has no patient fields. |
 | 2.5 | Gemini classifier: note → reason enum (`responseSchema`) | `lib/server/classify.ts` | **Vihn** | ⬜ | 0.6 | List models at startup. ≤ 140 chars in, enum out. |
 | 2.6 | Vercel deploy (`firstdose-web`) | `.vercel/` | **Deem** | ⬜ | 1.9 | Check `.vercel/project.json` before every `--prod`. |
 | 2.7 | `/sim` extras: `?upto=`, `?replay=1`, Autoplay | `app/(screens)/sim/**` | **Deem** | ⬜ | 1.3 | Offline fallback for the board. |
@@ -108,7 +108,7 @@
 |---|---|---|---|---|---|---|
 | 4.1 | Grok STT handoff with keyterms + `/api/voice` | `lib/server/voice.ts`, `app/api/voice/**` | **Vihn** | ⬜ | 1.11 | Record the no-keyterm miss for the video. |
 | 4.2 | ElevenLabs "started" line on the board | `public/audio/**` | **Deem** | ⬜ | 2.1 | Pre-generate the mp3; no runtime call. |
-| 4.3 | Design pass on all screens | `app/(screens)/**` | **Deem** | ⬜ | Phase 2 | Only after the 4 AM gate holds. |
+| 4.3 | Design pass on all screens | `app/(screens)/**` | **Deem** | 🟡 | Phase 2 | doctor, patient, coordinator, board done 2026-09-26 00:07; access + sim left. |
 | 4.4 | QR flow on a stranger's phone | n/a | **Deem** | ⬜ | 2.6 | |
 | 4.5 | **Cut check Sat 2 PM** (see Decisions D5) | n/a | **both** | ⬜ | n/a | |
 | 4.6 | Connect IQ widget (stretch) | `garmin/**` | **Vihn** | ⬜ | 1.12 | Go/no-go at 2 PM. |
@@ -185,4 +185,4 @@ A sponsor tool is named in the writeup only if 5.1 finds it called in code. **Lo
 5. Every screen runs on `mock/` with zero network before it's merged.
 6. Every number on screen, in the README, video or Devpost comes from the sourced facts sheet in `notes/`.
 
-_Last updated: 2026-09-26 00:05 ET by Deem (Claude)._
+_Last updated: 2026-09-26 00:15 ET by Deem (Claude)._

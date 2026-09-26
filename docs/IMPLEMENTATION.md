@@ -95,20 +95,25 @@ describe("env", () => {
 - [ ] `curl -H "Title: FirstDose" -H "Priority: high" -H "Tags: pill" -d "Maria: Otezla not started. Declined at price." "$NTFY_SERVER/$NTFY_TOPIC"`.
 - [ ] Expected: the iPhone ntfy app shows it and the Garmin FR55 buzzes with the text. If not, stop: fix Garmin Connect notification settings before anything else.
 
-### Task 1.1 (D): Frontend foundation
+### Task 1.1 (D): Frontend foundation ✅ built
 
 Detailed in Deem's approved frontend plan (`docs/frontend-plan.md`). Produces:
 - `components/data/types.ts`: `FillEvent` (= `mock/events.json → event_shape`), `CaseView`, `AccessSummary = { recovered: number; median_ttff_seconds: number | null; reason_tally: Record<string, number> }` (no patient fields), and:
 
 ```ts
+// as built in components/data/types.ts (read that file; it is the source of truth)
+export type ScreenAction = "prescribe" | "handoff" | "fix" | "use_card";
 export interface EventSource {
-  load(): Promise<{ cases: RxCase[]; events: FillEvent[] }>;
-  subscribe(onInsert: (e: FillEvent) => void): () => void;
-  fire(ids: string[]): Promise<void>;
+  load(): Promise<FillEvent[]>;                                   // fill_events, oldest first
+  subscribe(onInsert: (e: FillEvent) => void): () => void;         // Realtime inserts
+  act(action: ScreenAction, rx: RxCase, fix: FixKey | null): Promise<void>; // screen buttons → API routes
+  fire(ids: string[]): Promise<void>;                              // /sim only
   reset(): Promise<void>;
   accessSummary(): Promise<AccessSummary>;
 }
 ```
+
+`act()` maps: `prescribe` → `POST /api/rx { patient_id, drug_id }`, `handoff` → `POST /api/handoff { case_id }`, `fix` → `POST /api/fix { case_id, fix }`, `use_card` → `POST /api/patient/use { case_id }`. Rows keep the mock event `id` (`ev_01`…) so `/sim` can tick off fired beats.
 
 - `useEvents()` → `{ mode, script, fired, cases, catalog, access, fire, fireNext, reset }`.
 - Test: `tests/derive.test.ts`: firing `ev_01..ev_06` gives Maria `status: "stuck"`, `reason: "DECLINED_AT_PRICE"`; firing through `ev_12` gives `status: "started"`; `accessSummary` after `ev_13` returns `recovered: 1` and has no key named `name` or `patient_id`.
@@ -185,9 +190,9 @@ describe("router", () => {
 **Files:** `app/api/rx/route.ts`, `app/api/handoff/route.ts`, `app/api/fix/route.ts`, `app/api/patient/use/route.ts`, `lib/server/cases.ts`, `tests/cases.test.ts`
 
 **Interfaces (bodies validated with zod):**
-- `POST /api/rx { case_id }` → inserts `ev_01..ev_03` for that case.
+- `POST /api/rx { patient_id, drug_id }` → creates or finds the case and inserts `prescribed`, `label_shown`, `copay_card_sent`.
 - `POST /api/handoff { case_id }` → `handoff` + `fix_chosen` (fix from `route()` using the case's insurance).
-- `POST /api/fix { case_id }` → `fix_sent` with the chosen fix.
+- `POST /api/fix { case_id, fix }` → `fix_sent`; 409 if `fix` differs from the case's `fix_chosen`.
 - `POST /api/patient/use { case_id }` → `copay_card_used`, `claim_run` (Dispensed, `amount_usd: 0`), `started`, `recovered`.
 
 - [ ] **Step 1: Failing tests** with a fake store:

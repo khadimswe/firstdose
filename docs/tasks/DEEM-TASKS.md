@@ -34,31 +34,31 @@ Shared (⚠️ CONTRACT commits, tell Vihn first): `mock/*.json`, `package.json`
 - [x] **0.1** Repo, README, ABOUT, LICENSE.
 - [x] **0.2** Next.js 16 scaffold.
 - [x] **0.3** CI.
-- [ ] **0.7** Contract fixes: `ev_21b` + `wrist.started`. ⚠️ CONTRACT.
+- [x] **0.7** Contract fixes: `ev_21b` + `wrist.started`. ⚠️ CONTRACT.
 - [ ] **0.9** HexLabs team registration; #qna Notability question.
 - [ ] Repo private until submission (it's public now).
 
 ## Phase 1: Core loop (Sat 12 AM to 4 AM)
-- [ ] **1.1** Foundation: catalog, `derive.ts`, `useEvents()` mock source, `fill()`, `StandIn`, `LabelCard`, shadcn init. Merge before any screen.
-- [ ] **1.2** Push `components/data/types.ts` (`EventSource`) and tell Vihn.
-- [ ] **1.3** `/sim` bare.
-- [ ] **1.4** `/doctor`.
-- [ ] **1.5** `/coordinator`.
-- [ ] **1.6** `/patient/[id]`.
+- [x] **1.1** Foundation: catalog, `derive.ts`, `useEvents()` mock source, `fill()`, `StandIn`, `LabelCard`, shadcn init. Merge before any screen.
+- [x] **1.2** Push `components/data/types.ts` (`EventSource`) and tell Vihn.
+- [x] **1.3** `/sim` bare.
+- [x] **1.4** `/doctor`.
+- [x] **1.5** `/coordinator`.
+- [x] **1.6** `/patient/[id]`.
 
 **CHECKPOINT Sat 4 AM:** Maria's loop across two devices in `supabase` mode.
 
 ## Phase 2: The wow + deploy (Sat 4 AM to 11 AM)
-- [ ] **2.1** `/board`.
-- [ ] **2.2** James case + before-visit card.
-- [ ] **2.4** `/access`.
+- [x] **2.1** `/board`.
+- [x] **2.2** James case + before-visit card.
+- [x] **2.4** `/access`.
 - [ ] **2.6** Vercel deploy.
 - [ ] **2.7** `/sim` extras (`?upto=`, `?replay=1`, Autoplay).
 
 ## Phase 3-4 (Sat 11 AM to 6 PM)
 - [ ] **3.1** Impiricus workshop with Vihn.
 - [ ] **4.2** ElevenLabs "started" mp3.
-- [ ] **4.3** Design pass.
+- [-] **4.3** Design pass.
 - [ ] **4.4** QR flow on a stranger's phone.
 - [ ] **4.7** Dry run; drive `/coordinator` at the table.
 
