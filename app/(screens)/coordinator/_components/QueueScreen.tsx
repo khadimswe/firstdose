@@ -14,8 +14,8 @@ import {
   type QueueBucket,
 } from "@/components/data/derive";
 import { inQueue } from "@/components/data/links";
+import { useCoordinator } from "@/components/data/coordinator";
 import { useLocal } from "@/components/data/local";
-import { useCoordinatorLinks } from "@/components/data/useCoordinatorLinks";
 import { useEvents } from "@/components/data/useEvents";
 import { useNowAt } from "@/components/data/useNowAt";
 import type { CaseView } from "@/components/data/types";
@@ -44,14 +44,14 @@ function byStuckAge(a: CaseView, b: CaseView) {
 /** The coordinator's home: what's stuck, what's waiting, what got its fill. */
 export function QueueScreen() {
   const { cases, catalog, fired, mode, act, canAct } = useEvents();
-  const { marks } = useLocal();
-  const links = useCoordinatorLinks();
+  const { approved, marks } = useLocal();
+  const coordinator = useCoordinator();
   const nowAt = useNowAt(fired, mode === "supabase");
   const [openId, setOpenId] = useState<string | null>(null);
   const [tab, setTab] = useState<QueueBucket>("needs_you");
 
   const all = prescribers(cases);
-  const linked = all.filter((p) => links.linked(p));
+  const linked = all.filter((p) => coordinator.linked(p, cases, approved));
   const pending = all.filter((p) => !linked.includes(p));
   const mine = cases.filter((c) => inQueue(c, new Set(linked)));
 
@@ -77,6 +77,12 @@ export function QueueScreen() {
           </p>
         </div>
       </header>
+
+      {coordinator.live && <div>
+        <p role="status" aria-atomic="true" className="text-sm text-muted-foreground">{coordinator.ready ? "Queue uses saved coordinator approvals for this run." : "Checking coordinator approvals…"}</p>
+        <p role="alert" className="text-sm text-stuck">{coordinator.error}</p>
+        {coordinator.loginPath && <a href="/api/demo-login?next=%2Fcoordinator" className="text-sm underline">Sign in to continue</a>}
+      </div>}
 
       {pending.length > 0 && (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-dashed bg-background p-4">

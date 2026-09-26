@@ -8,7 +8,8 @@ import { SideBadge } from "@/components/SideBadge";
 import { Disclosure } from "@/components/Disclosure";
 import { prescribers, queueBucket } from "@/components/data/derive";
 import { inQueue } from "@/components/data/links";
-import { useCoordinatorLinks } from "@/components/data/useCoordinatorLinks";
+import { useCoordinator } from "@/components/data/coordinator";
+import { useLocal } from "@/components/data/local";
 import { useEvents } from "@/components/data/useEvents";
 import { cn } from "@/lib/utils";
 
@@ -16,9 +17,10 @@ import { cn } from "@/lib/utils";
 export function CoordinatorShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { cases } = useEvents();
-  const links = useCoordinatorLinks();
+  const { approved } = useLocal();
+  const coordinator = useCoordinator();
 
-  const linked = new Set(prescribers(cases).filter((p) => links.linked(p)));
+  const linked = new Set(prescribers(cases).filter((p) => coordinator.linked(p, cases, approved)));
   const needsYou = cases.filter(
     (c) => inQueue(c, linked) && queueBucket(c) === "needs_you",
   ).length;

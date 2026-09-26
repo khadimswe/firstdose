@@ -1,7 +1,10 @@
 "use client";
 
 import { Phone, PhoneMissed } from "lucide-react";
+import { useState } from "react";
 
+import { PatientMessage } from "@/components/PatientMessage";
+import { MessageDeliveryStatus } from "@/components/MessageDeliveryStatus";
 import { Disclosure } from "@/components/Disclosure";
 import { Price } from "@/components/Price";
 import { ReasonChip } from "@/components/ReasonChip";
@@ -17,7 +20,8 @@ import {
 } from "@/components/ui/sheet";
 import { clock, fill } from "@/components/copy/fill";
 import { templates } from "@/components/copy/templates";
-import { local, type ContactMark } from "@/components/data/local";
+import { local, type ContactMark, type MessageLang } from "@/components/data/local";
+import { usePatientMessage } from "@/components/data/usePatientMessage";
 import type { Catalog, CaseView } from "@/components/data/types";
 import { cn } from "@/lib/utils";
 
@@ -52,6 +56,10 @@ export function CaseSheet({
   const t = templates.coordinator_card;
   const fix = c?.fix ? catalog.fixes[c.fix] : null;
   const sent = c?.events.find((e) => e.type === "fix_sent");
+  const delivery = usePatientMessage(c?.id);
+  const [lang, setLang] = useState<MessageLang>("en");
+  const message = delivery.message;
+  const canMessage = delivery.eligible;
 
   return (
     <Sheet open={c !== undefined} onOpenChange={(open) => !open && onClose()}>
@@ -107,7 +115,36 @@ export function CaseSheet({
                 )}
               </Section>
 
+              {canMessage && c && (
+                <Section title="Message to the patient · ElevenLabs voice">
+                  <MessageDeliveryStatus {...delivery} />
+                  {message ? (
+                    <>
+                      <PatientMessage c={c} lang={message.lang} />
+                      <p className="text-xs text-muted-foreground">
+                        {templates.patient_message.sent} ·{" "}
+                        {new Date(message.approved_at).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
+                      </p>
+                      <p role="status" className="text-xs text-muted-foreground">{message.acknowledged_at ? "Message acknowledged" : "Awaiting message acknowledgment"}</p>
+                    </>
+                  ) : (
+                    <>
+                      <label className="flex items-center gap-3 text-sm">Language
+                        <select className="rounded-md border bg-background p-2" value={lang} disabled={delivery.pending} onChange={e => setLang(e.target.value as MessageLang)}>
+                          {(Object.keys(templates.patient_message.languages) as MessageLang[]).map(l => <option key={l} value={l}>{templates.patient_message.languages[l]}</option>)}
+                        </select>
+                      </label>
+                      <PatientMessage c={c} lang={lang} />
+                      <Button className="w-full" disabled={!delivery.ready || delivery.pending} onClick={() => { void delivery.approve(lang); }}>
+                        {templates.patient_message.approve}
+                      </Button>
+                    </>
+                  )}
+                </Section>
+              )}
+
               <Section title="Contact">
+                <p className="text-xs text-muted-foreground">Only visible on this device</p>
                 <div className="grid grid-cols-2 gap-2">
                   <Button
                     variant="outline"
