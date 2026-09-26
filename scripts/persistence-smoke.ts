@@ -45,7 +45,7 @@ async function main() {
   const appAlerts = alertState.events.filter(event => event.type === "alert_sent");
   assert.equal(appAlerts.length, 1);
   assert.equal(appAlerts[0].id, "ev_06");
-  assert.equal(appAlerts[0].wrist, "Maria: Otezla not started. Declined at price ($410 demo).");
+  assert.equal(appAlerts[0].wrist, "Maria: Otezla first fill pending. Declined at price ($410 demo).");
   const queued = await query<{ script_id: string; wrist: string; status: string; attempts: number }[]>(
     `SELECT jsonb_agg(jsonb_build_object('script_id', script_id, 'wrist', wrist, 'status', status, 'attempts', attempts)) FROM notification_outbox WHERE run_id='${state.run_id}';`,
   );

@@ -1,5 +1,7 @@
 // Fills {variables} in a templates.json string. A missing variable stays visible
 // as {name} so it gets noticed on screen instead of silently disappearing.
+import { atSeconds } from "@/components/data/derive";
+
 export function fill(template: string, vars: Record<string, string | number>): string {
   return template.replace(/\{(\w+)\}/g, (match, key: string) => {
     if (key in vars) return String(vars[key]);
@@ -16,7 +18,10 @@ export function clock(at: number | string): string {
     const s = Math.max(0, Math.round(at));
     return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
   }
-  return new Date(at).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+  const seconds = atSeconds(at);
+  return Number.isFinite(seconds)
+    ? new Date(seconds * 1000).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
+    : "—";
 }
 
 /** $410, $0, $5,589.89. Shown next to a `demo` StandIn wherever it's a simulated price. */

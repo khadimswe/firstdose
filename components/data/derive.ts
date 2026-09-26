@@ -11,8 +11,15 @@ import type {
 
 const BEAT_GAP_SECONDS = 2;
 
+/**
+ * Seconds for an event's `at`: mock seconds as-is, or a timestamp string.
+ * Postgres-style strings ("2026-09-26 05:00:00+00") are normalized to ISO first,
+ * because Safari won't parse the space or the short offset. NaN if unparseable.
+ */
 export function atSeconds(at: number | string): number {
-  return typeof at === "number" ? at : Date.parse(at) / 1000;
+  if (typeof at === "number") return at;
+  const iso = at.trim().replace(" ", "T").replace(/([+-]\d{2})$/, "$1:00");
+  return Date.parse(iso) / 1000;
 }
 
 /** Whole calendar days between two ISO timestamps, by their own local dates. */
@@ -21,8 +28,13 @@ export function calendarDaysBetween(fromIso: string, toIso: string): number {
   return Math.round((day(toIso) - day(fromIso)) / 86_400_000);
 }
 
-function isDispensedClaim(e: FillEvent) {
-  return e.type === "claim_run" && e.status_text === "Dispensed";
+export function isConfirmedFill(e: FillEvent) {
+  return e.actor === "pharmacy" && e.type === "claim_run" && e.status_text === "Dispensed";
+}
+
+export function hasConfirmedFill(c: CaseView) {
+  const prescribedIndex = c.events.findIndex((event) => event.type === "prescribed");
+  return c.ordered && prescribedIndex >= 0 && c.events.slice(prescribedIndex + 1).some(isConfirmedFill);
 }
 
 /** Groups the script into bursts: same case, `at` values <= 2 s apart. */
@@ -103,21 +115,14 @@ export function deriveCases(catalog: Catalog, fired: FillEvent[]): CaseView[] {
         case "copay_card_used":
           view.cardUsed = true;
           break;
-        case "dispensed":
-          view.status = "dispensed";
-          break;
-        case "started":
-          view.status = "started";
-          break;
         case "before_visit_card":
           view.beforeVisit = true;
           break;
-        case "recovered":
-          view.recovered = true;
-          break;
       }
-      if (isDispensedClaim(e)) view.status = "dispensed";
     }
+    // Legacy scripted milestones are not evidence of filling or taking a dose.
+    view.recovered = hasConfirmedFill(view);
+    if (view.recovered) view.status = "dispensed";
     return view;
   });
 }
@@ -140,10 +145,10 @@ export function canActOn(action: ScreenAction, c: CaseView): boolean {
   }
 }
 
-/** Board stops: 0 Doctor · 1 Pharmacy · 2 Patient · 3 Started. */
+/** Board stops: 0 Doctor · 1 Pharmacy · 2 Patient resource · 3 Fill confirmed. */
 export function boardStop(c: CaseView): 0 | 1 | 2 | 3 {
-  if (c.status === "started") return 3;
-  if (c.status === "dispensed") return 2;
+  if (hasConfirmedFill(c)) return 3;
+  if (c.events.some((e) => e.type === "fix_sent" || e.type === "copay_card_used")) return 2;
   if (c.atPharmacy) return 1;
   return 0;
 }
@@ -157,28 +162,28 @@ function median(xs: number[]): number | null {
 
 /** Same shape as Vihn's /api/access/summary. Counts only. */
 export function accessSummary(fired: FillEvent[]): AccessSummary {
-  const recoveredCases = fired
-    .filter((e) => e.type === "recovered")
-    .map((e) => e.case_id);
-
+  const prescribed = new Map<string, FillEvent>();
+  const confirmed = new Map<string, FillEvent>();
+  const reasons = new Map<string, ReasonKey | null>();
+  for (const event of fired) {
+    if (event.type === "prescribed" && !prescribed.has(event.case_id)) prescribed.set(event.case_id, event);
+    if (prescribed.has(event.case_id) && isConfirmedFill(event) && !confirmed.has(event.case_id)) confirmed.set(event.case_id, event);
+    if (event.type === "reason_classified") reasons.set(event.case_id, event.reason);
+  }
+  const confirmedCases = [...confirmed.keys()];
   const ttffs: number[] = [];
-  for (const caseId of recoveredCases) {
-    const prescribed = fired.find((e) => e.case_id === caseId && e.type === "prescribed");
-    const dispensed = fired.find((e) => e.case_id === caseId && isDispensedClaim(e));
-    if (prescribed && dispensed) {
-      ttffs.push(atSeconds(dispensed.at) - atSeconds(prescribed.at));
-    }
+  for (const caseId of confirmedCases) {
+    const seconds = atSeconds(confirmed.get(caseId)!.at) - atSeconds(prescribed.get(caseId)!.at);
+    if (Number.isFinite(seconds) && seconds >= 0) ttffs.push(seconds);
   }
 
   const reason_tally: Partial<Record<ReasonKey, number>> = {};
-  for (const e of fired) {
-    if (e.type === "reason_classified" && e.reason) {
-      reason_tally[e.reason] = (reason_tally[e.reason] ?? 0) + 1;
-    }
+  for (const [caseId, reason] of reasons) {
+    if (prescribed.has(caseId) && reason) reason_tally[reason] = (reason_tally[reason] ?? 0) + 1;
   }
 
   return {
-    recovered: recoveredCases.length,
+    recovered: confirmedCases.length,
     median_ttff_seconds: median(ttffs),
     reason_tally,
   };

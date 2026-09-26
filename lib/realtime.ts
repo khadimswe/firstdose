@@ -15,6 +15,7 @@ export interface PollingEventSource extends EventSource {
     onInsert: (event: FillEvent) => void,
     onRunChange?: (runId: string, previousRunId: string | null) => void,
     onError?: (error: Error) => void,
+    onSync?: () => void,
   ): () => void;
 }
 
@@ -25,6 +26,7 @@ type Subscriber = {
   onInsert: (event: FillEvent) => void;
   onRunChange?: (runId: string, previousRunId: string | null) => void;
   onError?: (error: Error) => void;
+  onSync?: () => void;
   runId: string | null;
   seen: Set<string>;
   suspended: boolean;
@@ -62,6 +64,11 @@ export function createPollingEventSource(options: Options = {}): PollingEventSou
     try { subscriber.onError?.(error instanceof Error ? error : new RealtimeError("unavailable")); } catch { /* Consumer owns its error presentation. */ }
   }
   function reportAll(error: unknown) { for (const subscriber of subscribers) report(subscriber, error); }
+  function synced() {
+    for (const subscriber of subscribers) {
+      try { subscriber.onSync?.(); } catch (error) { report(subscriber, error); }
+    }
+  }
 
   function deliver(subscriber: Subscriber) {
     if (!current || !subscribers.has(subscriber)) return;
@@ -139,10 +146,11 @@ export function createPollingEventSource(options: Options = {}): PollingEventSou
         if (epoch !== generation) return;
         if (response.status === 304) {
           if (!current) throw new RealtimeError("invalid_response", 304);
+          synced();
           return;
         }
         const next = parseSnapshot(await readJson(response));
-        if (epoch === generation) accept(next);
+        if (epoch === generation) { accept(next); synced(); }
       } catch (error) {
         if (epoch === generation) throw error;
       }
@@ -204,8 +212,8 @@ export function createPollingEventSource(options: Options = {}): PollingEventSou
 
   return {
     load: () => refresh(),
-    subscribe(onInsert, onRunChange, onError) {
-      const subscriber: Subscriber = { onInsert, onRunChange, onError, runId: null, seen: new Set(), suspended: false };
+    subscribe(onInsert, onRunChange, onError, onSync) {
+      const subscriber: Subscriber = { onInsert, onRunChange, onError, onSync, runId: null, seen: new Set(), suspended: false };
       subscribers.add(subscriber);
       deliver(subscriber);
       if (subscribers.size === 1) { visibility?.addEventListener("visibilitychange", onVisibility); void poll(); }

@@ -44,6 +44,19 @@ describe("protected polling event source", () => {
     stop();
   });
 
+  it("reports recovery from a polling failure even when the run is unchanged", async () => {
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValueOnce(snapshot())
+      .mockRejectedValueOnce(new Error("offline"))
+      .mockResolvedValue(new Response(null, { status: 304 }));
+    const source = createPollingEventSource({ fetch: fetcher });
+    const synced = vi.fn(); const error = vi.fn();
+    const stop = source.subscribe(vi.fn(), vi.fn(), error, synced);
+    await flush(); expect(synced).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(1_500); expect(error).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(1_500); expect(synced).toHaveBeenCalledTimes(2);
+    stop();
+  });
+
   it("deduplicates polling callbacks in server order and stops on unsubscribe", async () => {
     const fetcher = vi.fn<typeof fetch>()
       .mockResolvedValueOnce(snapshot(RUN_A, 1, [row("ev_01")]))

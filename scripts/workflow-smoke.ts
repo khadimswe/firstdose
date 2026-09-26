@@ -22,7 +22,7 @@ const rows = steps.map(([step, command]) => {
   }
   if (command.kind === "fire" && command.ids.includes("ev_05")) {
     assert.deepEqual(events.map((event) => event.id), ["ev_04", "ev_05", "ev_06"]);
-    assert.equal(events.at(-1)?.wrist, "Maria: Otezla not started. Declined at price ($410 demo).");
+    assert.equal(events.at(-1)?.wrist, "Maria: Otezla first fill pending. Declined at price ($410 demo).");
   }
   return { step, new_events: events.map((event) => event.id).join(", ") };
 });

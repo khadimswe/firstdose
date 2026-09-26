@@ -24,7 +24,7 @@ describe("workflow command planning", () => {
     expect(pending.map((event) => event.id)).toEqual(["ev_05", "ev_06"]);
     expect(pending[1]).toMatchObject({
       type: "alert_sent", actor: "system", side: "practice", reason: "DECLINED_AT_PRICE",
-      wrist: "Maria: Otezla not started. Declined at price ($125.50 demo).", note: "", fix: null,
+      wrist: "Maria: Otezla first fill pending. Declined at price ($125.50 demo).", note: "", fix: null,
     });
     expect(planCommand([...ordered, ...pending], fire("ev_05"), NOW)).toEqual([]);
     expect(pending.every((event) => !["label_shown", "started", "recovered"].includes(event.type))).toBe(true);
@@ -36,7 +36,7 @@ describe("workflow command planning", () => {
     expect(pending.map((event) => event.id)).toEqual(["ev_16", "ev_17", "ev_18", "ev_19"]);
     expect(pending[3]).toMatchObject({
       type: "alert_sent", reason: "UNABLE_TO_REACH", side: "practice",
-      wrist: "James: Humira not started. Hub can't reach patient (3 calls).", note: "", fix: null,
+      wrist: "James: Humira first fill pending. Hub can't reach patient (3 calls).", note: "", fix: null,
     });
     expect(planCommand([...ordered, ...pending], fire("ev_18"), NOW)).toEqual([]);
   });
