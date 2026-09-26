@@ -2,13 +2,17 @@
 
 ## Active execution brief
 
+**Current phase: Phase 0 — setup.** User confirmed sequential execution on September 26: complete and verify the current phase's gate before starting the next phase. Pause further Phase 1 implementation. Previously prepared backend modules are retained as local groundwork; they do not satisfy Phase 0 or authorize skipping its checks.
+
+**Phase 0 remaining:** agree the open shared contracts (0.4–0.5); configure and verify the selected service accounts/credentials with each owner (0.6); demonstrate ntfy receipt on the iPhone and physical Garmin (0.8); confirm Deem's team registration and selected-track setup, including domain/category status (0.9). Local `.env` preparation and a successful dry run do not pass a live-service or hardware gate. Resume Phase 1 only after these setup results are recorded.
+
 This dashboard is the execution source of truth. Keep presentation work in `docs/presentation/`; freeze the other planning/audit documents as reference snapshots. Do not maintain parallel schedules. This local revision responds to review and awaits team feedback; it does not change the shared mock contract or merge itself into main.
 
 **Synced source:** this worktree starts from main `8687bb9`, including Minh's merged implementation guide. Vinh's `backend/workflow-foundation` now has a locally tested router, pure command planner and offline-ready ntfy transport/CLI. Supabase, HTTP routes and Realtime remain pending. `/api/sim/fire` is standardized as `{ ids: string[] }` in `docs/architecture.md`.
 
 **Local check (Sat Sep 26, 1:47 AM ET):** 131 tests, lint and production build pass. No credentials configured, external notification sent, or physical watch receipt verified. Code remains on the isolated local branch for review; shared package additions are Vitest/tsx and Node 22 types, preserving the existing frontend dependencies. See [Vinh's current handoff](docs/tasks/VIHN-TASKS.md#current-local-foundation).
 
-**Immediate work:** Vinh tests the physical ntfy -> iPhone -> Garmin path and leads the minimal contract/backend; Minh verifies and caches Otezla label content; Deem deploys the current mock build and wires the existing hook when the adapter is ready. No new screens are required for the first gate.
+**Immediate work:** finish Phase 0 configuration, shared-contract agreement and the physical watch test. Vinh coordinates setup evidence from Minh and Deem; do not start more implementation from subsequent phases while this gate remains open.
 
 **Rebaseline:** retire the 4 AM promise. Target a Saturday morning core check around 7 AM, conditional on the initial watch/deployment/contract results; record actual progress rather than another guaranteed estimate. Maria alone is the first gate. Keep 2 PM scope review, 6 PM footage and 9 PM claim freeze as internal targets; confirm the official submission cutoff.
 
