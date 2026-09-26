@@ -1,85 +1,84 @@
-# Architecture
+# Architecture and frontend contract
 
-How the pieces connect. Owner: Vihn (backend). Deem's screens only talk to `useEvents()` and the `/api/*` routes below. Shapes are defined in `mock/`; this file says how data moves.
+Owners: Vinh (workflow/integration), Minh (labels/classifier/analytics), Deem (screens/hook wiring). Use PLAN.md for current work and priorities. This document records the frontend seam and the intended API; no backend routes are implemented yet at main `b11a01e`.
 
-## Flow
+## Source of truth
 
-```
-/doctor ──prescribe──▶ POST /api/rx ──▶ Supabase rx_cases + fill_events
-   │                        │
-   │                        ├─▶ RxNorm lookup ─▶ DailyMed SPL ─▶ label card (byte-exact check)
-   │                        └─▶ copay_card_sent event (Wallet stand-in)
-   │
-/sim (operator) ──▶ POST /api/sim/fire { event_id }
-                        │
-                        ▼
-              fill_events insert ──dual-write──▶ Tiger Data fill_events (hypertable)
-                        │                              └─▶ daily_ttff (continuous aggregate)
-                        ▼
-              Gemini: note text ─▶ reason enum     (only if event has free text, no reason)
-                        ▼
-              router(reason, insurance) ─▶ fix     (deterministic, mock/reasons.json)
-                        ▼
-              ntfy POST ─▶ iPhone ntfy app ─▶ Garmin FR55 buzz
+- `components/data/types.ts`: `EventSource`, `ScreenAction`, `FillEvent`, `RxCase`, `FixKey`, `AccessSummary`.
+- `components/data/useEvents.ts`: actual screen-facing `EventsApi`.
+- `mock/*.json`: existing shared fixtures. Behavioral corrections require coordinated review; prose does not change them.
+- Deem reports `feat/live-source` ready locally against a stand-in source. It has not been fetched or independently verified here. Main remains mock-only until that wiring and Vinh's adapter land.
 
-iPhone mic ─▶ POST /api/voice ─▶ Grok STT (keyterms) ─▶ intent SEND_TO_COORDINATOR ─▶ handoff event
+## Frontend seam
 
-/coordinator ─tap fix─▶ POST /api/fix ─▶ fix_sent event ─▶ /patient/[id] shows Wallet card
-/patient/[id] ─"Use at pharmacy"─▶ POST /api/patient/use ─▶ claim re-run ─▶ dispensed ─▶ started ─▶ ntfy "started"
+Vinh builds `lib/realtime.ts` against this existing interface, imported from `components/data/types.ts`:
 
-Every insert into fill_events ──Supabase Realtime──▶ /board, /doctor, /coordinator, /patient, /access
-/access ◀── GET /api/access/summary ◀── Tiger daily_ttff
+```ts
+interface EventSource {
+  load(): Promise<FillEvent[]>;
+  subscribe(onInsert: (event: FillEvent) => void): () => void;
+  act(action: ScreenAction, rx: RxCase, fix: FixKey | null): Promise<void>;
+  fire(ids: string[]): Promise<void>;
+  reset(): Promise<void>;
+  accessSummary(): Promise<AccessSummary>;
+}
 ```
 
-## Tables (Supabase Postgres)
+Agree the module export with Deem's prepared importer before landing it; the implementation reference currently specifies a default export. Do not duplicate types or build another screen store. `subscribe` returns cleanup. `load` plus subscription must handle reconnect and duplicate delivery without losing events.
 
-Field names match `mock/` exactly, so `useEvents()` switches source with one env var.
+The current hook returns:
 
-| Table | Source shape | Notes |
+```text
+{ mode, override, script, beats, fired, firedIds, cases, catalog, access,
+  fire(ids), act(action, caseId), canAct(action, caseId), reset() }
+```
+
+The hook resolves a screen's case ID into the `RxCase` passed to the source. Buttons are now enabled by derived case state, not just by whether a script ID fired. These frontend checks do not replace server transition validation.
+
+`override` represents a frozen/replay tab. Main implements `?upto=`, `?replay=1` and `/sim` Autoplay. Replays are mock behavior, not evidence of live backend synchronization. `NEXT_PUBLIC_DATA_SOURCE=supabase` alone is insufficient before adapter/hook integration.
+
+## HTTP mapping
+
+Keep the four existing command routes; they can share one server command implementation. A new public `/api/act` route is not needed to satisfy the existing frontend contract.
+
+| Source method / action | HTTP request | Intended response / effect |
 |---|---|---|
-| `patients` | `mock/patients.json → patients[]` | Practice side only. Fictional. |
-| `drugs` | `mock/patients.json → drugs[]` | Real RxCUI, setid, WAC, copay program |
-| `rx_cases` | `mock/patients.json → cases[]` | `status` from `case_status_enum` |
-| `fill_events` | `mock/events.json → event_shape` | Insert-only. Realtime channel `fill_events`. `at` is `timestamptz` here |
-| `labels` | `mock/labels.json → label_shape` | Cached SPL sections, `byte_exact` flag |
+| `act("prescribe", rx, fix)` | POST `/api/rx` with `{ patient_id, drug_id }` | Create/find fictional case and append agreed prescription beats |
+| `act("handoff", rx, fix)` | POST `/api/handoff` with `{ case_id }` | Validate case state; determine allowed fix server-side; append handoff |
+| `act("fix", rx, fix)` | POST `/api/fix` with `{ case_id, fix }` | Validate requested fix against authoritative case/rules; append resource-sent beat |
+| `act("use_card", rx, fix)` | POST `/api/patient/use` with `{ case_id }` | Target: acknowledgment only; current mock auto-advances the outcome and needs correction |
+| `fire(ids)` | POST `/api/sim/fire` with `{ ids: string[] }` | Validate the complete list, preserve order, append the selected scripted events and return `FillEvent[]` |
+| `reset()` | POST `/api/sim/reset` | Target: new run, with all participating clients moved to it; protocol still needs joint agreement |
+| `accessSummary()` | GET `/api/access/summary` | Existing `AccessSummary` shape; actual Tiger result only after verified integration |
+| Label retrieval | GET `/api/label/[drug_id]` | Verified cached label payload from Minh |
+| Optional voice | POST `/api/voice` with audio | Transcript and proposed case/intent; explicit confirmation invokes the same handoff command |
 
-Tiger Data mirrors `fill_events` (without patient names) as a hypertable on `at`. `daily_ttff` = continuous aggregate of `started.at - prescribed.at` per day, plus reason counts.
+**Simulator body decision:** use `{ ids: string[] }`, not `{ event_id }`. A single event uses `{ "ids": ["ev_01"] }`. The adapter sends one ordered batch; screens already call `fire(ids)`. The old type comment mentioning one HTTP request per ID is descriptive text, not a different TypeScript signature. Deem should align that comment in his next data-layer change. The adapter should throw/report failed requests so wiring can display errors; it must not silently pretend a command succeeded.
 
-## API routes (Next.js, `app/api/**`)
+Server commands validate state and append events atomically. Unique event keys prevent duplicate rows; notification delivery must also avoid running twice for the same committed event. Keep provider credentials server-side and restrict client database writes. Full production identity/eligibility systems are out of scope for this fictional demo.
 
-| Route | Method | Body / returns | Writes |
-|---|---|---|---|
-| `/api/rx` | POST | `{ patient_id, drug_id }` → `{ case_id, label }` | `rx_cases`, `prescribed`, `label_shown`, `copay_card_sent` |
-| `/api/sim/fire` | POST | `{ event_id }` → event | replays one event from `mock/events.json` |
-| `/api/sim/reset` | POST | — | clears events, resets cases (for rehearsal) |
-| `/api/voice` | POST | audio blob → `{ intent, case_id, transcript }` | `handoff` |
-| `/api/handoff` | POST | `{ case_id }` (tap fallback, ntfy action) | `handoff`, `fix_chosen` |
-| `/api/fix` | POST | `{ case_id, fix }` | `fix_sent` |
-| `/api/patient/use` | POST | `{ case_id }` | `copay_card_used`, `claim_run`, `dispensed`, `started`, `recovered` |
-| `/api/access/summary` | GET | `{ recovered, median_ttff_seconds, reason_tally }` | reads Tiger `daily_ttff` |
-| `/api/label/[drug_id]` | GET | label sections | reads/fills `labels` |
+## Event identity and reset
 
-## External services
+Preserve each fixture ID (`ev_01`, etc.) as the `FillEvent.id` returned to the frontend so `/sim` recognizes fired beats. Buttons no longer require those exact IDs, but the simulator still benefits from them.
 
-| Service | Call | Rule |
-|---|---|---|
-| RxNorm | `rxnav.nlm.nih.gov/REST/drugs.json?name=` and `rxcui/{id}/related.json?tty=IN+BN+SCD+DF` | real lookup |
-| DailyMed | `spls.json?rxcui=`, `spls/{setid}.xml` | hardcode manufacturer setids: Otezla `f6b1f516-4972-4d82-bced-113e47b41cc5`, Humira `608d4f0d-b19f-46d3-749a-7159aa5f933d`. LOINC 34066-1, 34067-9, 43685-7, 34068-7 |
-| Byte-exact check | every sentence shown ⊂ fetched SPL XML text | fail = red badge, never show edited text |
-| Gemini API | `responseSchema` enum = keys of `reasons.json → reasons` | note ≤ 140 chars, no free text out. List models at startup; don't hardcode the name |
-| Router | pure function over `reasons.json → router.rows` | no AI. Unit-tested every reason × insurance |
-| Grok STT | `POST api.x.ai/v1/stt`, `grok-voice-transcribe-2.0`, keyterms `[Maria, James, Otezla, Humira, coordinator]` | only intent: SEND_TO_COORDINATOR |
-| ntfy | `POST {NTFY_SERVER}/{NTFY_TOPIC}` with headers `Title`, `Priority`, `Tags`, `Click`, `Actions` (action → `/api/handoff`) | body ≤ 200 chars from `templates.json → wrist` |
-| Garmin FR55 | mirrors iPhone notifications via Garmin Connect | iOS: view/dismiss only. Connect IQ widget polling `/pending` is the stretch |
-| ElevenLabs | TTS for "Maria started Otezla" on the `started` event | table speaker |
+Storage must distinguish runs: use run identity plus script identity for uniqueness, then map the script ID to `FillEvent.id` at the adapter boundary. Never use a globally unique `ev_01` key that prevents a second run. A run filter isolates the replay being displayed; it is not an authorization policy.
 
-## Frontend contract
+The existing `subscribe(onInsert)` interface cannot tell a hook to clear an old run just by inserting no events. Before implementing reset, Vinh and Deem must agree a run-change signal and hook reload/reset behavior, including reconnect. Do not assume that adding a `run_id` column alone broadcasts the new active run.
 
-- `useEvents()` returns `{ cases, events, fire(event_id), reset() }`.
-- `NEXT_PUBLIC_DATA_SOURCE=mock` → reads `mock/*.json`, `fire` advances locally, zero network.
-- `NEXT_PUBLIC_DATA_SOURCE=supabase` → subscribes to Realtime `fill_events`, `fire` calls `/api/sim/fire`.
-- Screens never call Supabase, Gemini, Grok or ntfy directly.
+## Data and providers
 
-## Offline fallback
+Supabase is authoritative for case/event state. Align frontend fields with the existing fixtures; map database timestamps and storage-only fields explicitly rather than claiming identical wire/storage types. Minimal tables and migrations are implementation work, not a completed schema.
 
-If WiFi dies: switch to `mock`, `/sim` still drives every screen from `mock/events.json`. Watch buzz won't fire; show the ntfy screenshot.
+Minh owns cached RxNorm/DailyMed identity/source verification, then Gemini classification and Tiger analytics. A supplied reason keeps the core independent of Gemini availability. The deterministic router selects administrative actions, with UNKNOWN/review handling and a government-coverage card block. Prepared eligibility evidence is still required; commercial coverage alone does not establish program eligibility.
+
+The reviewed target separates patient acknowledgment from a later simulated pharmacy confirmation. Existing `started`/`recovered` field names do not establish ingestion, clinical recovery or causal effectiveness. Correct behavior/copy and metrics together through the contract review.
+
+The physical watch path is ntfy -> iPhone -> Garmin, owned by Vinh. Record real receipt; a wrist-mirror component is not proof. Deem owns optional microphone capture/confirmation and ElevenLabs playback. Provider IDs, API options and source identities must be verified during implementation, not copied from untested historical examples.
+
+## Contract items still requiring agreement
+
+1. Acknowledgment versus dispensing beats; unknown/eligibility routing; the universal-$0 template and James sample inference.
+2. Run-change signaling, storage uniqueness and timestamp mapping, compatible with Deem's prepared live hook.
+3. Label fidelity definition: exact extracted section text versus raw XML substring, with source/version/hash evidence. Do not silently change the meaning of `byte_exact`.
+
+The already merged `ev_21b` supplies a James action; it does not prove that action is appropriate. No mock edits are made by this documentation update.

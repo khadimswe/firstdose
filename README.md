@@ -1,77 +1,61 @@
 # FirstDose
 
-**Point-of-prescribing tools help most patients start their medicine. FirstDose catches the ones who still walk away: it tells the doctor why, on their wrist, fixes it in one tap, and proves it worked.**
+**One missed fill. One accountable next step.**
 
-> "A patient who never started looks exactly like a drug that doesn't work."
+FirstDose turns a stuck first fill into a reviewed access task, then checks for a later pharmacy fill signal. Built for HackGT 13 by **Vinh, Minh and Deem**, as a proposed Impiricus HCP workflow.
 
-A new skill for **Impiricus Ascend**, built at HackGT 13 (September 25–27, 2026) for the Impiricus challenge *"Invent the Next Way We Engage HCPs."*
+## Current state
 
-## The problem
+This planning branch includes main `b11a01e`: six frontend views, scripted cases, state-based button guards, replay/autoplay and Deem's coordination documents. Backend APIs, cross-device Realtime, real provider clients and verified label data are still pending. See [current status](docs/STATUS.md) for evidence and limits.
 
-29% of new-to-brand prescriptions are never filled (IQVIA, *U.S. Medicine Use Trends 2026*). Abandonment is under 5% when the patient pays $0 and 60% when they pay over $500 (IQVIA, 2020). Today the practice finds out weeks later, when the patient comes back no better and the doctor thinks the drug failed.
+Fictional patients, pharmacy events, prices and partner services are explicitly simulated. A fill signal does not prove ingestion, clinical recovery or that our intervention caused the fill. Ascend/Wallet connections are stand-ins, not approved live integrations.
 
-Your Amazon package is tracked by the minute. Your prescription goes dark the moment it leaves the doctor.
+## The target demo
 
-## What FirstDose does
+1. A fictional prescription encounters a documented barrier.
+2. The doctor receives the reason on screen and through the **ntfy -> iPhone -> Garmin** notification path. Physical delivery is still a required test.
+3. The doctor hands off; the coordinator reviews evidence and eligibility before sending a resource.
+4. The patient acknowledges the resource; that alone must not mark a fill.
+5. A separate simulated pharmacy confirmation records a subsequent fill signal on the board.
 
-1. **Prescribe.** The doctor picks the drug. FirstDose shows the real DailyMed label, word for word, and sends the copay card through the Impiricus Wallet.
-2. **Stuck.** The pharmacy or hub posts a status: *Not dispensed*, *reject 75 Prior Authorization Required*, *Unable to reach patient*.
-3. **Wrist.** The doctor's watch buzzes with the patient and the reason.
-4. **Hand off.** "Send Maria to my coordinator." One tap or one sentence.
-5. **Fix.** A deterministic rule picks **one** fix: re-send the Wallet copay card, request a bridge sample (QPharma / Medvantx), or connect to access support. Medicare and Medicaid patients never get a manufacturer copay card.
-6. **Re-run.** The claim runs again, the price drops, the patient is *Started*, the watch buzzes once more. Silence means it worked.
-7. **Proof.** Market Access sees patients recovered and time to first fill. No names, no prescription counts.
+The current mock patient action advances the whole scripted outcome. Separating those events is a planned contract correction, not completed behavior. Source-backed DailyMed label content and practice/patient/partner data boundaries are also core gates. The custom watch widget and voice shortcut are optional.
 
-Surescripts and hubs can tell you a script didn't happen. FirstDose tells you **why**, fixes it in one tap inside Impiricus Ascend, and proves it worked.
+## Team and branches
 
-## Built on real data, designed to plug into Impiricus Ascend
-
-**Live in this build:** RxNorm drug lookup · verbatim DailyMed labels with a byte-exact check · Garmin wrist alerts via ntfy · Grok voice handoff · Tiger Data time-to-first-fill · Gemini reason classification · Supabase realtime across every screen.
-
-**Integration points** (stand-ins with the production interface, labelled on screen):
-
-| Stand-in | Production source |
-|---|---|
-| Pharmacy / hub status feed | NCPDP RxFill, hub status data (we use their real status vocabulary and reject codes) |
-| Impiricus Ascend, Wallet | Impiricus skill interface |
-| QPharma / Medvantx | Impiricus sample-partner integrations |
-| Claim pricing | Pharmacy claim response |
-
-Demo patients are fictional; no PHI. The router never changes a prescription. It only removes access barriers.
-
-## Screens
-
-| Route | Who looks at it | What it shows |
+| Owner | Responsibility | Module branches |
 |---|---|---|
-| `/doctor` | Doctor (judge 1) | Prescribe, real label card, alert, **Send to my coordinator** |
-| `/coordinator` | Access coordinator | Queue, reason, the one suggested fix |
-| `/patient/[id]` | Patient (judge 2, via QR) | Wallet copay card stand-in, **Use at pharmacy** |
-| `/board` | Big screen | Relay Board: package tracking for a prescription, price counter |
-| `/access` | Pharma Market Access | Patients recovered, time to first fill, reason tally, who-sees-what |
-| `/sim` | Operator | Fire pharmacy/hub events by hand |
+| Vinh | Authoritative workflow, schema, router, Realtime, simulator, watch; optional voice backend | `backend/maria-core`, `backend/realtime-watch`, `backend/voice-handoff` |
+| Minh | Verified labels, then Gemini classifier, then Tiger analytics | `data/verified-labels`, `backend/reason-classifier`, `data/access-metrics` |
+| Deem | Screens, hook integration, optional microphone UI, demo and presentation | Existing `screen/*`, `design/*`; follow-up screen/presentation branches |
 
-## Stack
+These backend/data names are planned branches. Current documentation work lives on `plan/vinh-minh-phases`. Work separately and merge small reviewed PRs into `main`; see the [branch workflow](docs/branch-workflow.md), including shared-contract ownership and stacked-branch integration. No direct development on main.
 
-Next.js on Vercel · Supabase (Postgres + Realtime) · Tiger Data (hypertable + continuous aggregate) · Gemini API (free-text note → reason enum, nothing else) · Grok STT (`grok-voice-transcribe-2.0` with keyterms) · ntfy → Garmin Forerunner 55 · ElevenLabs (status voice line)
+## Start here
 
-## Run it
+Use [PLAN.md](PLAN.md) for current execution and the presentation pack for demo work. Other planning/audit documents are frozen reference snapshots; do not maintain competing schedules.
 
-```bash
-cp .env.example .env        # fill in keys
-npm install
-npm run dev                 # http://localhost:3000
+- [Objective and product proposal](docs/product-proposal.md)
+- [Winning conditions and scope priorities](docs/winning-conditions.md)
+- [Current execution, owners and gates](PLAN.md)
+- [Tracks, sponsors and unconfirmed requirements](docs/research/tracks-and-requirements.md)
+- [Technology owners, implementation gaps and prize evidence](PLAN.md#selected-technology-coverage)
+- [Past-winner evidence and lessons](docs/research/winner-lessons.md)
+- [Timed demo, slides, poster, Q&A and submission draft](docs/presentation/README.md)
+- [Audit](docs/audit/2026-09-25-repository-audit.md) and [claims register](docs/presentation/claims-and-evidence.md)
+
+Primary fit: **Impiricus** and **A Marina's Mission**. Other entries depend on functioning integrations and the current rules. No award outcome is guaranteed.
+
+## Run the checked-out code
+
+```text
+npm ci
+npm run dev
 ```
 
-Every screen runs on `mock/` data with no backend. Set `NEXT_PUBLIC_DATA_SOURCE=mock` (the default) and open `/sim` to drive the loop.
+Main and this planning branch now include the screens at `http://localhost:3000`. Routes are `/doctor`, `/coordinator`, `/patient/[id]`, `/board`, `/access` and `/sim`.
 
-## Team
+The screen stack currently uses mock data and local browser storage. Changing `NEXT_PUBLIC_DATA_SOURCE` alone does not connect Supabase; the adapter and hook wiring are pending. Consult `.env.example` for planned configuration, keep actual credentials untracked, and never put server credentials in public client variables.
 
-Built by **Vihn** (AI / data, owns the watch) and **Deem** (product, screens, demo) at HackGT 13.
+## Verification
 
-## Sources
-
-- IQVIA, *U.S. Medicine Use Trends 2026*: 29% unfilled rate across all brands
-- IQVIA 2020 abandonment-by-cost ladder
-- Impiricus: [Solutions](https://impiricus.com/our-solutions/), [Products](https://impiricus.com/our-products/), QPharma (Aug 25 2026) and Medvantx (Sep 8 2026) announcements
-- NCPDP reject codes; RxFill (NCPDP) status vocabulary
-- DailyMed SPL: Otezla `f6b1f516-4972-4d82-bced-113e47b41cc5`, Humira `608d4f0d-b19f-46d3-749a-7159aa5f933d`
+Configured branch CI passes; mock action logic was exercised separately. Browser rendering, physical watch delivery, source fidelity and two-phone synchronization need their own recorded checks. The six phase playbooks define those gates. Presentation assets are draft copy/scripts; a video and visual deck have not been rendered by this planning pass.

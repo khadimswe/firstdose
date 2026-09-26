@@ -1,3 +1,7 @@
+> Integration review, September 26: preserve the task IDs below, but apply the user-approved three-person [ownership](phases/team-build-plan.md) and [branch workflow](branch-workflow.md). Minh owns tasks 1.10, 2.3 and 2.5; Vinh owns workflow/watch/voice; Deem owns screens and capture UI.
+>
+> This is an implementation draft, not a completed backend. Before executing the affected steps, resolve [Phase 0](phases/phase-0-contract-and-readiness.md): patient acknowledgment versus pharmacy confirmation; eligibility/unknown routing; run-scoped IDs/reset propagation; scoped reads/commands; source fidelity; retryable analytics; confirmed voice action. In particular, do not silently implement global reset, unconditional public reads, automatic sample eligibility, normalized-text-as-byte-exact, or transcription-triggered handoff as if these had passed review. `components/data/types.ts` is the existing interface; changes require coordination. Exact organizer timing still needs source confirmation.
+
 # FirstDose: task-level implementation detail (TDD steps)
 
 > Companion to `../PLAN.md`. Task numbers match the PLAN.md status dashboard. Wiring overview: `architecture.md`.
@@ -16,7 +20,7 @@
 
 **Tech stack:** Next.js 16 (App Router, TypeScript, Tailwind v4, shadcn/ui), `@supabase/supabase-js`, `pg` (Tiger Data), `@google/genai`, `zod`, `fast-xml-parser`, vitest.
 
-**Owners:** **V** = Vihn (backend, AI/data, watch). **D** = Deem (frontend, product). Every task has exactly one owner.
+**Owners:** **V** = Vinh (workflow, integration, watch). **M** = Minh (labels, classifier, analytics). **D** = Deem (frontend, product). Every task has exactly one owner.
 
 ## Global Constraints
 
@@ -178,7 +182,7 @@ describe("router", () => {
 - [ ] **Step 2: Implement** with `supabase.channel("fill_events").on("postgres_changes", { event: "INSERT", schema: "public", table: "fill_events" }, …)`.
 - [ ] **Step 3:** PASS. Commit `feat(realtime): supabase event source + sim routes`. Tell Deem; he flips `NEXT_PUBLIC_DATA_SOURCE=supabase`.
 
-### Task 1.10 (V): Label pipeline + byte-exact check
+### Task 1.10 (M): Label pipeline + byte-exact check
 
 **Files:** `lib/server/label.ts`, `app/api/label/[drug_id]/route.ts`, `tests/label.test.ts`, `tests/fixtures/*.xml`, `mock/labels.json`
 
@@ -223,7 +227,7 @@ describe("router", () => {
 
 **CHECKPOINT Sat 4 AM:** Maria's loop across two devices in `supabase` mode, watch buzzing twice.
 
-### Task 2.3 (V): Tiger Data aggregate
+### Task 2.3 (M): Tiger Data aggregate
 
 **Files:** `lib/server/tiger.ts`, `scripts/tiger-init.sql`, `app/api/access/summary/route.ts`, `tests/tiger.int.test.ts`
 
@@ -234,7 +238,7 @@ describe("router", () => {
   - `insertEvent` dual-writes with `pg`. A Tiger failure logs and never blocks the Supabase write.
 - [ ] **Step 3:** PASS. Commit `feat(tiger): time-to-first-fill aggregate`.
 
-### Task 2.5 (V): Gemini reason classifier
+### Task 2.5 (M): Gemini reason classifier
 
 **Files:** `lib/server/classify.ts`, `tests/classify.test.ts`
 
