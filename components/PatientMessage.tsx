@@ -57,7 +57,7 @@ export function PatientMessage({ c, lang, className }: { c: CaseView; lang: Mess
         {playing ? <Square className="size-4" /> : <Play className="size-4" />}
         {playing ? "Stop message" : templates.patient_message.play} · {templates.patient_message.languages[lang]}
       </Button>
-      <p role="status" className="text-sm text-muted-foreground" lang="en">{failed ? "Audio could not play. The complete message is shown above; tap Play to retry." : ""}</p>
+      <p role="status" className={cn("text-sm text-muted-foreground", !failed && "sr-only")} lang="en">{failed ? "Audio couldn't play. The full message is above; tap Play to try again." : ""}</p>
       <audio key={src} ref={audio} src={src} preload="none"
         onPlay={() => setPlayback({ src, playing: true, error: false })}
         onPause={() => setPlayback({ src, playing: false, error: false })}

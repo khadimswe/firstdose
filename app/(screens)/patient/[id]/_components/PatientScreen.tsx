@@ -40,7 +40,7 @@ export function PatientScreen({ caseId }: { caseId: string }) {
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 p-5 pb-32">
       <WalletPass c={c} />
 
-      {caseId === "rx_001" && <MessageDeliveryStatus {...delivery} />}
+      {delivery.eligible && <MessageDeliveryStatus {...delivery} />}
       {message && <section className="space-y-3" aria-label="Practice message">
         <PatientMessage c={c} lang={message.lang} />
         {message.acknowledged_at

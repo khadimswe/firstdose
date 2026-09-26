@@ -18,9 +18,9 @@ export function CanList() {
   </ul>;
 }
 
-function ApproveSheet({ open, withHandoff, onApprove, onClose, pending = false, disabled = false, error = null, loginPath = null, linked = false, live = false }: {
+function ApproveSheet({ open, withHandoff, onApprove, onClose, pending = false, disabled = false, error = null, loginPath = null, linked = false }: {
   open: boolean; withHandoff: boolean; onApprove: () => void; onClose: () => void;
-  pending?: boolean; disabled?: boolean; error?: string | null; loginPath?: string | null; linked?: boolean; live?: boolean;
+  pending?: boolean; disabled?: boolean; error?: string | null; loginPath?: string | null; linked?: boolean;
 }) {
   return <Sheet open={open} onOpenChange={value => !value && onClose()}>
     <SheetContent side="bottom" className="mx-auto max-w-[430px] rounded-t-2xl">
@@ -30,8 +30,7 @@ function ApproveSheet({ open, withHandoff, onApprove, onClose, pending = false, 
       </SheetHeader>
       <div className="px-4">
         <CanList />
-        {live && <p className="mt-3 text-xs text-muted-foreground">Approval applies to this shared session. No account invitation is sent.</p>}
-        <p role="status" aria-atomic="true" className="mt-2 text-sm">{pending ? "Saving coordinator approval and case access…" : disabled ? "Link state or case is not ready. Review the current run." : ""}</p>
+        <p role="status" aria-atomic="true" className="mt-2 text-sm">{pending ? "Saving your approval…" : disabled ? "This prescription isn't ready to send yet." : ""}</p>
         <p role="alert" className="text-sm text-stuck">{error}</p>
         {loginPath && <a href={loginPath} className="text-sm underline">Sign in to continue</a>}
       </div>
@@ -78,14 +77,14 @@ export function useHandoff() {
     } else setCaseId(id);
   }
   const sheet = <ApproveSheet open={caseId !== null} withHandoff onApprove={() => { if (caseId) void send(caseId); }} onClose={() => { selection.current++; setCaseId(null); }}
-    live={coordinator.live} pending={coordinator.pending} disabled={coordinator.live && (!coordinator.ready || caseId === null || !canAct("handoff", caseId))}
+    pending={coordinator.pending} disabled={coordinator.live && (!coordinator.ready || caseId === null || !canAct("handoff", caseId))}
     linked={caseId !== null && linked(caseId)} error={coordinator.error} loginPath={coordinator.loginPath} />;
   return { request, sheet };
 }
 
 export function ProfileApprove({ prescriber, open, onClose }: { prescriber: string; open: boolean; onClose: () => void }) {
   const coordinator = useCoordinator();
-  return <ApproveSheet open={open} withHandoff={false} live={coordinator.live} pending={coordinator.pending}
+  return <ApproveSheet open={open} withHandoff={false} pending={coordinator.pending}
     disabled={coordinator.live && (!coordinator.ready || prescriber !== DEMO_PRESCRIBER)} error={coordinator.error} loginPath={coordinator.loginPath}
     onApprove={async () => {
       if (coordinator.live) { if (prescriber === DEMO_PRESCRIBER && await coordinator.approve()) onClose(); }

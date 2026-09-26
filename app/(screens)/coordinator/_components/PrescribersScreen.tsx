@@ -91,9 +91,7 @@ export function PrescribersScreen() {
       </header>
 
       {coordinator.live && <section className="space-y-2 rounded-xl border border-dashed p-4">
-        <p className="text-sm">Request access for {DEMO_PRESCRIBER}. Other linked prescribers have an existing practice relationship.</p>
-        <p className="text-xs text-muted-foreground">Additional NPI requests are unavailable in this shared session. No invitation is sent.</p>
-        <p role="status" aria-atomic="true" className="text-sm">{coordinator.pending ? "Saving the approval request…" : !coordinator.ready ? "Checking saved coordinator links…" : coordinator.snapshot?.links[0]?.status === "linked" ? `${DEMO_PRESCRIBER} approved the coordinator for this run.` : coordinator.snapshot?.links[0]?.status === "pending" ? "Request saved. Approve it on the doctor's Profile tab." : `No request is saved for ${DEMO_PRESCRIBER} yet.`}</p>
+        <p role="status" aria-atomic="true" className="text-sm">{coordinator.pending ? "Sending the request…" : !coordinator.ready ? "Checking links…" : coordinator.snapshot?.links[0]?.status === "linked" ? `${DEMO_PRESCRIBER} approved you.` : coordinator.snapshot?.links[0]?.status === "pending" ? `Request sent. ${DEMO_PRESCRIBER} approves it in DocUpdate, under Profile.` : `${DEMO_PRESCRIBER} hasn't approved you yet.`}</p>
         <p role="alert" className="text-sm text-stuck">{coordinator.error}</p>
         {coordinator.loginPath && <a href="/api/demo-login?next=%2Fcoordinator%2Fprescribers" className="text-sm underline">Sign in to continue</a>}
         {coordinator.error && <Button variant="outline" onClick={() => void coordinator.refresh()}>Reconnect</Button>}
@@ -172,7 +170,7 @@ export function PrescribersScreen() {
           <SheetHeader>
             <SheetTitle>Link a prescriber</SheetTitle>
             <SheetDescription>
-              Offline concept only: record an NPI-format request on this device. No invitation is sent.
+              Enter their 10-digit NPI. They approve you in DocUpdate.
             </SheetDescription>
           </SheetHeader>
           <div className="space-y-2 px-4">
@@ -197,7 +195,7 @@ export function PrescribersScreen() {
             />
             <p role="alert" className="text-sm text-stuck">{error}</p>
             <p className="text-xs text-muted-foreground">
-              Only the last four digits are kept. The check digit validates the format; it does not verify a real record or identity.
+              Only the last four digits are kept. The check digit catches typos; the prescriber&apos;s approval is what links you.
             </p>
           </div>
           <SheetFooter>
