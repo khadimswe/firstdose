@@ -10,15 +10,19 @@ import { cn } from "@/lib/utils";
 
 import { useHandoff } from "./ApproveSheet";
 import { reasonShort } from "./FillLine";
+import { NewTag } from "./NewTag";
 
 function Option({
   label,
   checked,
   disabled,
   onToggle,
+  isNew = false,
   children,
 }: {
   label: string;
+  /** A request type FirstDose adds to DocUpdate's Concierge. */
+  isNew?: boolean;
   checked: boolean;
   disabled?: boolean;
   onToggle?: () => void;
@@ -49,6 +53,7 @@ function Option({
           {checked && <Check className="size-3.5" />}
         </span>
         <span className="font-medium">{label}</span>
+        {isNew && <NewTag inControl className="ml-auto" />}
       </button>
       {children}
     </div>
@@ -80,7 +85,7 @@ export function Concierge() {
 
       <Option label="Request free samples" checked={false} disabled />
       <Option label="Speak with a rep" checked={false} disabled />
-      <Option label="Help my patient start" checked={help} onToggle={() => setHelp((h) => !h)}>
+      <Option label="Help my patient start" isNew checked={help} onToggle={() => setHelp((h) => !h)}>
         {help && (
           <div className="space-y-2">
             <p className="text-sm text-muted-foreground">

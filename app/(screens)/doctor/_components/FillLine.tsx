@@ -6,6 +6,8 @@ import { atSeconds, boardStop, hasConfirmedFill } from "@/components/data/derive
 import type { CaseView } from "@/components/data/types";
 import { cn } from "@/lib/utils";
 
+import { NewTag } from "./NewTag";
+
 /** When the Rx was sent: the live event time, or the demo case's date on mock ("09/27/2026"). */
 export function sentDate(c: CaseView): string | null {
   const sent = c.events.find((e) => e.type === "prescribed");
@@ -29,7 +31,7 @@ const STEPS = ["Sent", "At pharmacy", templates.board.stops[3]] as const;
  * Surface 2: the fill status DocUpdate doesn't have today.
  * Sent → At pharmacy → Fill confirmed, or the stuck reason in red.
  */
-export function FillLine({ c, className }: { c: CaseView; className?: string }) {
+export function FillLine({ c, className, tagged = true }: { c: CaseView; className?: string; tagged?: boolean }) {
   if (!c.ordered) return <span className={cn("text-muted-foreground", className)}>Not sent yet</span>;
   const stop = boardStop(c);
   const done = [true, stop >= 1, stop === 3];
@@ -53,6 +55,11 @@ export function FillLine({ c, className }: { c: CaseView; className?: string }) 
             </span>
           </li>
         ))}
+        {tagged && (
+          <li>
+            <NewTag />
+          </li>
+        )}
       </ol>
       {stuck && (
         <p className="flex items-start gap-1.5 text-xs font-medium text-stuck">

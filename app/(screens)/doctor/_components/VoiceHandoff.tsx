@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { templates } from "@/components/copy/templates";
 import { useEvents } from "@/components/data/useEvents";
 
+import { NewTag } from "./NewTag";
 import {
   encodeWav,
   MAX_RECORD_MS,
@@ -152,7 +153,7 @@ export function VoiceHandoff({ onConfirm }: { onConfirm: (caseId: string) => voi
             </>
           ) : (
             <>
-              <Mic className="size-4" /> Tap to speak
+              <Mic className="size-4" /> Tap to speak <NewTag tone="dark" inControl />
             </>
           )}
         </Button>
