@@ -1,8 +1,10 @@
 "use client";
 
 import { Phone, PhoneMissed } from "lucide-react";
+import { useState } from "react";
 
 import { DemoPrice } from "@/components/DemoPrice";
+import { PatientMessage } from "@/components/PatientMessage";
 import { ReasonChip } from "@/components/ReasonChip";
 import { StandIn } from "@/components/StandIn";
 import { StatusPill } from "@/components/StatusPill";
@@ -17,7 +19,7 @@ import {
 } from "@/components/ui/sheet";
 import { clock, fill } from "@/components/copy/fill";
 import { templates } from "@/components/copy/templates";
-import { local, type ContactMark } from "@/components/data/local";
+import { local, useLocal, type ContactMark, type MessageLang } from "@/components/data/local";
 import type { Catalog, CaseView } from "@/components/data/types";
 import { cn } from "@/lib/utils";
 
@@ -52,6 +54,10 @@ export function CaseSheet({
   const t = templates.coordinator_card;
   const fix = c?.fix ? catalog.fixes[c.fix] : null;
   const sent = c?.events.find((e) => e.type === "fix_sent");
+  const { messages } = useLocal();
+  const [lang, setLang] = useState<MessageLang>("en");
+  const message = c ? messages[c.id] : undefined;
+  const canMessage = c?.fix === "RESEND_COPAY_CARD" && sent !== undefined;
 
   return (
     <Sheet open={c !== undefined} onOpenChange={(open) => !open && onClose()}>
@@ -106,6 +112,41 @@ export function CaseSheet({
                   </p>
                 )}
               </Section>
+
+              {canMessage && c && (
+                <Section title="Message to the patient · ElevenLabs voice">
+                  {message ? (
+                    <>
+                      <PatientMessage c={c} lang={message.lang} />
+                      <p className="text-xs text-muted-foreground">
+                        {templates.patient_message.sent} ·{" "}
+                        {new Date(message.at).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <div className="inline-flex rounded-lg border p-0.5" role="radiogroup" aria-label="Language">
+                        {(Object.keys(templates.patient_message.languages) as MessageLang[]).map((l) => (
+                          <Button
+                            key={l}
+                            size="sm"
+                            variant={l === lang ? "secondary" : "ghost"}
+                            role="radio"
+                            aria-checked={l === lang}
+                            onClick={() => setLang(l)}
+                          >
+                            {templates.patient_message.languages[l]}
+                          </Button>
+                        ))}
+                      </div>
+                      <PatientMessage c={c} lang={lang} />
+                      <Button className="w-full" onClick={() => local.sendMessage(c.id, lang)}>
+                        {templates.patient_message.approve}
+                      </Button>
+                    </>
+                  )}
+                </Section>
+              )}
 
               <Section title="Contact">
                 <div className="grid grid-cols-2 gap-2">

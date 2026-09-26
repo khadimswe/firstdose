@@ -1,9 +1,11 @@
 "use client";
 
+import { PatientMessage } from "@/components/PatientMessage";
 import { StandIn } from "@/components/StandIn";
 import { StatusPill } from "@/components/StatusPill";
 import { Button } from "@/components/ui/button";
 import { templates } from "@/components/copy/templates";
+import { useLocal } from "@/components/data/local";
 import { useEvents } from "@/components/data/useEvents";
 import { hasConfirmedFill } from "@/components/data/derive";
 
@@ -12,6 +14,7 @@ import { WalletPass } from "./WalletPass";
 export function PatientScreen({ caseId }: { caseId: string }) {
   const { cases, act, canAct } = useEvents();
   const c = cases.find((x) => x.id === caseId)!;
+  const message = useLocal().messages[caseId];
 
   const cardReady =
     c.fix === "RESEND_COPAY_CARD" && c.events.some((e) => e.type === "fix_sent");
@@ -34,6 +37,8 @@ export function PatientScreen({ caseId }: { caseId: string }) {
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 p-5 pb-32">
       <WalletPass c={c} />
+
+      {message && <PatientMessage c={c} lang={message.lang} />}
 
       <p role="status" aria-atomic="true" className="text-sm text-muted-foreground">
         {hasConfirmedFill(c)
