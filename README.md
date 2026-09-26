@@ -32,10 +32,13 @@ These backend/data names are planned branches. Current documentation work lives 
 
 ## Start here
 
+Use [PLAN.md](PLAN.md) for current execution and the presentation pack for demo work. Other planning/audit documents are frozen reference snapshots; do not maintain competing schedules.
+
 - [Objective and product proposal](docs/product-proposal.md)
 - [Winning conditions and scope priorities](docs/winning-conditions.md)
 - [All phases, owners and gates](docs/phases/README.md)
 - [Tracks, sponsors and unconfirmed requirements](docs/research/tracks-and-requirements.md)
+- [Technology owners, implementation gaps and prize evidence](PLAN.md#selected-technology-coverage)
 - [Past-winner evidence and lessons](docs/research/winner-lessons.md)
 - [Timed demo, slides, poster, Q&A and submission draft](docs/presentation/README.md)
 - [Audit](docs/audit/2026-09-25-repository-audit.md) and [claims register](docs/presentation/claims-and-evidence.md)

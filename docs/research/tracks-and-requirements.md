@@ -4,6 +4,8 @@ Checked September 25, 2026 against the current public Devpost, event website, ML
 
 ## Recommended entries
 
+See [selected technology coverage](../../PLAN.md#selected-technology-coverage) for each selected provider's real job, owner, implementation status and evidence gate. A listed prize or an environment variable does not establish technology use.
+
 | Priority | Category | Why FirstDose fits | Evidence needed before selecting it |
 |---|---|---|---|
 | Primary general track | **A Marina's Mission**, social good/healthcare, presented by **Aramco** | Reducing friction in access follow-up | Show the affected person, human review, unresolved case, and an honest outcome boundary |

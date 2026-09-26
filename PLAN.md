@@ -1,8 +1,41 @@
 # FIRSTDOSE: Plan & Coordination
 
-> September 26 integration: Deem's dashboard/task IDs and completed frontend work are preserved from `80646f7`. User-approved three-person roles and separate-branch workflow apply below. [All six phase playbooks](docs/phases/README.md), [branch workflow](docs/branch-workflow.md), [current status](docs/STATUS.md), [presentation](docs/presentation/README.md).
->
-> Completed frontend rows mean mock UI implementation, not live backend/source/device verification. Existing task wording involving `started`, `recovered`, universal $0, automatic bridge samples, global reset and insert-only subscriptions describes the current contract; corrections in [Phase 0](docs/phases/phase-0-contract-and-readiness.md) require coordinated review before implementation. The physical watch remains core; only its custom widget is optional.
+## Active execution brief
+
+This dashboard is the execution source of truth. Keep presentation work in `docs/presentation/`; freeze the other planning/audit documents as reference snapshots. Do not maintain parallel schedules. This local revision responds to review and awaits team feedback; it does not change the shared mock contract or merge itself into main.
+
+**Immediate work:** Vinh tests the physical ntfy -> iPhone -> Garmin path and leads the minimal contract/backend; Minh verifies and caches Otezla label content; Deem deploys the current mock build and wires the existing hook when the adapter is ready. No new screens are required for the first gate.
+
+**Rebaseline:** retire the 4 AM promise. Target a Saturday morning core check around 7 AM, conditional on the initial watch/deployment/contract results; record actual progress rather than another guaranteed estimate. Maria alone is the first gate. Keep 2 PM scope review, 6 PM footage and 9 PM claim freeze as internal targets; confirm the official submission cutoff.
+
+**Small contract review:** separate acknowledgment from simulator dispensing; add UNKNOWN and a government-coverage block; add run identity with an explicit run-change/reconnect path; enforce unique `(run_id, script_id)`. Time-box the review to 45 minutes. Preserve simple server-side validated, atomic transitions; a unique event constraint alone does not prevent races or duplicate external notifications. Use prepared fictional eligibility evidence rather than a full eligibility engine. Do not infer card eligibility from commercial insurance alone.
+
+**Thin backend:** reuse scripted rows and the existing EventSource seam. One shared command implementation can serve the agreed routes; a new `/api/act` is optional, not required to rename every API. Deem must still wire `useEvents()` because it currently forces mock mode. Keep basic database grants/RLS and guarded writes; a full production identity system is outside this demo. Privacy separation may be presented as proposed unless implemented and verified.
+
+**Labels:** Otezla first, cached before the demo. Proposed fidelity rule: literal text from a deterministically extracted SPL section, preserving section code, source/version and source hash; an altered character must fail verification. Coordinate that contract change before claiming `byte_exact`; a hash does not prove source authenticity by itself. Humira follows only after the core works.
+
+**Review workflow:** short module branches, one affected-owner reviewer, aim for a 15-minute response. Vinh and Deem still jointly agree changes to the shared mock contract; this can be one author's PR plus the other's review. Minh reviews only the payloads he consumes. No direct pushes to main or silent scope cuts.
+
+### Selected technology coverage
+
+Every selected entry must have actual technology use and proof before submission. Core and supporting technologies are not all sponsor requirements. No unrelated sponsor stack additions are requested.
+
+| Technology / entry | Owner | Completion evidence |
+|---|---|---|
+| Impiricus / proposed Ascend workflow | Vinh + Deem | Useful HCP handoff; disclose partner stand-ins; validate current challenge fit and overlap |
+| Supabase / core shared state | Vinh | Atomic guarded actions, run reset/reconnect and a real two-device loop |
+| RxNorm + DailyMed | Minh | Verified identity, cached source/version and literal-text test |
+| ntfy + iPhone + Garmin | Vinh | Physical alert from the actual run; watch remains core |
+| Gemini API | Minh, after labels | Real note-to-enum result and unknown/error behavior |
+| Tiger Data | Minh, after stable events | Actual stored run/query feeding summary, freshness and duplicate checks |
+| Grok + Cursor / SpaceXAI | Vinh backend, Deem capture; actual Cursor user documents work | Real confirmed voice handoff plus truthful Cursor development evidence; neither currently verified |
+| ElevenLabs | Deem | Generated asset actually plays in the app; a WebAudio chime is insufficient |
+| .Tech | Deem | Registered project domain resolves to the reviewed app on another device |
+| Notability Pro / conditional entry | Deem | Actual process use and required screenshots/tag; confirm category-slot treatment |
+
+A Marina's Mission is the selected social-good track; no Aramco API requirement was established. Gemini is listed on the [MLH event page](https://www.mlh.com/events/hackgt-13/prizes), though absent from the fetched [Devpost prize list](https://hackgt13.devpost.com/). Exact category limits remain unconfirmed. Keep Grok/Tiger in the selected-track build plan; if the core slips, explicitly decide whether to cut the corresponding entry. Do not quietly promise every prize while omitting its technology. Status today: frontend exists; live provider integrations remain pending.
+
+---
 
 > Living status doc for Vinh + Minh + Deem. Update on the owning branch and merge through a reviewed PR.
 > Single source of truth for who is working on what.
@@ -45,11 +78,11 @@ Current objective, scope and claim boundaries: [product proposal](docs/product-p
 
 | What a judge must see | Surface | Owner |
 |---|---|---|
-| A prescription going dark, then recovering | `/board` Relay Board: red stop, price $410 → $0, chime | Deem (UI) + Vihn (events) |
-| Physical wow | Garmin buzz on the doctor judge's wrist, twice | Vihn |
+| A prescription going dark, then recovering | `/board` Relay Board: red stop, price $410 → $0, chime | Deem (UI) + Vinh (events) |
+| Physical wow | Garmin buzz on the doctor judge's wrist, twice | Vinh |
 | A judge becomes the patient | QR → `/patient/rx_001` on their own phone | Deem |
 | Real data, not a mock | Verbatim DailyMed label card with byte-exact badge | Minh (data) + Deem (card) |
-| The buyer | `/access`: recovered, time to first fill from Tiger Data, no names | Minh (Tiger) + Deem (UI) |
+| The buyer | `/access`: subsequent fill signals and elapsed time; Tiger only when verified | Minh (Tiger) + Deem (UI) |
 | Trust | Who-sees-what panel; every stand-in labelled | Deem |
 
 ---
@@ -60,36 +93,36 @@ Current objective, scope and claim boundaries: [product proposal](docs/product-p
 
 | # | Component | File(s) | Owner | Status | Deps | Notes |
 |---|---|---|---|---|---|---|
-| 0.1 | Repo, `.gitignore`, `.env.example`, README, ABOUT, LICENSE | root | **Deem** | ✅ | n/a | Vihn invited. |
+| 0.1 | Repo, `.gitignore`, `.env.example`, README, ABOUT, LICENSE | root | **Deem** | ✅ | n/a | Vinh invited. |
 | 0.2 | Next.js 16 scaffold (App Router, TS, Tailwind v4) | `app/**`, `package.json` | **Deem** | ✅ | 0.1 | No `src/`. Read `node_modules/next/dist/docs/` before route code. |
 | 0.3 | CI: lint, build, `npm test --if-present`, gitleaks, tracked-file gate, mock JSON gate | `.github/workflows/ci.yml` | **Deem** | ✅ | 0.2 | Not required on `main` during the event. |
 | 0.4 | Data contract | `mock/*.json` | **both** | 🟡 | 0.1 | Two fixes pending (see 0.7). Frozen after. |
-| 0.5 | Architecture doc | `docs/architecture.md` | **Vihn** reviews | 🟡 | 0.4 | Deem drafted. Vihn corrects routes/tables to match his build. |
-| 0.6 | Keys (each person signs up, keys move by AirDrop only) | local `.env` | **Vihn**: Supabase, Tiger Data, Gemini, xAI. **Deem**: ElevenLabs + .Tech (MLH), Vercel, HexLabs OpenAI | ⬜ | n/a | |
-| 0.7 | Contract fixes: add `ev_21b` (James `fix_sent` BRIDGE_SAMPLE); `wrist.started` → `"{patient_short} started {drug}. $0 with copay card."` | `mock/events.json`, `mock/templates.json` | **Deem** | ✅ | 0.4 | ⚠️ CONTRACT commit. Tell Vihn first. |
-| 0.8 | **Gate:** ntfy POST → iPhone → Garmin FR55 buzz with text | `scripts/ntfy-smoke.sh` | **Vihn** | ⬜ | 0.6 | Garmin Connect open. Body ≤ 200 chars. |
+| 0.5 | Architecture doc | `docs/architecture.md` | **Vinh** reviews | 🟡 | 0.4 | Deem drafted. Vinh corrects routes/tables to match his build. |
+| 0.6 | Keys (each person signs up, keys move by AirDrop only) | local `.env` | **Vinh**: Supabase, Tiger Data, Gemini, xAI. **Deem**: ElevenLabs + .Tech (MLH), Vercel, HexLabs OpenAI | ⬜ | n/a | |
+| 0.7 | Contract fixes: add `ev_21b` (James `fix_sent` BRIDGE_SAMPLE); `wrist.started` → `"{patient_short} started {drug}. $0 with copay card."` | `mock/events.json`, `mock/templates.json` | **Deem** | ✅ | 0.4 | ⚠️ CONTRACT commit. Tell Vinh first. |
+| 0.8 | **Gate:** ntfy POST → iPhone → Garmin FR55 buzz with text | `scripts/ntfy-smoke.sh` | **Vinh** | ⬜ | 0.6 | Garmin Connect open. Body ≤ 200 chars. |
 | 0.9 | Register team on HexLabs; ask #qna if Notability is a challenge or sponsor track | n/a | **Deem** | ⬜ | n/a | |
 
-### Phase 1: Core loop (Sat 12 AM to 4 AM)
+### Phase 1: Maria core loop (Saturday morning target; recheck around 7 AM)
 
 | # | Component | File(s) | Owner | Status | Deps | Notes |
 |---|---|---|---|---|---|---|
 | 1.1 | Frontend foundation: catalog, `derive.ts`, `useEvents()` (mock source), `fill()`, `StandIn`, `LabelCard`, shadcn init | `components/data/**`, `components/copy/**`, `components/*.tsx` | **Deem** | ✅ | 0.4 | No `?replay` or Autoplay yet. Merge before any screen. |
-| 1.2 | `EventSource` interface published to Vihn | `components/data/types.ts` | **Deem** | ✅ | 1.1 | ⚠️ CONTRACT. Vihn implements it in 1.9. |
+| 1.2 | `EventSource` interface published to Vinh | `components/data/types.ts` | **Deem** | ✅ | 1.1 | ⚠️ CONTRACT. Vinh implements it in 1.9. |
 | 1.3 | `/sim` bare: Reset + Fire per beat | `app/(screens)/sim/**` | **Deem** | ✅ | 1.1 | Drives every other screen in a second tab. |
 | 1.4 | `/doctor`: prescribe → label card → alert → "Send to my coordinator" | `app/(screens)/doctor/**` | **Deem** | ✅ | 1.1 | iPad 1180×820. Never suggests a drug. |
 | 1.5 | `/coordinator`: queue card, ONE fix button | `app/(screens)/coordinator/**` | **Deem** | ✅ | 1.1 | Phone 390×844. |
 | 1.6 | `/patient/[id]`: Wallet pass stand-in, "Use at pharmacy" | `app/(screens)/patient/[id]/**` | **Deem** | ✅ | 1.1 | No barcode, BIN/PCN or member number. |
-| 1.7 | Supabase schema: `patients`, `drugs`, `rx_cases`, `fill_events`, `labels`; seed from `mock/` | `supabase/migrations/**`, `scripts/seed.ts` | **Vihn** | ⬜ | 0.4, 0.6 | Field names identical to `mock/`. |
-| 1.8 | Router + table test (every reason × insurance; Medicare never gets a copay card) | `lib/server/router.ts`, `tests/router.test.ts` | **Vihn** | ⬜ | 0.4 | Pure function over `reasons.json → router.rows`. No AI. |
-| 1.9 | `lib/realtime.ts` (implements 1.2) + `/api/sim/fire`, `/api/sim/reset` | `lib/realtime.ts`, `app/api/sim/**` | **Vihn** | ⬜ | 1.2, 1.7 | Realtime channel `fill_events`, insert only. |
+| 1.7 | Supabase schema: `patients`, `drugs`, `rx_cases`, `fill_events`, `labels`; seed from `mock/` | `supabase/migrations/**`, `scripts/seed.ts` | **Vinh** | ⬜ | 0.4, 0.6 | Field names identical to `mock/`. |
+| 1.8 | Router + table test (every reason × insurance; Medicare never gets a copay card) | `lib/server/router.ts`, `tests/router.test.ts` | **Vinh** | ⬜ | 0.4 | Pure function over `reasons.json → router.rows`. No AI. |
+| 1.9 | `lib/realtime.ts` (implements 1.2) + `/api/sim/fire`, `/api/sim/reset` | `lib/realtime.ts`, `app/api/sim/**` | **Vinh** | ⬜ | 1.2, 1.7 | Realtime channel `fill_events`, insert only. |
 | 1.10 | Label pipeline: RxNorm → DailyMed SPL → `labels` + byte-exact test | `lib/server/label.ts`, `tests/label.test.ts`, `mock/labels.json` | **Minh** | ⬜ | 0.6 | Setids hardcoded. Fills RxCUIs + `labels.json`. |
-| 1.11 | Action routes: `/api/rx`, `/api/handoff`, `/api/fix`, `/api/patient/use` | `app/api/**` | **Vihn** | ⬜ | 1.7, 1.8 | Guarded transitions so a double tap can't double-fire. |
-| 1.12 | ntfy on `alert_sent` and `started` | `lib/server/ntfy.ts` | **Vihn** | ⬜ | 0.8, 1.9 | Action button → `/api/handoff`. |
+| 1.11 | Action routes: `/api/rx`, `/api/handoff`, `/api/fix`, `/api/patient/use` | `app/api/**` | **Vinh** | ⬜ | 1.7, 1.8 | Guarded transitions so a double tap can't double-fire. |
+| 1.12 | ntfy on `alert_sent` and `started` | `lib/server/ntfy.ts` | **Vinh** | ⬜ | 0.8, 1.9 | Action button → `/api/handoff`. |
 
-**CHECKPOINT Sat 4 AM:** Maria's loop runs end to end across two devices in `supabase` mode: prescribe → stuck → wrist buzz → handoff → one fix → patient taps → re-run → started buzz. If not, stop and fix together before Phase 2.
+**CORE CHECKPOINT, Saturday morning:** Maria across two devices: prescribe -> barrier -> physical wrist alert -> reviewed coordinator handoff -> resource acknowledgment (still pending) -> separate simulated pharmacy confirmation -> first fill observed. If it fails, stop optional provider work and fix the loop.
 
-### Phase 2: The wow + deploy (Sat 4 AM to 11 AM)
+### Phase 2: Evidence and integrations (after the Maria core gate)
 
 | # | Component | File(s) | Owner | Status | Deps | Notes |
 |---|---|---|---|---|---|---|
@@ -111,21 +144,21 @@ Current objective, scope and claim boundaries: [product proposal](docs/product-p
 
 | # | Component | File(s) | Owner | Status | Deps | Notes |
 |---|---|---|---|---|---|---|
-| 4.1 | Grok STT handoff with keyterms + `/api/voice` | `lib/server/voice.ts`, `app/api/voice/**` | **Vihn** | ⬜ | 1.11 | Record actual trials with and without keyterms; do not presume failure. |
+| 4.1 | Grok STT handoff with keyterms + `/api/voice` | `lib/server/voice.ts`, `app/api/voice/**` | **Vinh** | ⬜ | 1.11 | Record actual trials with and without keyterms; do not presume failure. |
 | 4.2 | ElevenLabs "started" line on the board | `public/audio/**` | **Deem** | ⬜ | 2.1 | Pre-generate the mp3; no runtime call. |
 | 4.3 | Design pass on all screens | `app/(screens)/**` | **Deem** | 🟡 | Phase 2 | doctor, patient, coordinator, board done 2026-09-26 00:07; access + sim left. |
 | 4.4 | QR flow on a stranger's phone | n/a | **Deem** | ⬜ | 2.6 | |
 | 4.5 | **Cut check Sat 2 PM** (see Decisions D5) | n/a | **both** | ⬜ | n/a | |
-| 4.6 | Connect IQ widget (stretch) | `garmin/**` | **Vihn** | ⬜ | 1.12 | Go/no-go at 2 PM. |
+| 4.6 | Connect IQ widget (stretch) | `garmin/**` | **Vinh** | ⬜ | 1.12 | Go/no-go at 2 PM. |
 | 4.7 | Dry run with 2 strangers as judges; raw footage at 6 PM | n/a | **both** | ⬜ | all | |
 
 ### Phase 5: Freeze + submit (Sat 9 PM to Sun 8 AM)
 
 | # | Component | File(s) | Owner | Status | Deps | Notes |
 |---|---|---|---|---|---|---|
-| 5.1 | Claims audit: every named product is really called in code; gitleaks full history | `docs/claims-audit.md` | **Vihn** | ⬜ | all | Sat 9 PM claims freeze. |
+| 5.1 | Claims audit: every named product is really called in code; gitleaks full history | `docs/claims-audit.md` | **Vinh** | ⬜ | all | Sat 9 PM claims freeze. |
 | 5.2 | Stills of every judge screen (desktop + phone) from the deployed origin | `docs/stills/` | **Deem** | ⬜ | 2.6 | Look at each one. |
-| 5.3 | Video 2-3 min | `docs/video/` | **Deem** (Vihn edits once backend is frozen) | ⬜ | 5.2 | Done by Sun 5 AM. |
+| 5.3 | Video 2-3 min | `docs/video/` | **Deem** (Vinh edits once backend is frozen) | ⬜ | 5.2 | Done by Sun 5 AM. |
 | 5.4 | Devpost writeup + poster | `docs/submission.md` | **Deem** | ⬜ | 5.1 | |
 | 5.5 | Flip repo public; submit to **Devpost AND expo.hexlabs.org**; reload-verify both | n/a | **Deem** | ⬜ | 5.4 | By Sun 6:30 AM. |
 
@@ -139,9 +172,9 @@ Full detail in `docs/architecture.md`. Summary:
 |---|---|---|---|
 | `mock/*.json` shapes | both | everyone | Frozen. Changes are ⚠️ CONTRACT commits. |
 | `useEvents()` | Deem | all screens | `{ mode, script, fired, cases, catalog, access, fire(ids), fireNext(caseId, type), reset() }` |
-| `EventSource` | Deem defines, Vihn implements | `useEvents()` | `load() / subscribe(onInsert) / act(action, rx, fix) / fire(ids) / reset() / accessSummary()` in `components/data/types.ts` |
-| `fill_events` row | Vihn | Deem | `mock/events.json → event_shape` |
-| `router(reason, insurance)` | Vihn | everyone | returns a key of `reasons.json → fixes` |
+| `EventSource` | Deem defines, Vinh implements | `useEvents()` | `load() / subscribe(onInsert) / act(action, rx, fix) / fire(ids) / reset() / accessSummary()` in `components/data/types.ts` |
+| `fill_events` row | Vinh | Deem | `mock/events.json → event_shape` |
+| `router(reason, insurance)` | Vinh | everyone | returns a key of `reasons.json → fixes` |
 | `GET /api/access/summary` | Minh | Deem | `{ recovered, median_ttff_seconds, reason_tally }`, no patient fields |
 | Label | Minh | Deem | `mock/labels.json → label_shape`; `byte_exact: true` or the UI shows red PLACEHOLDER |
 
@@ -175,7 +208,7 @@ A sponsor tool is named in the writeup only if 5.1 finds it called in code. **Lo
 ## Open Questions
 
 - [ ] **Q1:** Does Medvantx or Spark already detect never-filled patients? Ask at the 11 AM workshop. Needs both.
-- [ ] **Q2:** Which Gemini model ID is live? List models at H0 and pin it. Needs Vihn.
+- [ ] **Q2:** Which Gemini model ID is live? List models at H0 and pin it. Needs Vinh.
 - [ ] **Q3:** Is Notability a challenge or a third sponsor track? Ask #qna. Needs Deem.
 - [ ] **Q4:** Which `.tech` domain is free (`getfirstdose.tech`, `firstdose-rx.tech`)? Needs Deem.
 
