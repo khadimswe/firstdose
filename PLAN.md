@@ -48,7 +48,7 @@ A Marina's Mission is the selected social-good track; no Aramco API requirement 
 **Team:**
 - **Vinh:** authoritative workflow, Supabase/schema/Realtime, deterministic router, simulator/API, ntfy -> Garmin and optional Grok backend/custom widget.
 - **Deem:** frontend + product (all six screens, `useEvents()` hook, design pass, demo script and table performance, writeup, video, poster).
-- **Minh:** verified RxNorm/DailyMed labels, then Gemini classification, then Tiger projection/analytics.
+- **Minh:** verified RxNorm/DailyMed labels, then Gemini classification, then Tiger projection/analytics. Agent implementation checklist: [Minh tasks](docs/tasks/MINH-TASKS.md).
 
 **Hackathon:** HackGT 13, Georgia Tech, Sep 25-27 2026.
 
@@ -118,7 +118,7 @@ Current objective, scope and claim boundaries: [product proposal](docs/product-p
 | 1.7 | Supabase schema: `patients`, `drugs`, `rx_cases`, `fill_events`, `labels`; seed from `mock/` | `supabase/migrations/**`, `scripts/seed.ts` | **Vinh** | ⬜ | 0.4, 0.6 | Field names identical to `mock/`. |
 | 1.8 | Router + table test (every reason × insurance; Medicare never gets a copay card) | `lib/server/router.ts`, `tests/router.test.ts` | **Vinh** | ⬜ | 0.4 | Pure function over `reasons.json → router.rows`. No AI. |
 | 1.9 | `lib/realtime.ts` (implements 1.2) + `/api/sim/fire`, `/api/sim/reset` | `lib/realtime.ts`, `app/api/sim/**` | **Vinh** | ⬜ | 1.2, 1.7 | Realtime channel `fill_events`, insert only. |
-| 1.10 | Label pipeline: RxNorm → DailyMed SPL → `labels` + byte-exact test | `lib/server/label.ts`, `tests/label.test.ts`, `mock/labels.json` | **Minh** | ⬜ | 0.6 | Setids hardcoded. Fills RxCUIs + `labels.json`. |
+| 1.10 | Verified cached label pipeline and endpoint | `lib/server/label.ts`, `lib/server/labels/**`, `tests/labels/**` | **Minh** | ⬜ | 0.6 | Handoff A1-A3; Otezla first; identity/fidelity review before badge and shared fixture update. |
 | 1.11 | Action routes: `/api/rx`, `/api/handoff`, `/api/fix`, `/api/patient/use` | `app/api/**` | **Vinh** | ⬜ | 1.7, 1.8 | Guarded transitions so a double tap can't double-fire. |
 | 1.12 | ntfy on `alert_sent` and `started` | `lib/server/ntfy.ts` | **Vinh** | ⬜ | 0.8, 1.9 | Action button → `/api/handoff`. |
 | 1.13 | Wire `useEvents()` to `lib/realtime.ts`: live source, buttons enabled by case state | `components/data/**` | **Deem** | 🟡 | 1.9 | Built on local branch `feat/live-source`, tested against a stand-in `EventSource`; merges as soon as 1.9 lands. Button guards already on `main`. |
@@ -131,9 +131,9 @@ Current objective, scope and claim boundaries: [product proposal](docs/product-p
 |---|---|---|---|---|---|---|
 | 2.1 | `/board` Relay Board: lanes, red stop, price counter, WebAudio chime | `app/(screens)/board/**` | **Deem** | ✅ | 1.1 | 1920×1080 dark. Sound needs one click to enable. |
 | 2.2 | James case on every screen + before-visit card with real boxed warning | `app/(screens)/doctor/**` | **Deem** | 🟡 | 1.4, 1.10 | Template only, never free text. Built; the real boxed warning appears when 1.10 fills `labels.json`. |
-| 2.3 | Tiger Data: `fill_events` hypertable + `daily_ttff` + `/api/access/summary` | `lib/server/tiger.ts`, `app/api/access/**` | **Minh** | ⬜ | 1.7 | Dual-write, no patient names. |
+| 2.3 | Tiger event projection, deduplication and direct summary | `lib/server/tiger.ts`, `lib/server/analytics/**`, `app/api/access/**` | **Minh** | ⬜ | 1.7 | Handoff C1-C3; Vinh supplies committed run events; continuous aggregate deferred. |
 | 2.4 | `/access`: KPI tiles, reason bars, who-sees-what | `app/(screens)/access/**` | **Deem** | ✅ | 1.1, 2.3 | Type has no patient fields. |
-| 2.5 | Gemini classifier: note → reason enum (`responseSchema`) | `lib/server/classify.ts` | **Minh** | ⬜ | 0.6 | List models at startup. ≤ 140 chars in, enum out. |
+| 2.5 | Gemini note-to-reason classifier | `lib/server/classify.ts`, `lib/server/classifier/**` | **Minh** | ⬜ | 0.6 | Handoff B1-B2; explicit model smoke, <=140 code points, enum or null; no routing authority. |
 | 2.6 | Vercel deploy (`firstdose-web`) | `.vercel/` | **Deem** | ⬜ | 1.9 | Check `.vercel/project.json` before every `--prod`. |
 | 2.7 | `/sim` extras: `?upto=`, `?replay=1`, Autoplay | `app/(screens)/sim/**` | **Deem** | ✅ | 1.3 | Offline fallback for the board. `?replay=1&speed=N` loops one tab. |
 

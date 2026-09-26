@@ -182,20 +182,9 @@ describe("router", () => {
 - [ ] **Step 2: Implement** with `supabase.channel("fill_events").on("postgres_changes", { event: "INSERT", schema: "public", table: "fill_events" }, …)`.
 - [ ] **Step 3:** PASS. Commit `feat(realtime): supabase event source + sim routes`. Tell Deem; he flips `NEXT_PUBLIC_DATA_SOURCE=supabase`.
 
-### Task 1.10 (M): Label pipeline + byte-exact check
+### Task 1.10 (M): Verified cached labels
 
-**Files:** `lib/server/label.ts`, `app/api/label/[drug_id]/route.ts`, `tests/label.test.ts`, `tests/fixtures/*.xml`, `mock/labels.json`
-
-**Interface:** `getLabel(drugId): Promise<Label>` where `Label = mock/labels.json → label_shape`.
-
-- [ ] **Step 1: Failing test.** Using saved SPL XML fixtures for both setids: every returned `sections[].text` is a substring of the fixture's normalized text; Humira has a `34066-1` section whose text begins with the boxed-warning heading; Otezla's `34066-1` is `null`.
-- [ ] **Step 2: Implement.**
-  - RxCUI: `GET https://rxnav.nlm.nih.gov/REST/drugs.json?name=<brand>`; record the SCD/SBD RxCUI in `mock/patients.json` (replace `TODO_VIHN`, ⚠️ CONTRACT).
-  - SPL: `GET https://dailymed.nlm.nih.gov/dailymed/services/v2/spls/<setid>.xml`. Setids are hardcoded (manufacturer, not relabelers).
-  - Parse sections by LOINC code (34066-1, 34067-9, 43685-7, 34068-7) with `fast-xml-parser`. Text = the section's text nodes joined with single spaces. **Normalize whitespace only; never change a character.**
-  - `byte_exact = sections.every(s => s.text === null || normalizedXml.includes(s.text))`.
-  - Cache to the `labels` table and write `mock/labels.json` so mock mode shows real text.
-- [ ] **Step 3:** PASS. Commit `feat(label): DailyMed SPL with byte-exact check`.
+Implement [Minh handoff A1-A3](tasks/MINH-TASKS.md#a1-fetch-and-verify-otezla-identity-task-110). It defines source identity, literal extraction, mutation tests, cached endpoint and the reviewed byte_exact meaning. Otezla first; no runtime source dependency. Do not use the previous normalized-whole-XML substring shortcut.
 
 ### Task 1.11 (V): Action routes with guarded transitions
 
@@ -227,26 +216,13 @@ describe("router", () => {
 
 **CHECKPOINT Sat 4 AM:** Maria's loop across two devices in `supabase` mode, watch buzzing twice.
 
-### Task 2.3 (M): Tiger Data aggregate
+### Task 2.3 (M): Tiger projection and summary
 
-**Files:** `lib/server/tiger.ts`, `scripts/tiger-init.sql`, `app/api/access/summary/route.ts`, `tests/tiger.int.test.ts`
-
-- [ ] **Step 1: Failing test:** after firing Maria's full loop, `GET /api/access/summary` returns `{ recovered: 1, median_ttff_seconds: >0, reason_tally: { DECLINED_AT_PRICE: 1 } }` and the JSON contains no `name`, `patient_id` or `case_id`.
-- [ ] **Step 2: Implement.**
-  - `tiger-init.sql`: table `fill_events(at timestamptz, case_hash text, type text, reason text, fix text)`; `select create_hypertable('fill_events','at')`; continuous aggregate `daily_ttff` over `started` minus `prescribed` per `case_hash`, by day, plus reason counts.
-  - `case_hash` = SHA-256 of `case_id` + a server salt. No names, no drug per doctor.
-  - `insertEvent` dual-writes with `pg`. A Tiger failure logs and never blocks the Supabase write.
-- [ ] **Step 3:** PASS. Commit `feat(tiger): time-to-first-fill aggregate`.
+Implement [Minh handoff C1-C3](tasks/MINH-TASKS.md#c1-pure-analytics-projection-task-23). It defines run-aware projection, independent pharmacy-confirmation semantics, duplicate/conflict handling, direct SQL summary and replay from authoritative events. A continuous aggregate is deferred; no best-effort-only dual-write presented as reliable delivery.
 
 ### Task 2.5 (M): Gemini reason classifier
 
-**Files:** `lib/server/classify.ts`, `tests/classify.test.ts`
-
-**Interface:** `classify(note: string): Promise<ReasonKey | null>`
-
-- [ ] **Step 1: Failing tests** (model mocked): the pharmacy note in `ev_04` → `DECLINED_AT_PRICE`; the hub note in `ev_17` → `UNABLE_TO_REACH`; a note over 140 chars is truncated before sending; a response not in the enum → `null`; a timeout over 4 s → `null`.
-- [ ] **Step 2: Implement** with `@google/genai`, `responseMimeType: "application/json"`, `responseSchema: { type: "object", properties: { reason: { type: "string", enum: <reason keys> } }, required: ["reason"] }`. List models at startup and pin one (Q2). Temperature 0. No other output fields.
-- [ ] **Step 3:** PASS, plus one live call recorded in the commit message. Commit `feat(ai): gemini reason classifier`.
+Implement [Minh handoff B1-B2](tasks/MINH-TASKS.md#b1-pure-reason-parser-and-testable-classifier-task-25). It defines strict enum/null output, bounded input/deadline, injected transport tests and an explicit real-call smoke check. Do not guess a model ID, silently truncate notes or call the provider at module import.
 
 ### Task 4.1 (V): Grok voice handoff
 
