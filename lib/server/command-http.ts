@@ -6,14 +6,14 @@ import { HttpError, readText, requireSameOrigin } from "./http-body";
 
 type Options = { store?: WorkflowStore; env?: Record<string, string | undefined>; onCommit?: () => void | Promise<void> };
 export type CommandKind = WorkflowCommand["kind"] | "reset";
-function authorize(request: Request, env: Record<string, string | undefined>) {
+export function authorize(request: Request, env: Record<string, string | undefined>) {
   if (!demoConfigured(env)) throw new HttpError(503, "demo_not_configured");
   const access = demoAccess(request, env);
   if (!access) throw new HttpError(401, "unauthorized");
   requireSameOrigin(request, access === "session" && request.method !== "GET");
 }
 
-async function readBody(request: Request): Promise<Record<string, unknown>> {
+export async function readBody(request: Request): Promise<Record<string, unknown>> {
   if (request.headers.get("content-type")?.split(";")[0].trim().toLowerCase() !== "application/json") throw new HttpError(415, "json_required");
   const text = await readText(request);
   let body: unknown;
@@ -22,7 +22,7 @@ async function readBody(request: Request): Promise<Record<string, unknown>> {
   return body as Record<string, unknown>;
 }
 
-function json(body: unknown, status = 200, snapshot?: Snapshot) {
+export function json(body: unknown, status = 200, snapshot?: Pick<Snapshot, "run_id" | "revision">) {
   return Response.json(body, {
     status,
     headers: {
@@ -32,7 +32,7 @@ function json(body: unknown, status = 200, snapshot?: Snapshot) {
   });
 }
 
-function failure(error: unknown): Response {
+export function failure(error: unknown): Response {
   if (error instanceof HttpError) return json({ error: error.code }, error.status);
   if (error instanceof WorkflowError) return json({ error: error.code }, error.code === "invalid_transition" ? 409 : 400);
   if (error instanceof PersistenceError) return json({ error: error.code }, error.code === "stale_run" || error.code === "revision_conflict" ? 409 : 503);
