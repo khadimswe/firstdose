@@ -38,8 +38,9 @@ Legend: [ ] not started · [-] in progress · [x] done · [!] blocked
 
 - [x] **6.8 / C3** Spanish patient message: shipped inside Vinh's #32 with its persistence; #21 closed as superseded.
 - [x] Owner review of #32 (#35): product-voice status copy, queue counts that match the tabs, message case from data.
-- [x] Vercel: access code set, unused keys removed, production offline until Vinh re-seeds (Sat).
-- [ ] **Phase 1 gate 4** with Vinh: after his hosted migrations 005/006 and re-seed, flip `NEXT_PUBLIC_DATA_SOURCE=supabase`, redeploy, and run the two-device checklist (`docs/handoffs/deem-phase1.md`).
+- [x] Vercel: access code set, unused keys removed; production switched to live after Vinh's re-seed (Sat).
+- [x] **6.14** "New · FirstDose" tags for the Impiricus rule, plus the Spark, no-rebuild and no-SMS judge answers (#36).
+- [ ] **Phase 1 gate 4** with Vinh: production is live; sign in on both devices, then run the two-device checklist (`docs/handoffs/deem-phase1.md`).
 - [ ] **4.4** QR on a stranger's phone from the deployed origin.
 - [x] Slide 4 still: the seeded coordinator Queue (#33).
 - [ ] **6.7 UI / 6.6 UI** when Minh's rollup and `/api/npi` land.
