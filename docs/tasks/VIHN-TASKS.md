@@ -4,7 +4,7 @@ Personal task tracker. Source of truth is `PLAN.md`; this file is a convenience 
 
 ## Current local foundation
 
-Worktree: `C:/Users/Binep/firstdose-vinh-backend`, branch `backend/maria-core`; schema and API changes are consolidated here. Backend `21d0a0d` includes hosted persistence, browser sessions, polling and a claim-once notification worker. Hosted migrations/seed and the Maria API flow across two browser sessions passed; the user confirmed the workflow reason alert reached both iPhone and Garmin. The active hosted run is empty after reset. See [backend handoff](../backend-core.md) for the contract and `PLAN.md` for current status. The rendered-screen gate and owner review remain open.
+Worktree: `C:/Users/Binep/firstdose-vinh-backend`, branch `backend/maria-core`; schema and API changes are consolidated here. Backend `21d0a0d` includes hosted persistence, browser sessions, polling and a claim-once notification worker. Hosted migrations/seed and the Maria API flow across two browser sessions passed; the user confirmed the workflow reason alert reached both iPhone and Garmin. The active hosted run is empty after reset. See [backend handoff](../backend-core.md) for the contract and `PLAN.md` for current status. The rendered-screen browser-context gate now passes in 43ca67b; physical-device verification and owner review remain open.
 
 Use Node 22.12 or newer within the 22.x release line (matching CI), or Node 24.x. Vitest 5 requires a supported Node release; Node 20 is insufficient.
 
@@ -26,17 +26,16 @@ The watch command defaults to a dry run. After setting `NTFY_TOPIC` (and optiona
 
 ### Next persistence and frontend handoff
 
-**Integration review, September 26:** the missing doctor alert is fixed: reason inputs atomically produce template-backed app alerts and one outbox entry. A replay still finds the board at stop 2 instead of 3 and access total 0 despite independent pharmacy confirmation. These two frontend integration failures block the Phase 1 gate.
+**Integration review, September 26:** the user explicitly requested frontend wiring. Implementation `43ca67b` builds on selected files from Deem PR #6 and fixes the missing-alert, board-final-stop and access-count failures. Actual rendered screens pass the hosted Maria flow and remote reset across independent phone/tablet browser contexts. Deem was notified before the shared template and James ACCESS_SUPPORT fixture changes; affected-owner review remains pending.
 
-| Remaining gap | Required behavior and owner |
+| Remaining gate | Required behavior and owner |
 |---|---|
-| Board final stop | Deem: derive **Fill confirmed** from independent pharmacy confirmation; update timestamps/colors, status pill, patient/doctor copy and chime/audio together. A fill does not prove treatment started. |
-| Access total | Deem + Minh: count distinct prescribed cases with independent pharmacy confirmation, deduplicate and calculate TTFF from those events. Show Tiger unavailable/lagging on endpoint errors. |
-| Browser integration | Deem: consume the 1.5-second adapter with initial/reset callbacks, clear cached state and fence old loads/summaries. Show the login link for 401, including QR destinations. |
-| Second wrist alert | Vinh + Deem: agree truthful pharmacy-confirmation copy in the shared templates before implementing a second alert. Do not reuse a treatment-start claim. |
-| Cached labels | Minh + Deem: verify and integrate the actual reviewed label artifact; backend seed placeholders make no fidelity claim. |
+| Owner integration review | Deem + Vinh review PR #9 and reconcile it with PR #6; preserve run-change/login/acknowledgment fixes. |
+| Physical screen run/deployment | Verify on two actual devices using a live-mode build, including patient login/QR destination and reset. Browser contexts are not physical-device evidence. |
+| Second wrist alert | Vinh + Deem review the prepared truthful pharmacy-confirmation template and implement its delivery. Existing reason-alert receipt is confirmed separately. |
+| Cached labels | Minh + Deem verify and integrate the actual reviewed label artifact. |
 
-`21d0a0d` passes 231 application tests, 14 PostgreSQL checks, lint and production build. Real browser form checks cover phone/tablet sessions. Hosted API checks cover both sessions, acknowledgment versus pharmacy signal, reset/stale-run rejection and ETags. They do not establish a rendered-screen two-device checkpoint. See [Deem handoff](../for-vihn.md#implemented-browser-contract-for-pr-6) for exact simulator IDs and callback rules. No notification is sent by the database tests.
+`43ca67b` passes 252 tests, 14 PostgreSQL checks, workflow smoke, lint and production build. Production-mode phone/tablet browser login also passes. The complete rendered workflow distinguishes acknowledgment from pharmacy confirmation, reaches the final board stop and access total 1, survives reload and clears both contexts on reset. The active hosted run is empty afterward. Tiger is explicitly unavailable with practice event counts; no Tiger implementation claim. See [backend handoff](../backend-core.md) for live-mode configuration and the opt-in UI smoke script.
 
 ### Multiple coding tools
 
