@@ -283,7 +283,10 @@ The DocUpdate-styled screens copy structure: dark navy, a purple primary, the bo
 
 - [ ] **Q1:** Does Medvantx or Spark already detect never-filled patients? Ask at the 11 AM workshop. Needs both.
 - [ ] **Q2:** Which Gemini model ID is live? List models at H0 and pin it. Needs Vinh.
-- [ ] **Q3:** Is Notability a challenge or a third sponsor track? Ask #qna. Needs Deem.
+- [x] **Q3:** Is Notability a challenge or a third sponsor track? **A challenge, not a sponsor track** (per our team sponsor book, p. 22 "The other challenges").
+  - Prize: a year of Notability Pro each.
+  - Entry: use Notability in the process (interviews, sketches), then add 2 screenshots and the "Notability" tag to the Devpost.
+  - Still to confirm with the organizer (#qna): whether it stacks with our other entries.
 - [ ] **Q4:** Which `.tech` domain is free (`getfirstdose.tech`, `firstdose-rx.tech`)? Needs Deem.
 
 **Workshop, 11 AM.** Full list and order in the spec; three answers gate the build.
@@ -298,12 +301,30 @@ The DocUpdate-styled screens copy structure: dark navy, a purple primary, the bo
 - [ ] **K1:** Can we quote Keomaria by name in the demo? Needs Deem.
 
 **Phase 6 contract questions.** `mock/` is frozen, so each of these needs Vinh + Deem.
-- [ ] **C1 (6.1):** Where do the seeded week's 10–15 fictional patients live in mock mode (the offline fallback)? What are they called? The screens currently show only Maria and James.
+- [x] **C1 (6.1): names decided (Deem, Sat 11:40).** The seeded week uses randomized, common American names, fictional and labelled "Fictional test records · no PHI". The list is fixed and committed, not generated at runtime, and uses no names of real public figures.
+  - Proposed list for Vinh: Daniel Brooks, Angela Reyes, Kevin Nguyen, Brittany Hall, Marcus Bennett, Tanya Foster, Robert Kim, Jessica Morales, Anthony Price, Linda Walsh, Derek Coleman, Samantha Ortiz, Gregory Hayes.
+  - Drugs: only the two in the catalog (Otezla, Humira).
+  - Insurance: a mix, including at least one Medicare case, which routes to access support.
+  - Maria and James stay the two live demo cases.
+  - **Still Vinh's call:** where they live in mock mode. Proposal: a separate seed fixture that reuses the `patients.json → patients[]` and `events.json → event_shape` shapes, so the existing files' shapes don't change and mock mode shows the same week offline.
 - [ ] **C2 (6.2):** Are "Reached patient / Left message" marks an event, or local-only this weekend?
 - [ ] **C3 (6.8):** The coordinator-approved patient message (and its Spanish version) needs a template key (⚠️ CONTRACT), or an explicit exception to D2.
 - [ ] **C4:** Can the DocUpdate stand-in label extend `<StandIn>` in code (`components/copy/`) rather than `templates.json`? Proposed text (spec, D9): "Concept: FirstDose inside DocUpdate · Not affiliated".
-- [ ] **C5 (4.4):** On the judge's phone, the QR lands on #9's login and a team member types the private code. Accept that, or add a patient-scoped acknowledge-only path (never a token in the QR)? Needs Vinh.
-- [ ] **C6 (6.6):** Minh builds `/api/npi` (proposed), with Vinh reviewing? Needs Vinh + Minh.
+- [ ] **C5 (4.4): Vinh decides.** Deem asks for option A.
+  - **Option A (Deem's pick): a limited patient-only path.**
+    - `/patient/rx_001` renders without the staff login.
+    - Its one command, `POST /api/patient/use`, is accepted without a session only when all of these hold: that case, the active run, `fix_sent` with `RESEND_COPAY_CARD`, and the card not yet used.
+    - It writes the acknowledgment only (`ev_10`), never the fill. It is rate-limited.
+    - Every other screen and command keeps the demo login.
+  - **Option B (fallback): the demo code.**
+    - Keep #9's login, and a team member types the private demo code on the judge's phone once.
+    - The code stays in `.env` and Vercel only: never in this file, a QR, a URL or a `NEXT_PUBLIC_*` variable.
+  - Either way the QR encodes only `<origin>/patient/rx_001`.
+- [ ] **C6 (6.6): Minh and Vinh decide by 1 PM.** Proposal: Minh builds `GET /api/npi` and Vinh reviews its route conventions (session check, cache, rate limit).
+  - Why Minh: it's a read-only public-data client, like the label pipeline.
+  - The API: NPPES v2.1, cached. Verify the field names against a live call. Return taxonomy and address line only, no names to the screen.
+  - It also backs the coordinator's prescriber link (CoverMyMeds-style delegation; see the frontend plan).
+  - If neither has time, 6.6 is cut; it's second in the cut order.
 - [ ] **R1 (6.9):** After W3, change the GitHub repo description, which still says "A skill for Impiricus Ascend…". Deem does it by hand.
 
 ---
@@ -317,4 +338,4 @@ The DocUpdate-styled screens copy structure: dark navy, a purple primary, the bo
 5. Every screen runs on `mock/` with zero network before it's merged.
 6. Every number on screen, in the README, video or Devpost comes from the sourced facts sheet in `notes/`.
 
-_Last updated: Sat Sep 26, 11:15 ET by Deem (four DocUpdate surfaces: W6/W3/W1 remap, D9, 6.3/6.5/6.6/6.11 rows, C5/C6/R1; synced with main 56b5a46)._
+_Last updated: Sat Sep 26, 11:40 ET by Deem (Q3 Notability answered; C1 names decided; C5 options for Vinh; C6 for Minh and Vinh)._
