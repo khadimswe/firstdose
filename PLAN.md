@@ -176,13 +176,14 @@ Spec: `docs/spec-v2-coordinator.md`. Gate: 11 AM answers decide the lead and hea
 |---|---|---|---|---|---|
 | 6.1 | `/sim` "Seed the week": pre-load 10–15 started/waiting patients | Vinh | ⬜ | none | Build now; helps either pitch |
 | 6.2 | `/coordinator` = home screen: summary strip (stuck/waiting/started), sort by time stuck, "Reached patient / Left message" marks, header per Q3 answer | Deem | ⬜ | 11 AM | Medium |
-| 6.3 | `/doctor` shrinks to alerts inbox + before-visit card; order panel labelled "Sent from DocUpdate (stand-in)"; first handoff shows "Invite your coordinator" | Deem | ⬜ | 11 AM | Small |
+| 6.3 | `/doctor` becomes the DocUpdate phone view (phone-width): Rx Alerts card with the "Not started" alert type, Past-Rx fill-status line (Sent → Received → Filled / Stuck + reason), Concierge "Help my patient start" checkbox (deep-links the handoff), Profile "My coordinator" invite. Structure not brand; "Concept: FirstDose inside DocUpdate · Not affiliated" on every styled screen. See spec: four surfaces | Deem | ⬜ | 11 AM | Small |
 | 6.4 | `coordinator_id` on cases + `coordinator_invited` event | Vinh | ⬜ | none | ⚠️ CONTRACT if it touches mock shapes |
 | 6.5 | RxFill-shaped `/sim` events + "raw message" toggle (`NotDispensed`, `RxFillIndicator`), labelled simulated | Vinh | ⬜ | none | Mostly relabeling |
 | 6.6 | `/api/npi`: NPPES lookup + ZIP/taxonomy colleague search, cached; UI "Likely colleagues → Invite", names hidden, "public NPPES record, not users" | Vinh or Minh (API), Deem (UI) | ⬜ | 6.2 | Run from deployed app |
 | 6.7 | `/access` tiles: coordinators active this week, fixes per coordinator (Tiger rollup) | Minh (data), Deem (UI) | ⬜ | 2.3 | Retention proof |
 | 6.8 | ElevenLabs: coordinator-approved patient message, templated, voiced in patient's language (Spanish for Maria) | Deem | ⬜ | 6.2 | Replaces the plain "started" mp3 job |
-| 6.9 | Rewrite `docs/presentation/*` around the coordinator; market-size slide from the spec | Deem | ⬜ | 11 AM | 12–2 PM window |
+| 6.9 | Rewrite `docs/presentation/*` around the coordinator; market-size slide; align README tagline with Q3 answer | Deem | ⬜ | 11 AM | 12–2 PM window |
+| 6.10 | Before/after slide: DocUpdate's real App Store home screenshot beside our `/doctor` (credited, "Not affiliated") | Deem | ⬜ | 6.3 | The one-glance pitch |
 
 **v2 cut order (2 PM):** Grok voice → 6.6 NPPES invite → 6.7 tiles → 6.8 voice message → board "whose move" labels. **Never cut:** coordinator queue with one-tap fix, doctor alert, pharmacy re-run, real DailyMed label, who-sees-what.
 

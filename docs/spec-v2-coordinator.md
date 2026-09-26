@@ -103,6 +103,32 @@ Not in scope for the weekend: real logins, multiple practices, a live DocUpdate 
 | Solana | Skip. Crypto reads badly to pharma judges and adds a money flow to explain | — | Skip |
 | CMS Open Payments | Don't touch. Clashes with "never paid per prescription" | — | Never |
 
+## FirstDose inside DocUpdate: the four surfaces
+
+Full teardown: `docs/research/docupdate-teardown.md`. The judge wants proof we know the product end to end; this is that proof, on screen.
+
+**New evidence to lead with (stronger than the FAQ line):**
+- DocUpdate published its own article, **"Prescription Abandonment: The Prescription Was Sent. The Patient Still Never Started It."** (Jul 9, 2026). They named our problem themselves. Open with it.
+- The rails already exist in the app: an **Alerts Center** (v4.0.0, "real-time pharmacy and renewal alerts"), **savings-card attachment** on eligible scripts (v6.3.0, Jul 2026), and **Concierge** for samples and reps. FirstDose adds one alert type, one status line, one checkbox and one profile row — not a new app.
+- Two named signal paths: per-script **RxFill** (`RxFillIndicator`; needs certification and pharmacy participation) or licensing **Surescripts First-Fill Abandonment** (launched Oct 15, 2025; **Oracle announced it's exploring it Sept 24, 2026** — two days ago, so the window is now). Neither gives the *reason*; the reason + one-tap fix is FirstDose's own layer.
+- Coordinator login has an industry model to copy: **CoverMyMeds delegation** — staff identity, approved by a verified NPI-1 prescriber, under the practice's NPI-2. One slide line: "Staff accounts, the way CoverMyMeds already does them."
+- Competitors (Doximity/Photon, iPrescribe, MDToolbox) fight abandonment **before** pickup with price transparency. None closes the loop **after** a non-fill with a reason and a routed fix. That's the uncrowded claim, verified.
+
+**The four surfaces (phone = the doctor's DocUpdate view):**
+
+| # | DocUpdate today | FirstDose adds | Build size |
+|---|---|---|---|
+| 1 | Home → Rx Alerts card: "Generic Substitution · John Smith · Oxytocin · Resolve" | New alert type, same card anatomy: **"Not started · Maria Lopez · Otezla · Copay not applied → Send to coordinator."** The whole pitch in one screenshot | Priority 1 |
+| 2 | Patient Details → Past Prescriptions list | One status line per script: **Sent → Received → Filled**, or **⚠ Stuck + reason** (the fill status their FAQ says they don't have) | Priority 2 |
+| 3 | Concierge checkboxes: Request Free Samples · Speak with a Rep · Custom | Add **"Help my patient start"** — routes to the same Wallet / QPharma / Medvantx rails via the existing fix flow | Cosmetic; deep-link the handoff |
+| 4 | Profile | **"My coordinator"** + invite — the staff account their FAQ says "isn't live yet" | Cosmetic |
+
+**The split that frames the demo:** DocUpdate is iPhone-only with no staff accounts. So the **phone is the doctor's DocUpdate view** (surfaces 1–4) and the **desktop is the coordinator's queue** — the thing DocUpdate cannot do today. Phone beside desktop *is* the pitch picture, and the before/after slide (their real App Store home screenshot next to ours) is the one-glance version.
+
+**Brand rules (also the trademark line):** copy structure, never brand — dark navy, purple primary, bottom tab bar, card anatomy are fine; our own name and logo; every DocUpdate-styled screen carries **"Concept: FirstDose inside DocUpdate · Not affiliated."** Their real screenshots appear only on the comparison slide, credited to the App Store. Never their logo or wordmark inside our UI.
+
+**Repo consistency:** judges may find this public repo, and the README still opens with "a skill for Impiricus Ascend." Align the tagline with the Q3 answer after the workshop (part of task 6.9).
+
 ## The 4-minute demo
 
 Judge 1 = coordinator. Judge 2 = doctor (wears the watch), then becomes Maria via QR. Vinh runs `/sim` and the pharmacy. One judge only: they play the coordinator, Vinh wears the watch, a spare phone plays Maria.
@@ -146,13 +172,13 @@ Judge 1 = coordinator. Judge 2 = doctor (wears the watch), then becomes Maria vi
 ## Questions to ask
 
 **Impiricus workshop, 11 AM, in this order:**
-1. "Do you count practice staff, like access coordinators and medical assistants, as HCPs you'd want to reach?" Yes → lead with the coordinator. No → lead with the doctor; the coordinator is the practice user.
-2. "Does DocUpdate tell the prescriber whether a script was filled, or why not?" No → confirms the gap. Partly → pitch the reason and the fix, not the status.
-3. "If you built this, would it live inside DocUpdate, or in Ascend as a skill?" DocUpdate → header "FirstDose for DocUpdate · Access queue." Ascend → "An Ascend skill for the practice." Demo and code unchanged either way.
-4. "What do doctors open DocUpdate for today, and what makes them stop?"
-5. "For Market Access, which matters more: patients recovered, or time to first fill?"
-6. "Your FAQ says staff accounts are on the roadmap. What should a staff account do first?"
-7. "DocUpdate is on Surescripts. Is RxFill turned on, and could a partner skill consume it?"
+1. "Your FAQ says staff accounts are on the roadmap. What should a staff account do first?"
+2. "You published *'The Prescription Was Sent. The Patient Still Never Started It.'* in July. What's the product plan behind that article?"
+3. "If you built this, would it live inside DocUpdate, or in Ascend as a skill?" DocUpdate → header "FirstDose for DocUpdate." Ascend → "An Ascend skill for the practice." Demo and code unchanged either way.
+4. "Is DocUpdate certified for RxFill (`RxFillIndicator`) today, or is licensing Surescripts First-Fill Abandonment the likelier path?"
+5. "The v6.3.0 savings cards — structured secondary coverage or a pharmacy note? Are they Wallet programs?"
+6. "Do you count practice staff, like access coordinators and MAs, as HCPs you'd want to reach?" Yes → lead with the coordinator. No → lead with the doctor; the coordinator is the practice user.
+7. "For Market Access, which matters more: patients recovered, or time to first fill?"
 
 **Keomaria (10 minutes, with permission):**
 1. "Who in your office finds out when a patient never starts a new medicine, and how?"
