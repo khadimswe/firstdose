@@ -53,6 +53,7 @@ Sat Sep 26, 2026 · Deem. Paste-ready content, not a rendered deck. The 4-minute
   - Spark triggers on "First-Time Prescriptions".
   - Wallet delivers co-pay resources by QR.
 - **Say:** "FirstDose adds the fill signal and the reason, and routes to fixes you already run."
+- **The Impiricus rule, in one line:** "We didn't rebuild anything Impiricus ships. FirstDose adds the step after the prescription is sent, reaches a person Impiricus has never reached, and uses Wallet, Concierge and the sample partners as the fix."
 
 ### 9. Trust and the buyer
 - **On slide:** the who-sees-what split. "Market Access pays per confirmed first fill, never per prescription. Pharma sees counts only."
@@ -66,7 +67,7 @@ Sat Sep 26, 2026 · Deem. Paste-ready content, not a rendered deck. The 4-minute
 - **Problem:** The prescription was sent. Nobody in the office can see whether the patient got it, or why not.
 - **What it does:** Catches the prescriptions that stall, says why, routes the one fix that matches, and tells the doctor only when it matters.
 - **Where it lives:** An Impiricus Ascend skill that shows up in DocUpdate. The coordinator works a desktop queue; the doctor approves on the phone.
-- **Disclosure:** Fictional patients. Simulated pharmacy, hub and partner services, each labelled on screen. A pharmacy fill confirmation doesn't prove a first dose. "Concept: FirstDose inside DocUpdate · Not affiliated."
+- **Disclosure:** Synthetic patients and pharmacy activity; Impiricus, Wallet and partner names shown as a concept (PLAN D3). A pharmacy fill confirmation doesn't prove a first dose. "Concept: FirstDose inside DocUpdate · Not affiliated."
 - **Team:** Vinh: workflow, backend and watch. Minh: verified labels, AI and analytics. Deem: screens, product and presentation. Stephen: iPhone build.
 - **QR:** firstdose.vercel.app. Test it on a stranger's phone before printing (4.4).
 
@@ -80,6 +81,9 @@ Sat Sep 26, 2026 · Deem. Paste-ready content, not a rendered deck. The 4-minute
 | Your job post says DocUpdate isn't building software for administrators. | That's why the doctor stays in the loop: the doctor approves the coordinator, gets the alert, and nothing is signed or changed without them. |
 | How would a coordinator log in? | Staff link to a prescriber by NPI, and the prescriber approves them in DocUpdate. It's the CoverMyMeds delegation model, without the fax code. |
 | Is that DocUpdate on the phone? | No. It's a concept built on DocUpdate's structure and labelled "Not affiliated". Their real screen appears only on the comparison slide, credited to the App Store. |
+| Did you rebuild DocUpdate or anything Impiricus ships? | No. Everything tagged "New · FirstDose" is ours: the fill-status alert, the before-visit note, the fill status line, "Help my patient start" and "My coordinator". Everything untagged is DocUpdate today. Wallet, Concierge, QPharma and Medvantx are the fixes we route to, not things we rebuilt. In the demo, move through New Rx fast. |
+| Doesn't Spark already watch new prescriptions? | Spark fires when a prescription is written, to engage the doctor. FirstDose fires when it isn't filled, and routes the fix to the practice. Different moment, different person. |
+| Do you text the patient? | No. There's no SMS anywhere. The patient opens a web page from a QR code, and the ElevenLabs message plays there. The watch alert is a push notification through ntfy. |
 | Who sees Maria's name? | Only the practice: the doctor's DocUpdate view and the coordinator's queue. Pharma sees counts. |
 | Won't doctors ignore more alerts? | They get only the alerts that need them, plus a note before the visit. Silence means it worked. |
 | Does the patient's tap mean they took it? | No. The tap is acknowledgment only. A separate pharmacy confirmation records the fill, and even that doesn't prove a first dose. |

@@ -17,6 +17,29 @@ import type { MetricEvent } from './project';
 
 export type { MetricEvent } from './project';
 
+/**
+ * pg merges the parsed connection string OVER the config object, so a
+ * URL SSL option can replace our verified ssl object. Remove those options
+ * without re-encoding credentials or unrelated query parameters.
+ */
+export function stripSslParams(url: string): string {
+  const queryStart = url.indexOf('?');
+  if (queryStart === -1) return url;
+  const base = url.slice(0, queryStart);
+  const query = url.slice(queryStart + 1);
+  const stripped = ['ssl', 'sslmode', 'sslcert', 'sslkey', 'sslrootcert', 'uselibpqcompat', 'sslnegotiation'];
+  const kept = query.split('&').filter((part) => {
+    const key = new URLSearchParams(part).keys().next().value;
+    return key !== undefined && !stripped.includes(key);
+  });
+  return kept.length > 0 ? `${base}?${kept.join('&')}` : base;
+}
+
+/** Verify the certificate chain and hostname using Node's trusted CAs. */
+export function tigerSsl(): { rejectUnauthorized: true } {
+  return { rejectUnauthorized: true };
+}
+
 let pool: Promise<import('pg').Pool> | undefined;
 
 /** URL options cannot override the server's verified TLS or finite timeouts. */
@@ -181,7 +204,7 @@ async function querySummary(current: AnalyticsPool, runId: string): Promise<Acce
   const medianRaw = fillRow.median_ttff_seconds;
   const median = medianRaw === null || medianRaw === undefined
     ? null
-    : numberFromSql(medianRaw);
+    : Math.round(numberFromSql(medianRaw));
   if (!Number.isSafeInteger(recovered) || (recovered === 0) !== (median === null)) throw new Error('analytics_unavailable');
 
   const reasonTally: Partial<Record<ReasonKey, number>> = {};

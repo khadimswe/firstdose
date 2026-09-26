@@ -116,7 +116,7 @@ export function CaseSheet({
               </Section>
 
               {canMessage && c && (
-                <Section title="Message to the patient · ElevenLabs voice">
+                <Section title="Message on the patient's card page · ElevenLabs voice">
                   <MessageDeliveryStatus {...delivery} />
                   {message ? (
                     <>
@@ -125,7 +125,7 @@ export function CaseSheet({
                         {templates.patient_message.sent} ·{" "}
                         {new Date(message.approved_at).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
                       </p>
-                      <p role="status" className="text-xs text-muted-foreground">{message.acknowledged_at ? "Message acknowledged" : "Awaiting message acknowledgment"}</p>
+                      <p role="status" className="text-xs text-muted-foreground">{message.acknowledged_at ? "Message acknowledged" : "Waiting for the patient to acknowledge"}</p>
                     </>
                   ) : (
                     <>

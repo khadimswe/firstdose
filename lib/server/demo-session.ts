@@ -1,7 +1,8 @@
 import { createHash, createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 
 type Env = Record<string, string | undefined>;
-const lifetime = 12 * 60 * 60;
+// Seven days, so demo devices stay signed in through the event.
+const lifetime = 7 * 24 * 60 * 60;
 const equal = (a: string, b: string) => timingSafeEqual(createHash("sha256").update(a).digest(), createHash("sha256").update(b).digest());
 const secure = (request: Request, env: Env) => env.NODE_ENV === "production" || new URL(request.url).protocol === "https:";
 const name = (request: Request, env: Env) => secure(request, env) ? "__Host-firstdose_demo" : "firstdose_demo";

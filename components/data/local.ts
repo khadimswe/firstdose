@@ -7,6 +7,7 @@
 // approval also travels as the handoff event, so the desktop still sees it.
 import { useEffect, useSyncExternalStore } from "react";
 
+import { QR_CASE_ID } from "./catalog";
 import { useEvents } from "./useEvents";
 
 const KEY = "firstdose:local";
@@ -53,9 +54,9 @@ function read(): LocalState {
 
 function readMessages(value: unknown): Record<string, PatientMessage> {
   if (!isRecord(value)) return {};
-  const m = value.rx_001;
+  const m = value[QR_CASE_ID];
   if (!isRecord(m) || (m.lang !== "en" && m.lang !== "es") || typeof m.at !== "number" || !Number.isFinite(m.at)) return {};
-  return { rx_001: { lang: m.lang, at: m.at,
+  return { [QR_CASE_ID]: { lang: m.lang, at: m.at,
     ...(typeof m.acknowledgedAt === "number" && Number.isFinite(m.acknowledgedAt) ? { acknowledgedAt: m.acknowledgedAt } : {}),
   } };
 }
@@ -122,7 +123,7 @@ export const local = {
     write({ ...state, requests: [...state.requests, { id: `req_${at}`, npiLast4, at }] });
   },
   sendMessage(caseId: string, lang: MessageLang) {
-    if (caseId !== "rx_001" || (lang !== "en" && lang !== "es") || state.messages[caseId]) return;
+    if (caseId !== QR_CASE_ID || (lang !== "en" && lang !== "es") || state.messages[caseId]) return;
     write({ ...state, messages: { ...state.messages, [caseId]: { lang, at: Date.now() } } });
   },
   acknowledgeMessage(caseId: string) {

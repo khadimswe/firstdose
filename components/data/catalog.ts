@@ -59,7 +59,7 @@ export const ALL_EVENTS: FillEvent[] = (() => {
   return [...WEEK_EVENTS, ...WEEK_ACTIONS, ...SCRIPT].filter((e) => !seen.has(e.id) && seen.add(e.id));
 })();
 
-/** The case the patient QR opens: the scripted case whose savings card is issued. */
+/** The case the patient QR opens: the scripted case whose savings card is issued. It's also the only case with a patient message (C3). */
 export const QR_CASE_ID: string =
   SCRIPT.find((e) => e.type === "copay_card_sent")?.case_id ?? CATALOG.cases[0].id;
 

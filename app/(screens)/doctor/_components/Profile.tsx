@@ -10,6 +10,7 @@ import { useLocal } from "@/components/data/local";
 import { useEvents } from "@/components/data/useEvents";
 
 import { CanList, ProfileApprove } from "./ApproveSheet";
+import { NewTag } from "./NewTag";
 
 /** Surface 4: "My coordinator", the staff account DocUpdate's FAQ says isn't live yet. */
 export function Profile() {
@@ -42,9 +43,12 @@ export function Profile() {
 
       <section className="space-y-3 rounded-2xl bg-white p-4 text-foreground shadow-sm" aria-labelledby="my-coordinator">
         <div className="flex items-center justify-between gap-2">
-          <h2 id="my-coordinator" className="font-semibold">
-            My coordinator
-          </h2>
+          <div className="flex items-center gap-2">
+            <h2 id="my-coordinator" className="font-semibold">
+              My coordinator
+            </h2>
+            <NewTag />
+          </div>
           {linked ? (
             <span className="inline-flex items-center gap-1 rounded-full bg-started/15 px-2 py-0.5 text-xs font-medium text-started">
               <BadgeCheck className="size-3.5" /> Linked
@@ -60,7 +64,7 @@ export function Profile() {
         </p>
         <CanList />
         {coordinator.live && <>
-          <p role="status" aria-atomic="true" className="text-sm">{linked ? "Coordinator approval is saved for this run." : coordinator.pending ? "Saving coordinator link…" : coordinator.ready ? pending ? "Coordinator request is waiting for approval." : "No coordinator link is saved for this run." : "Checking saved coordinator links…"}</p>
+          <p role="status" aria-atomic="true" className="text-sm">{coordinator.pending ? "Saving…" : !coordinator.ready ? "Checking…" : ""}</p>
           <p role="alert" className="text-sm text-stuck">{coordinator.error}</p>
           {coordinator.loginPath && <a href={coordinator.loginPath} className="text-sm underline">Sign in to continue</a>}
           {coordinator.error && <Button variant="outline" onClick={() => void coordinator.refresh()}>Reconnect</Button>}

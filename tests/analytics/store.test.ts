@@ -47,10 +47,10 @@ describe('Tiger payload and summary boundary', () => {
     expect(storage.payloadHash(event)).toBe(createHash('sha256').update([event.run_id, event.script_id, event.case_hash, event.at, event.kind, ''].join('\u0000')).digest('hex'));
   });
 
-  it('preserves fractional seconds from SQL and normalizes numeric strings', async () => {
-    const query = vi.fn().mockResolvedValueOnce({ rows: [{ recovered: '2', median_ttff_seconds: '0.495' }] }).mockResolvedValueOnce({ rows: [{ reason: 'PA_REQUIRED', count: '1' }] });
+  it('rounds the SQL median once, like the oracle, and normalizes numeric strings', async () => {
+    const query = vi.fn().mockResolvedValueOnce({ rows: [{ recovered: '2', median_ttff_seconds: '90.6' }] }).mockResolvedValueOnce({ rows: [{ reason: 'PA_REQUIRED', count: '1' }] });
     const store = storage.createAnalyticsStore({ query } as unknown as Pick<Pool, 'connect' | 'query'>);
-    expect(await store.getAccessSummary('run')).toEqual({ recovered: 2, median_ttff_seconds: 0.495, reason_tally: { PA_REQUIRED: 1 } });
+    expect(await store.getAccessSummary('run')).toEqual({ recovered: 2, median_ttff_seconds: 91, reason_tally: { PA_REQUIRED: 1 } });
   });
 
   it.each([

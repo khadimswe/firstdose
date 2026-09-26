@@ -8,14 +8,14 @@ export function MessageDeliveryStatus({ ready, pending, error, refresh }: {
 }) {
   const pathname = usePathname();
   const description = error === "unauthorized" ? "Sign in to load messages."
-    : error === "stale_run" ? "The workflow was reset. Review the current state before trying again."
-    : error === "invalid_transition" ? "Message approval is unavailable or a different language was already approved."
-    : error ? "Messages could not be synchronized. Try again."
-    : pending ? "Saving message…" : !ready ? "Loading messages…" : "";
+    : error === "stale_run" ? "This case was reset. Reload to see the latest."
+    : error === "invalid_transition" ? "This message was already sent."
+    : error ? "Couldn't load the message. Try again."
+    : pending ? "Sending…" : !ready ? "Loading…" : "";
   return <div className="space-y-2">
     <p role="status" aria-atomic="true" className="text-sm text-muted-foreground">{description}</p>
     {error && (error === "unauthorized"
       ? <a className="text-sm underline" href={`/api/demo-login?next=${encodeURIComponent(pathname)}`}>Sign in</a>
-      : <Button variant="outline" size="sm" onClick={() => { void refresh(); }}>Retry message sync</Button>)}
+      : <Button variant="outline" size="sm" onClick={() => { void refresh(); }}>Try again</Button>)}
   </div>;
 }
