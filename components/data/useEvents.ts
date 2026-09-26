@@ -4,9 +4,17 @@
 import { useMemo, useSyncExternalStore } from "react";
 
 import { CATALOG, SCRIPT } from "./catalog";
-import { accessSummary, beats, deriveCases } from "./derive";
+import { accessSummary, beats, canActOn, deriveCases } from "./derive";
 import { DATA_MODE, REQUESTED_MODE, type DataMode } from "./mode";
-import { getServerSnapshot, getSnapshot, setFired, subscribe } from "./store";
+import {
+  getOverride,
+  getServerOverride,
+  getServerSnapshot,
+  getSnapshot,
+  setFired,
+  subscribe,
+  type Override,
+} from "./store";
 import type {
   AccessSummary,
   Beat,
@@ -45,7 +53,16 @@ const ACTION_EVENTS: Record<ScreenAction, EventType[]> = {
   use_card: ["copay_card_used", "started"],
 };
 
+function currentCase(caseId: string) {
+  const ids = new Set(getSnapshot());
+  const fired = SCRIPT.filter((e) => ids.has(e.id));
+  return deriveCases(CATALOG, fired).find((c) => c.id === caseId);
+}
+
 async function act(action: ScreenAction, caseId: string) {
+  // Same guard the button uses, checked again at tap time: a double tap is a no-op.
+  const c = currentCase(caseId);
+  if (!c || !canActOn(action, c)) return;
   for (const type of ACTION_EVENTS[action]) {
     const next = nextEvent(new Set(getSnapshot()), caseId, type);
     if (!next) return;
@@ -60,6 +77,8 @@ async function reset() {
 
 export type EventsApi = {
   mode: DataMode;
+  /** This tab is frozen (?upto=) or replaying (?replay=1), and ignores other tabs. */
+  override: Override;
   /** Every event in mock/events.json. Only /sim should need this. */
   script: FillEvent[];
   beats: Beat[];
@@ -80,24 +99,29 @@ export type EventsApi = {
 
 export function useEvents(): EventsApi {
   const ids = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const override = useSyncExternalStore(subscribe, getOverride, getServerOverride);
 
   return useMemo(() => {
     const firedIds = new Set(ids);
     const fired = SCRIPT.filter((e) => firedIds.has(e.id));
+    const cases = deriveCases(CATALOG, fired);
     return {
       mode: DATA_MODE,
+      override,
       script: SCRIPT,
       beats: BEATS,
       fired,
       firedIds,
-      cases: deriveCases(CATALOG, fired),
+      cases,
       catalog: CATALOG,
       access: accessSummary(fired),
       fire,
       act,
-      canAct: (action, caseId) =>
-        nextEvent(firedIds, caseId, ACTION_EVENTS[action][0]) !== undefined,
+      canAct: (action, caseId) => {
+        const c = cases.find((x) => x.id === caseId);
+        return c !== undefined && canActOn(action, c);
+      },
       reset,
     };
-  }, [ids]);
+  }, [ids, override]);
 }

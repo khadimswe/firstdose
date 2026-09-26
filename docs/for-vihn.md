@@ -23,7 +23,12 @@ Mock mode only syncs tabs on one laptop. For the iPad, the judge's phone and the
   - `accessSummary()`: `GET /api/access/summary`
 - [ ] Keep each row's `id` equal to the mock event id (`ev_01`...) so `/sim` can tick off fired beats
 - [ ] `/api/sim/reset` endpoint
-- [ ] (optional) `public/audio/started-maria.mp3` for the ElevenLabs line. The board only has the WebAudio chime today; Deem wires the mp3 once the file exists
+
+## Before you push (Sat 2026-09-26)
+
+- [ ] Pull `main` first. The shadcn install changed `package.json` and `package-lock.json`. Keep both dependency sets and run `npm install` to regenerate the lockfile; don't hand-merge it.
+- [ ] Implement `EventSource` from `components/data/types.ts` as it is on `main` (it includes `act()`).
+- [ ] `docs/architecture.md` (yours): the "Frontend contract" section still shows the old `useEvents()` shape; point it at `components/data/types.ts`. It also says `/api/sim/fire { event_id }` while IMPLEMENTATION 1.9 says `{ ids }`. Pick one; `lib/realtime.ts` hides it from the screens either way.
 
 ## Template change to agree on (from the design pass)
 

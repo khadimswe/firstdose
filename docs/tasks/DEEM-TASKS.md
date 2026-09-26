@@ -12,7 +12,7 @@ Legend: [ ] not started · [-] in progress · [x] done · [!] blocked
 |---|---|---|
 | `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID` | elevenlabs.io with the MLH code | 4.2 |
 | `.tech` domain | get.tech with the MLH code; try `getfirstdose.tech`, `firstdose-rx.tech` | Q4, submission |
-| Vercel | vercel.com, project `firstdose-web`, invite Vihn | 2.6 |
+| Vercel | vercel.com, project `firstdose-web`, invite Vinh | 2.6 |
 | `OPENAI_API_KEY`, `OPENAI_BASE_URL` | live.hexlabs.org (only if used) | none yet |
 
 ---
@@ -23,10 +23,10 @@ Files you own exclusively:
 - `app/(screens)/**`
 - `components/**`
 - `app/page.tsx`, `app/layout.tsx`, `app/globals.css`
-- Presentation publication and screen documentation. Phase/task documents are updated by their owners; coordinate root README/PLAN edits. Submission source is `docs/submission.md`; reconcile `docs/presentation/submission-draft.md` before finalizing.
+- Presentation publication and screen docs. Module owners maintain their reference docs; coordinate root README/PLAN changes. Submission draft: `docs/submission.md`.
 - `.github/workflows/**`
 
-Shared (⚠️ CONTRACT commits, tell Vihn first): `mock/*.json`, `package.json`.
+Shared (⚠️ CONTRACT commits, tell Vinh first): `mock/*.json`, `package.json`.
 
 ---
 
@@ -40,23 +40,24 @@ Shared (⚠️ CONTRACT commits, tell Vihn first): `mock/*.json`, `package.json`
 
 ## Phase 1: Core loop (Sat 12 AM to 4 AM)
 - [x] **1.1** Foundation: catalog, `derive.ts`, `useEvents()` mock source, `fill()`, `StandIn`, `LabelCard`, shadcn init. Merge before any screen.
-- [x] **1.2** Push `components/data/types.ts` (`EventSource`) and tell Vihn.
+- [x] **1.2** Push `components/data/types.ts` (`EventSource`) and tell Vinh.
 - [x] **1.3** `/sim` bare.
 - [x] **1.4** `/doctor`.
 - [x] **1.5** `/coordinator`.
 - [x] **1.6** `/patient/[id]`.
+- [-] **1.13** Wire `useEvents()` to Vinh's `lib/realtime.ts` (live source; buttons enabled by case state). Needed for the checkpoint.
 
-**CHECKPOINT Sat 4 AM:** Maria's loop across two devices in `supabase` mode.
+**Checkpoint:** follow the current Maria core gate in PLAN.md; the original 4 AM target is superseded.
 
 ## Phase 2: The wow + deploy (Sat 4 AM to 11 AM)
 - [x] **2.1** `/board`.
-- [x] **2.2** James case + before-visit card.
+- [-] **2.2** James case + before-visit card (real boxed warning waits on 1.10).
 - [x] **2.4** `/access`.
 - [ ] **2.6** Vercel deploy.
-- [ ] **2.7** `/sim` extras (`?upto=`, `?replay=1`, Autoplay).
+- [x] **2.7** `/sim` extras (`?upto=`, `?replay=1`, Autoplay).
 
 ## Phase 3-4 (Sat 11 AM to 6 PM)
-- [ ] **3.1** Impiricus workshop with Vihn.
+- [ ] **3.1** Impiricus workshop with Vinh.
 - [ ] **4.2** ElevenLabs "started" mp3.
 - [-] **4.3** Design pass.
 - [ ] **4.4** QR flow on a stranger's phone.
@@ -76,6 +77,4 @@ Shared (⚠️ CONTRACT commits, tell Vihn first): `mock/*.json`, `package.json`
 3. Never reword label text. Every patient sentence comes from `mock/templates.json`.
 4. Every screen runs on `mock/` with zero network before merge.
 
-## Integration handoff
-
-Use [separate branches and reviewed PRs](../branch-workflow.md). Deem owns optional microphone capture and transcript/case confirmation UI; Vinh owns Grok backend. Minh supplies verified labels, classifier and analytics. Checked-off James/before-visit UI does not imply verified label data. Current contract corrections remain in [Phase 0](../phases/phase-0-contract-and-readiness.md).
+Live wiring handoff: Vinh implements `EventSource`; Minh supplies labels/classifier/analytics. Deem owns optional microphone capture and confirmed-action UI. `POST /api/sim/fire` uses `{ ids: string[] }`; the adapter hides this HTTP detail from screens.

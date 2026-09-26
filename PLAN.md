@@ -4,13 +4,15 @@
 
 This dashboard is the execution source of truth. Keep presentation work in `docs/presentation/`; freeze the other planning/audit documents as reference snapshots. Do not maintain parallel schedules. This local revision responds to review and awaits team feedback; it does not change the shared mock contract or merge itself into main.
 
+**Synced source:** main `b11a01e` includes state-based button guards and replay/autoplay; backend remains pending. `/api/sim/fire` is standardized as `{ ids: string[] }` in `docs/architecture.md`.
+
 **Immediate work:** Vinh tests the physical ntfy -> iPhone -> Garmin path and leads the minimal contract/backend; Minh verifies and caches Otezla label content; Deem deploys the current mock build and wires the existing hook when the adapter is ready. No new screens are required for the first gate.
 
 **Rebaseline:** retire the 4 AM promise. Target a Saturday morning core check around 7 AM, conditional on the initial watch/deployment/contract results; record actual progress rather than another guaranteed estimate. Maria alone is the first gate. Keep 2 PM scope review, 6 PM footage and 9 PM claim freeze as internal targets; confirm the official submission cutoff.
 
 **Small contract review:** separate acknowledgment from simulator dispensing; add UNKNOWN and a government-coverage block; add run identity with an explicit run-change/reconnect path; enforce unique `(run_id, script_id)`. Time-box the review to 45 minutes. Preserve simple server-side validated, atomic transitions; a unique event constraint alone does not prevent races or duplicate external notifications. Use prepared fictional eligibility evidence rather than a full eligibility engine. Do not infer card eligibility from commercial insurance alone.
 
-**Thin backend:** reuse scripted rows and the existing EventSource seam. One shared command implementation can serve the agreed routes; a new `/api/act` is optional, not required to rename every API. Deem must still wire `useEvents()` because it currently forces mock mode. Keep basic database grants/RLS and guarded writes; a full production identity system is outside this demo. Privacy separation may be presented as proposed unless implemented and verified.
+**Thin backend:** reuse scripted rows and the existing EventSource seam. One shared command implementation can serve the agreed routes; a new `/api/act` is optional, not required to rename every API. Deem reports live wiring ready on `feat/live-source`, waiting for Vinh's adapter. Main still runs mock mode; that unpushed branch has not been independently inspected here. Keep basic database grants/RLS and guarded writes; a full production identity system is outside this demo. Privacy separation may be presented as proposed unless implemented and verified.
 
 **Labels:** Otezla first, cached before the demo. Proposed fidelity rule: literal text from a deterministically extracted SPL section, preserving section code, source/version and source hash; an altered character must fail verification. Coordinate that contract change before claiming `byte_exact`; a hash does not prove source authenticity by itself. Humira follows only after the core works.
 
@@ -111,7 +113,7 @@ Current objective, scope and claim boundaries: [product proposal](docs/product-p
 | 1.2 | `EventSource` interface published to Vinh | `components/data/types.ts` | **Deem** | ✅ | 1.1 | ⚠️ CONTRACT. Vinh implements it in 1.9. |
 | 1.3 | `/sim` bare: Reset + Fire per beat | `app/(screens)/sim/**` | **Deem** | ✅ | 1.1 | Drives every other screen in a second tab. |
 | 1.4 | `/doctor`: prescribe → label card → alert → "Send to my coordinator" | `app/(screens)/doctor/**` | **Deem** | ✅ | 1.1 | iPad 1180×820. Never suggests a drug. |
-| 1.5 | `/coordinator`: queue card, ONE fix button | `app/(screens)/coordinator/**` | **Deem** | ✅ | 1.1 | Phone 390×844. |
+| 1.5 | `/coordinator`: work queue, ONE fix button per case | `app/(screens)/coordinator/**` | **Deem** | ✅ | 1.1 | Desk-first table (md and up); cards + pinned fix button on a phone (390×844). |
 | 1.6 | `/patient/[id]`: Wallet pass stand-in, "Use at pharmacy" | `app/(screens)/patient/[id]/**` | **Deem** | ✅ | 1.1 | No barcode, BIN/PCN or member number. |
 | 1.7 | Supabase schema: `patients`, `drugs`, `rx_cases`, `fill_events`, `labels`; seed from `mock/` | `supabase/migrations/**`, `scripts/seed.ts` | **Vinh** | ⬜ | 0.4, 0.6 | Field names identical to `mock/`. |
 | 1.8 | Router + table test (every reason × insurance; Medicare never gets a copay card) | `lib/server/router.ts`, `tests/router.test.ts` | **Vinh** | ⬜ | 0.4 | Pure function over `reasons.json → router.rows`. No AI. |
@@ -119,6 +121,7 @@ Current objective, scope and claim boundaries: [product proposal](docs/product-p
 | 1.10 | Label pipeline: RxNorm → DailyMed SPL → `labels` + byte-exact test | `lib/server/label.ts`, `tests/label.test.ts`, `mock/labels.json` | **Minh** | ⬜ | 0.6 | Setids hardcoded. Fills RxCUIs + `labels.json`. |
 | 1.11 | Action routes: `/api/rx`, `/api/handoff`, `/api/fix`, `/api/patient/use` | `app/api/**` | **Vinh** | ⬜ | 1.7, 1.8 | Guarded transitions so a double tap can't double-fire. |
 | 1.12 | ntfy on `alert_sent` and `started` | `lib/server/ntfy.ts` | **Vinh** | ⬜ | 0.8, 1.9 | Action button → `/api/handoff`. |
+| 1.13 | Wire `useEvents()` to `lib/realtime.ts`: live source, buttons enabled by case state | `components/data/**` | **Deem** | 🟡 | 1.9 | Built on local branch `feat/live-source`, tested against a stand-in `EventSource`; merges as soon as 1.9 lands. Button guards already on `main`. |
 
 **CORE CHECKPOINT, Saturday morning:** Maria across two devices: prescribe -> barrier -> physical wrist alert -> reviewed coordinator handoff -> resource acknowledgment (still pending) -> separate simulated pharmacy confirmation -> first fill observed. If it fails, stop optional provider work and fix the loop.
 
@@ -127,12 +130,12 @@ Current objective, scope and claim boundaries: [product proposal](docs/product-p
 | # | Component | File(s) | Owner | Status | Deps | Notes |
 |---|---|---|---|---|---|---|
 | 2.1 | `/board` Relay Board: lanes, red stop, price counter, WebAudio chime | `app/(screens)/board/**` | **Deem** | ✅ | 1.1 | 1920×1080 dark. Sound needs one click to enable. |
-| 2.2 | James case on every screen + before-visit card with label renderer (verified source pending) | `app/(screens)/doctor/**` | **Deem** | ✅ | 1.4, 1.10 | Frontend built; source data and fidelity gate remain pending with Minh. |
+| 2.2 | James case on every screen + before-visit card with real boxed warning | `app/(screens)/doctor/**` | **Deem** | 🟡 | 1.4, 1.10 | Template only, never free text. Built; the real boxed warning appears when 1.10 fills `labels.json`. |
 | 2.3 | Tiger Data: `fill_events` hypertable + `daily_ttff` + `/api/access/summary` | `lib/server/tiger.ts`, `app/api/access/**` | **Minh** | ⬜ | 1.7 | Dual-write, no patient names. |
 | 2.4 | `/access`: KPI tiles, reason bars, who-sees-what | `app/(screens)/access/**` | **Deem** | ✅ | 1.1, 2.3 | Type has no patient fields. |
 | 2.5 | Gemini classifier: note → reason enum (`responseSchema`) | `lib/server/classify.ts` | **Minh** | ⬜ | 0.6 | List models at startup. ≤ 140 chars in, enum out. |
 | 2.6 | Vercel deploy (`firstdose-web`) | `.vercel/` | **Deem** | ⬜ | 1.9 | Check `.vercel/project.json` before every `--prod`. |
-| 2.7 | `/sim` extras: `?upto=`, `?replay=1`, Autoplay | `app/(screens)/sim/**` | **Deem** | ⬜ | 1.3 | Offline fallback for the board. |
+| 2.7 | `/sim` extras: `?upto=`, `?replay=1`, Autoplay | `app/(screens)/sim/**` | **Deem** | ✅ | 1.3 | Offline fallback for the board. `?replay=1&speed=N` loops one tab. |
 
 ### Phase 3: Sponsor check (Sat 11 AM to 12 PM)
 
@@ -171,7 +174,7 @@ Full detail in `docs/architecture.md`. Summary:
 | Contract | Owner | Consumers | Definition |
 |---|---|---|---|
 | `mock/*.json` shapes | both | everyone | Frozen. Changes are ⚠️ CONTRACT commits. |
-| `useEvents()` | Deem | all screens | `{ mode, script, fired, cases, catalog, access, fire(ids), fireNext(caseId, type), reset() }` |
+| `useEvents()` | Deem | all screens | `{ mode, override, script, beats, fired, firedIds, cases, catalog, access, fire(ids), act(action, caseId), canAct(action, caseId), reset() }`; `action` is `prescribe \| handoff \| fix \| use_card` |
 | `EventSource` | Deem defines, Vinh implements | `useEvents()` | `load() / subscribe(onInsert) / act(action, rx, fix) / fire(ids) / reset() / accessSummary()` in `components/data/types.ts` |
 | `fill_events` row | Vinh | Deem | `mock/events.json → event_shape` |
 | `router(reason, insurance)` | Vinh | everyone | returns a key of `reasons.json → fixes` |
@@ -223,4 +226,4 @@ A sponsor tool is named in the writeup only if 5.1 finds it called in code. **Lo
 5. Every screen runs on `mock/` with zero network before it's merged.
 6. Every number on screen, in the README, video or Devpost comes from the sourced facts sheet in `notes/`.
 
-_Last updated: 2026-09-26 00:15 ET by Deem (Claude)._
+_Last updated: September 26, 2026; synchronized with main b11a01e._
