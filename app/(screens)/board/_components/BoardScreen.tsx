@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { PatientQr } from "@/components/PatientQr";
-import { StandIn } from "@/components/StandIn";
+import { Disclosure } from "@/components/Disclosure";
+import { PatientQr, qrCaption } from "@/components/PatientQr";
 import { WristMirror } from "@/components/WristMirror";
 import { Button } from "@/components/ui/button";
 import { isWeekCase } from "@/components/data/catalog";
@@ -51,9 +51,6 @@ export function BoardScreen() {
       <header className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-3xl font-semibold">FirstDose Relay Board</h1>
         <div className="flex flex-wrap items-center gap-2">
-          <StandIn kind="pharmacy" />
-          <StandIn kind="hub" />
-          <StandIn kind="patients" />
           {!soundOn && (
             <Button variant="outline" onClick={enableSound}>
               Enable sound
@@ -76,9 +73,10 @@ export function BoardScreen() {
           <WristMirror text={fired.findLast((e) => e.wrist !== null)?.wrist ?? null} />
         </aside>
       </div>
+      <Disclosure className="max-w-xl" />
       <PatientQr
         size={120}
-        caption="Scan to become Maria."
+        caption={qrCaption()}
         className="fixed right-8 bottom-8 text-sm text-muted-foreground"
       />
     </div>

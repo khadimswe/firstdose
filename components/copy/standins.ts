@@ -4,9 +4,6 @@ import { templates, type StandInKind } from "./templates";
 
 export const CODE_STANDINS = {
   docupdate: "Concept: FirstDose inside DocUpdate · Not affiliated",
-  ascend_skill: "Concept: an Impiricus Ascend skill · Not affiliated",
-  prescriber: "Demo prescriber record · not a real NPI",
-  concierge: "Existing Concierge option · not part of this demo",
 } as const;
 
 export type AnyStandInKind = StandInKind | keyof typeof CODE_STANDINS;

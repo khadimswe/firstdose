@@ -1,4 +1,3 @@
-import { StandIn } from "@/components/StandIn";
 import type { Catalog, FillEvent } from "@/components/data/types";
 
 /** The latest pharmacy or hub status, exactly as it arrived. */
@@ -9,7 +8,9 @@ export function StatusTicker({ event, catalog }: { event?: FillEvent; catalog: C
 
   return (
     <section className="space-y-3 rounded-xl border p-5">
-      <StandIn kind={event.actor === "hub" ? "hub" : "pharmacy"} className="h-7 px-3 text-sm" />
+      <p className="text-sm font-medium tracking-wide text-muted-foreground uppercase">
+        {event.actor === "hub" ? "Hub" : "Pharmacy"}
+      </p>
       <div className="font-mono text-2xl">
         {patient?.display_short} · {event.status_text}
       </div>

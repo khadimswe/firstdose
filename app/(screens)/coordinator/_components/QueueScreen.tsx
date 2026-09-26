@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState } from "react";
 
-import { StandIn } from "@/components/StandIn";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -74,10 +73,6 @@ export function QueueScreen() {
           <p className="text-sm text-muted-foreground">
             New prescriptions from the prescribers you work with that haven&apos;t reached a confirmed fill.
           </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <StandIn kind="pharmacy" />
-          {mode === "mock" && <StandIn kind="price" />}
         </div>
       </header>
 

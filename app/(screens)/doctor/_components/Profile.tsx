@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { BadgeCheck, UserRound } from "lucide-react";
 
-import { StandIn } from "@/components/StandIn";
+import { maskedNpi, prescriberRecord } from "@/components/data/reference";
 import { Button } from "@/components/ui/button";
 import { isLinked } from "@/components/data/links";
 import { useLocal } from "@/components/data/local";
@@ -30,10 +30,12 @@ export function Profile() {
           </span>
           <div>
             <p className="font-semibold">{me}</p>
-            <p className="text-sm text-muted-foreground">Prescriber</p>
+            <p className="text-sm text-muted-foreground">
+              {prescriberRecord(me)?.specialty ?? "Prescriber"}
+              {prescriberRecord(me) && ` · NPI ${maskedNpi(prescriberRecord(me)!.npi)}`}
+            </p>
           </div>
         </div>
-        <StandIn kind="prescriber" />
       </section>
 
       <section className="space-y-3 rounded-2xl bg-white p-4 text-foreground shadow-sm" aria-labelledby="my-coordinator">

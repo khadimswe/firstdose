@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { BadgeCheck, Link2, Smartphone, UserRound } from "lucide-react";
 
-import { StandIn } from "@/components/StandIn";
+import { maskedNpi, prescriberRecord } from "@/components/data/reference";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -103,8 +103,11 @@ export function PrescribersScreen() {
                       <UserRound className="size-4 text-muted-foreground" /> {r.p}
                     </div>
                   </td>
-                  <td className="p-3">
-                    <StandIn kind="prescriber" />
+                  <td className="p-3 font-mono">
+                    {prescriberRecord(r.p) ? `NPI ${maskedNpi(prescriberRecord(r.p)!.npi)}` : "—"}
+                    {prescriberRecord(r.p) && (
+                      <div className="font-sans text-xs text-muted-foreground">{prescriberRecord(r.p)!.specialty}</div>
+                    )}
                   </td>
                   <td className="p-3">
                     <StatusBadge linked={r.linked} />

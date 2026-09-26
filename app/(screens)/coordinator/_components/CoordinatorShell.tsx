@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { Inbox, UsersRound } from "lucide-react";
 
 import { SideBadge } from "@/components/SideBadge";
-import { StandIn } from "@/components/StandIn";
+import { Disclosure } from "@/components/Disclosure";
 import { prescribers, queueBucket } from "@/components/data/derive";
 import { inQueue, isLinked } from "@/components/data/links";
 import { useLocal } from "@/components/data/local";
@@ -67,11 +67,8 @@ export function CoordinatorShell({ children }: { children: React.ReactNode }) {
           })}
         </nav>
         <div className="mt-auto space-y-2 p-4">
-          <StandIn kind="ascend_skill" className="h-auto whitespace-normal text-left" />
-          <div className="flex flex-wrap gap-2">
-            <SideBadge side="practice" />
-            <StandIn kind="patients" className="h-auto whitespace-normal text-left" />
-          </div>
+          <SideBadge side="practice" />
+          <Disclosure />
         </div>
       </aside>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { StandIn } from "@/components/StandIn";
+import { Disclosure } from "@/components/Disclosure";
 import { StatusPill } from "@/components/StatusPill";
 import { Button } from "@/components/ui/button";
 import { templates } from "@/components/copy/templates";
@@ -20,11 +20,11 @@ export function PatientScreen({ caseId }: { caseId: string }) {
   if (!cardReady) {
     return (
       <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 p-5">
-        <StandIn kind={c.fix === "BRIDGE_SAMPLE" ? "samples" : "wallet"} />
         <h1 className="text-xl font-semibold">
           {c.drug.brand} {c.drug.strength}
         </h1>
         <StatusPill c={c} className="h-7 px-3 text-sm" />
+        <Disclosure className="mt-auto" />
       </main>
     );
   }
@@ -54,6 +54,7 @@ export function PatientScreen({ caseId }: { caseId: string }) {
           </div>
         </div>
       )}
+      <Disclosure />
     </main>
   );
 }
