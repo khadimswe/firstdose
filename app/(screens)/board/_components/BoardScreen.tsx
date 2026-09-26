@@ -47,7 +47,7 @@ export function BoardScreen() {
   }
 
   return (
-    <div className="flex min-h-dvh flex-col gap-12 p-12">
+    <main id="main-content" tabIndex={-1} className="flex min-h-dvh flex-col gap-6 p-4 sm:p-8 lg:gap-12 lg:p-12">
       <header className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-3xl font-semibold">FirstDose Relay Board</h1>
         <div className="flex flex-wrap items-center gap-2">
@@ -63,10 +63,10 @@ export function BoardScreen() {
         {fill(templates.board.confirmation_count, { count: confirmedCount })}
       </p>
 
-      <div className="grid flex-1 gap-16 xl:grid-cols-[minmax(0,1fr)_480px]">
-        <main className="space-y-16">
+      <div className="grid min-w-0 flex-1 gap-8 lg:gap-16 xl:grid-cols-[minmax(0,1fr)_480px]">
+        <div className="min-w-0 space-y-16">
           {lanes.length > 0 ? lanes.map((c) => <RelayLane key={c.id} c={c} />) : <RelayLane />}
-        </main>
+        </div>
         <aside className="space-y-10">
           {priced && <PriceCounter c={priced} />}
           <StatusTicker event={lastStatus} catalog={catalog} />
@@ -77,8 +77,8 @@ export function BoardScreen() {
       <PatientQr
         size={120}
         caption={qrCaption()}
-        className="fixed right-8 bottom-8 text-sm text-muted-foreground"
+        className="self-end text-sm text-muted-foreground xl:fixed xl:right-8 xl:bottom-8"
       />
-    </div>
+    </main>
   );
 }

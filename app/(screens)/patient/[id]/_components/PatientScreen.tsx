@@ -24,7 +24,7 @@ export function PatientScreen({ caseId }: { caseId: string }) {
   // No template exists for any other state: show the drug, status and disclosure.
   if (!cardReady) {
     return (
-      <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 p-5">
+      <main id="main-content" tabIndex={-1} className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 p-5">
         <h1 className="text-xl font-semibold">
           {c.drug.brand} {c.drug.strength}
         </h1>
@@ -37,7 +37,7 @@ export function PatientScreen({ caseId }: { caseId: string }) {
   const canUse = canAct("use_card", c.id);
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 p-5 pb-32">
+    <main id="main-content" tabIndex={-1} className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 p-5 pb-32">
       <WalletPass c={c} />
 
       {delivery.eligible && <MessageDeliveryStatus {...delivery} />}

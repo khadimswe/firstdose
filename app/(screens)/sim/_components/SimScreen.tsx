@@ -157,7 +157,7 @@ export function SimScreen() {
   const progress = script.length ? Math.min(1, scriptFired / script.length) : 0;
 
   return (
-    <main className="mx-auto w-full max-w-7xl space-y-6 px-6 py-8">
+    <main id="main-content" tabIndex={-1} className="mx-auto w-full max-w-7xl space-y-6 px-6 py-8">
       <ModeBadge />
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div className="space-y-1">
@@ -173,7 +173,7 @@ export function SimScreen() {
       </header>
 
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_400px]">
-        <section className="overflow-hidden rounded-2xl border bg-card">
+        <section className="min-w-0 overflow-hidden rounded-2xl border bg-card">
           {groups.map((g) => {
             const c = caseById.get(g.caseId);
             return (
@@ -203,8 +203,8 @@ export function SimScreen() {
           })}
         </section>
 
-        <aside className="space-y-4 lg:sticky lg:top-6">
-          <section className="space-y-4 rounded-2xl border bg-card p-5">
+        <aside className="min-w-0 space-y-4 lg:sticky lg:top-6">
+          <section className="space-y-4 rounded-2xl border bg-card p-4 sm:p-5">
             <div className="space-y-2">
               <div className="flex items-baseline justify-between text-sm">
                 <span className="font-medium">Run</span>
@@ -218,14 +218,14 @@ export function SimScreen() {
                   style={{ width: `${progress * 100}%` }}
                 />
               </div>
-              <p className="min-h-10 text-xs text-muted-foreground">
-                {next ? (
+              <p role="status" aria-atomic="true" className="min-h-10 text-xs text-muted-foreground">
+                {!ready ? "Loading the run..." : busy ? "Updating the run..." : next ? (
                   <>
                     Next: <span className="font-mono">{beatRange(next)}</span> · {who(next)} ·{" "}
                     {beatSummary(next)}
                   </>
                 ) : (
-                  "Every scripted event has fired."
+                  remaining.length === 0 ? "Every scripted event has fired." : "Waiting for prerequisite actions on the doctor, coordinator or patient screens."
                 )}
               </p>
             </div>
@@ -265,7 +265,7 @@ export function SimScreen() {
               )}
             </div>
 
-            <div className="flex items-center justify-between border-t pt-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-4">
               <span className="text-xs text-muted-foreground">Start the run over on every screen.</span>
               {confirmReset ? (
                 <div className="flex gap-2">
@@ -301,7 +301,7 @@ export function SimScreen() {
             />
           )}
 
-          <section className="flex items-center gap-4 rounded-2xl border bg-card p-4">
+          <section className="flex flex-wrap items-center gap-4 rounded-2xl border bg-card p-4">
             <PatientQr size={84} className="shrink-0" />
             <div className="min-w-0 space-y-1 text-sm">
               <p className="font-medium">{qrCaption()}</p>

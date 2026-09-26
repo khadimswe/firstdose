@@ -68,7 +68,7 @@ export function QueueScreen() {
   const open = cases.find((c) => c.id === openId);
 
   return (
-    <main className="mx-auto w-full max-w-6xl space-y-6 p-4 pb-40 md:p-8">
+    <main id="main-content" tabIndex={-1} className="mx-auto w-full max-w-6xl space-y-6 p-4 pb-40 md:p-8">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold tracking-tight">Access queue</h1>
@@ -109,7 +109,7 @@ export function QueueScreen() {
       />
 
       <Tabs value={tab} onValueChange={(v) => setTab(v as QueueBucket)}>
-        <TabsList>
+        <TabsList className="h-auto w-full flex-wrap sm:w-fit">
           {TABS.map((t) => (
             <TabsTrigger key={t.value} value={t.value}>
               {t.label}

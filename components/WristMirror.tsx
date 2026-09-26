@@ -10,7 +10,7 @@ export function WristMirror({ text, compact }: { text: string | null; compact?: 
           compact ? "w-32 border-[6px] p-4 text-[10px]" : "w-44 border-8 p-6 text-[13px]",
         )}
       >
-        {text ?? <span className="text-neutral-500">No alerts</span>}
+        {text ?? <span className="text-neutral-400">No alerts</span>}
       </div>
       <figcaption className="text-center text-xs text-muted-foreground">
         Notification preview · watch via ntfy · not proof of receipt

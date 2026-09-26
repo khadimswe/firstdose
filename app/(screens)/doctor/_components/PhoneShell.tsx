@@ -24,15 +24,17 @@ export function PhoneShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-dvh bg-du-navy text-white">
       <div className="mx-auto flex min-h-dvh w-full max-w-[430px] flex-col">
-        <p
-          data-standin="docupdate"
-          className="px-4 pt-[max(1.5rem,calc(env(safe-area-inset-top)+0.5rem))] pb-1 text-center text-[11px] text-white/55"
-        >
-          {standInLabel("docupdate")}
-        </p>
-        <main className="flex-1 px-4 pt-2 pb-44">
+        <header>
+          <p
+            data-standin="docupdate"
+            className="px-4 pt-[max(1.5rem,calc(env(safe-area-inset-top)+0.5rem))] pb-1 text-center text-[11px] text-white/55"
+          >
+            {standInLabel("docupdate")}
+          </p>
+        </header>
+        <main id="main-content" tabIndex={-1} className="flex-1 px-4 pt-2 pb-44">
           {children}
-          <Disclosure className="pt-6 text-center text-white/45" />
+          <Disclosure className="pt-6 text-center text-white/65" />
         </main>
       </div>
       <nav
@@ -50,7 +52,7 @@ export function PhoneShell({ children }: { children: React.ReactNode }) {
                   aria-current={active ? "page" : undefined}
                   className={cn(
                     "relative flex flex-col items-center gap-1 pt-3 pb-1 text-[11px]",
-                    active ? "text-white" : "text-white/50",
+                    active ? "text-white" : "text-white/60",
                   )}
                 >
                   {active && <span className="absolute top-0 size-1.5 rounded-full bg-du-purple" />}

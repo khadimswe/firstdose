@@ -171,13 +171,14 @@ export function DoctorHome() {
         ))}
       </section>
 
-      <label className="flex items-center gap-2 rounded-xl bg-white px-3 py-2.5 text-foreground">
+      <label className="flex items-center gap-2 rounded-xl bg-white px-3 py-2.5 text-foreground focus-within:ring-2 focus-within:ring-white focus-within:ring-offset-2 focus-within:ring-offset-du-navy">
         <Search className="size-4 text-muted-foreground" />
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          aria-label="Search patients"
           placeholder="Search patients"
-          className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+          className="min-w-0 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
         />
       </label>
 
@@ -185,6 +186,9 @@ export function DoctorHome() {
         <h2 id="recent-patients" className="text-xl font-semibold">
           Recent Patients
         </h2>
+        <p role="status" aria-atomic="true" className="text-sm text-white/75">
+          {query.trim() ? patients.length ? `${patients.length} matching ${patients.length === 1 ? "patient" : "patients"}.` : "No matching patients." : ""}
+        </p>
         {patients.map((c) => (
           <Link
             key={c.id}
