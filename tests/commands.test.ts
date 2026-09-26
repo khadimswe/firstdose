@@ -74,7 +74,7 @@ describe("durable workflow commands", () => {
     const results = await Promise.all([executeCommand(store, runId, barrier, now), executeCommand(store, runId, barrier, now)]);
     expect(results.map(result => result.inserted.length).sort()).toEqual([0, 3]);
     expect(store.state.events.filter(event => event.type === "alert_sent")).toMatchObject([
-      { id: "ev_06", wrist: "Maria: Otezla first fill pending. Declined at price ($410 demo)." },
+      { id: "ev_06", wrist: "Maria: Otezla first fill pending. Declined at price ($410)." },
     ]);
   });
 

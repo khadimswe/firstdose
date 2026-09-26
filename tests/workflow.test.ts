@@ -24,7 +24,7 @@ describe("workflow command planning", () => {
     expect(pending.map((event) => event.id)).toEqual(["ev_05", "ev_06"]);
     expect(pending[1]).toMatchObject({
       type: "alert_sent", actor: "system", side: "practice", reason: "DECLINED_AT_PRICE",
-      wrist: "Maria: Otezla first fill pending. Declined at price ($125.50 demo).", note: "", fix: null,
+      wrist: "Maria: Otezla first fill pending. Declined at price ($125.50).", note: "", fix: null,
     });
     expect(planCommand([...ordered, ...pending], fire("ev_05"), NOW)).toEqual([]);
     expect(pending.every((event) => !["label_shown", "started", "recovered"].includes(event.type))).toBe(true);
