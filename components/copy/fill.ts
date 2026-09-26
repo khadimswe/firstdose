@@ -15,7 +15,9 @@ export function fill(template: string, vars: Record<string, string | number>): s
 /** Demo clock: mock seconds → "1:21"; a live ISO timestamp → local "9:41 PM". */
 export function clock(at: number | string): string {
   if (typeof at === "number") {
-    const s = Math.max(0, Math.round(at));
+    // The seeded week sits before demo time zero.
+    if (at < 0) return `${duration(-at)} before`;
+    const s = Math.round(at);
     return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
   }
   const seconds = atSeconds(at);

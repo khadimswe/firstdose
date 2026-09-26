@@ -13,7 +13,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { prescriberLinked, prescribers } from "@/components/data/derive";
+import { prescribers } from "@/components/data/derive";
+import { isLinked } from "@/components/data/links";
 import { local, useLocal } from "@/components/data/local";
 import { isValidNpi } from "@/components/data/npi";
 import { useEvents } from "@/components/data/useEvents";
@@ -52,7 +53,7 @@ export function PrescribersScreen() {
   const [error, setError] = useState<string | null>(null);
 
   const rows = prescribers(cases).map((p) => {
-    const linked = prescriberLinked(p, cases, approved);
+    const linked = isLinked(p, cases, approved);
     const handoff = cases.find((c) => c.rx.prescriber_label === p && c.events.some((e) => e.type === "handoff"));
     return { p, linked, since: approved[p] ?? null, viaHandoff: !approved[p] && handoff !== undefined };
   });

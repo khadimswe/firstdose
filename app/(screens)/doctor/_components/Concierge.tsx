@@ -5,6 +5,7 @@ import { Check, CircleCheck } from "lucide-react";
 
 import { StandIn } from "@/components/StandIn";
 import { Button } from "@/components/ui/button";
+import { liveCases } from "@/components/data/links";
 import { useEvents } from "@/components/data/useEvents";
 import { cn } from "@/lib/utils";
 
@@ -60,7 +61,8 @@ function Option({
  * sends a stuck case to the coordinator through the same handoff as the alert.
  */
 export function Concierge() {
-  const { cases, canAct } = useEvents();
+  const { cases: allCases, canAct } = useEvents();
+  const cases = liveCases(allCases);
   const { request, sheet } = useHandoff();
   const [help, setHelp] = useState(true);
   const [picked, setPicked] = useState<string | null>(null);

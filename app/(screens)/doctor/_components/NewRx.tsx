@@ -7,6 +7,7 @@ import { ChevronLeft, CircleCheck } from "lucide-react";
 import { LabelCard } from "@/components/LabelCard";
 import { StandIn } from "@/components/StandIn";
 import { Button } from "@/components/ui/button";
+import { liveCases } from "@/components/data/links";
 import { useEvents } from "@/components/data/useEvents";
 import { cn } from "@/lib/utils";
 
@@ -31,7 +32,8 @@ function Step({ n, title, children }: { n: number; title: string; children: Reac
  * The drug comes from the case; FirstDose never suggests one and shows no dosing.
  */
 export function NewRx() {
-  const { cases, act, canAct } = useEvents();
+  const { cases: allCases, act, canAct } = useEvents();
+  const cases = liveCases(allCases);
   const [picked, setPicked] = useState<string | null>(null);
   const c = cases.find((x) => x.id === picked) ?? cases.find((x) => !x.ordered) ?? cases[0];
   const sent = c.events.find((e) => e.type === "prescribed");

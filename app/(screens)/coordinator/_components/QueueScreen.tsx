@@ -9,12 +9,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   atSeconds,
   hasConfirmedFill,
-  prescriberLinked,
   prescribers,
   queueBucket,
   stuckEvent,
   type QueueBucket,
 } from "@/components/data/derive";
+import { inQueue, isLinked } from "@/components/data/links";
 import { useLocal } from "@/components/data/local";
 import { useEvents } from "@/components/data/useEvents";
 import { useNowAt } from "@/components/data/useNowAt";
@@ -50,9 +50,9 @@ export function QueueScreen() {
   const [tab, setTab] = useState<QueueBucket>("needs_you");
 
   const all = prescribers(cases);
-  const linked = all.filter((p) => prescriberLinked(p, cases, approved));
+  const linked = all.filter((p) => isLinked(p, cases, approved));
   const pending = all.filter((p) => !linked.includes(p));
-  const mine = cases.filter((c) => c.ordered && linked.includes(c.rx.prescriber_label));
+  const mine = cases.filter((c) => inQueue(c, new Set(linked)));
 
   const buckets: Record<QueueBucket, CaseView[]> = { needs_you: [], waiting: [], confirmed: [] };
   for (const c of [...mine].sort(byStuckAge)) buckets[queueBucket(c)].push(c);

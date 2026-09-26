@@ -6,6 +6,8 @@ import { PatientQr } from "@/components/PatientQr";
 import { StandIn } from "@/components/StandIn";
 import { WristMirror } from "@/components/WristMirror";
 import { Button } from "@/components/ui/button";
+import { isWeekCase } from "@/components/data/catalog";
+import { liveCases } from "@/components/data/links";
 import { useEvents } from "@/components/data/useEvents";
 import type { CaseView } from "@/components/data/types";
 import { hasConfirmedFill } from "@/components/data/derive";
@@ -18,12 +20,14 @@ import { RelayLane } from "./RelayLane";
 import { StatusTicker } from "./StatusTicker";
 
 export function BoardScreen() {
-  const { cases, catalog, fired } = useEvents();
+  const { cases: allCases, catalog, fired } = useEvents();
+  // The seeded week is the coordinator's background; the board follows the live demo cases.
+  const cases = liveCases(allCases);
 
   const lanes = cases.filter((c) => c.ordered);
   const priced = lanes.find((c): c is CaseView & { quoteUsd: number } => c.quoteUsd !== null);
   const lastStatus = fired.findLast(
-    (e) => (e.actor === "pharmacy" || e.actor === "hub") && e.status_text !== null,
+    (e) => !isWeekCase(e.case_id) && (e.actor === "pharmacy" || e.actor === "hub") && e.status_text !== null,
   );
 
   // Browsers block audio until someone clicks, so sound needs one tap before the demo.

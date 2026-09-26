@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { fill } from "@/components/copy/fill";
 import { templates } from "@/components/copy/templates";
 import { calendarDaysBetween, hasConfirmedFill } from "@/components/data/derive";
+import { liveCases } from "@/components/data/links";
 import { useEvents } from "@/components/data/useEvents";
 import type { Catalog, CaseView } from "@/components/data/types";
 import { cn } from "@/lib/utils";
@@ -123,7 +124,8 @@ function BeforeVisitCard({ c, catalog }: { c: CaseView; catalog: Catalog }) {
 
 /** The Prescriber tab: Rx Alerts, before-visit notes, recent patients with fill status. */
 export function DoctorHome() {
-  const { cases, catalog, canAct } = useEvents();
+  const { cases: allCases, catalog, canAct } = useEvents();
+  const cases = liveCases(allCases);
   const { request, sheet } = useHandoff();
   const [query, setQuery] = useState("");
 

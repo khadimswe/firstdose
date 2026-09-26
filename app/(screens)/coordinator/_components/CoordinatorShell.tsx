@@ -6,7 +6,8 @@ import { Inbox, UsersRound } from "lucide-react";
 
 import { SideBadge } from "@/components/SideBadge";
 import { StandIn } from "@/components/StandIn";
-import { prescriberLinked, prescribers, queueBucket } from "@/components/data/derive";
+import { prescribers, queueBucket } from "@/components/data/derive";
+import { inQueue, isLinked } from "@/components/data/links";
 import { useLocal } from "@/components/data/local";
 import { useEvents } from "@/components/data/useEvents";
 import { cn } from "@/lib/utils";
@@ -17,9 +18,9 @@ export function CoordinatorShell({ children }: { children: React.ReactNode }) {
   const { cases } = useEvents();
   const { approved } = useLocal();
 
-  const linked = new Set(prescribers(cases).filter((p) => prescriberLinked(p, cases, approved)));
+  const linked = new Set(prescribers(cases).filter((p) => isLinked(p, cases, approved)));
   const needsYou = cases.filter(
-    (c) => c.ordered && linked.has(c.rx.prescriber_label) && queueBucket(c) === "needs_you",
+    (c) => inQueue(c, linked) && queueBucket(c) === "needs_you",
   ).length;
   const pending = prescribers(cases).length - linked.size;
 
