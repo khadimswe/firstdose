@@ -1,5 +1,6 @@
 BEGIN;
 
+-- 002 is reserved for Phase 1 notification delivery on backend/maria-core.
 -- One snapshot of durable history, including retained runs after a reset.
 -- Return NULL for an unknown run, distinct from an existing empty run.
 CREATE FUNCTION public.fd_read_run(p_run_id uuid) RETURNS jsonb
