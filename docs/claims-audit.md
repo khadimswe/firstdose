@@ -1,19 +1,19 @@
 # Phase 5 claims and release audit
 
-Vinh, September 26, 2026, approximately 13:25–13:31 ET. Audited application commit: **`158b5a98b1dd2d5908f74fb48dc57493db7b9211`**, fetched `origin/main`. Audit branch: `audit/vinh-phase5`. `PLAN.md` remains the execution dashboard; this is evidence for task 5.1, not another schedule.
+Vinh, September 26, 2026. Initial audit 13:25–13:31 ET at `158b5a9`; publication review around 13:53 ET updates the audited application commit to **`22b78f0643f0300866afa9b6177a1394cf3eb9b7`**, fetched `origin/main`. Audit branch: `audit/vinh-phase5`. `PLAN.md` remains the execution dashboard; this is evidence for task 5.1, not another schedule.
 
 **Claims freeze is not cleared.** The source audit and history scan are complete, but deployed live configuration, physical-device checks, owner review and presentation corrections remain open. Code presence, local tests, historical user reports and fresh deployed observations are distinguished below. Later merges require a delta audit before recording.
 
-## Verification record
+## Initial verification record (`158b5a9`)
 
 | Check | Result and scope |
 |---|---|
-| Clean application baseline | New isolated worktree from the SHA above; no application or shared-contract edits in this audit |
+| Clean application baseline | New isolated worktree from `158b5a9`; no application or shared-contract edits in this audit |
 | Dependencies | `npm ci --ignore-scripts`: 700 packages installed; npm reported zero vulnerabilities. This is the lockfile installation result, not a complete security assessment |
 | Unit tests | `npm test`: **498 passed in 33 files**, no skipped tests reported |
 | Lint | `npm run lint`: exit 0 |
 | Live-mode build | PowerShell: `$env:NEXT_PUBLIC_DATA_SOURCE='supabase'; npm run build`: exit 0, including offline Otezla source/identity/receipt/fixture verification and TypeScript |
-| Mock-mode CI | [Main CI run 36258930874](https://github.com/khadimswe/firstdose/actions/runs/36258930874) passed at the audited SHA: lint, mock build, tests, Gitleaks, tracked-file and mock JSON gates |
+| Mock-mode CI | [Main CI run 36258930874](https://github.com/khadimswe/firstdose/actions/runs/36258930874) passed at `158b5a9`: lint, mock build, tests, Gitleaks, tracked-file and mock JSON gates |
 | Database permissions/concurrency | `node scripts/test-database.mjs`: exit 0; final summary **20 database checks passed** on disposable `postgres:16-alpine`, including browser-role denial, concurrent commands/reset, notification deduplication and coordinator guards. No hosted database changes |
 | Full-history secrets | Gitleaks **8.30.1**, `gitleaks git . --log-opts=--all --redact --no-banner --report-format json --report-path <outside-repository-report>`: exit 0, **179 commits scanned**, about 3.17 MB, **no leaks found**. Repository is not shallow; `--all` includes fetched and local refs, not just the latest diff. The scanner's commit count is not a count of all merge commits |
 | Scanner integrity | Official release ZIP checksum matched published SHA-256 `d29144deff3a68aa93ced33dddf84b7fdc26070add4aa0f4513094c8332afc4e`; executable and redacted report remain outside the repo |
@@ -21,9 +21,19 @@ Vinh, September 26, 2026, approximately 13:25–13:31 ET. Audited application co
 
 No live xAI request, watch notification, shared-run reset or hosted migration was performed here. The database suite uses a disposable Docker container with no host port or hosted credentials. A clean secret scan does not establish role separation or provider privacy.
 
+## Publication delta (`22b78f0`)
+
+Main added microphone/confirmation UI (#25), the fictional Dr. Rivera seed assignment and template separator correction (#27), and Stephen's TestFlight instructions (#24). The audit branch was rebased onto this main commit. The new voice helpers are covered by five added unit tests; these are not browser microphone or reset-race tests. Fresh `npm test`: **503 passed in 34 files**. [Main CI run 36260033873](https://github.com/khadimswe/firstdose/actions/runs/36260033873) passes at `22b78f0`. Full-history Gitleaks rerun: **190 commits scanned, no leaks**, exit 0. Earlier database evidence remains tied to `158b5a9`; no persistence/migration code changed in this delta.
+
+Fresh local lint and the Supabase-mode production build also passed, including the Otezla prebuild verification and TypeScript. These checks validate the source snapshot; they do not clear the voice finding below or establish deployed device behavior.
+
+**Voice release blocker, source-reviewed independently:** `VoiceHandoff.tsx` fetches the run after recording and discards it from the proposal. Confirmation passes only a case ID through `DoctorHome.tsx` and `ApproveSheet.tsx`; `lib/realtime.ts` attaches the current run when the eventual handoff executes. A proposal from run A can open the approval sheet, survive a remote reset, and be approved against actionable same-ID case B in a new run. The persistent approval sheet is not cleared by unmounting the voice component. Server stale-run checks cannot reject a command carrying the new run's identity. This is a source-derived failure path, not a reproduced browser test. Deem + Vinh must preserve the recording-start run through final confirmation, clear stale proposals/approvals and add reset-race coverage before claiming a verified voice handoff. See the existing contract in [voice handoff](voice-handoff.md).
+
+The seed now distinguishes fictional Dr. Rivera from Dr. Demo. This is catalog separation, not proof of a persisted verified staff link; the coordinator API still uses its fixed fictional identity. The [TestFlight handoff](handoffs/stephen-testflight.md) contains instructions and unchecked acceptance criteria, not an installed wrapper.
+
 ## Fresh deployed observations
 
-Read-only unauthenticated HTTPS requests to **`https://firstdose.vercel.app`**, September 26 around 13:28–13:30 ET:
+Read-only unauthenticated HTTPS requests to **`https://firstdose.vercel.app`**, September 26 around 13:28–13:30 ET. All four API observations below were reconfirmed around 13:54 ET, including exact Otezla artifact equality; `/demo` was not rechecked:
 
 | Path | Observed result | What it establishes |
 |---|---|---|
@@ -43,9 +53,9 @@ The deployed build SHA was **not independently identified**. Matching one label 
 | Source modes/reset | `components/data/mode.ts`, `components/data/live.ts`, `lib/realtime.ts` | Build-time mock or Supabase mode; run-aware reset, stale-command guards and reconnect logic tested locally. Mock uses browser storage. Local/browser tests do not close the deployed physical-device gate |
 | RxNorm / DailyMed | `scripts/labels/*`, `lib/server/labels/*`, `data/labels/drug_otezla/*`, prebuild verifier | Cached **Otezla** narratives are verified against saved SPL sections and RxNorm identity. The deployed endpoint matches. No runtime DailyMed fetch; Humira remains a placeholder. Do not claim every UI sentence is checked against FDA text |
 | ntfy / iPhone / Garmin | `lib/server/ntfy.ts`, notification worker/outbox; [Phase 1 handoff](handoffs/deem-phase1.md) | Real transport and duplicate-send guards exist. Prior user-confirmed iPhone/Garmin receipt of both alerts is documented. HTTP acceptance is not wrist receipt, and claimed/unknown deliveries are not automatically retried. No new physical receipt verified in this audit; Apple Watch C8 remains separate |
-| Grok / xAI | `lib/server/voice.ts`, `voice-http.ts`, `/api/voice`; [trial record](voice-handoff.md) | Backend transcription and a handoff proposal exist. Historical funded synthetic-audio and authenticated local HTTP trials succeeded. No evidence here of human microphone capture, confirmation UI or completed voice handoff. Both keyterm and baseline trials were correct; no demonstrated accuracy improvement |
+| Grok / xAI | `lib/server/voice.ts`, `voice-http.ts`, `/api/voice`, doctor `VoiceHandoff.tsx` and `voice.ts`; [trial record](voice-handoff.md) | Backend transcription, microphone capture, format conversion and confirmation UI are implemented. Historical synthetic-audio and local HTTP trials succeeded. Human browser/device success remains unverified, and the reset/approval defect above blocks a verified voice-handoff claim. Both keyterm and baseline trials were correct; no demonstrated accuracy improvement |
 | Cursor / SpaceXAI evidence | No reviewed development-use record in this audit | The actual Cursor user must supply truthful development evidence. Grok backend presence alone does not establish the complete selected-entry demonstration |
-| Gemini | No classifier implementation at this SHA; PR #23 (`59700a7`) was open when checked | Main uses scripted reasons; do not call them Gemini inference. Review and rerun evidence if that PR lands |
+| Gemini | No classifier implementation at this SHA; PR #23 (`440eaad`) was open at publication review | Main uses scripted reasons; do not call them Gemini inference. Review and rerun evidence if that PR lands |
 | Tiger Data | No Tiger implementation or `/api/access/summary` route | Access counts derive from practice events or mock events; live summary failure is explicitly disclosed. No stored Tiger run/query or freshness proof here |
 | ElevenLabs | No provider call or audio asset in this SHA; PR #21 (`d690857`) was open when checked | Current board audio is a WebAudio chime. Generated patient-message playback requires merged code/assets and playback evidence |
 | Ascend / DocUpdate / Wallet / pharmacy / QPharma / Medvantx | Concept screens, stand-ins and simulated events | A standalone prototype of a **proposed** Ascend workflow with DocUpdate-inspired screens; no real partner integration, production prescription, payment or dispensing connection |
@@ -84,7 +94,7 @@ The example also reserves unused/maintenance settings: Supabase publishable key,
 2. **Vinh + device operator:** record both alert receipts from that deployed run. Keep the confirmed Garmin evidence distinct from Apple Watch C8, which requires its own locked-iPhone check.
 3. **Team:** run twice after reset and once with an unavailable optional provider. Record mode, acknowledgment remaining pending, separate fill, duplicates, reload/reconnect and remote reset. Do not run the destructive browser workflow smoke against a shared run without coordinating its reset and alerts.
 4. **Minh:** sign off on Otezla provenance and any newly merged classifier/analytics evidence. **Deem:** update the claims register and all recording copy; inspect phone/desktop disclosures, real audio playback if added, and visible source/failure mode.
-5. **Vinh + Deem:** keep voice described as backend-only until microphone/confirmation/handoff is demonstrated. Get actual Cursor-use evidence before asserting the selected entry is complete.
+5. **Vinh + Deem:** fix the voice proposal/approval run-binding defect, then demonstrate microphone/confirmation/handoff and reset-race behavior. Describe current voice as implemented but not verified end to end. Get actual Cursor-use evidence before asserting the selected entry is complete.
 6. **Affected owner:** review this audit and material release changes. Re-run the affected checks and scan any new history before freezing a later SHA.
 
 Task 5.3 editing can follow the backend/claims freeze and Deem's actual footage; no video was supplied or edited here. Submission, publication and deployment remain with their named owners. Task 5.1 stays in progress until the release evidence and corrections above are reconciled.
