@@ -323,7 +323,7 @@ The DocUpdate-styled screens copy structure: dark navy, a purple primary, the bo
 - [ ] **C2 (6.2):** Are "Reached patient / Left message" marks an event, or local-only this weekend?
 - [ ] **C3 (6.8):** The coordinator-approved patient message (and its Spanish version) needs a template key (⚠️ CONTRACT), or an explicit exception to D2.
 - [ ] **C4:** Can the DocUpdate stand-in label extend `<StandIn>` in code (`components/copy/`) rather than `templates.json`? Proposed text (spec, D9): "Concept: FirstDose inside DocUpdate · Not affiliated".
-- [ ] **C5 (4.4): Vinh decides.** Deem asks for option A.
+- [x] **C5 (4.4): Phase 1 uses option B.** Use a pre-signed spare phone with the existing demo session; on a judge's own phone, a team member enters the private code once. Replied on PR #9, September 26. A new per-run short code is not implemented. Deem's requested patient-only option A remains a separate Phase 6 follow-up.
   - **Option A (Deem's pick): a limited patient-only path.**
     - `/patient/rx_001` renders without the staff login.
     - Its one command, `POST /api/patient/use`, is accepted without a session only when all of these hold: that case, the active run, `fix_sent` with `RESEND_COPAY_CARD`, and the card not yet used.

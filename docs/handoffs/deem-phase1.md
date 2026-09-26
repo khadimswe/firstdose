@@ -31,7 +31,7 @@ These browser contexts do not establish the final physical two-device HTTPS gate
 
 1. Review the integration candidate, including Minh's corrected label verification and Deem's New Rx behavior. Coordinate which reviewed PRs carry the changes into main; do not overwrite the integrated hook with the closed PR #6.
 2. Build/deploy with `NEXT_PUBLIC_DATA_SOURCE=supabase`. Configure the intended project's `NEXT_PUBLIC_SUPABASE_URL`, server-only `SUPABASE_SECRET_KEY`, private `FIRSTDOSE_DEMO_TOKEN`, and `NTFY_TOPIC`/`NTFY_SERVER` (plus `NTFY_TOKEN` only if used). Existing ignored `.env` values stay private. `SUPABASE_DB_URL` is not required by the running app.
-3. For Phase 1, keep the current demo-code login, including the patient phone. The QR contains only the patient URL. Patient-only access is a separate C5 decision.
+3. For Phase 1 (C5 option B), use a pre-signed spare phone with the current demo-code login. On a judge's own phone, a team member enters the private code once. The QR contains only the patient URL. Patient-only access remains a separate Phase 6 follow-up; no per-run short code is implemented.
 4. On two physical devices at the deployed HTTPS origin, sign in and reset. Prescribe Maria, trigger the barrier, hand off, send the card, and acknowledge it. Confirm fill/count remain pending/zero. Then fire `ev_11`; confirm fill/count one, both wrist notifications, reload and remote reset. Verify the cached Otezla card on the doctor device.
 5. Record the physical result in a separate PLAN status commit. Phase 1 is complete only after reviewed integration/deployment and this checkpoint.
 
