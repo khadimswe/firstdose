@@ -1,0 +1,28 @@
+{
+  "drug_id": "drug_otezla",
+  "setid": "f6b1f516-4972-4d82-bced-113e47b41cc5",
+  "fetched_at": "2026-09-26T05:54:11.700Z",
+  "byte_exact": true,
+  "sections": [
+    {
+      "loinc": "34066-1",
+      "title": "BOXED WARNING",
+      "text": null
+    },
+    {
+      "loinc": "34067-9",
+      "title": "INDICATIONS AND USAGE",
+      "text": "OTEZLA/OTEZLA XR, an inhibitor of phosphodiesterase 4 (PDE4), is indicated for the treatment of:\nAdult patients with:\nActive psoriatic arthritis (1.1)\nPlaque psoriasis who are candidates for phototherapy or systemic therapy (1.2)\nOral ulcers associated with Behçet's Disease (1.3)\nPediatric patients 6 years of age and older with:\nActive psoriatic arthritis (1.1)\nModerate to severe plaque psoriasis who are candidates for phototherapy or systemic therapy (1.2)\nIn the pediatric population, OTEZLA is indicated for patients weighing at least 20 kg, and OTEZLA XR is indicated for patients weighing at least 50 kg."
+    },
+    {
+      "loinc": "43685-7",
+      "title": "WARNINGS AND PRECAUTIONS",
+      "text": "Hypersensitivity: Cases of angioedema and anaphylaxis have been reported during post marketing surveillance. Avoid the use of OTEZLA/OTEZLA XR in patients with known hypersensitivity to apremilast or to any of the excipients in the formulation. If signs or symptoms of serious hypersensitivity reactions develop during treatment, discontinue OTEZLA/OTEZLA XR and institute appropriate therapy (5.1)\nDiarrhea, Nausea, and Vomiting: Consider OTEZLA/OTEZLA XR dosage reduction or suspension if patients develop severe diarrhea, nausea, or vomiting (5.2)\nDepression: Advise patients, their caregivers, and families to be alert for the emergence or worsening of depression, suicidal thoughts or other mood changes and if such changes occur to contact their healthcare provider. Carefully weigh risks and benefits of treatment with OTEZLA/OTEZLA XR in patients with a history of depression and/or suicidal thoughts or behavior (5.3)\nWeight Decrease: Monitor weight regularly. If unexplained or clinically significant weight loss occurs, evaluate weight loss and consider discontinuation of OTEZLA/OTEZLA XR (5.4)\nDrug Interactions: Use with strong cytochrome P450 enzyme inducers (e.g., rifampin, phenobarbital, carbamazepine, phenytoin) is not recommended because loss of efficacy may occur (5.5, 7.1)"
+    },
+    {
+      "loinc": "34068-7",
+      "title": "DOSAGE AND ADMINISTRATION",
+      "text": "To reduce the risk of gastrointestinal symptoms, titrate to recommended dosage as follows:\nAdults with Psoriatic Arthritis, Plaque Psoriasis, or Behçet's Disease\nSee Table 1 for the initial titration schedule. Recommended maintenance dosage is OTEZLA 30 mg twice daily or OTEZLA XR 75 mg once daily (2.1)\nPediatric Patients 6 Years of Age and Older and Weighing at Least 20 kg with Psoriatic Arthritis or Moderate to Severe Plaque Psoriasis\nSee Table 2 for the initial titration schedule (2.1)\nFor patients weighing 50 kg or more: Recommended maintenance dosage is OTEZLA 30 mg twice daily or OTEZLA XR 75 mg once daily (2.1)\nFor patients weighing 20 kg to less than 50 kg: Recommended maintenance dosage is OTEZLA 20 mg twice daily (2.1)\nDosage in Patients with Severe Renal Impairment:\nAdult Patients: For initial dosage titration, titrate using only morning schedule listed in Table 1 and skip afternoon doses. Recommended maintenance dosage is OTEZLA 30 mg once daily (2.3)\nPediatric Patients 6 Years of Age and Older and Weighing at Least 20 kg with Psoriatic Arthritis or Moderate to Severe Plaque Psoriasis: For initial dosage titration, titrate using only morning schedule for appropriate body weight category in Table 2 and skip afternoon doses (2.3)\nFor patients weighing 50 kg or more: Recommended maintenance dosage is OTEZLA 30 mg once daily (2.3)\nFor patients weighing 20 kg to less than 50 kg: Recommended maintenance dosage is OTEZLA 20 mg once daily (2.3)"
+    }
+  ]
+}

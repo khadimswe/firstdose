@@ -1,4 +1,4 @@
-// The who-sees-what split, worded exactly as in docs/who-sees-what.md, laid out
+// The proposed who-sees-what split, worded as in docs/who-sees-what.md, laid out
 // like a permissions list: what each side holds, what it sends, and what it
 // never sends or receives.
 import { ArrowLeftRight, ArrowUpRight, Database, Lock } from "lucide-react";
@@ -11,12 +11,12 @@ const PRACTICE: Row[] = [
   {
     icon: Database,
     title: "Holds",
-    text: "The chart, patient names, insurance detail, fill status, the coordinator's queue, the before-visit card, the doctor's alerts",
+    text: "The chart, patient names, insurance detail, fill status, the coordinator's queue, the doctor's DocUpdate view (Rx Alerts, past prescriptions with fill status, the before-visit card)",
   },
   {
     icon: ArrowUpRight,
     title: "Sends out",
-    text: 'Drug, insurance type (commercial / government), state, and "started / recovered" counts with no names',
+    text: "Proposed: drug, insurance type (commercial / government), state, and first-fill-confirmed counts with no names",
   },
   {
     icon: Lock,
@@ -30,7 +30,7 @@ const ASCEND: Row[] = [
   {
     icon: Database,
     title: "Holds",
-    text: "The Ascend channel the doctor already uses (the alert carries no chart), copay and sample program options, the Wallet link, the FDA's label text, aggregate recovery stats",
+    text: "Copay and sample program options, the Wallet link, the FDA's label text, aggregate first-fill counts",
   },
   {
     icon: ArrowUpRight,
@@ -48,7 +48,7 @@ const ASCEND: Row[] = [
 const RULES = [
   "The doctor picks the drug. FirstDose never suggests one. It only acts after the order is signed.",
   "The FDA's words are shown exactly as written. No AI-written drug claims.",
-  "Nobody is paid per prescription. Market Access pays per patient recovered, measured in aggregate.",
+  "Nobody is paid per prescription. Market Access pays per confirmed first fill, measured in aggregate. A pharmacy fill doesn't prove clinical recovery.",
 ];
 
 function Side({ title, tone, rows }: { title: string; tone: "practice" | "ascend"; rows: Row[] }) {
@@ -84,6 +84,9 @@ export function WhoSeesWhat() {
   return (
     <section className="space-y-4">
       <h2 className="text-lg font-semibold">Who sees what</h2>
+      <p className="text-sm text-muted-foreground">
+        Proposed sharing boundary. This demo uses fictional records; the Ascend projection is not verified.
+      </p>
       <div className="grid items-center gap-4 md:grid-cols-[1fr_auto_1fr]">
         <Side title="Practice side (the doctor's office)" tone="practice" rows={PRACTICE} />
         <ArrowLeftRight aria-hidden className="mx-auto size-5 text-muted-foreground max-md:rotate-90" />

@@ -5,6 +5,7 @@ import { useTween } from "@/components/liveHooks";
 import { fill, money } from "@/components/copy/fill";
 import { templates } from "@/components/copy/templates";
 import type { CaseView } from "@/components/data/types";
+import { hasConfirmedFill } from "@/components/data/derive";
 import { cn } from "@/lib/utils";
 
 export function PriceCounter({ c }: { c: CaseView & { quoteUsd: number } }) {
@@ -21,7 +22,7 @@ export function PriceCounter({ c }: { c: CaseView & { quoteUsd: number } }) {
         <span
           className={cn(
             "text-8xl font-semibold tabular-nums",
-            target === 0 && shown === 0 && "text-started",
+            hasConfirmedFill(c) && target === 0 && shown === 0 && "text-started",
           )}
         >
           {money(shown)}

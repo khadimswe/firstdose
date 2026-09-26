@@ -9,6 +9,7 @@ import type { AccessSummary, Catalog, ReasonKey } from "@/components/data/types"
 import { cn } from "@/lib/utils";
 
 function duration(seconds: number) {
+  if (!Number.isFinite(seconds) || seconds < 0) return "—";
   if (seconds < 120) return `${Math.round(seconds)} s`;
   if (seconds < 7200) return `${Math.round(seconds / 60)} min`;
   if (seconds < 172_800) return `${(seconds / 3600).toFixed(1)} h`;
@@ -41,16 +42,21 @@ function Tile({
 }
 
 /**
- * Takes only the aggregate summary and the reason labels. There is no case,
- * patient or prescriber data in these props, so none can reach this screen.
+ * Renders only aggregate props. The shared practice demo still loads case data;
+ * this view is not an implemented authorization boundary for an external buyer.
  */
 export function AccessView({
   summary,
   reasons,
+  source,
+  error,
   updatedAgo,
 }: {
   summary: AccessSummary;
   reasons: Catalog["reasons"];
+  /** Where the numbers come from (#9): mock script, practice event counts, or Tiger. */
+  source: "mock" | "practice" | "tiger";
+  error: string | null;
   /** Seconds since the summary last changed on this screen; null before the first render. */
   updatedAgo: number | null;
 }) {
@@ -77,9 +83,10 @@ export function AccessView({
               <span className="absolute inline-flex size-full animate-ping rounded-full bg-ascend opacity-60 motion-reduce:animate-none" />
               <span className="relative inline-flex size-2 rounded-full bg-ascend" />
             </span>
-            Live updates
+            {source === "tiger" ? t.source_tiger : source === "practice" ? t.source_practice : t.source_mock}
             {updatedAgo !== null && <span>· Updated {ago(updatedAgo)}</span>}
           </p>
+          {error && <p className="text-sm text-stuck">{t.tiger_unavailable}</p>}
         </div>
         <div className="flex items-center gap-2">
           <SideBadge side="ascend" />

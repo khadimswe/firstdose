@@ -28,7 +28,7 @@ function Kbd({ children }: { children: React.ReactNode }) {
 
 /** Operator console: the scripted run on the left, controls and the selected beat on the right. */
 export function SimScreen() {
-  const { script, beats, fired, firedIds, cases, catalog, fire, reset } = useEvents();
+  const { mode, ready, busy, canFire, script, beats, fired, firedIds, cases, catalog, fire, reset } = useEvents();
   const { url: patientUrl, local } = usePatientUrl();
 
   const caseById = new Map(cases.map((c) => [c.id, c]));
@@ -37,7 +37,9 @@ export function SimScreen() {
     return c ? `${c.patient.display_short} · ${c.drug.brand}` : b.case_id;
   };
   const remaining = beats.filter((b) => !b.events.every((e) => firedIds.has(e.id)));
-  const next = remaining[0];
+  const ids = (b: Beat) => b.events.map((e) => e.id);
+  // Live: only inputs whose prerequisite has happened can fire (#9).
+  const next = remaining.find((b) => canFire(ids(b)));
   const stateOf = (b: Beat): BeatState => {
     const n = b.events.filter((e) => firedIds.has(e.id)).length;
     if (n === b.events.length) return "fired";
@@ -63,7 +65,8 @@ export function SimScreen() {
 
   function startAuto(speed: number) {
     stopAuto();
-    if (remaining.length === 0) return;
+    // Autoplay is mock-only: live runs take their actions from the real screens.
+    if (mode !== "mock" || remaining.length === 0) return;
     setAutoSpeed(speed);
     cancel.current = playBeats(
       remaining,
@@ -145,7 +148,7 @@ export function SimScreen() {
     else groups.push({ caseId: b.case_id, beats: [b] });
   }
 
-  const progress = script.length ? fired.length / script.length : 0;
+  const progress = script.length ? Math.min(1, fired.length / script.length) : 0;
 
   return (
     <main className="mx-auto w-full max-w-7xl space-y-6 px-6 py-8">
@@ -183,7 +186,8 @@ export function SimScreen() {
                       selected={b === selected}
                       flash={flash.has(b.id)}
                       onSelect={() => setPickedId(b.id === pickedId ? null : b.id)}
-                      onFire={() => fire(b.events.map((e) => e.id))}
+                      onFire={() => fire(ids(b))}
+                      disabled={!canFire(ids(b))}
                     />
                   ))}
                 </ol>
@@ -198,7 +202,7 @@ export function SimScreen() {
               <div className="flex items-baseline justify-between text-sm">
                 <span className="font-medium">Run</span>
                 <span className="text-muted-foreground tabular-nums">
-                  {fired.length} / {script.length} events
+                  {mode === "supabase" ? `${fired.length} committed events` : `${fired.length} / ${script.length} events`}
                 </span>
               </div>
               <div className="h-1.5 overflow-hidden rounded-full bg-muted">
@@ -223,7 +227,7 @@ export function SimScreen() {
               <Button className="gap-2" disabled={!next || autoSpeed !== null} onClick={fireNext}>
                 Next beat <Kbd>N</Kbd>
               </Button>
-              {autoSpeed === null ? (
+              {mode !== "mock" ? null : autoSpeed === null ? (
                 <div className="inline-flex rounded-lg border p-0.5">
                   <Button size="sm" variant="ghost" disabled={!next} onClick={() => startAuto(1)}>
                     Autoplay 1× <Kbd>A</Kbd>
@@ -261,7 +265,7 @@ export function SimScreen() {
                   </Button>
                 </div>
               ) : (
-                <Button size="sm" variant="outline" onClick={() => setConfirmReset(true)}>
+                <Button size="sm" variant="outline" disabled={!ready || busy} onClick={() => setConfirmReset(true)}>
                   Reset
                 </Button>
               )}
@@ -290,8 +294,14 @@ export function SimScreen() {
           </section>
 
           <p className="text-xs text-muted-foreground">
-            <span className="font-mono">?upto=ev_06</span> freezes a tab ·{" "}
-            <span className="font-mono">?replay=1</span> loops the script in one tab
+            {mode === "supabase" ? (
+              "Use the doctor, coordinator and patient screens for their actions. Pharmacy confirmation unlocks after patient acknowledgment."
+            ) : (
+              <>
+                <span className="font-mono">?upto=ev_06</span> freezes a tab ·{" "}
+                <span className="font-mono">?replay=1</span> loops the script in one tab
+              </>
+            )}
           </p>
         </aside>
       </div>

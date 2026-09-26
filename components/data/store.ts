@@ -105,10 +105,6 @@ export function getSnapshot() {
   return fired;
 }
 
-export function getServerSnapshot() {
-  return EMPTY;
-}
-
 export function getOverride(): Override {
   start();
   return override;

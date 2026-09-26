@@ -4,7 +4,7 @@
 import { fill } from "@/components/copy/fill";
 import { templates } from "@/components/copy/templates";
 import type { Catalog, CaseView, FillEvent } from "@/components/data/types";
-import { calendarDaysBetween } from "@/components/data/derive";
+import { calendarDaysBetween, isConfirmedFill } from "@/components/data/derive";
 
 type Base = { id: string; at: number | string; caseId: string };
 
@@ -20,7 +20,7 @@ export type Bubble =
       answered: boolean;
     })
   | (Base & { kind: "reply"; text: string })
-  | (Base & { kind: "note"; title?: string; text: string; tone?: "started" | "visit" });
+  | (Base & { kind: "note"; title?: string; text: string; tone?: "confirmed" | "visit" });
 
 export function buildThread(cases: CaseView[], fired: FillEvent[], catalog: Catalog): Bubble[] {
   const byId = new Map(cases.map((c) => [c.id, c]));
@@ -75,8 +75,15 @@ export function buildThread(cases: CaseView[], fired: FillEvent[], catalog: Cata
           });
         }
         break;
-      case "started":
-        if (e.wrist) out.push({ ...base, kind: "note", text: e.wrist, tone: "started" });
+      case "copay_card_used":
+        out.push({ ...base, kind: "note", text: fill(templates.doctor_confirmation.acknowledged, {
+          patient_name: c.patient.name, drug: c.drug.brand,
+        }) });
+        break;
+      case "claim_run":
+        if (c.ordered && isConfirmedFill(e)) out.push({ ...base, kind: "note", tone: "confirmed", text: fill(templates.doctor_confirmation.filled, {
+          patient_name: c.patient.name, drug: c.drug.brand,
+        }) });
         break;
       case "before_visit_card": {
         const t = templates.before_visit_card;

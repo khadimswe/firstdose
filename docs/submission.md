@@ -1,6 +1,10 @@
+> **Superseded 2026-09-26 09:40:** the writeup is rewritten around the coordinator at the 9 PM claims freeze (PLAN 5.4). Source of truth until then: `docs/spec-v2-coordinator.md`. Screen claims follow PLAN D8 (fill wording).
+
 # About FirstDose
 
 *Devpost "About the project" draft. Freeze claims Sat 9 PM. Every number here is traced in the sourced facts sheet in `notes/` (shared by DM, not in the repo).*
+
+**Not ready to publish:** this legacy draft describes intended features as completed. Reconcile every claim with PLAN.md and `presentation/claims-and-evidence.md`. September 26 audit: Grok voice and Cursor-use evidence are unverified; SpaceXAI remains a conditional entry. A successful standalone Garmin notification does not verify the full workflow or voice integration.
 
 ## Inspiration
 
@@ -13,7 +17,7 @@ Impiricus's CEO put the goal in one sentence: *"We need to know what exactly is 
 FirstDose is a skill for **Impiricus Ascend**. After the doctor prescribes, it watches the pharmacy and hub status feed. When a script gets stuck, it:
 
 1. Turns the status into a **reason** (declined at price, copay card not applied, unable to reach patient, prior authorization required).
-2. **Buzzes the doctor's watch** with the patient and the reason. One sentence, "Send Maria to my coordinator," hands it off.
+2. **Planned workflow:** buzz the doctor's watch with the patient and reason, then let the doctor confirm a coordinator handoff. The tap path is primary; voice is optional and unimplemented in the inspected backend.
 3. Routes the reason to the **one compliant fix**: re-send the copay card through the Impiricus Wallet, request a bridge sample through QPharma or Medvantx, or connect to the manufacturer's access support. Medicare and Medicaid patients never get a manufacturer copay card.
 4. Re-runs the claim. The price drops. The patient is *Started*. The watch buzzes once more.
 5. Proves it to Market Access: patients recovered and time to first fill, with no names and no prescription counts.
@@ -26,7 +30,7 @@ Surescripts First-Fill Abandonment can tell a care team a script wasn't picked u
 - **Supabase** Postgres + Realtime carries `rx_cases` and `fill_events` to every screen at once.
 - **Tiger Data** holds `fill_events` as a hypertable with a `daily_ttff` continuous aggregate that feeds the Market Access screen's time-to-first-fill live.
 - **Gemini API** classifies free-text pharmacy and hub notes into our reason enum with a fixed `responseSchema`. It never writes clinical text; a deterministic rule picks the fix.
-- **Grok STT** (`grok-voice-transcribe-2.0`) with drug and patient keyterms turns "Send Maria to my coordinator" into an action. Without keyterms it mishears the drug name; the video shows both.
+- **Optional, not yet implemented: Grok voice handoff.** Proposed audio transcription produces a case/action suggestion for explicit confirmation. Verify the current API/model and actual Cursor development use before claiming SpaceXAI eligibility. Record any supported keyterm comparison honestly; no transcription failure or video evidence has been established.
 - **RxNorm + DailyMed**: real drug lookup and the real SPL label, with a byte-exact check that every sentence on screen is a substring of the FDA source.
 - **ntfy → iPhone → Garmin Forerunner 55** for the wrist alert. A Connect IQ widget was the stretch goal.
 - **ElevenLabs** voices "Maria started Otezla" on the table speaker.
@@ -37,7 +41,7 @@ Simulated pharmacy and hub statuses using real RxFill and hub vocabulary and NCP
 
 ## Challenges we ran into
 
-*(fill Saturday: the ones that actually happened — Garmin on iOS can only view or dismiss, so the action moved to voice and the phone; keyterm-less STT; byte-exact label matching against SPL XML; realtime fan-out to a stranger's phone.)*
+*(Fill with issues actually encountered and evidenced. Do not prewrite a Grok transcription failure or imply voice/realtime integration has been tested.)*
 
 ## Accomplishments
 

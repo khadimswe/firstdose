@@ -17,6 +17,7 @@ export function BeatRow({
   flash,
   onSelect,
   onFire,
+  disabled = false,
 }: {
   beat: Beat;
   state: BeatState;
@@ -24,6 +25,8 @@ export function BeatRow({
   flash: boolean;
   onSelect: () => void;
   onFire: () => void;
+  /** Live mode: this input isn't allowed yet (its prerequisite hasn't happened). */
+  disabled?: boolean;
 }) {
   const Icon =
     state === "fired" ? CheckCircle2 : state === "partial" ? CircleDashed : state === "next" ? CircleDot : Circle;
@@ -72,7 +75,7 @@ export function BeatRow({
       <Button
         size="xs"
         variant={state === "next" ? "default" : "outline"}
-        disabled={state === "fired"}
+        disabled={state === "fired" || disabled}
         onClick={onFire}
         className="w-14"
       >

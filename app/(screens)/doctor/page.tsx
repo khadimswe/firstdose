@@ -1,9 +1,5 @@
-import type { Metadata } from "next";
-
-import { DoctorScreen } from "./_components/DoctorScreen";
-
-export const metadata: Metadata = { title: "Doctor · FirstDose" };
+import { DoctorHome } from "./_components/DoctorHome";
 
 export default function DoctorPage() {
-  return <DoctorScreen />;
+  return <DoctorHome />;
 }

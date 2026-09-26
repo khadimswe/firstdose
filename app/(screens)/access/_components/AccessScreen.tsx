@@ -6,7 +6,7 @@ import { useEvents } from "@/components/data/useEvents";
 import { AccessView } from "./AccessView";
 
 export function AccessScreen() {
-  const { access, catalog } = useEvents();
+  const { access, catalog, accessSource, accessError } = useEvents();
   const now = useNowSeconds();
   const changedAt = useChangedAt(JSON.stringify(access));
 
@@ -14,6 +14,8 @@ export function AccessScreen() {
     <AccessView
       summary={access}
       reasons={catalog.reasons}
+      source={accessSource}
+      error={accessError}
       updatedAgo={now && changedAt ? Math.max(0, now - changedAt) : null}
     />
   );
