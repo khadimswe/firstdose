@@ -31,7 +31,7 @@
   "coordinator_card": {
     "title": "{patient_name} · {drug} {strength}",
     "reason_line": "{reason_label}",
-    "fix_line": "Suggested fix: {fix_label} ({fix_via})",
+    "fix_line": "Suggested fix: {fix_label} · {fix_via}",
     "eligibility_line": "{insurance_plan_label}: {eligibility}",
     "eligibility": { "eligible": "copay card eligible", "ineligible": "no manufacturer copay card (government coverage)" }
   },
