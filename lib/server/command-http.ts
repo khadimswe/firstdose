@@ -4,8 +4,9 @@ import { WorkflowError, type WorkflowCommand } from "./workflow";
 import { demoAccess, demoConfigured } from "./demo-session";
 import { HttpError, readText, requireSameOrigin } from "./http-body";
 
-type Options = { store?: WorkflowStore; env?: Record<string, string | undefined>; onCommit?: () => void | Promise<void> };
 export type CommandKind = WorkflowCommand["kind"] | "reset";
+export type CommitCheckpoint = Pick<Snapshot, "run_id" | "revision"> & { kind: CommandKind };
+type Options = { store?: WorkflowStore; env?: Record<string, string | undefined>; onCommit?: (checkpoint: CommitCheckpoint) => void | Promise<void> };
 export function authorize(request: Request, env: Record<string, string | undefined>) {
   if (!demoConfigured(env)) throw new HttpError(503, "demo_not_configured");
   const access = demoAccess(request, env);
@@ -40,9 +41,9 @@ export function failure(error: unknown): Response {
 }
 
 export function commandHandler(kind: CommandKind, options: Options = {}) {
-  async function scheduleDelivery() {
-    try { await options.onCommit?.(); }
-    catch { console.warn("Notification scheduling failed; committed events are retained."); }
+  async function scheduleFollowup(snapshot: Snapshot) {
+    try { await options.onCommit?.({ kind, run_id: snapshot.run_id, revision: snapshot.revision }); }
+    catch { console.warn("Post-commit scheduling failed; committed events are retained."); }
   }
   return async (request: Request): Promise<Response> => {
     try {
@@ -56,11 +57,11 @@ export function commandHandler(kind: CommandKind, options: Options = {}) {
       if (kind === "reset") {
         if (Object.keys(body).length) throw new HttpError(400, "invalid_command");
         const snapshot = await store.reset(runId);
-        await scheduleDelivery();
+        await scheduleFollowup(snapshot);
         return json(snapshot, 200, snapshot);
       }
       const result = await executeCommand(store, runId, { ...body, kind });
-      await scheduleDelivery();
+      await scheduleFollowup(result.snapshot);
       return json(result.inserted, 200, result.snapshot);
     } catch (error) { return failure(error); }
   };
