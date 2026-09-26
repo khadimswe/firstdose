@@ -22,6 +22,22 @@ function fixture() {
 afterEach(() => vi.useRealTimers());
 
 describe("live coordinator links", () => {
+  it("rejects an old voice approval before inviting, assigning or handing off in the new run", async () => {
+    const f = fixture(); const stop = await f.start(snapshot(TWO));
+    const handoff = vi.fn(async () => {});
+    expect(await f.store.approveAndHandoff("rx_001", handoff, ONE)).toBe(false);
+    expect(handoff).not.toHaveBeenCalled();
+    expect(f.fetcher).toHaveBeenCalledOnce();
+    stop();
+  });
+
+  it("preserves the expected run through approval and the handoff callback", async () => {
+    const f = fixture(); const stop = await f.start(snapshot(ONE, 3, "linked", true));
+    const handoff = vi.fn(async () => {});
+    expect(await f.store.approveAndHandoff("rx_001", handoff, ONE)).toBe(true);
+    expect(handoff).toHaveBeenCalledWith(ONE);
+    stop();
+  });
   it("hydrates independently of fill events, with stable snapshots", async () => {
     const f = fixture(); expect(f.store).not.toBeNull(); const stop = await f.start(snapshot(ONE, 1, "linked"));
     expect(f.store.getSnapshot().ready).toBe(true);

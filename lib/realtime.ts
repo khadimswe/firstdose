@@ -10,6 +10,8 @@ export class RealtimeError extends Error {
 }
 
 export interface PollingEventSource extends EventSource {
+  /** Preserve a reviewed handoff's run through deferred confirmation. */
+  handoffInRun(caseId: string, runId: string): Promise<void>;
   /** Clear old-run UI state here, before any new-run insert callbacks. Also called on initial load. */
   subscribe(
     onInsert: (event: FillEvent) => void,
@@ -175,11 +177,12 @@ export function createPollingEventSource(options: Options = {}): PollingEventSou
     }
   }
 
-  async function mutate(path: string, body: unknown, reset = false): Promise<void> {
+  async function mutate(path: string, body: unknown, reset = false, expectedRun?: string): Promise<void> {
     // Capture the observed run at click time. A failed click is never retargeted.
     let run = current?.run_id;
     if (!run) { await refresh(); run = current?.run_id; }
     if (!run) throw new RealtimeError("invalid_response");
+    if (expectedRun && run !== expectedRun) throw new RealtimeError("stale_run", 409);
     const epoch = generation;
     let response: Response;
     try {
@@ -211,6 +214,7 @@ export function createPollingEventSource(options: Options = {}): PollingEventSou
   }
 
   return {
+    handoffInRun: (caseId, runId) => mutate("/api/handoff", { case_id: caseId }, false, runId),
     load: () => refresh(),
     subscribe(onInsert, onRunChange, onError, onSync) {
       const subscriber: Subscriber = { onInsert, onRunChange, onError, onSync, runId: null, seen: new Set(), suspended: false };

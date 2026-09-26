@@ -1,10 +1,10 @@
 "use client";
 
 import { Check, X } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { DEMO_PRESCRIBER, useCoordinator } from "@/components/data/coordinator";
+import { coordinatorLive, DEMO_PRESCRIBER, useCoordinator } from "@/components/data/coordinator";
 import { local, useLocal } from "@/components/data/local";
 import { useEvents } from "@/components/data/useEvents";
 
@@ -52,35 +52,48 @@ export function useHandoff() {
   const { cases, act, canAct } = useEvents();
   const { approved } = useLocal();
   const coordinator = useCoordinator();
-  const [caseId, setCaseId] = useState<string | null>(null);
+  const [chosen, setChosen] = useState<{ id: string; run: string | null } | null>(null);
+  const caseId = chosen?.id ?? null;
   const selection = useRef(0);
+  useEffect(() => {
+    if (!coordinator.live) return;
+    return coordinatorLive.subscribe(() => {
+      const run = coordinatorLive.getSnapshot().snapshot?.run_id;
+      setChosen(current => current && current.run !== run ? null : current);
+    });
+  }, [coordinator.live]);
   const linked = (id: string) => { const c = cases.find(row => row.id === id); return c ? coordinator.linked(c.rx.prescriber_label, cases, approved) : false; };
 
-  async function send(id: string) {
+  async function send(choice: { id: string; run: string | null }) {
+    const { id, run } = choice;
     const selected = selection.current;
     const c = cases.find(row => row.id === id);
     if (!c || !canAct("handoff", id)) return;
     if (coordinator.live) {
-      if (c.rx.prescriber_label !== DEMO_PRESCRIBER) return;
-      const sent = await coordinator.handoff(c);
-      if (selected === selection.current) setCaseId(sent ? null : id);
+      if (!run || coordinatorLive.getSnapshot().snapshot?.run_id !== run || c.rx.prescriber_label !== DEMO_PRESCRIBER) return;
+      const sent = await coordinator.handoff(c, run);
+      if (selected === selection.current && coordinatorLive.getSnapshot().snapshot?.run_id === run) setChosen(sent ? null : choice);
     } else {
       local.approve(c.rx.prescriber_label);
       await act("handoff", id);
-      if (selected === selection.current) setCaseId(null);
+      if (selected === selection.current) setChosen(null);
     }
   }
-  function request(id: string) {
-    if (!canAct("handoff", id)) return;
-    if (coordinator.live && cases.find(row => row.id === id)?.rx.prescriber_label !== DEMO_PRESCRIBER) return;
+  function request(id: string, expectedRun?: string): boolean {
+    if (!canAct("handoff", id)) return false;
+    const current = coordinatorLive.getSnapshot();
+    if (coordinator.live && (!current.ready || !current.snapshot || (expectedRun && expectedRun !== current.snapshot.run_id)
+      || cases.find(row => row.id === id)?.rx.prescriber_label !== DEMO_PRESCRIBER)) return false;
+    const choice = { id, run: coordinator.live ? expectedRun ?? current.snapshot!.run_id : null };
     selection.current++;
     if (linked(id)) {
-      if (coordinator.live) { setCaseId(id); void send(id); }
+      if (coordinator.live) { setChosen(choice); void send(choice); }
       else void act("handoff", id);
-    } else setCaseId(id);
+    } else setChosen(choice);
+    return true;
   }
-  const sheet = <ApproveSheet open={caseId !== null} withHandoff onApprove={() => { if (caseId) void send(caseId); }} onClose={() => { selection.current++; setCaseId(null); }}
-    pending={coordinator.pending} disabled={coordinator.live && (!coordinator.ready || caseId === null || !canAct("handoff", caseId))}
+  const sheet = <ApproveSheet open={caseId !== null} withHandoff onApprove={() => { if (chosen) void send(chosen); }} onClose={() => { selection.current++; setChosen(null); }}
+    pending={coordinator.pending} disabled={coordinator.live && (!coordinator.ready || chosen?.run !== coordinator.snapshot?.run_id || caseId === null || !canAct("handoff", caseId))}
     linked={caseId !== null && linked(caseId)} error={coordinator.error} loginPath={coordinator.loginPath} />;
   return { request, sheet };
 }
