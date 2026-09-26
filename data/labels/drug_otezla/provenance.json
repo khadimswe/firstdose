@@ -1,0 +1,20 @@
+{
+  "drug_id": "drug_otezla",
+  "rxcui": "1492746",
+  "rxnorm_name": "apremilast 30 MG Oral Tablet [Otezla]",
+  "rxnorm_tty": "SBD",
+  "setid": "f6b1f516-4972-4d82-bced-113e47b41cc5",
+  "document_id": "8d1d49ca-6dc1-4580-b2d5-f69ccb4f1c8e",
+  "version": "38",
+  "effective_time": "20260902",
+  "source_url": "https://dailymed.nlm.nih.gov/dailymed/services/v2/spls/f6b1f516-4972-4d82-bced-113e47b41cc5.xml",
+  "fetched_at": "2026-09-26T05:54:11.700Z",
+  "source_sha256": "acd08d49416a9b09b8da92d0b77cf90d4ae20fb60e3582a66ebed23f2fff4439",
+  "extraction_method": "spl-section-text-v1",
+  "section_sha256": {
+    "34066-1": null,
+    "34067-9": "f8c83258adcda8eccd88d18d6fc334de09532f5b0e7222ee709fb393e7bd2eb6",
+    "43685-7": "dcf5af18d204e6ff5cf254317520af18a3a5a871c391b868c67194d740b5f077",
+    "34068-7": "292ba80c19d2d110741024e902ea5ba25129d18e9e2be35d45c4477991dba4bc"
+  }
+}

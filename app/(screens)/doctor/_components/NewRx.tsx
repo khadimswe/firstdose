@@ -35,7 +35,6 @@ export function NewRx() {
   const [picked, setPicked] = useState<string | null>(null);
   const c = cases.find((x) => x.id === picked) ?? cases.find((x) => !x.ordered) ?? cases[0];
   const sent = c.events.find((e) => e.type === "prescribed");
-  const labelShown = c.events.some((e) => e.type === "label_shown");
   const cardSent = c.events.some((e) => e.type === "copay_card_sent");
 
   return (
@@ -107,13 +106,16 @@ export function NewRx() {
         <Button
           className="h-12 w-full rounded-full bg-du-purple text-base text-white hover:bg-du-purple/90"
           disabled={!canAct("prescribe", c.id)}
-          onClick={() => act("prescribe", c.id)}
+          onClick={() => {
+            setPicked(c.id);
+            void act("prescribe", c.id);
+          }}
         >
           Sign and send
         </Button>
       )}
 
-      {labelShown && c.label && (
+      {c.label && (
         <div className="overflow-hidden rounded-2xl text-foreground">
           <LabelCard label={c.label} drug={c.drug} mode="order" />
         </div>

@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node --import tsx scripts/labels/verify.ts --drug drug_otezla",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -14,6 +15,7 @@
   "dependencies": {
     "class-variance-authority": "^0.7.1",
     "cn": "^0.4.0",
+    "fast-xml-parser": "^5.11.1",
     "lucide-react": "^1.48.0",
     "next": "16.3.6",
     "radix-ui": "^1.6.7",

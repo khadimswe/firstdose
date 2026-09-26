@@ -71,3 +71,13 @@ The database suite creates a disposable PostgreSQL 16 container without networki
 The seed generator writes reviewable SQL only. It preserves existing label rows so rerunning it cannot overwrite Minh's reviewed cache with placeholders. Before a hosted apply, review the migration and generated seed against the target project and existing schema. Apply the migration, then seed through the team's database workflow. A project API key alone is not a database DDL connection. No hosted application is performed by these scripts.
 
 After migration and frontend integration, verify two real clients, reset/reconnect, reviewed doctor alerts, independent pharmacy confirmation, cached labels and physical notification delivery before marking the Phase 1 gate complete.
+
+## Phase 1 closure integration on the v2 screens
+
+The independent pharmacy event `ev_11` now carries `wrist.fill_confirmed`. The same atomic outbox and claim-once worker used for reason alerts deliver it. Patient acknowledgment still has no wrist message; repeated pharmacy commands cannot create another notification. Provider acceptance and physical watch receipt remain separate evidence.
+
+The New Rx screen renders its cached label directly, before prescribing, without inventing a `label_shown` event. It retains the selected patient after signing. Otezla's artifact is checked against the saved DailyMed XML and RxNorm response; build verification also checks the exact artifact copied into the screen catalog. Humira remains a visibly unverified placeholder. `GET /api/label/drug_otezla` serves public drug-label content, without patient information or a staff-session requirement.
+
+The demo login accepts the exact v2 doctor routes, the two fictional patient-detail routes, `/coordinator/prescribers`, and `/demo`, while rejecting unknown destinations and external redirects. Phase 1 retains the private shared demo login for patient acknowledgment; the optional patient-only access policy is separate work.
+
+The browser workflow script now targets the v2 screens across three independent browser contexts. It checks label text, default-patient selection, approval/handoff, the coordinator case sheet, acknowledgment remaining pending, separate confirmation, reload and reset. Running it against the live demo sends both reason and pharmacy-confirmation notifications. Browser automation does not replace the physical two-device HTTPS checkpoint.

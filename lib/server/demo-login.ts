@@ -3,7 +3,11 @@ import { HttpError, readText, requireSameOrigin } from "./http-body";
 
 // Preserve the same-origin form POST's Origin for CSRF validation.
 const headers = { "Cache-Control": "no-store", "Referrer-Policy": "same-origin", "X-Content-Type-Options": "nosniff" };
-const paths = new Set(["/", "/doctor", "/coordinator", "/patient/rx_001", "/patient/rx_002", "/board", "/access", "/sim"]);
+const paths = new Set([
+  "/", "/demo", "/doctor", "/doctor/new", "/doctor/profile", "/doctor/concierge",
+  "/doctor/patients/pt_maria", "/doctor/patients/pt_james",
+  "/coordinator", "/coordinator/prescribers", "/patient/rx_001", "/patient/rx_002", "/board", "/access", "/sim",
+]);
 function returnPath(value: unknown): string {
   if (value === undefined || value === null || value === "") return "/doctor";
   if (typeof value !== "string" || value.length > 512 || /[\\\r\n]/.test(value) || !value.startsWith("/") || value.startsWith("//")) throw new HttpError(400, "invalid_return_path");
