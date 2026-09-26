@@ -10,6 +10,11 @@ import { replayRun } from '@/lib/server/analytics/replay';
 
 const HMAC = 'test-key';
 
+type WriteBatch = (events: readonly MetricEvent[]) => Promise<void>;
+
+/** A mock write seam whose calls keep their batch type for assertions. */
+const writeBatchMock = (): ReturnType<typeof vi.fn<WriteBatch>> => vi.fn<WriteBatch>(async () => undefined);
+
 function committed(runId: string, scriptId: string, type: CommittedEvent['event']['type']): CommittedEvent {
   return {
     run_id: runId,
@@ -39,7 +44,7 @@ describe('replayRun', () => {
       committed('run-1', 'd1', 'dispensed'),
       committed('run-1', 'x1', 'started'), // not fill evidence
     ];
-    const writeBatch = vi.fn(async () => undefined);
+    const writeBatch = writeBatchMock();
     await replayRun('run-1', async () => source, writeBatch, HMAC);
     expect(writeBatch).toHaveBeenCalledTimes(1);
     const written = writeBatch.mock.calls[0]?.[0] as MetricEvent[];
@@ -59,7 +64,7 @@ describe('replayRun', () => {
       committed('run-1', 'p1', 'prescribed'),
       committed('run-1', 'd1', 'dispensed'),
     ];
-    const writeBatch = vi.fn(async () => undefined);
+    const writeBatch = writeBatchMock();
     await replayRun('run-1', async () => source, writeBatch, HMAC);
     await replayRun('run-1', async () => source, writeBatch, HMAC);
     await replayRun('run-1', async () => [...source].reverse(), writeBatch, HMAC);
@@ -78,7 +83,7 @@ describe('replayRun', () => {
       committed('run-1', 'p1', 'prescribed'),
       committed('run-2', 'p2', 'prescribed'),
     ];
-    const writeBatch = vi.fn(async () => undefined);
+    const writeBatch = writeBatchMock();
     await replayRun('run-1', async () => source, writeBatch, HMAC);
     const written = writeBatch.mock.calls[0]?.[0] as MetricEvent[];
     expect(written.every((e) => e.run_id === 'run-1')).toBe(true);

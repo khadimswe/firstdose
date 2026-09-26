@@ -63,7 +63,7 @@ export class EventConflictError extends Error {
  * event; retries reuse identical immutable source data and therefore no-op.
  */
 export async function writeMetricBatch(events: readonly MetricEvent[]): Promise<void> {
-  const current = analyticsPool();
+  const current = await analyticsPool();
   if (current === null) throw new Error('analytics_unavailable');
   const client = await current.connect();
   try {
@@ -111,7 +111,7 @@ export async function writeMetricBatch(events: readonly MetricEvent[]): Promise<
 
 /** Direct SQL summary; cross-checked against the pure summarize() oracle. */
 export async function getAccessSummary(runId: string): Promise<AccessSummary> {
-  const current = analyticsPool();
+  const current = await analyticsPool();
   if (current === null) throw new Error('analytics_unavailable');
 
   // Confirmed first fills: earliest dispensing at or after the earliest
