@@ -106,6 +106,8 @@ async function main(): Promise<void> {
           responseMimeType: 'application/json',
           responseJsonSchema: SCHEMA,
           temperature: 0,
+          // Interactive deadline is 4 s; keep thinking mode off.
+          thinkingConfig: { thinkingBudget: 0 },
         },
       });
       raw = response.text ?? '';

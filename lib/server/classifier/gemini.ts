@@ -80,6 +80,9 @@ export const geminiTransport: ClassifierTransport = async (note, signal) => {
       responseMimeType: 'application/json',
       responseJsonSchema: SCHEMA,
       temperature: 0,
+      // A note-to-reason mapping must answer inside the 4 s interactive
+      // deadline; thinking mode would blow straight through it.
+      thinkingConfig: { thinkingBudget: 0 },
       abortSignal: signal,
     },
   });
