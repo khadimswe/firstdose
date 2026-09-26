@@ -38,7 +38,7 @@ DocUpdate already promises "direct access to reps, samples and patient support."
 | **Access coordinator** (main user) | Every workday, first thing | Morning summary ("3 stuck, 2 waiting, 11 fills confirmed this week"), then a queue sorted by who's slipping soonest, each with a reason | One fix per stuck patient (re-send copay card, request bridge sample, connect to access support); mark "Reached patient" / "Left message" |
 | **Doctor** | A few alerts a week, plus before visits | Alert when a fix needs them; note before a follow-up: "James Carter: Humira first fill confirmation is still pending. Review fill status before the visit." | One tap: "Send to my coordinator" (first time: "Invite your coordinator"). Watch buzzes only when it matters |
 | **Patient** | Once, when stuck | Copay card or support link on their phone | "Use at pharmacy" |
-| **Market Access** (buyer) | Weekly | First fills confirmed, time to first fill, stuck reasons, coordinators active. No names | Pays per confirmed first fill, never per prescription |
+| **Market Access** (buyer) | Weekly | First fills confirmed, time to first fill, stuck reasons. No names | Pays per confirmed first fill, never per prescription |
 
 ## Market size: the people Impiricus doesn't reach yet
 
@@ -76,7 +76,7 @@ The core loop is unchanged: prescribe → stuck → alert → handoff → fix �
 | Change | `/coordinator` is the home screen and the first thing judges see (the desktop). Summary strip; sort stuck by time stuck; "Reached patient / Left message" marks; a "Waiting on" column (Doctor / Coordinator / Patient / Pharmacy); header per Q3 | Deem | medium |
 | Change | `/doctor` becomes the DocUpdate phone view: the four surfaces below, at 390×844. It replaces the iPad EHR + Ascend thread | Deem | medium |
 | Change | `/board` becomes optional at the table (the desktop queue owns the big screen). Its lanes show the same "Waiting on" label | Deem | small |
-| Add | `/access` tiles: coordinators active this week, fixes per coordinator | Deem + Minh | small |
+| ✂️ Cut | `/access` tiles: coordinators active this week, fixes per coordinator (6.7, Vinh's call, Sat) | Deem + Minh | — |
 | Add | `/sim` "Seed the week": pre-load 10–15 fill-confirmed and waiting patients so the queue looks like a real Monday | Vinh | small |
 | Add | `coordinator_id` on cases; `coordinator_invited` event. Router unchanged | Vinh | small |
 | Cut | "The doctor opens it every morning" | — | — |
@@ -95,9 +95,9 @@ Not in scope for the weekend: real logins, multiple practices, a live DocUpdate 
 | Piece | Job in FirstDose v2 | Owner | Status |
 |---|---|---|---|
 | RxFill-shaped `/sim` events | Pharmacy events use RxFill statuses; a "raw message" toggle shows `NotDispensed` and `RxFillIndicator`. Labelled simulated | Vinh | Build first (mostly relabeling) |
-| NPPES NPI Registry (free, no key) | Coordinator screen: "Likely colleagues at this practice → Invite." NPPES has no practice roster and no street-address search, so search by ZIP + taxonomy and match the address line. Show real records as "public NPPES record, not users," names hidden. Cache for the demo | Vinh or Minh (`/api/npi`), Deem (UI) | After the queue changes |
+| NPPES NPI Registry (free, no key) | Coordinator screen: "Likely colleagues at this practice → Invite." NPPES has no practice roster and no street-address search, so search by ZIP + taxonomy and match the address line. Show real records as "public NPPES record, not users," names hidden. Cache for the demo | Vinh or Minh (`/api/npi`), Deem (UI) | ✂️ Cut (6.6, Vinh's call, Sat) |
 | ElevenLabs | Coordinator approves a templated patient message ("Your copay card is ready, show this at the pharmacy"), voiced in the patient's language (Spanish for Maria). Sent from the practice. Never medical advice. Pairs with DocUpdate's translator | Deem | After NPPES |
-| Tiger Data | Fill history, time to first fill, plus a "coordinators active per day" rollup (retention proof) | Minh | Keep |
+| Tiger Data | Fill history and time to first fill (the "coordinators active" rollup was cut with 6.7) | Minh | Keep |
 | Gemini | Messy pharmacy/hub note → reason code only | Minh | Keep |
 | Grok | "Send Maria to my coordinator" | Vinh | Cut first if behind |
 | Medicare Part D prescribers (CMS) | Future rollout targeting only ("practices that start biologics"). Not on the demo path | — | Mention only |
@@ -153,7 +153,7 @@ Full teardown: `docs/research/docupdate-teardown.md`. The judge wants proof we k
 | 1:35 | Judge 1 taps "Use at pharmacy": acknowledged, fill still pending. Vinh fires the separate pharmacy confirmation: price $410 → $0 (demo), chime, the phone's Past Rx line reads **Fill confirmed**, watch: "Maria: Otezla pharmacy fill confirmed" | "The doctor heard about it twice: when it broke, and when it was fixed." |
 | 2:00 | James on Humira: 75 Prior Authorization Required, unable to reach after 3 calls. Judge 2 taps "Connect to access support" | "Different reason, different fix. The rule picks it, not AI." |
 | 2:30 | The phone's Home shows the before-visit card: "James Carter: Humira first fill confirmation is still pending. Review fill status before the visit." Boxed warning shown verbatim once Humira's label is verified | "This is the only thing the doctor needs to read." |
-| 2:50 | `/access`: first fills confirmed, time to first fill, coordinators active. Who-sees-what | "Market Access pays per confirmed first fill. Impiricus gets a daily user it never had." |
+| 2:50 | `/access`: first fills confirmed, time to first fill. Who-sees-what | "Market Access pays per confirmed first fill. Impiricus gets a daily user it never had." |
 | 3:15 | The before/after slide (6.10): DocUpdate's App Store home screen beside ours | "One alert type, one status line, one checkbox, one profile row. Not a new app." |
 | 3:30 | Close | "FirstDose makes the coordinator a daily Impiricus user and makes every doctor alert worth reading." |
 

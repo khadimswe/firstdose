@@ -43,7 +43,7 @@ Legend: [ ] not started · [-] in progress · [x] done · [!] blocked
 - [ ] **Phase 1 gate 4** with Vinh: production is live; sign in on both devices, then run the two-device checklist (`docs/handoffs/deem-phase1.md`).
 - [ ] **4.4** QR on a stranger's phone from the deployed origin.
 - [x] Slide 4 still: the seeded coordinator Queue (#33).
-- [ ] **6.7 UI / 6.6 UI** when Minh's rollup and `/api/npi` land.
+- [x] ✂️ **6.6 / 6.7** NPPES invite and coordinator tiles: cut (Vinh's call, Sat).
 
 ## 2:30–9 PM
 
