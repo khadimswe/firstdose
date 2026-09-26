@@ -45,16 +45,16 @@ Shared (⚠️ CONTRACT commits, tell Vihn first): `mock/*.json`, `package.json`
 - [x] **1.4** `/doctor`.
 - [x] **1.5** `/coordinator`.
 - [x] **1.6** `/patient/[id]`.
-- [ ] **1.13** Wire `useEvents()` to Vihn's `lib/realtime.ts` (live source; buttons enabled by case state). Needed for the checkpoint.
+- [-] **1.13** Wire `useEvents()` to Vihn's `lib/realtime.ts` (live source; buttons enabled by case state). Needed for the checkpoint.
 
 **CHECKPOINT Sat 4 AM:** Maria's loop across two devices in `supabase` mode.
 
 ## Phase 2: The wow + deploy (Sat 4 AM to 11 AM)
 - [x] **2.1** `/board`.
-- [x] **2.2** James case + before-visit card.
+- [-] **2.2** James case + before-visit card (real boxed warning waits on 1.10).
 - [x] **2.4** `/access`.
 - [ ] **2.6** Vercel deploy.
-- [ ] **2.7** `/sim` extras (`?upto=`, `?replay=1`, Autoplay).
+- [x] **2.7** `/sim` extras (`?upto=`, `?replay=1`, Autoplay).
 
 ## Phase 3-4 (Sat 11 AM to 6 PM)
 - [ ] **3.1** Impiricus workshop with Vihn.

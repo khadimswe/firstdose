@@ -81,7 +81,7 @@
 | 1.10 | Label pipeline: RxNorm → DailyMed SPL → `labels` + byte-exact test | `lib/server/label.ts`, `tests/label.test.ts`, `mock/labels.json` | **Vihn** | ⬜ | 0.6 | Setids hardcoded. Fills RxCUIs + `labels.json`. |
 | 1.11 | Action routes: `/api/rx`, `/api/handoff`, `/api/fix`, `/api/patient/use` | `app/api/**` | **Vihn** | ⬜ | 1.7, 1.8 | Guarded transitions so a double tap can't double-fire. |
 | 1.12 | ntfy on `alert_sent` and `started` | `lib/server/ntfy.ts` | **Vihn** | ⬜ | 0.8, 1.9 | Action button → `/api/handoff`. |
-| 1.13 | Wire `useEvents()` to `lib/realtime.ts`: live source, buttons enabled by case state | `components/data/**` | **Deem** | ⬜ | 1.9 | `mode.ts` runs mock until this lands, whatever the env var says. Needed for the checkpoint. |
+| 1.13 | Wire `useEvents()` to `lib/realtime.ts`: live source, buttons enabled by case state | `components/data/**` | **Deem** | 🟡 | 1.9 | Built on local branch `feat/live-source`, tested against a stand-in `EventSource`; merges as soon as 1.9 lands. Button guards already on `main`. |
 
 **CHECKPOINT Sat 4 AM:** Maria's loop runs end to end across two devices in `supabase` mode: prescribe → stuck → wrist buzz → handoff → one fix → patient taps → re-run → started buzz. If not, stop and fix together before Phase 2.
 
@@ -90,12 +90,12 @@
 | # | Component | File(s) | Owner | Status | Deps | Notes |
 |---|---|---|---|---|---|---|
 | 2.1 | `/board` Relay Board: lanes, red stop, price counter, WebAudio chime | `app/(screens)/board/**` | **Deem** | ✅ | 1.1 | 1920×1080 dark. Sound needs one click to enable. |
-| 2.2 | James case on every screen + before-visit card with real boxed warning | `app/(screens)/doctor/**` | **Deem** | ✅ | 1.4, 1.10 | Template only, never free text. |
+| 2.2 | James case on every screen + before-visit card with real boxed warning | `app/(screens)/doctor/**` | **Deem** | 🟡 | 1.4, 1.10 | Template only, never free text. Built; the real boxed warning appears when 1.10 fills `labels.json`. |
 | 2.3 | Tiger Data: `fill_events` hypertable + `daily_ttff` + `/api/access/summary` | `lib/server/tiger.ts`, `app/api/access/**` | **Vihn** | ⬜ | 1.7 | Dual-write, no patient names. |
 | 2.4 | `/access`: KPI tiles, reason bars, who-sees-what | `app/(screens)/access/**` | **Deem** | ✅ | 1.1, 2.3 | Type has no patient fields. |
 | 2.5 | Gemini classifier: note → reason enum (`responseSchema`) | `lib/server/classify.ts` | **Vihn** | ⬜ | 0.6 | List models at startup. ≤ 140 chars in, enum out. |
 | 2.6 | Vercel deploy (`firstdose-web`) | `.vercel/` | **Deem** | ⬜ | 1.9 | Check `.vercel/project.json` before every `--prod`. |
-| 2.7 | `/sim` extras: `?upto=`, `?replay=1`, Autoplay | `app/(screens)/sim/**` | **Deem** | ⬜ | 1.3 | Offline fallback for the board. |
+| 2.7 | `/sim` extras: `?upto=`, `?replay=1`, Autoplay | `app/(screens)/sim/**` | **Deem** | ✅ | 1.3 | Offline fallback for the board. `?replay=1&speed=N` loops one tab. |
 
 ### Phase 3: Sponsor check (Sat 11 AM to 12 PM)
 
@@ -186,4 +186,4 @@ A sponsor tool is named in the writeup only if 5.1 finds it called in code. **Lo
 5. Every screen runs on `mock/` with zero network before it's merged.
 6. Every number on screen, in the README, video or Devpost comes from the sourced facts sheet in `notes/`.
 
-_Last updated: 2026-09-26 00:15 ET by Deem (Claude)._
+_Last updated: 2026-09-26 00:32 ET by Deem (Claude)._
