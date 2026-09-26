@@ -153,7 +153,7 @@ Full teardown: `docs/research/docupdate-teardown.md`. The judge wants proof we k
 | 1:35 | Judge 1 taps "Use at pharmacy": acknowledged, fill still pending. Vinh fires the separate pharmacy confirmation: price $410 → $0 (demo), chime, the phone's Past Rx line reads **Fill confirmed**, watch: "Maria: Otezla pharmacy fill confirmed" | "The doctor heard about it twice: when it broke, and when it was fixed." |
 | 2:00 | James on Humira: 75 Prior Authorization Required, unable to reach after 3 calls. Judge 2 taps "Connect to access support" | "Different reason, different fix. The rule picks it, not AI." |
 | 2:30 | The phone's Home shows the before-visit card: "James Carter: Humira first fill confirmation is still pending. Review fill status before the visit." Boxed warning shown verbatim once Humira's label is verified | "This is the only thing the doctor needs to read." |
-| 2:50 | `/access`: first fills confirmed, time to first fill, coordinators active. Who-sees-what | "Market Access pays per confirmed first fill. Impiricus gets a daily user it never had." |
+| 2:50 | `/access`: first fills confirmed, time to first fill, stuck reasons. Who-sees-what (coordinator tiles cut, 6.7) | "Market Access pays per confirmed first fill. Impiricus gets a daily user it never had." |
 | 3:15 | The before/after slide (6.10): DocUpdate's App Store home screen beside ours | "One alert type, one status line, one checkbox, one profile row. Not a new app." |
 | 3:30 | Close | "FirstDose makes the coordinator a daily Impiricus user and makes every doctor alert worth reading." |
 

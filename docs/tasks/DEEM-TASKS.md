@@ -42,7 +42,7 @@ Legend: [ ] not started · [-] in progress · [x] done · [!] blocked
 - [ ] **Phase 1 gate 4** with Vinh: after his hosted migrations 005/006 and re-seed, flip `NEXT_PUBLIC_DATA_SOURCE=supabase`, redeploy, and run the two-device checklist (`docs/handoffs/deem-phase1.md`).
 - [ ] **4.4** QR on a stranger's phone from the deployed origin.
 - [x] Slide 4 still: the seeded coordinator Queue (#33).
-- [ ] **6.7 UI / 6.6 UI** when Minh's rollup and `/api/npi` land.
+- [x] ~~**6.7 UI / 6.6 UI**~~ cut Sat 4:30 PM: the rollup and `/api/npi` were not built.
 
 ## 2:30–9 PM
 
