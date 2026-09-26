@@ -11,6 +11,7 @@ export function BeatRow({
   firedIds,
   isNext,
   onFire,
+  disabled = false,
 }: {
   beat: Beat;
   n: number;
@@ -18,6 +19,7 @@ export function BeatRow({
   firedIds: ReadonlySet<string>;
   isNext: boolean;
   onFire: () => void;
+  disabled?: boolean;
 }) {
   const done = beat.events.every((e) => firedIds.has(e.id));
 
@@ -28,7 +30,7 @@ export function BeatRow({
           {n}. {beat.case_id} · {who}
         </CardTitle>
         <CardAction>
-          <Button onClick={onFire} disabled={done} variant={isNext ? "default" : "outline"}>
+          <Button onClick={onFire} disabled={done || disabled} variant={isNext ? "default" : "outline"}>
             {done ? "Fired" : "Fire"}
           </Button>
         </CardAction>

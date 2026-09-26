@@ -6,7 +6,7 @@ import { templates } from "@/components/copy/templates";
 import type { AccessSummary, Catalog, ReasonKey } from "@/components/data/types";
 
 function duration(seconds: number | null) {
-  if (seconds === null) return "—";
+  if (seconds === null || !Number.isFinite(seconds) || seconds < 0) return "—";
   if (seconds < 120) return `${Math.round(seconds)} s`;
   if (seconds < 7200) return `${Math.round(seconds / 60)} min`;
   if (seconds < 172_800) return `${(seconds / 3600).toFixed(1)} h`;
@@ -14,15 +14,19 @@ function duration(seconds: number | null) {
 }
 
 /**
- * Takes only the aggregate summary and the reason labels. There is no case,
- * patient or prescriber data in these props, so none can reach this screen.
+ * Renders only aggregate props. The shared practice demo still loads case data;
+ * this view is not an implemented authorization boundary for an external buyer.
  */
 export function AccessView({
   summary,
   reasons,
+  source,
+  error,
 }: {
   summary: AccessSummary;
   reasons: Catalog["reasons"];
+  source: "mock" | "practice" | "tiger";
+  error: string | null;
 }) {
   const t = templates.access_screen;
   const tally = (Object.entries(summary.reason_tally) as [ReasonKey, number][]).filter(
@@ -39,6 +43,11 @@ export function AccessView({
           <StandIn kind="ascend" />
         </div>
       </header>
+
+      <div role="status" aria-atomic="true" className="space-y-1 text-sm text-muted-foreground">
+        <p>{source === "tiger" ? t.source_tiger : source === "practice" ? t.source_practice : t.source_mock}</p>
+        {error && <p>{t.tiger_unavailable}</p>}
+      </div>
 
       <div className="grid gap-4 md:grid-cols-3">
         <Card>

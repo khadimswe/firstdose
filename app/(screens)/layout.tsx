@@ -1,3 +1,4 @@
+import { ErrorBanner } from "@/components/ErrorBanner";
 import { ModeBadge } from "@/components/ModeBadge";
 
 export default function ScreensLayout({ children }: { children: React.ReactNode }) {
@@ -5,6 +6,7 @@ export default function ScreensLayout({ children }: { children: React.ReactNode 
     <>
       {children}
       <ModeBadge />
+      <ErrorBanner />
     </>
   );
 }

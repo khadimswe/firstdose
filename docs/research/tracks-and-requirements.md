@@ -32,7 +32,15 @@ Skip Visa, Meta, NSA side projects, MongoDB, Solana, Vultr, and Backboard for th
 
 The earlier chat referenced **FirstDose-Build-Plan.pdf, page 3**. Stephen quotes organizer **Tech | Michael** saying: “You can enter two sponsor tracks, challenges are usually other small events”. Treat this as reported organizer guidance from the supplied plan, not a newly authenticated Discord message.
 
-Working allocation: **Impiricus + SpaceXAI** occupy those two sponsor slots. Notability stays conditional until the organizer clarifies its classification. If voice is cut or Cursor/Grok use cannot be demonstrated, do not claim SpaceXAI eligibility just to fill the second slot.
+Working allocation: **Impiricus** is the primary sponsor target; **SpaceXAI** is a conditional candidate for the second slot, not a confirmed entry. Notability stays conditional until the organizer clarifies its classification. If voice is cut or Cursor/Grok use cannot be demonstrated, do not claim SpaceXAI eligibility just to fill the second slot.
+
+### Why SpaceXAI appears in the plan — checked September 26
+
+The current [Devpost prize list](https://hackgt13.devpost.com/) includes **SpaceXAI: Make it Legendary**. The saved HexLabs announcement slide 5 describes using Cursor and Grok for real-world problems and explicitly includes public health among its examples. This establishes a plausible healthcare fit; it does not establish that FirstDose already qualifies. The slide calls it a challenge, so its treatment under the reported sponsor cap still needs confirmation.
+
+The original FirstDose build plan proposed Grok speech transcription for a coordinator handoff. Our optional Phase 4 flow is: phone microphone -> Grok transcript -> user reviews the intended case/action -> explicit confirmation calls the existing handoff. Cursor's role is actual development work, documented truthfully. The Garmin notification uses ntfy and does not itself demonstrate Grok or Cursor use.
+
+Repository check: no voice module or `/api/voice` route exists in this backend worktree; `XAI_API_KEY` is absent and no actual Cursor development evidence has been verified. Keep the voice task conditional. Do not put Grok in the completed-build submission text or claim a with/without-keyterms result before a real trial. Recheck the current xAI API/model when implementation starts; historical model names are not verified configuration.
 
 The older **HackGT13-Sponsor-Book.pdf, page 3** says one general track and any number of fitting sponsor challenges. That is earlier guidance and should not override the later two-sponsor report. The [public rules](https://hackgt13.devpost.com/rules) allow multiple categories but do not resolve these category sub-limits. MLH treatment also needs current confirmation.
 

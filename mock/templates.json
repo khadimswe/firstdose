@@ -2,8 +2,9 @@
   "_comment": "Every sentence the product generates about a patient comes from here. Fixed templates, variables only. No model writes any of this at runtime.",
 
   "wrist": {
-    "stuck":   "{patient_short}: {drug} not started. {reason_short}.",
-    "started": "{patient_short} started {drug}. $0 with copay card.",
+    "stuck":   "{patient_short}: {drug} first fill pending. {reason_short}.",
+    "started": "{patient_short}: {drug} pharmacy fill confirmed.",
+    "fill_confirmed": "{patient_short}: {drug} pharmacy fill confirmed.",
     "max_chars": 200
   },
 
@@ -17,9 +18,14 @@
   },
 
   "doctor_alert": {
-    "title": "{patient_name} hasn't started {drug}",
+    "title": "{patient_name}: {drug} first fill pending",
     "body":  "{reason_label}.",
     "action": "Send to my coordinator"
+  },
+
+  "doctor_confirmation": {
+    "acknowledged": "{patient_name} acknowledged the {drug} savings card. Pharmacy fill confirmation is still pending.",
+    "filled": "{patient_name}: {drug} pharmacy fill confirmed. This does not confirm treatment start."
   },
 
   "coordinator_card": {
@@ -34,16 +40,19 @@
     "title": "{drug} savings card",
     "standin": "Impiricus Wallet (stand-in)",
     "pays_line": "You pay: {patient_pays_label}",
-    "action": "Use at pharmacy"
+    "action": "Use at pharmacy",
+    "acknowledged": "Savings card acknowledged. Pharmacy fill confirmation is still pending.",
+    "filled": "The pharmacy confirmed your fill. This does not confirm a first dose."
   },
 
   "before_visit_card": {
-    "text": "{patient_name} never started {drug}. Consider this before escalating.",
+    "text": "{patient_name}: {drug} first fill confirmation is still pending. Review fill status before the visit.",
     "sub":  "Prescribed {days_ago} days ago · {reason_label} · {fix_label} in progress"
   },
 
   "board": {
-    "stops": ["Doctor", "Pharmacy", "Patient", "Started"],
+    "stops": ["Doctor", "Pharmacy", "Patient", "Fill confirmed"],
+    "confirmation_count": "Pharmacy fills confirmed: {count}",
     "stuck_label": "STUCK · {reason_short}",
     "price_from_label": "{quote} demo quote (high-deductible plan)",
     "price_to_label": "$0 with copay card (as little as $0, per {manufacturer})",
@@ -52,10 +61,14 @@
 
   "access_screen": {
     "title": "Market Access · aggregate only",
-    "recovered": "Patients recovered",
+    "recovered": "First fills confirmed",
     "ttff": "Median time to first fill",
     "reason_tally": "Stuck reasons",
-    "footer": "No names. No prescription counts. Paid per patient recovered, never per prescription."
+    "footer": "Aggregate counts of prescribed cases with a pharmacy fill confirmation. No names or counts by prescriber. A fill does not establish treatment start or clinical recovery.",
+    "source_mock": "Mock event counts · simulated pharmacy",
+    "source_practice": "Practice event counts · simulated pharmacy · Tiger unavailable",
+    "source_tiger": "Tiger aggregate counts",
+    "tiger_unavailable": "Tiger summary unavailable. Showing practice event counts."
   },
 
   "standin_labels": {

@@ -1,6 +1,6 @@
 import { clock, fill, money } from "@/components/copy/fill";
 import { templates } from "@/components/copy/templates";
-import { boardStop } from "@/components/data/derive";
+import { boardStop, hasConfirmedFill, isConfirmedFill, waitingOn } from "@/components/data/derive";
 import type { CaseView, FillEvent } from "@/components/data/types";
 import { cn } from "@/lib/utils";
 
@@ -8,7 +8,7 @@ const STOPS = templates.board.stops;
 
 /** Stuck from the moment a reason is classified until the claim goes through. */
 export function isStuck(c: CaseView) {
-  return c.reason !== null && c.status !== "dispensed" && c.status !== "started";
+  return c.reason !== null && !hasConfirmedFill(c);
 }
 
 export function stuckLabel(c: CaseView) {
@@ -19,14 +19,14 @@ export function stuckLabel(c: CaseView) {
   return fill(templates.board.stuck_label, { reason_short: short });
 }
 
-/** When the case reached each stop: prescribed, first pharmacy/hub event, dispensed, started. */
+/** Each stop records its own event, with pharmacy confirmation last. */
 function stopTimes(c: CaseView) {
   const at = (p: (e: FillEvent) => boolean) => c.events.find(p)?.at;
   return [
     at((e) => e.type === "prescribed"),
     at((e) => e.actor === "pharmacy" || e.actor === "hub"),
-    at((e) => e.type === "claim_run" && e.status_text === "Dispensed"),
-    at((e) => e.type === "started"),
+    at((e) => e.type === "fix_sent" || e.type === "copay_card_used"),
+    c.ordered ? at(isConfirmedFill) : undefined,
   ];
 }
 
@@ -34,7 +34,7 @@ function stopTimes(c: CaseView) {
 export function RelayLane({ c }: { c?: CaseView }) {
   const stop = c ? boardStop(c) : -1;
   const stuck = c ? isStuck(c) : false;
-  const started = c?.status === "started";
+  const confirmed = c ? hasConfirmedFill(c) : false;
   const times = c ? stopTimes(c) : [];
   const stuckAt = c?.events.find((e) => e.type === "reason_classified")?.at;
 
@@ -47,6 +47,12 @@ export function RelayLane({ c }: { c?: CaseView }) {
             <div className="text-xl text-muted-foreground">
               {c.drug.brand} {c.drug.strength}
             </div>
+            {waitingOn(c) && (
+              <div className="mt-3 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-lg">
+                <span className="text-muted-foreground">Waiting on</span>
+                <span className="font-semibold">{waitingOn(c)}</span>
+              </div>
+            )}
           </>
         )}
       </div>
@@ -57,7 +63,7 @@ export function RelayLane({ c }: { c?: CaseView }) {
           <div
             className={cn(
               "absolute top-6 left-[12.5%] h-1.5 -translate-y-1/2 rounded transition-[width] duration-1000",
-              started ? "bg-started" : "bg-foreground",
+              confirmed ? "bg-started" : "bg-foreground",
             )}
             style={{ width: `${(Math.max(stop, 0) / (STOPS.length - 1)) * 75}%` }}
           />
@@ -72,7 +78,7 @@ export function RelayLane({ c }: { c?: CaseView }) {
                       i < stop && "border-foreground bg-foreground",
                       here && "border-foreground bg-foreground",
                       here && stuck && "animate-pulse border-stuck bg-stuck",
-                      here && started && "border-started bg-started",
+                      here && confirmed && "border-started bg-started",
                     )}
                   />
                   <span
@@ -80,7 +86,7 @@ export function RelayLane({ c }: { c?: CaseView }) {
                       "text-2xl",
                       i > stop && "text-muted-foreground",
                       here && stuck && "font-semibold text-stuck",
-                      here && started && "font-semibold text-started",
+                      here && confirmed && "font-semibold text-started",
                     )}
                   >
                     {label}

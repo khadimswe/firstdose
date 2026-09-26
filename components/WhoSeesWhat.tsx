@@ -1,16 +1,16 @@
-// The who-sees-what split, worded as in docs/who-sees-what.md.
+// Proposed sharing boundary; current practice event counts are labelled separately.
 const ROWS = [
   {
     row: "Holds",
     practice:
       "The chart, patient names, insurance detail, fill status, the coordinator's queue, the before-visit card, the doctor's alerts",
     ascend:
-      "The Ascend channel the doctor already uses (the alert carries no chart), copay and sample program options, the Wallet link, the FDA's label text, aggregate recovery stats",
+      "Proposed Ascend channel, copay and sample program options, Wallet link, FDA label text and aggregate fill-confirmation counts",
   },
   {
     row: "Sends out",
     practice:
-      "Drug, insurance type (commercial / government), state, and \"started / recovered\" counts with no names",
+      "Proposed: drug, insurance type (commercial / government), state and pharmacy fill-confirmation counts with no names",
     ascend: "Program options and links, label text",
   },
   {
@@ -28,13 +28,14 @@ const ROWS = [
 const RULES = [
   "The doctor picks the drug. FirstDose never suggests one. It only acts after the order is signed.",
   "The FDA's words are shown exactly as written. No AI-written drug claims.",
-  "Nobody is paid per prescription. Market Access pays per patient recovered, measured in aggregate.",
+  "Proposed payment model: aggregate access outcomes, never prescription volume. A pharmacy fill does not establish clinical recovery.",
 ];
 
 export function WhoSeesWhat() {
   return (
     <section className="space-y-4">
       <h2 className="text-lg font-semibold">Who sees what</h2>
+      <p className="text-sm text-muted-foreground">Proposed sharing boundary. This demo uses fictional records; the Ascend projection is not verified.</p>
       <div className="overflow-x-auto rounded-xl border">
         <table className="w-full text-left text-sm">
           <thead>

@@ -12,12 +12,12 @@ import { useEvents } from "@/components/data/useEvents";
 import { BeatRow } from "./BeatRow";
 
 export function SimScreen() {
-  const { script, beats, fired, firedIds, cases, fire, reset } = useEvents();
+  const { mode, ready, busy, canFire, script, beats, fired, firedIds, cases, fire, reset } = useEvents();
   const { url: patientUrl, local } = usePatientUrl();
 
   const who = new Map(cases.map((c) => [c.id, `${c.patient.display_short} · ${c.drug.brand}`]));
   const remaining = beats.filter((b) => !b.events.every((e) => firedIds.has(e.id)));
-  const next = remaining[0];
+  const next = remaining.find(b => canFire(b.events.map(e => e.id)));
 
   // Autoplay fires the remaining beats on their own clock into the shared store,
   // so every other tab follows along.
@@ -52,7 +52,7 @@ export function SimScreen() {
         <div className="space-y-1">
           <h1 className="text-xl font-semibold">Operator console</h1>
           <p className="text-sm text-muted-foreground">
-            {fired.length} of {script.length} events fired
+            {mode === "supabase" ? `${fired.length} committed events` : `${fired.length} of ${script.length} events fired`}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -60,6 +60,7 @@ export function SimScreen() {
           <StandIn kind="hub" />
           <Button
             variant="outline"
+            disabled={!ready || busy}
             onClick={() => {
               stopAuto();
               void reset();
@@ -77,7 +78,7 @@ export function SimScreen() {
         >
           Next beat
         </Button>
-        {autoSpeed === null ? (
+        {mode === "mock" && (autoSpeed === null ? (
           <>
             <Button variant="outline" disabled={!next} onClick={() => startAuto(1)}>
               Autoplay 1×
@@ -90,10 +91,12 @@ export function SimScreen() {
           <Button variant="destructive" onClick={stopAuto}>
             Stop autoplay ({autoSpeed}×)
           </Button>
-        )}
+        ))}
         <p className="text-xs text-muted-foreground">
-          Other tabs: <span className="font-mono">?upto=ev_06</span> freezes a tab,{" "}
-          <span className="font-mono">?replay=1</span> loops the script in that tab alone.
+          {mode === "supabase" ? "Use the doctor, coordinator and patient screens for their actions. Pharmacy confirmation unlocks after patient acknowledgment." : <>
+            Other tabs: <span className="font-mono">?upto=ev_06</span> freezes a tab,{" "}
+            <span className="font-mono">?replay=1</span> loops the script in that tab alone.
+          </>}
         </p>
       </div>
 
@@ -123,6 +126,7 @@ export function SimScreen() {
               who={who.get(b.case_id) ?? b.case_id}
               firedIds={firedIds}
               isNext={b === next}
+              disabled={!canFire(b.events.map(e => e.id))}
               onFire={() => fire(b.events.map((e) => e.id))}
             />
           </li>

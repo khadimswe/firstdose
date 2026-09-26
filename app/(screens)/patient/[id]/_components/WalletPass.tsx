@@ -4,6 +4,7 @@ import { StatusPill } from "@/components/StatusPill";
 import { fill, money } from "@/components/copy/fill";
 import { templates } from "@/components/copy/templates";
 import type { CaseView } from "@/components/data/types";
+import { hasConfirmedFill } from "@/components/data/derive";
 
 /**
  * Savings card laid out like the pharmacy-card apps patients already use: drug,
@@ -42,7 +43,7 @@ export function WalletPass({ c }: { c: CaseView }) {
           <dd>{program.name}</dd>
         </dl>
 
-        {c.status === "started" && (
+        {hasConfirmedFill(c) && (
           <div className="flex items-center gap-3">
             <StatusPill c={c} className="h-7 px-3 text-sm" />
             {c.amountUsd !== null && <DemoPrice usd={c.amountUsd} className="text-lg font-semibold" />}
