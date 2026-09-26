@@ -33,3 +33,11 @@ Mock mode only syncs tabs on one laptop. For the iPad, the judge's phone and the
 ## Template change to agree on (from the design pass)
 
 - [ ] `templates.json → coordinator_card.fix_line` renders as "Suggested fix: Re-send copay card (Impiricus Wallet (stand-in))", brackets inside brackets, because `fixes[].via` already ends in "(stand-in)". Proposal: `"Suggested fix: {fix_label} · {fix_via}"`. Frontend picks it up with no code change.
+
+## v2 screens (Deem, Sat 12:15): PRs #11–#14, stacked on #9
+
+- [ ] **Seed the week (6.1, C1/C9).** The queue shows only prescribers who approved the coordinator. Put the seeded cases under an already-linked prescriber, not "Dr. Demo (judge 1)", so the demo opens on a full queue and Dr. Demo's approval stays the 0:55 beat. The names are in PLAN C1.
+- [ ] **Link events (C7).** In live mode, "approved" is derived from the first handoff, so the demo works without new events. An Approve on the Profile tab (with no handoff) stays on that phone until `coordinator_link_requested` / `coordinator_linked` exist.
+- [ ] **Contact marks (C2).** "Reached patient / Left message" are local to the coordinator's browser for now.
+- [ ] **Apple Watch (C8).** The doctor's iPhone runs `/doctor` from the home screen and ntfy. iOS sends notifications to the Apple Watch only while the iPhone is locked, so please test both alerts that way.
+- [ ] **Tests.** `tests/frontend-derive.test.ts` still imports `app/(screens)/doctor/_components/thread.ts`, so I kept that file. New pure tests are in `tests/coordinator-views.test.ts`.
