@@ -12,7 +12,7 @@ This dashboard is the execution source of truth. Keep presentation work in `docs
 
 **Synced source:** this worktree starts from main `8687bb9`, including Minh's merged implementation guide. Vinh's `backend/workflow-foundation` now has a locally tested router, pure command planner and offline-ready ntfy transport/CLI. Supabase, HTTP routes and Realtime remain pending. `/api/sim/fire` is standardized as `{ ids: string[] }` in `docs/architecture.md`.
 
-**Local check (Sat Sep 26, 1:47 AM ET):** 131 tests, lint and production build pass. No credentials configured, external notification sent, or physical watch receipt verified. Code remains on the isolated local branch for review; shared package additions are Vitest/tsx and Node 22 types, preserving the existing frontend dependencies. See [Vinh's current handoff](docs/tasks/VIHN-TASKS.md#current-local-foundation).
+**Local verification, September 26:** 131 module tests, lint, production build and workflow smoke passed. Supabase credentials and the standalone physical watch test are now verified. Backend implementation files remain uncommitted in the isolated worktree; status commits are local and have not been pushed. Shared package additions are Vitest/tsx and Node 22 types, preserving existing frontend dependencies. Integration review reproduced missing doctor alerts, an unfinished final board stop and an access count of zero after pharmacy confirmation; Phase 1 has not passed. See [Vinh's current handoff](docs/tasks/VIHN-TASKS.md#current-local-foundation).
 
 **Immediate work:** finish remaining Phase 0 provider configuration, shared-contract agreement and registration/category confirmation. Vinh coordinates setup evidence from Minh and Deem; do not start more implementation from subsequent phases while this gate remains open.
 
@@ -106,7 +106,7 @@ Current objective, scope and claim boundaries: [product proposal](docs/product-p
 | 0.1 | Repo, `.gitignore`, `.env.example`, README, ABOUT, LICENSE | root | **Deem** | ✅ | n/a | Vinh invited. |
 | 0.2 | Next.js 16 scaffold (App Router, TS, Tailwind v4) | `app/**`, `package.json` | **Deem** | ✅ | 0.1 | No `src/`. Read `node_modules/next/dist/docs/` before route code. |
 | 0.3 | CI: lint, build, `npm test --if-present`, gitleaks, tracked-file gate, mock JSON gate | `.github/workflows/ci.yml` | **Deem** | ✅ | 0.2 | Not required on `main` during the event. |
-| 0.4 | Data contract | `mock/*.json` | **both** | 🟡 | 0.1 | Two fixes pending (see 0.7). Frozen after. |
+| 0.4 | Data contract | `mock/*.json` | **both** | 🟡 | 0.1 | 0.7 fixture edits landed. Remaining agreement: acknowledgment versus fill confirmation, eligibility evidence, alert semantics, run/reset identity and label provenance. |
 | 0.5 | Architecture doc | `docs/architecture.md` | **Vinh** reviews | 🟡 | 0.4 | Deem drafted. Vinh corrects routes/tables to match his build. |
 | 0.6 | Keys (each person signs up, keys move by AirDrop only) | local `.env` | **Vinh**: Supabase, Tiger Data, Gemini, xAI. **Deem**: ElevenLabs + .Tech (MLH), Vercel, HexLabs OpenAI | 🟡 | n/a | September 26: Supabase publishable/secret keys verified read-only; remaining selected-provider setup not yet verified. |
 | 0.7 | Contract fixes: add `ev_21b` (James `fix_sent` BRIDGE_SAMPLE); `wrist.started` → `"{patient_short} started {drug}. $0 with copay card."` | `mock/events.json`, `mock/templates.json` | **Deem** | ✅ | 0.4 | ⚠️ CONTRACT commit. Tell Vinh first. |
