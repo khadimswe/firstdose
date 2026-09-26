@@ -1,17 +1,19 @@
-import type { Catalog, CaseView } from "@/components/data/types";
+import type { Catalog } from "@/components/data/types";
 import { cn } from "@/lib/utils";
 
-/** The pharmacy or hub status exactly as it arrived, plus the reject code's NCPDP name. */
+/** A pharmacy or hub status exactly as it arrived, plus the reject code's NCPDP name. */
 export function ReasonChip({
-  c,
+  statusText,
+  rejectCode,
   catalog,
   className,
 }: {
-  c: CaseView;
+  statusText: string | null;
+  rejectCode: string | null;
   catalog: Catalog;
   className?: string;
 }) {
-  if (!c.statusText && !c.rejectCode) return null;
+  if (!statusText && !rejectCode) return null;
   return (
     <div
       className={cn(
@@ -19,10 +21,10 @@ export function ReasonChip({
         className,
       )}
     >
-      {c.statusText && <span>{c.statusText}</span>}
-      {c.rejectCode && (
+      {statusText && <span>{statusText}</span>}
+      {rejectCode && (
         <span>
-          Reject {c.rejectCode} {catalog.rejectCodes[c.rejectCode]}
+          Reject {rejectCode} {catalog.rejectCodes[rejectCode]}
         </span>
       )}
     </div>

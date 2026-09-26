@@ -10,6 +10,15 @@ export function fill(template: string, vars: Record<string, string | number>): s
   });
 }
 
+/** Demo clock: mock seconds → "1:21"; a live ISO timestamp → local "9:41 PM". */
+export function clock(at: number | string): string {
+  if (typeof at === "number") {
+    const s = Math.max(0, Math.round(at));
+    return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+  }
+  return new Date(at).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+}
+
 /** $410, $0, $5,589.89. Shown next to a `demo` StandIn wherever it's a simulated price. */
 export function money(usd: number): string {
   return usd.toLocaleString("en-US", {

@@ -1,8 +1,15 @@
+import { cn } from "@/lib/utils";
+
 /** What the doctor's watch shows: event.wrist exactly as sent to ntfy. */
-export function WristMirror({ text }: { text: string | null }) {
+export function WristMirror({ text, compact }: { text: string | null; compact?: boolean }) {
   return (
     <figure className="space-y-2">
-      <div className="mx-auto flex aspect-square w-44 items-center justify-center rounded-full border-8 border-neutral-800 bg-black p-6 text-center text-[13px] leading-snug text-white">
+      <div
+        className={cn(
+          "mx-auto flex aspect-square items-center justify-center rounded-full border-neutral-800 bg-black text-center leading-snug text-white",
+          compact ? "w-32 border-[6px] p-4 text-[10px]" : "w-44 border-8 p-6 text-[13px]",
+        )}
+      >
         {text ?? <span className="text-neutral-500">No alerts</span>}
       </div>
       <figcaption className="text-center text-xs text-muted-foreground">

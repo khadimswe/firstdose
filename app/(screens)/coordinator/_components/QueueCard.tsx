@@ -40,7 +40,7 @@ export function QueueCard({
             {fill(t.reason_line, { reason_label: catalog.reasons[c.reason].label })}
           </p>
         )}
-        <ReasonChip c={c} catalog={catalog} />
+        <ReasonChip statusText={c.statusText} rejectCode={c.rejectCode} catalog={catalog} />
         {c.quoteUsd !== null && (
           <div className="flex flex-wrap items-center gap-2">
             <DemoPrice usd={c.quoteUsd} />
