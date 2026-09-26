@@ -1,6 +1,6 @@
 # Seed the week: Vinh backend and Deem wiring
 
-Task 6.1, branch `backend/seed-week`, built on the committed coordinator pivot plus the Phase 2 retained-run reader. This delivers the backend, catalog data and adapter method. The simulator button and catalog/store wiring remain Deem's work; the actual screen is not yet seeded by this branch.
+Task 6.1, branch `backend/seed-week`, rebased onto main `ca4da47` with the Phase 2 retained-run reader. This delivers the backend, catalog data and adapter method. The simulator button and catalog/store wiring remain Deem's work; the actual screen is not yet seeded by this branch. Unmerged teammate screen changes are excluded from this PR.
 
 ## Fixed fixture and counts
 
@@ -38,6 +38,6 @@ The backend does not send raw seeded patient history to Tiger or a partner endpo
 
 ## Checks and remaining gate
 
-September 26 local verification: **278 unit tests, 14 PostgreSQL checks, lint and production build passed.** Unit tests compare the existing coordinator derivation on numeric offline events with ISO persisted events, verify card blocking/fix behavior, strict HTTP guards, adapter transport and idempotence. The PostgreSQL smoke checks seed catalog repeatability, simultaneous seed commands, notification exclusion, coordinator fixes, Maria continuation and reset isolation. The retained-run reader assertions remain in the same database suite.
+September 26 publication verification: **320 unit tests, 14 PostgreSQL checks, lint and production build passed on the main-based branch.** Gitleaks and configured private-value scans passed. The inherited Windows label-source hash test was run with exact Git XML bytes, avoiding checkout CRLF conversion; no label artifact change is included. Unit tests compare the existing coordinator derivation on numeric offline events with ISO persisted events, verify card blocking/fix behavior, strict HTTP guards, adapter transport and idempotence. The PostgreSQL smoke checks seed catalog repeatability, simultaneous seed commands, notification exclusion, coordinator fixes, Maria continuation and reset isolation. The retained-run reader assertions remain in the same database suite.
 
-Owner review, hosted catalog apply and Deem's actual mock/live screen wiring are still required for task 6.1 completion. No hosted writes, deployment or external messages were performed by this work.
+Owner review, hosted catalog apply and Deem's actual mock/live screen wiring are still required for task 6.1 completion. This branch has not performed hosted database writes or a production deployment.
