@@ -45,7 +45,7 @@ Shared (⚠️ CONTRACT commits, tell Vinh first): `mock/*.json`, `package.json`
 - [x] **1.4** `/doctor`.
 - [x] **1.5** `/coordinator`.
 - [x] **1.6** `/patient/[id]`.
-- [-] **1.13** Wire `useEvents()` to Vinh's `lib/realtime.ts` (live source; buttons enabled by case state). Needed for the checkpoint.
+- [-] **1.13** Wire `useEvents()` to Vinh's `lib/realtime.ts`: draft PR #6 (live source, error banner, double-tap guard). Merges after 1.9 and PLAN Q5–Q7.
 
 **Checkpoint:** follow the current Maria core gate in PLAN.md; the original 4 AM target is superseded.
 

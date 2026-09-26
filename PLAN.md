@@ -121,7 +121,7 @@ Current objective, scope and claim boundaries: [product proposal](docs/product-p
 | 1.10 | Label pipeline: RxNorm → DailyMed SPL → `labels` + byte-exact test | `lib/server/label.ts`, `tests/label.test.ts`, `mock/labels.json` | **Minh** | ⬜ | 0.6 | Setids hardcoded. Fills RxCUIs + `labels.json`. |
 | 1.11 | Action routes: `/api/rx`, `/api/handoff`, `/api/fix`, `/api/patient/use` | `app/api/**` | **Vinh** | ⬜ | 1.7, 1.8 | Guarded transitions so a double tap can't double-fire. |
 | 1.12 | ntfy on `alert_sent` and `started` | `lib/server/ntfy.ts` | **Vinh** | ⬜ | 0.8, 1.9 | Action button → `/api/handoff`. |
-| 1.13 | Wire `useEvents()` to `lib/realtime.ts`: live source, buttons enabled by case state | `components/data/**` | **Deem** | 🟡 | 1.9 | Built on local branch `feat/live-source`, tested against a stand-in `EventSource`; merges as soon as 1.9 lands. Button guards already on `main`. |
+| 1.13 | Wire `useEvents()` to `lib/realtime.ts`: live source, buttons enabled by case state | `components/data/**` | **Deem** | 🟡 | 1.9 | Draft PR #6 (`feat/live-source`, rebased on `main`): live source, error banner, in-flight double-tap guard; tested against a stand-in `EventSource`. Build fails until `lib/realtime.ts` exists. Merges after 1.9 and Q5–Q7. Button guards already on `main`. |
 
 **CORE CHECKPOINT, Saturday morning:** Maria across two devices: prescribe -> barrier -> physical wrist alert -> reviewed coordinator handoff -> resource acknowledgment (still pending) -> separate simulated pharmacy confirmation -> first fill observed. If it fails, stop optional provider work and fix the loop.
 
@@ -214,6 +214,11 @@ A sponsor tool is named in the writeup only if 5.1 finds it called in code. **Lo
 - [ ] **Q2:** Which Gemini model ID is live? List models at H0 and pin it. Needs Vinh.
 - [ ] **Q3:** Is Notability a challenge or a third sponsor track? Ask #qna. Needs Deem.
 - [ ] **Q4:** Which `.tech` domain is free (`getfirstdose.tech`, `firstdose-rx.tech`)? Needs Deem.
+- [ ] **Q5:** Does `lib/realtime.ts` default-export the `EventSource`? That is what PR #6 imports. Needs Vinh.
+- [ ] **Q6:** What is the run-change signal for reset/new runs? PR #6 re-syncs from `load()` on focus and every 15 s, so after another device resets, the new run's `ev_01…` can be dropped as duplicates for up to 15 s. The agreed signal changes `EventSource` (⚠️ CONTRACT). Needs Vinh + Deem.
+- [ ] **Q7:** Is "Use at pharmacy" acknowledgment only (`copay_card_used`), with pharmacy confirmation fired separately? Mock mode on `main` still fires ev_10–13 in one tap; it's a one-line change once agreed. Needs Vinh + Deem.
+- [ ] **Q8:** How do labels reach the screens in live mode? Either Minh writes verified text into `mock/labels.json`, or the hook fetches `GET /api/label/[drug_id]`. Needs Minh + Deem.
+- [ ] **Q9:** What replaces the "started" / "recovered" wording (board stop, `wrist.started`, `/access`) so it doesn't claim more than a fill signal? Copy and metric names change together. Needs all three.
 
 ---
 
