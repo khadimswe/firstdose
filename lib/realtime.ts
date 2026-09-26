@@ -238,7 +238,17 @@ export function createPollingEventSource(options: Options = {}): PollingEventSou
     seedWeek: () => mutate("/api/sim/seed", {}),
     reset: () => mutate("/api/sim/reset", {}, true),
     async accessSummary(): Promise<AccessSummary> {
-      const body = await readJson(await request("/api/access/summary"));
+      if (!current) await refresh();
+      if (!current) throw new RealtimeError("unavailable");
+      const { run_id, revision } = current;
+      const epoch = generation;
+      const query = new URLSearchParams({ run_id, revision: String(revision) });
+      const response = await request(`/api/access/summary?${query}`);
+      const body = await readJson(response);
+      if (epoch !== generation || current?.run_id !== run_id || current.revision !== revision
+        || response.headers.get("x-firstdose-run") !== run_id || response.headers.get("x-firstdose-revision") !== String(revision)) {
+        throw new RealtimeError("analytics_stale");
+      }
       if (!record(body) || !Number.isFinite(body.recovered) || (body.median_ttff_seconds !== null && !Number.isFinite(body.median_ttff_seconds)) || !record(body.reason_tally)) throw new RealtimeError("invalid_response");
       return body as AccessSummary;
     },

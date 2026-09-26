@@ -152,10 +152,10 @@ describe("protected polling event source", () => {
   });
 
   it("propagates unavailable analytics without synthesizing local counts", async () => {
-    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(Response.json({ error: "unavailable" }, { status: 503 }));
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValueOnce(snapshot()).mockResolvedValueOnce(Response.json({ error: "unavailable" }, { status: 503 }));
     const source = createPollingEventSource({ fetch: fetcher });
     await expect(source.accessSummary()).rejects.toMatchObject({ code: "unavailable", status: 503 });
-    expect(fetcher.mock.calls[0][0]).toBe("/api/access/summary");
+    expect(fetcher.mock.calls[1][0]).toBe(`/api/access/summary?run_id=${RUN_A}&revision=0`);
   });
 
   it("suspends legacy insert callbacks after reset and explains the missing handler", async () => {
@@ -222,10 +222,33 @@ describe("protected polling event source", () => {
     expect(await source.load()).toEqual([row("ev_01")]);
   });
 
-  it("returns the analytics endpoint result unchanged", async () => {
+  it("requests and accepts analytics only for the observed run and revision", async () => {
     const summary = { recovered: 1, median_ttff_seconds: 22, reason_tally: { DECLINED_AT_PRICE: 1 } };
-    const fetcher = vi.fn<typeof fetch>().mockResolvedValueOnce(Response.json(summary));
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValueOnce(snapshot(RUN_A, 2)).mockResolvedValueOnce(Response.json(summary, {
+      headers: { "X-FirstDose-Run": RUN_A, "X-FirstDose-Revision": "2" },
+    }));
     expect(await createPollingEventSource({ fetch: fetcher }).accessSummary()).toEqual(summary);
+    expect(fetcher.mock.calls[1][0]).toBe(`/api/access/summary?run_id=${RUN_A}&revision=2`);
+  });
+
+  it.each([{}, { "X-FirstDose-Run": RUN_B, "X-FirstDose-Revision": "1" }, { "X-FirstDose-Run": RUN_A, "X-FirstDose-Revision": "0" }])("rejects analytics without a matching replay checkpoint: %j", async headers => {
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValueOnce(snapshot(RUN_A, 1)).mockResolvedValueOnce(Response.json(
+      { recovered: 0, median_ttff_seconds: null, reason_tally: {} }, { headers: headers as Record<string, string> },
+    ));
+    await expect(createPollingEventSource({ fetch: fetcher }).accessSummary()).rejects.toMatchObject({ code: "analytics_stale" });
+  });
+
+  it.each([[RUN_B, 0], [RUN_A, 2]] as const)("rejects a delayed summary after observing %s revision %i", async (run, revision) => {
+    const pending = deferred();
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValueOnce(snapshot(RUN_A, 1)).mockImplementationOnce(() => pending.promise).mockResolvedValueOnce(snapshot(run, revision));
+    const source = createPollingEventSource({ fetch: fetcher });
+    await source.load();
+    const reading = source.accessSummary();
+    const rejected = expect(reading).rejects.toMatchObject({ code: "analytics_stale" });
+    await flush();
+    await source.load();
+    pending.resolve(Response.json({ recovered: 1, median_ttff_seconds: 60, reason_tally: {} }, { headers: { "X-FirstDose-Run": RUN_A, "X-FirstDose-Revision": "1" } }));
+    await rejected;
   });
 
   it("aborts a stalled read after ten seconds and permits a new poll", async () => {

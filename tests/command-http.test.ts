@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { commandHandler, snapshotHandler } from "@/lib/server/command-http";
 import { PersistenceError, type Snapshot, type WorkflowStore } from "@/lib/server/commands";
 
@@ -80,6 +80,35 @@ describe("guarded demo command HTTP boundary", () => {
     expect(response.headers.get("cache-control")).toBe("no-store");
     const repeat = await commandHandler("prescribe", { store, env })(request());
     expect(await repeat.json()).toEqual([]);
+  });
+
+  it("passes the committed checkpoint to follow-up work, including retries and reset", async () => {
+    const store = makeStore();
+    const onCommit = vi.fn();
+    const handler = commandHandler("prescribe", { store, env, onCommit });
+    await handler(request());
+    await handler(request());
+    expect(onCommit.mock.calls).toEqual([
+      [{ kind: "prescribe", run_id: runId, revision: 1 }],
+      [{ kind: "prescribe", run_id: runId, revision: 1 }],
+    ]);
+    const reset = await commandHandler("reset", { store, env, onCommit })(request({}));
+    expect(onCommit).toHaveBeenLastCalledWith({ kind: "reset", run_id: reset.headers.get("x-firstdose-run"), revision: 0 });
+  });
+
+  it.each([false, true])("keeps committed success when follow-up scheduling fails (async=%s) without logging provider details", async asynchronous => {
+    const warning = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      const store = makeStore();
+      const response = await commandHandler("prescribe", { store, env, onCommit: () => {
+        const error = new Error("private provider detail");
+        if (asynchronous) return Promise.reject(error);
+        throw error;
+      } })(request());
+      expect(response.status).toBe(200);
+      expect((await store.snapshot()).events).toHaveLength(2);
+      expect(JSON.stringify(warning.mock.calls)).not.toContain("private provider detail");
+    } finally { warning.mockRestore(); }
   });
 
   it.each(["", "Bearer wrong"])("rejects unauthorized reads and writes before touching storage", async authorization => {
