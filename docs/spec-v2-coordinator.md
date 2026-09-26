@@ -73,7 +73,7 @@ The core loop is unchanged: prescribe → stuck → alert → handoff → fix �
 | Cut | "The doctor opens it every morning" | — | — |
 | Cut first if behind | Grok voice handoff (keep the tap) | Vinh | — |
 
-Not in scope: real logins, multiple practices, a real DocUpdate integration. DocUpdate, Ascend, Wallet, QPharma, Medvantx and the pharmacy stay labelled stand-ins.
+Not in scope for the weekend: real logins, multiple practices, a live DocUpdate integration. DocUpdate, Ascend, Wallet, QPharma, Medvantx and the pharmacy stay labelled stand-ins.
 
 ## The 4-minute demo
 
@@ -110,7 +110,7 @@ Judge 1 = coordinator. Judge 2 = doctor (wears the watch), then becomes Maria vi
 | Won't doctors ignore more alerts? | The doctor gets only alerts that need them, plus one note before the visit. Silence means it worked |
 | Doesn't DocUpdate already track this? | It sends the script. We found nothing that tells the practice the patient never started, or why. (Confirm at 11 AM) |
 | Doesn't Surescripts flag abandonment? | It says a script wasn't picked up. We say why, route the one fix that matches, and prove recovery to Market Access |
-| Isn't DocUpdate off-limits? | We don't rebuild it. We add the missing step after the script is sent, with DocUpdate as a labelled stand-in |
+| Why not just build this into DocUpdate yourselves? | That's the idea: FirstDose is the missing step inside DocUpdate, after the script is sent. We built it against a stand-in so you can see it working today |
 | Does pharma see my patients? | No. Names, chart and fill status stay in the practice. Pharma sees counts only |
 | Won't this push doctors toward drugs? | It acts only after the doctor chose the drug and never suggests one. Nobody is paid per prescription |
 | Medicare patients? | The router blocks manufacturer copay cards for Medicare and Medicaid and routes to access support |
@@ -120,7 +120,7 @@ Judge 1 = coordinator. Judge 2 = doctor (wears the watch), then becomes Maria vi
 **Impiricus workshop, 11 AM, in this order:**
 1. "Do you count practice staff, like access coordinators and medical assistants, as HCPs you'd want to reach?" Yes → lead with the coordinator. No → lead with the doctor; the coordinator is the practice user.
 2. "Does DocUpdate tell the prescriber whether a script was filled, or why not?" No → confirms the gap. Partly → pitch the reason and the fix, not the status.
-3. "Is building on top of DocUpdate in scope, or should it stay an Ascend skill?"
+3. "If you built this, would it live inside DocUpdate, or in Ascend as a skill?" DocUpdate → header "FirstDose for DocUpdate · Access queue." Ascend → "An Ascend skill for the practice." Demo and code unchanged either way.
 4. "What do doctors open DocUpdate for today, and what makes them stop?"
 5. "For Market Access, which matters more: patients recovered, or time to first fill?"
 
