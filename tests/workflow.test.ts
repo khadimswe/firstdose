@@ -16,6 +16,31 @@ function run(...commands: WorkflowCommand[]) {
 }
 
 describe("workflow command planning", () => {
+  it("creates Maria's template-backed app alert in the reason batch and only once", () => {
+    const ordered = run(prescribe, fire("ev_04"));
+    // The alert must use the committed quote, not the canned event's wrist copy.
+    ordered.find((event) => event.id === "ev_04")!.amount_usd = 125.5;
+    const pending = planCommand(ordered, fire("ev_05", "ev_05"), NOW);
+    expect(pending.map((event) => event.id)).toEqual(["ev_05", "ev_06"]);
+    expect(pending[1]).toMatchObject({
+      type: "alert_sent", actor: "system", side: "practice", reason: "DECLINED_AT_PRICE",
+      wrist: "Maria: Otezla not started. Declined at price ($125.50 demo).", note: "", fix: null,
+    });
+    expect(planCommand([...ordered, ...pending], fire("ev_05"), NOW)).toEqual([]);
+    expect(pending.every((event) => !["label_shown", "started", "recovered"].includes(event.type))).toBe(true);
+  });
+
+  it("creates James's template-backed app alert without claiming provider delivery", () => {
+    const ordered = run({ kind: "prescribe", patient_id: "pt_james", drug_id: "drug_humira" });
+    const pending = planCommand(ordered, fire("ev_16", "ev_17", "ev_18"), NOW);
+    expect(pending.map((event) => event.id)).toEqual(["ev_16", "ev_17", "ev_18", "ev_19"]);
+    expect(pending[3]).toMatchObject({
+      type: "alert_sent", reason: "UNABLE_TO_REACH", side: "practice",
+      wrist: "James: Humira not started. Hub can't reach patient (3 calls).", note: "", fix: null,
+    });
+    expect(planCommand([...ordered, ...pending], fire("ev_18"), NOW)).toEqual([]);
+  });
+
   it("discloses simulated savings-card delivery and resend in the returned events", () => {
     const history = run(prescribe, fire("ev_04", "ev_05"), handoff, fix);
     const delivery = history.find((event) => event.id === "ev_03")!;
@@ -73,7 +98,7 @@ describe("workflow command planning", () => {
     history.forEach(Object.freeze);
     Object.freeze(history);
     const pending = planCommand(history, fire("ev_04", "ev_05"), NOW);
-    expect(pending.map((event) => event.id)).toEqual(["ev_04", "ev_05"]);
+    expect(pending.map((event) => event.id)).toEqual(["ev_04", "ev_05", "ev_06"]);
     expect(history).toEqual(saved);
     pending[0].note = "Changed only in the returned plan.";
     expect(history).toEqual(saved);
@@ -137,7 +162,7 @@ describe("workflow command planning", () => {
     expect(() => planCommand(history, fire("ev_04", "ev_11"), NOW)).toThrow();
     expect(history).toEqual(saved);
     expect(() => planCommand(history, fire("ev_05", "ev_04"), NOW)).toThrow();
-    expect(planCommand(history, fire("ev_04", "ev_04", "ev_05"), NOW).map((e) => e.id)).toEqual(["ev_04", "ev_05"]);
+    expect(planCommand(history, fire("ev_04", "ev_04", "ev_05"), NOW).map((e) => e.id)).toEqual(["ev_04", "ev_05", "ev_06"]);
   });
 
   it("does not let the simulator bypass commands or assert unverified integrations/outcomes", () => {

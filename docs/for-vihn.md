@@ -36,7 +36,7 @@ Mock mode only syncs tabs on one laptop. For the iPad, the judge's phone and the
 
 ## Vinh's reply prepared for Deem — September 26
 
-Reviewed PR #6 at `63ae988`; these are proposed answers to its PLAN Q5–Q10, not a record that Deem approved them. No message has been posted to the PR. The full proposal is in `docs/architecture.md`.
+Reviewed PR #6 at `63ae988`; these are proposed answers to its PLAN Q5–Q10, not a record that Deem approved them. The implemented browser contract is detailed below and in `docs/backend-core.md`.
 
 | Question | Vinh's proposed answer | Required frontend follow-through |
 |---|---|---|
@@ -47,6 +47,18 @@ Reviewed PR #6 at `63ae988`; these are proposed answers to its PLAN Q5–Q10, no
 | Q9: wording/metrics | Final stop **Fill confirmed**; aggregate label **First fills confirmed**. Temporarily retain `recovered` as the response key with the new explicit meaning. | Update board timestamp/color, status pill, patient/doctor copy, chime and optional audio together. Count unique independently confirmed cases and latest reason once per case. Display Tiger unavailable/lagging rather than silently substituting local totals. |
 | Q10: identity/order | Keep `rx_001`/`rx_002` and frontend `ev_01` IDs. Storage uniqueness uses run + script identity; add a monotonic per-run sequence for ordering. | Consume inserts/snapshots in server sequence order. A delayed earlier event must trigger ordered reconciliation, not rely on callback arrival order. Agree whether sequence travels in a storage envelope or additive event field before implementation. |
 
-Also needed: template-backed practice doctor alerts when reasons arrive, a separate notification-delivery status, James ACCESS_SUPPORT without bridge-specific eligibility evidence, and practice-only case-linked records. The physical ntfy/iPhone/Garmin smoke passed; workflow-triggered alerts have not.
+The backend now creates template-backed practice doctor alerts when reasons arrive, records notification-delivery status separately, uses James ACCESS_SUPPORT without bridge-specific eligibility evidence, and retains practice-only case-linked records. See `PLAN.md` for hosted and physical-delivery evidence.
 
-Reply checklist: agree or amend Q6–Q10; confirm team registration and current category limits; confirm the deployment project/origin and domain status. These outstanding responses keep Phase 0 open. Supabase/Gemini credentials are verified locally; that does not establish deployed configuration.
+Reply checklist: review Q6–Q10 against the implementation; confirm the deployment project/origin and domain status. The user has confirmed team registration and plan agreement; Phase 0 is closed. Local credentials do not establish deployed application configuration.
+
+### Implemented browser contract for PR #6
+
+- Import the default source from `lib/realtime.ts`. It polls `/api/events` every 1.5 seconds while subscribed, uses run/revision ETags, and refreshes after commands and on visibility changes.
+- Use `subscribe(onInsert, onRunChange, onError)`. The initial/run-change callback precedes inserts. Clear events, insert logs, pending actions and access state; increment the hook generation and fence old loads/summaries. The existing 15-second fallback alone does not implement remote reset.
+- On `RealtimeError` 401, show `/api/demo-login?next=<encoded-screen-path>`, including the QR destination. Staff enter the private demo code once per device; the server sets an HttpOnly session cookie. Never put the code in public environment variables, bundles or URLs.
+- A stale-run 409 refreshes current state but never replays the previous click into a new run. Surface the conflict to the user.
+- Simulator inputs are only `ev_04`, `ev_05`, `ev_11`, `ev_16`, `ev_17`, `ev_18`. The reason inputs generate `ev_06`/`ev_19` atomically; do not send those derived IDs. The patient tap generates only `ev_10`; `ev_11` is separate pharmacy confirmation.
+- Consume pharmacy confirmation for **Fill confirmed** and distinct-case **First fills confirmed** totals. Update derivation, board timestamp/color, status pill, patient/doctor copy and chime/audio together. Existing legacy “started” templates need coordinated owner review, including truthful copy for a second wrist alert.
+- Preserve errors from `accessSummary()`. Show unavailable/lagging analytics rather than labelling local fallback totals as Tiger. Reviewed label artifacts remain Minh's contract.
+
+The remaining board and access integration failures belong to these frontend changes. Backend API verification does not prove that the rendered screens share live state. Affected-owner review and a real two-device screen run remain required before the core gate closes.

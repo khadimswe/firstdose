@@ -1,4 +1,4 @@
-import { commandHandler } from "@/lib/server/command-http";
+import { liveCommandHandler } from "@/lib/server/live-command-http";
 
 export const runtime = "nodejs";
-export const POST = commandHandler("reset");
+export const POST = liveCommandHandler("reset");

@@ -30,6 +30,16 @@ function makeStore(): WorkflowStore {
 }
 
 describe("guarded demo command HTTP boundary", () => {
+  it("schedules notification work only after a successful atomic command", async () => {
+    const store = makeStore();
+    const scheduled: string[][] = [];
+    const handler = commandHandler("prescribe", { store, env, onCommit: async () => { scheduled.push((await store.snapshot()).events.map(e => e.id)); } });
+    expect((await handler(request())).status).toBe(200);
+    expect(scheduled).toEqual([["ev_01", "ev_03"]]);
+    expect((await handler(request({ ...prescribe, trusted: true }))).status).toBe(400);
+    expect(scheduled).toHaveLength(1);
+  });
+
   it("returns committed script IDs with run and revision headers", async () => {
     const store = makeStore();
     const response = await commandHandler("prescribe", { store, env })(request());
@@ -116,5 +126,23 @@ describe("guarded demo command HTTP boundary", () => {
     const failed = await snapshotHandler({ store, env })(req);
     expect(failed.status).toBe(503);
     expect(await failed.json()).toEqual({ error: "unavailable" });
+  });
+
+  it("returns not-modified only for the same authorized run and revision", async () => {
+    const store = makeStore();
+    const handler = snapshotHandler({ store, env });
+    const headers = { authorization: `Bearer ${token}` };
+    const first = await handler(new Request("http://localhost/api/events", { headers }));
+    const etag = first.headers.get("etag");
+    expect(etag).toBe(`"${runId}:0"`);
+    const conditional = new Request("http://localhost/api/events", { headers: { ...headers, "if-none-match": etag! } });
+    const unchanged = await handler(conditional);
+    expect(unchanged.status).toBe(304);
+    expect(await unchanged.text()).toBe("");
+    await store.reset(runId);
+    const reset = await handler(conditional);
+    expect(reset.status).toBe(200);
+    expect(reset.headers.get("etag")).not.toBe(etag);
+    expect((await handler(new Request("http://localhost/api/events", { headers: { "if-none-match": reset.headers.get("etag")! } }))).status).toBe(401);
   });
 });

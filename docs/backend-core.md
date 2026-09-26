@@ -1,6 +1,6 @@
 # Maria persistence and command API
 
-This is the first Phase 1 backend slice on `backend/maria-core`. `PLAN.md` remains the execution dashboard. The migration and routes are implemented locally; a hosted database migration, live frontend adapter, reviewed alerts and a two-device/watch run are still integration work.
+This is the Phase 1 backend on `backend/maria-core`. `PLAN.md` remains the execution dashboard. Persistence, protected routes, browser sessions, fast polling and template-backed app alerts are implemented. Frontend integration and a real two-device/watch run remain required before the core gate passes.
 
 ## Database boundary
 
@@ -11,13 +11,17 @@ This is the first Phase 1 backend slice on `backend/maria-core`. `PLAN.md` remai
 - `fd_reset(run)` locks the same row, creates a new run and retains old history. Old clients get `stale_run`, including for commands that would otherwise be no-ops. A second reset carrying the old identity cannot reset the new run again.
 - `(run_id, script_id)` and `(run_id, sequence)` are unique. Snapshots expose the script ID as `FillEvent.id` and return rows in sequence order. Event timestamps come from the server planner's clock and advance monotonically; `committed_at` separately records database insertion time.
 
-All tables use RLS and deny `anon`/`authenticated` access. Only `service_role` can execute the three RPCs. HTTP access uses the server's modern Supabase secret in the `apikey` header, following the [Supabase API key guidance](https://supabase.com/docs/guides/getting-started/api-keys). No browser database grants or production identity system are introduced.
+All tables use RLS and deny `anon`/`authenticated` access. Only `service_role` can execute the workflow and notification RPCs. HTTP access uses the server's modern Supabase secret in the `apikey` header, following the [Supabase API key guidance](https://supabase.com/docs/guides/getting-started/api-keys). No browser database grants or production identity system are introduced.
 
-Outbox rows are unique per run/event and queued only for events with a wrist message. The existing planner intentionally emits no wrist messages pending reviewed alert/copy integration. There is no delivery worker in this slice; the outbox does not establish ntfy acceptance or watch receipt. Before adding delivery, handle old-run cancellation and ambiguous delivery explicitly; automatic resend after a timeout can duplicate a physical alert.
+Outbox rows are unique per run/event and queued only for events with a wrist message. `202609260002_notification_delivery.sql` adds atomic delivery claims. After a committed command, Next.js `after()` runs a bounded worker that claims at most two pending messages from the active run. Old-run pending messages are skipped. Claims carry a unique identity; only that claim can record `accepted` (ntfy HTTP acceptance) or `unknown` (a failed or ambiguous send). Claimed/unknown messages are never automatically reclaimed or resent. This avoids duplicate retries at the cost of requiring manual investigation of unresolved delivery. A send already in flight can finish after reset; its audit stays attached to its original run. No scheduled retry service is introduced.
+
+The reason alert is template-backed; `alert_sent` records creation of the app alert, not device receipt. An accepted outbox row also does not establish physical receipt. A second pharmacy-confirmation wrist alert still requires reviewed truthful copy; the existing “started” template is not used to claim a patient started treatment.
 
 ## HTTP contract
 
-Every endpoint requires `Authorization: Bearer <FIRSTDOSE_DEMO_TOKEN>`. Configure a private random token of at least 32 characters, separate from Supabase credentials. An unset/short token fails closed with 503. Never put the token in a URL, `NEXT_PUBLIC_*`, committed code or a public bundle. This is a shared fictional-demo access boundary, not per-patient or per-role authorization. Browser session provisioning is not implemented yet and must be coordinated with Deem before wiring the adapter.
+Command and snapshot endpoints require a demo session cookie or `Authorization: Bearer <FIRSTDOSE_DEMO_TOKEN>` for CLI clients. Configure a private random token of at least 32 characters, separate from Supabase credentials. An unset/short token fails closed with 503. Never put the token in a URL, `NEXT_PUBLIC_*`, committed code or a public bundle. This is shared fictional-demo access, not per-patient or per-role authorization.
+
+Browsers open `/api/demo-login?next=/patient/rx_001` (or another screen path). Staff enter the private code into the server-rendered password form once per device. POST exchanges it for a signed, 12-hour HttpOnly/SameSite=Strict cookie; HTTPS/production adds Secure and the `__Host-` prefix. The cookie contains an expiry/nonce/signature, not the master token. Rotation of `FIRSTDOSE_DEMO_TOKEN` invalidates issued sessions. The form returns to the QR destination without putting credentials in the QR or URL. Cookie mutations and login require an exact same-origin Origin header; the login form keeps `Referrer-Policy: same-origin` so browser POSTs retain that header. A bearer remains available for private CLI checks.
 
 Read `GET /api/events` to obtain `{ run_id, revision, events }`. Every POST requires the observed run UUID in `X-FirstDose-Run` and `Content-Type: application/json`. JSON bodies are limited to 8 KiB and reject extra command fields. Cross-origin browser requests are rejected. Responses disable caching and successful responses include `X-FirstDose-Run` and `X-FirstDose-Revision`.
 
@@ -32,7 +36,17 @@ Read `GET /api/events` to obtain `{ run_id, revision, events }`. Every POST requ
 
 Action/fire responses are arrays of newly committed `FillEvent` rows; a repeated action returns `[]`. Reset returns the full new snapshot. Invalid input returns 400, unauthorized access 401, cross-origin access 403, stale runs/invalid transitions 409, oversized JSON 413, wrong media type 415, missing run identity 428, and unavailable/unconfigured services 503. Provider details and credentials are not returned. On 409 `stale_run`, clear old client state and reload; do not silently reapply the old click to the new run.
 
-The existing four frontend action bodies are preserved. The token/run headers and snapshot endpoint are additive proposals for Deem's adapter integration. No component, shared fixture or package contract was edited. Realtime subscription authorization, run-change signaling and stale-load handling remain part of that integration.
+The existing four frontend action bodies are preserved. No component, shared fixture or package contract was edited.
+
+## Browser adapter handoff to Deem
+
+`lib/realtime.ts` default-exports the existing EventSource interface, implemented as server polling every 1.5 seconds while subscribed. It uses same-origin cookies, never Supabase browser grants or a public token. `/api/events` returns an ETag containing both run and revision and honors `If-None-Match` with 304 after authorization. Requests have a 10-second deadline including body reads, polls do not overlap, and commands refresh immediately after success. Visibility changes also refresh.
+
+The additive signature is `subscribe(onInsert, onRunChange?, onError?)`. `onRunChange(runId, previousRunId)` fires on initial load and reset **before** new-run inserts. Deem's hook must clear events, insert logs, pending commands and access state, advance its load generation, and ignore old in-flight loads/summaries there. An insert-only legacy subscriber becomes load-only after reset to avoid mixing runs; it cannot satisfy the remote-reset gate unchanged. The adapter deduplicates ordered inserts and fences old responses internally, but cannot clear an external hook's cache itself.
+
+On `RealtimeError` with `status:401` and `code:unauthorized`, show an access link using `error.loginPath` (`/api/demo-login`) plus an encoded `next` screen path. The patient's QR flow needs the same login link/redirect. On stale-run 409, the adapter refreshes but never replays the old click. `accessSummary()` propagates Minh endpoint errors; the hook must not label local fallback totals as Tiger.
+
+Reason simulator beats `ev_05` and `ev_18` now atomically produce derived app alerts `ev_06` and `ev_19` with text filled from shared templates. The simulator must send only its input beat IDs (`ev_04`, `ev_05`, `ev_11`, `ev_16`, `ev_17`, `ev_18`); screen commands and derived alert IDs remain rejected by `/api/sim/fire`. A patient tap emits `ev_10` only; separate `ev_11` is the simulated pharmacy confirmation. Deem's board/status/copy/audio should reach **Fill confirmed** on that signal, and local access totals should count distinct confirmed cases after prescription. Existing templates still contain legacy “not started” wording; revise shared copy through owner review rather than inventing patient text in code.
 
 ## Local verification and deployment preparation
 
@@ -45,6 +59,8 @@ npm run lint
 npm run build
 node --import tsx scripts/seed.ts --output "$env:TEMP/firstdose-seed.sql"
 ```
+
+For the real-browser login regression, start a test server with a private test token, set `FIRSTDOSE_TEST_TOKEN` and optionally `FIRSTDOSE_TEST_ORIGIN`, then run `python scripts/browser-login-smoke.py` with Python Playwright installed. It verifies the actual form POST, phone/tablet return path and JavaScript-inaccessible session cookie. It logs no credentials and does not exercise the clinical workflow.
 
 The database suite creates a disposable PostgreSQL 16 container without networking or host ports, applies the migration, runs the seed twice, verifies role restrictions, rollback, concurrent writers/reset and the real Maria command planner, then removes the container. It does not read `.env`, send notifications or touch hosted Supabase. Docker PostgreSQL checks do not verify the hosted PostgREST gateway or Supabase Realtime.
 
