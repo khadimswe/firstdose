@@ -118,7 +118,8 @@ async function main(): Promise<void> {
             ? null
             : 'INVALID_REPLY';
     } catch (error) {
-      actual = `ERROR:${error instanceof Error ? error.name : 'unknown'}`;
+      const detail = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
+      actual = `ERROR:${detail.slice(0, 200)}`;
     }
     const elapsed = Date.now() - started;
     const pass =
