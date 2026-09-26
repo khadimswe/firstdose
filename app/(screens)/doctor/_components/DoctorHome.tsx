@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 
 import { useHandoff } from "./ApproveSheet";
 import { FillLine, sentDate } from "./FillLine";
+import { NewTag } from "./NewTag";
 import { VoiceHandoff } from "./VoiceHandoff";
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
@@ -66,6 +67,7 @@ function AlertCard({
             {c.patient.name} · {c.drug.brand}
           </div>
         </div>
+        <NewTag className="mt-1" />
       </div>
 
       {confirmed ? (
@@ -110,6 +112,7 @@ function BeforeVisitCard({ c, catalog }: { c: CaseView; catalog: Catalog }) {
     <article className="space-y-2 rounded-2xl bg-white p-4 text-foreground shadow-sm">
       <div className="flex items-center gap-2 text-sm font-semibold">
         <CalendarClock className="size-4 text-du-purple" /> Before visit
+        <NewTag className="ml-auto" />
       </div>
       <p className="font-medium">{fill(t.text, { patient_name: c.patient.name, drug: c.drug.brand })}</p>
       <p className="text-sm text-muted-foreground">
@@ -198,8 +201,10 @@ export function DoctorHome() {
               {c.ordered ? `${c.drug.brand} ${c.drug.strength}${sentDate(c) ? ` (${sentDate(c)})` : ""}` : "—"}
             </Row>
             <div className="py-2">
-              <div className="mb-1 text-sm text-muted-foreground">Fill status</div>
-              <FillLine c={c} />
+              <div className="mb-1 flex items-center gap-2 text-sm text-muted-foreground">
+                Fill status <NewTag />
+              </div>
+              <FillLine c={c} tagged={false} />
             </div>
           </Link>
         ))}

@@ -8,6 +8,8 @@ import { DEMO_PRESCRIBER, useCoordinator } from "@/components/data/coordinator";
 import { local, useLocal } from "@/components/data/local";
 import { useEvents } from "@/components/data/useEvents";
 
+import { NewTag } from "./NewTag";
+
 export const COORDINATOR_CAN = ["See fill status for your patients", "Send access fixes: copay card, bridge sample, access support"];
 export const COORDINATOR_CANNOT = ["Sign, change or cancel prescriptions"];
 
@@ -25,6 +27,7 @@ function ApproveSheet({ open, withHandoff, onApprove, onClose, pending = false, 
   return <Sheet open={open} onOpenChange={value => !value && onClose()}>
     <SheetContent side="bottom" className="mx-auto max-w-[430px] rounded-t-2xl">
       <SheetHeader>
+        <NewTag className="w-fit" />
         <SheetTitle className="text-lg">{linked && withHandoff ? "Send to your access coordinator?" : "Approve your access coordinator?"}</SheetTitle>
         <SheetDescription>Review the access coordinator&apos;s permissions.</SheetDescription>
       </SheetHeader>

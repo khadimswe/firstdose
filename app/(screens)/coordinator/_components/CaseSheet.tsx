@@ -116,7 +116,7 @@ export function CaseSheet({
               </Section>
 
               {canMessage && c && (
-                <Section title="Message to the patient · ElevenLabs voice">
+                <Section title="Message on the patient's card page · ElevenLabs voice">
                   <MessageDeliveryStatus {...delivery} />
                   {message ? (
                     <>
