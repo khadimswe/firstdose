@@ -35,7 +35,7 @@ Rules the layer enforces:
 
   Only `/sim` calls `fire(ids)`.
 
-## Screens
+## Screens (v1, as built on `main`)
 
 | Route | Size | What it shows | Changes on |
 |---|---|---|---|
@@ -63,32 +63,51 @@ Rules the layer enforces:
 
 ## v2 screen changes (Phase 6, after the 11 AM workshop)
 
-Spec: `docs/spec-v2-coordinator.md`. PLAN.md rows 6.x carry the status.
+Spec: `docs/spec-v2-coordinator.md` ("FirstDose inside DocUpdate: the four surfaces" and "The 4-minute demo"). Research: `docs/research/docupdate-teardown.md`. PLAN.md rows 6.x carry the status.
 
-**Before 11 AM, nothing on screen changes.** The workshop answers decide three things (PLAN.md → W1, W3, W6):
-- the lead;
-- the `/coordinator` header;
-- the pitch.
+**The picture:** phone = the doctor's DocUpdate view; desktop = the coordinator's queue, the thing DocUpdate can't do today; the judge's phone = Maria. `/board` is optional at the table.
 
-Rules that apply to every change:
-- **Copy follows PLAN D8.** Screens say "first fill pending" and "pharmacy fill confirmed", and never claim a patient started or recovered. Every patient sentence still comes from `templates.json`.
-- **Nothing in `mock/*.json` changes.** New stand-in labels, such as DocUpdate, extend `<StandIn>` in code (PLAN C4).
-- **Live mode comes from PR #9.** Its hook subscribes with `subscribe(onInsert, onRunChange, onError, onSync)`, and screens keep reading only `useEvents()`.
+**Gates.** Nothing on screen changes before the 11 AM workshop. The answers decide three things (PLAN.md → W6 lead, W3 header, W1 pitch). Build on `main` after #9 merges, so live mode and the fill wording come with it.
+
+Rules for every change:
+- **Copy follows D1, D2 and D8.** Every patient sentence is a `templates.json` fill. The alert chip is the pharmacy status as it arrived. The last step says "Fill confirmed". Nothing claims a patient started or recovered.
+- **Brand: structure, not brand.** Dark navy, a purple primary, a bottom tab bar and DocUpdate's card anatomy are fine. Never their logo, wordmark or screenshots inside our UI. Every DocUpdate-styled screen carries `<StandIn>` "Concept: FirstDose inside DocUpdate · Not affiliated" (a code label, PLAN C4).
+- **Nothing in `mock/*.json` changes.** Live mode is #9's hook: `subscribe(onInsert, onRunChange, onError, onSync)`. Screens read only `useEvents()`.
+
+### What gets rebuilt, what gets reused
+
+| Today (`main` + #7, #4) | v2 | Verdict |
+|---|---|---|
+| `/doctor`: iPad EHR `OrderPanel` + `AscendThread` + `WristMirror` | DocUpdate phone view, 390×844: Home (Rx Alerts + before-visit card), New Rx (Sign and send + `LabelCard`), Patient (Past Rx with a fill-status line), Concierge ("Help my patient start"), Profile ("My coordinator") | **Rebuild the shell.** Reuse `LabelCard` (order mode), `thread.ts`'s alert derivation, `canAct`/`act`, `boardStop()`. Retire `AscendThread` and the EHR tabs. `WristMirror` moves to `/board` |
+| `/coordinator`: `WorkTable` (desk) + `QueueCard` (phone) | Home at `/`: summary strip, stuck sorted by time stuck, contact marks, "Waiting on" column, header per W3 | **Remodel.** Keep both components; add the strip, sort, marks and column. `/` redirects here; the index moves to `/screens` |
+| `/patient/[id]`: GoodRx-style `WalletPass` | Same, plus (6.8) the coordinator-approved message played in Spanish | **Keep.** Add the audio player only |
+| `/board`: `RelayLane`, `PriceCounter`, chime | Optional second monitor; lanes show "Waiting on"; hosts `WristMirror` | **Keep**, small additions |
+| `/access` (#7 design) | Adds coordinators-active and fixes-per-coordinator tiles (6.7); #9's practice-count labels | **Keep**, add two tiles |
+| `/sim` (#7 console) | Adds 6.5's RxFill "raw message" toggle; live mode offers only #9's valid inputs | **Keep**, add the toggle |
+| `WhoSeesWhat` | DocUpdate view listed on the practice side; "first fill confirmed" counts (`docs/who-sees-what.md`) | **Reword** after #9 |
+| `PatientQr` (#4) | Unchanged: `<origin>/patient/rx_001`, never a token; a scan without a session goes through #9's login | **Keep** |
+
+### Rows
 
 | Row | Screen | Change | Depends on |
 |---|---|---|---|
-| 6.2 | `/coordinator` → home | `/` opens it (the screen index moves to `/screens`). See the list below this table. | W1, W3; C1 for the seeded week (6.1); C2 for the marks |
-| 6.3 | `/doctor` | Becomes an alerts inbox plus the before-visit card. The order panel reads "Sent from DocUpdate (stand-in)". The first handoff shows "Invite your coordinator". | W1; 6.4 to persist the invite |
-| 6.10 | `/board` | Each lane shows whose move it is: Doctor / Coordinator / Patient / Pharmacy. | none |
-| 6.7 | `/access` | New tiles: coordinators active this week, fixes per coordinator (aggregate only). | 6.4 + Minh's rollup |
-| 6.6 | `/coordinator` | "Likely colleagues at this practice → Invite" from `/api/npi`. Names are hidden, labelled "public NPPES record, not users". | 6.2 + the API |
-| 6.8 | `/coordinator` → `/patient` | The coordinator approves a templated patient message, voiced with ElevenLabs in the patient's language (Spanish for Maria). Reuses PR #3's `scripts/tts.mjs` and the board's unlock-on-click pattern. Never medical advice. | 6.2; C3 for the template |
+| 6.2 | `/coordinator` → home | Summary strip (stuck / waiting / fill confirmed this week), stuck sorted by time stuck, "Reached patient / Left message" marks, header per W3. `/` opens it. Desk table stays; cards on a phone | W6, W3; C1 for the seeded week (6.1); C2 for the marks |
+| 6.3 | `/doctor` | The DocUpdate phone view (table above). Priority: surface 1 (Rx Alerts card) → New Rx with the label → surface 2 (fill-status line) → surfaces 3–4 | #9 merged; 6.4 to persist the invite |
+| 6.10 | Slide | DocUpdate's App Store home screenshot beside a still of our `/doctor` Home, credited, "Not affiliated" | 6.3 still |
+| 6.11 | `/coordinator`, `/board` | "Waiting on: Doctor / Coordinator / Patient / Pharmacy", from one derived function over case state | 6.2 |
+| 6.7 | `/access` | Coordinators active this week, fixes per coordinator (aggregate only) | 6.4 + Minh's rollup |
+| 6.6 | `/coordinator` | "Likely colleagues at this practice → Invite" from `/api/npi`. Names hidden, labelled "public NPPES record, not users" | 6.2 + the API |
+| 6.8 | `/coordinator` → `/patient` | The coordinator approves a templated patient message, voiced with ElevenLabs in the patient's language (Spanish for Maria). Reuses PR #3's `scripts/tts.mjs` and the board's unlock-on-click pattern. Never medical advice | 6.2; C3 for the template |
+| 6.5 UI | `/sim` | "Raw message" toggle showing the RxFill fields Vinh's events carry | 6.5 data |
 
-**The new `/coordinator` home (6.2):**
-- A summary strip: stuck / waiting / fill confirmed this week.
-- The queue sorted by time stuck.
-- "Reached patient / Left message" marks.
-- The header from W3: "FirstDose for DocUpdate · Access queue" or "An Ascend skill for the practice".
-- The desk table stays, with cards on a phone.
+### The DocUpdate phone view (6.3), screen by screen
 
-**Cut order at 2 PM:** Grok voice → 6.6 → 6.7 → 6.8 → 6.10. **Never cut** the coordinator queue with its one-tap fix, the doctor alert, the pharmacy re-run, the verified label, or who sees what.
+| Tab | Content | Data |
+|---|---|---|
+| Home | Rx Alerts: one card per alert, as type · patient · drug · action (chip = `status_text`; title and button = `templates.doctor_alert`; reason = `templates.reason_short`). Below: the before-visit card (`templates.before_visit_card`). Recent Patients: Maria, James | `alert_sent`, `before_visit_card`, `canAct("handoff")` |
+| New Rx | Patient → drug and strength → directions → **Sign and send**. `LabelCard` in order mode sits under the drug | `canAct("prescribe")`, `label_shown` |
+| Patient | Patient Details, then Past Prescriptions with **Sent → At pharmacy → Fill confirmed**, or **⚠ Stuck + reason_short** | `boardStop()`, `reason_classified` |
+| Concierge | Request Free Samples · Speak with a Rep · **Help my patient start** (deep-links the `handoff` action for the selected case) | `canAct("handoff")` |
+| Profile | **My coordinator** + Invite. The first handoff opens the same invite sheet | local in mock; `coordinator_invited` after 6.4 |
+
+**Cut order at 2 PM:** Grok voice → 6.6 → 6.7 → 6.8 → 6.11 → surfaces 3–4 (slide instead). **Never cut:** the coordinator queue with its one-tap fix, the Rx Alerts card, the pharmacy re-run, the verified label, and who sees what.

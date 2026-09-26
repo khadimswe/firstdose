@@ -6,14 +6,16 @@
 
 FirstDose is the access coordinator's daily work queue. It was built at HackGT 13 by **Vinh, Minh and Deem** as a proposed Impiricus workflow.
 
-After a prescription is sent, nobody in the office can see whether the patient started, or why not. FirstDose:
+After a prescription is sent, nobody in the office can see whether the patient started, or why not. DocUpdate, Impiricus's e-prescribing app, says so in its own FAQ and its July 2026 article on prescription abandonment. FirstDose:
 - watches each new prescription and catches the ones that stall;
 - says why, and routes the one fix that matches;
 - tells the doctor only when it matters.
 
 > A patient who never started looks exactly like a drug that doesn't work.
 
-Spec: [docs/spec-v2-coordinator.md](docs/spec-v2-coordinator.md). Two things are decided at the Impiricus workshop (PLAN.md → W1 and W3): whether we lead with the coordinator or the doctor, and whether it lives inside DocUpdate or in Ascend as a skill.
+Inside DocUpdate it adds four things, not a new app: one alert type, one fill-status line, one Concierge checkbox and one "My coordinator" profile row. The doctor sees those on the phone; the coordinator works the queue on a desktop, which DocUpdate can't do today.
+
+Spec: [docs/spec-v2-coordinator.md](docs/spec-v2-coordinator.md). Research: [DocUpdate teardown](docs/research/docupdate-teardown.md). Two things are decided at the Impiricus workshop (PLAN.md → W6 and W3): whether we lead with the coordinator or the doctor, and whether it lives inside DocUpdate or in Ascend as a skill.
 
 ## Who uses it
 
@@ -22,16 +24,16 @@ Spec: [docs/spec-v2-coordinator.md](docs/spec-v2-coordinator.md). Two things are
 | **Access coordinator** (main user) | Every workday, first thing | Works a queue sorted by who's slipping soonest. Applies one fix per stuck patient. Marks "Reached patient" or "Left message" |
 | **Doctor** | A few alerts a week, plus before visits | One tap: "Send to my coordinator". The watch buzzes only when it matters |
 | **Patient** | Once, when stuck | Opens the savings card on their phone and taps "Use at pharmacy" |
-| **Market Access** (buyer) | Weekly | Sees aggregate counts only: first fills confirmed, time to first fill, stuck reasons. Pays per patient, never per prescription |
+| **Market Access** (buyer) | Weekly | Sees aggregate counts only: first fills confirmed, time to first fill, stuck reasons. Pays per confirmed first fill, never per prescription |
 
 ## The demo (target)
 
-1. The coordinator's Monday-morning queue is on the big screen.
-2. The doctor prescribes Otezla for Maria, sent from DocUpdate (a stand-in). The label card shows the source-checked DailyMed text.
-3. The simulated pharmacy reports a stall with a reason. The board turns red and the doctor's watch buzzes.
+1. The coordinator's Monday-morning queue is on the desktop.
+2. On a phone styled as DocUpdate (a labelled concept, not affiliated), the doctor prescribes Otezla for Maria. The order shows the source-checked DailyMed label.
+3. The simulated pharmacy reports "Not dispensed" with a reason. The phone's Rx Alerts shows it and the doctor's watch buzzes.
 4. The doctor taps "Send to my coordinator". Maria jumps to the top of the queue with one fix, chosen by rule, not by AI.
 5. The coordinator taps the fix. A judge scans the QR, becomes Maria, and acknowledges the card. That alone is not a fill.
-6. A separate simulated pharmacy confirmation arrives. The board shows the first fill confirmed, and the watch buzzes again.
+6. A separate simulated pharmacy confirmation arrives. The doctor's prescription line reads "Fill confirmed", and the watch buzzes again.
 7. James: a different reason and a different fix, plus the doctor's before-visit card.
 8. Market Access: aggregate counts only, and who sees what.
 
@@ -41,7 +43,7 @@ Screens say "first fill pending" and "pharmacy fill confirmed". A fill signal do
 
 - **Simulated and labelled on every screen:**
   - pharmacy and hub events (real RxFill and hub vocabulary, real NCPDP reject codes);
-  - DocUpdate, Ascend, the Wallet, QPharma and Medvantx;
+  - DocUpdate (our phone view copies its structure, never its brand, and says "Concept: FirstDose inside DocUpdate · Not affiliated"), Ascend, the Wallet, QPharma and Medvantx;
   - prices;
   - patients, which are fictional (no PHI).
 - **Real, or being built (status in PLAN.md):**
@@ -60,16 +62,16 @@ The router never changes a prescription. It only removes access barriers, and Me
   - #8, the verified Otezla label (Minh);
   - #9, the persisted backend and live wiring (Vinh);
   - #4, the patient QR, and #7, the access/sim design (Deem).
-- **Next:** Phase 6 after the 11 AM workshop: coordinator home, doctor inbox, "whose move" on the board, coordinator tiles, the colleague invite, and the patient voice message.
+- **Next:** Phase 6 after the 11 AM workshop: the coordinator home, the DocUpdate phone view for the doctor, the before/after slide, coordinator tiles, the colleague invite and the patient voice message.
 
 ## Screens
 
 | Route | Who looks at it | What it shows |
 |---|---|---|
 | `/coordinator` | Access coordinator (home screen in v2) | The queue of stuck patients, the reason, and the one fix |
-| `/doctor` | Doctor | The order (sent from DocUpdate, stand-in), the verbatim label, alerts, "Send to my coordinator" and the before-visit card |
+| `/doctor` | Doctor, on a phone | The DocUpdate view (v2, being built): Rx Alerts with "Send to my coordinator", New Rx with the verbatim label, past prescriptions with fill status, the before-visit card. On `main` it is still the v1 iPad EHR |
 | `/patient/[id]` | Patient (a judge, via QR) | The savings card stand-in and "Use at pharmacy" |
-| `/board` | Big screen | Each prescription's route, the stuck reason and the demo price |
+| `/board` | Optional second screen | Each prescription's route, the stuck reason and the demo price |
 | `/access` | Market Access | Aggregate counts, stuck reasons and who sees what |
 | `/sim` | Operator | Fires the simulated pharmacy and hub events |
 
@@ -85,11 +87,11 @@ We work on short module branches and merge reviewed PRs into `main` (see the [br
 
 ## Start here
 
-- [v2 spec: the coordinator's daily queue](docs/spec-v2-coordinator.md)
+- [v2 spec: the coordinator's daily queue](docs/spec-v2-coordinator.md) and the [DocUpdate teardown](docs/research/docupdate-teardown.md)
 - [PLAN.md: status, owners, gates and decisions](PLAN.md)
 - [Frontend plan: screens, the data layer and the design research](docs/frontend-plan.md)
 - [Architecture and frontend contract](docs/architecture.md) and [who sees what](docs/who-sees-what.md)
-- [Presentation pack](docs/presentation/README.md) (being rewritten around the coordinator) and the [claims register](docs/presentation/claims-and-evidence.md)
+- [Presentation pack](docs/presentation/README.md) (being rewritten around the coordinator, task 6.9) and the [claims register](docs/presentation/claims-and-evidence.md)
 - [Tracks, sponsors and requirements](docs/research/tracks-and-requirements.md)
 
 ## Run it

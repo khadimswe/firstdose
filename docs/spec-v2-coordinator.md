@@ -6,8 +6,8 @@ Sat Sep 26, 2026 · Deem · Supersedes the doctor-first spec. Final lead (coordi
 
 - **This spec changes the story and the screens, not the engine.** The loop, router, mock contract and who-sees-what are unchanged.
 - **Read with it:** `PLAN.md` (v2 tasks are rows 6.x), `docs/architecture.md`, `docs/frontend-plan.md`, `mock/*.json`.
-- **Supersedes:** the doctor-first framing in `docs/presentation/demo-script.md` and `pitch-and-qa.md` (banners added; they get rewritten 12–2 PM after the workshop), and the v1 spec's "Who it's for" section.
-- **Gate:** no screen changes before the 11 AM workshop answers, except 6.1 (seed the week). Q1's answer picks the lead (coordinator vs doctor); Q3's answer picks the header (DocUpdate vs Ascend); Q6's answer shapes the pitch (what the first staff account does). PLAN.md tracks them as W1, W3 and W6.
+- **Supersedes:** the doctor-first framing in `docs/presentation/pitch-and-qa.md` (rewritten in 6.9), the v1 spec's "Who it's for" section, and the v1 `/doctor` (iPad EHR + Ascend thread), which becomes the DocUpdate phone view below. The 4-minute demo in this spec is the demo script.
+- **Gate:** no screen changes before the 11 AM workshop answers, except 6.1 (seed the week). Q6's answer picks the lead (coordinator vs doctor); Q3's answer picks the header (DocUpdate vs Ascend); Q1's answer shapes the pitch (what the first staff account does). PLAN.md tracks them as W6, W3 and W1.
 - **Status updates:** tick the 6.x rows in `PLAN.md` with `status:` commits, same as every other task.
 - **Screen copy (PLAN D8):** screens use the templates' fill wording, "first fill pending" and "pharmacy fill confirmed". Nothing on screen claims a patient started or recovered. "A patient who never started looks exactly like a drug that doesn't work" stays as the spoken problem statement. The demo and lines below follow this.
 
@@ -73,9 +73,9 @@ The core loop is unchanged: prescribe → stuck → alert → handoff → fix �
 | Keep | Real RxNorm + verbatim DailyMed label card | Minh | none |
 | Keep | Patient phone via QR, price drop, chime, Relay Board, Garmin buzz ("only when it matters") | Deem / Vinh | none |
 | Keep | `/access`, who-sees-what | Deem | none |
-| Change | `/coordinator` is the home screen and the first thing judges see. Summary strip; sort stuck by time stuck; "Reached patient / Left message" marks; header "FirstDose for DocUpdate · Access queue" | Deem | medium |
-| Change | `/doctor` shrinks to an alerts inbox + before-visit card. Order panel labelled "Sent from DocUpdate (stand-in)". First handoff shows "Invite your coordinator" | Deem | small |
-| Change | `/board` shows whose move it is: Doctor, Coordinator, Patient, Pharmacy | Deem | small |
+| Change | `/coordinator` is the home screen and the first thing judges see (the desktop). Summary strip; sort stuck by time stuck; "Reached patient / Left message" marks; a "Waiting on" column (Doctor / Coordinator / Patient / Pharmacy); header per Q3 | Deem | medium |
+| Change | `/doctor` becomes the DocUpdate phone view: the four surfaces below, at 390×844. It replaces the iPad EHR + Ascend thread | Deem | medium |
+| Change | `/board` becomes optional at the table (the desktop queue owns the big screen). Its lanes show the same "Waiting on" label | Deem | small |
 | Add | `/access` tiles: coordinators active this week, fixes per coordinator | Deem + Minh | small |
 | Add | `/sim` "Seed the week": pre-load 10–15 fill-confirmed and waiting patients so the queue looks like a real Monday | Vinh | small |
 | Add | `coordinator_id` on cases; `coordinator_invited` event. Router unchanged | Vinh | small |
@@ -119,33 +119,42 @@ Full teardown: `docs/research/docupdate-teardown.md`. The judge wants proof we k
 
 | # | DocUpdate today | FirstDose adds | Build size |
 |---|---|---|---|
-| 1 | Home → Rx Alerts card: "Generic Substitution · John Smith · Oxytocin · Resolve" | New alert type, same card anatomy: **"Not started · Maria Lopez · Otezla · Copay not applied → Send to coordinator."** The whole pitch in one screenshot | Priority 1 |
-| 2 | Patient Details → Past Prescriptions list | One status line per script: **Sent → Received → Filled**, or **⚠ Stuck + reason** (the fill status their FAQ says they don't have) | Priority 2 |
+| 1 | Home → Rx Alerts card: "Generic Substitution · John Smith · Oxytocin · Resolve" | New alert type, same card anatomy: **"Not dispensed · Maria Lopez · Otezla · Declined at price ($410 demo) → Send to my coordinator."** The whole pitch in one screenshot | Priority 1 |
+| 2 | Patient Details → Past Prescriptions list | One status line per script: **Sent → At pharmacy → Fill confirmed**, or **⚠ Stuck + reason** (the fill status their FAQ says they don't have) | Priority 2 |
 | 3 | Concierge checkboxes: Request Free Samples · Speak with a Rep · Custom | Add **"Help my patient start"** — routes to the same Wallet / QPharma / Medvantx rails via the existing fix flow | Cosmetic; deep-link the handoff |
 | 4 | Profile | **"My coordinator"** + invite — the staff account their FAQ says "isn't live yet" | Cosmetic |
+
+**Copy on these surfaces (D1, D2, D8).** "Not started" is the word we *say*; the screen shows data. The alert chip is the pharmacy status as it arrived (`status_text`, e.g. "Not dispensed / returned to stock", shortened with CSS only). The reason is `templates.reason_short`, the title and button are `templates.doctor_alert`, and the last step is "Fill confirmed" (`templates.board.stops`). Nothing is hand-written about a patient.
+
+**Where each surface comes from in our code.** Surface 1 reuses `buildThread()`'s alert logic from the v1 Ascend thread. Surface 2 reuses `boardStop()`. Surface 3 calls the existing `handoff` action; surface 4 is the "Invite your coordinator" step (persisted once 6.4 lands). The New Rx screen ("Sign and send") keeps `LabelCard` in order mode, so the verbatim DailyMed label stays on the demo path.
+
+**Privacy.** The DocUpdate view is the prescriber's own e-prescribing tool, so it sits on the **practice side** of who-sees-what: patient names and fill status appear only there and in the coordinator's queue. The Ascend / pharma side still gets aggregate counts only. A real build needs the BAA and data-use review the teardown lists.
 
 **The split that frames the demo:** DocUpdate is iPhone-only with no staff accounts. So the **phone is the doctor's DocUpdate view** (surfaces 1–4) and the **desktop is the coordinator's queue** — the thing DocUpdate cannot do today. Phone beside desktop *is* the pitch picture, and the before/after slide (their real App Store home screenshot next to ours) is the one-glance version.
 
 **Brand rules (also the trademark line):** copy structure, never brand — dark navy, purple primary, bottom tab bar, card anatomy are fine; our own name and logo; every DocUpdate-styled screen carries **"Concept: FirstDose inside DocUpdate · Not affiliated."** Their real screenshots appear only on the comparison slide, credited to the App Store. Never their logo or wordmark inside our UI.
 
-**Repo consistency:** judges may find this public repo, and the README still opens with "a skill for Impiricus Ascend." Align the tagline with the Q3 answer after the workshop (part of task 6.9).
+**Repo consistency:** judges may find this public repo. The README now opens with the coordinator line, but the GitHub repo description (About) still says "A skill for Impiricus Ascend…". Change it to match the Q3 answer after the workshop (6.9); Deem does it by hand.
 
 ## The 4-minute demo
 
-Judge 1 = coordinator. Judge 2 = doctor (wears the watch), then becomes Maria via QR. Vinh runs `/sim` and the pharmacy. One judge only: they play the coordinator, Vinh wears the watch, a spare phone plays Maria.
+**The table.** Laptop or big screen = the coordinator's desktop queue (`/coordinator`). An iPhone = the doctor's DocUpdate view (`/doctor`, surfaces 1–4). The judge's own phone = Maria (`/patient/rx_001` via QR). Vinh runs `/sim` and the pharmacy from his laptop. `/board` goes on a second monitor only if one is free. The watch is on the doctor judge's wrist.
+
+**Casting.** Judge 1 = coordinator. Judge 2 = doctor (phone + watch), then becomes Maria via QR. With one judge: they play the coordinator, Vinh plays the doctor and wears the watch, and a spare phone plays Maria.
 
 | Time | What happens | What we say |
 |---|---|---|
-| 0:00 | Big screen: coordinator queue, Monday morning. "3 stuck, 2 waiting, 11 fills confirmed" | "Impiricus reaches the doctor who writes the prescription. This is the person who gets the patient on it. She opens this every morning." |
-| 0:20 | Judge 2 prescribes Otezla for Maria, "sent from DocUpdate." Real DailyMed label | "DocUpdate sends the script. Today, that's where the story ends." |
-| 0:40 | Pharmacy: declined at quoted price. Board turns red. Judge 2's watch buzzes | "A patient who never started looks exactly like a drug that doesn't work." |
-| 0:55 | Judge 2 taps "Send to my coordinator." First time: "Invite your coordinator" | "One tap just brought the person who gets patients started into the Impiricus network." |
+| 0:00 | Desktop: the coordinator queue, Monday morning. "3 stuck, 2 waiting, 11 fills confirmed" | "Impiricus reaches the doctor who writes the prescription. This is the person who gets the patient on it. She opens this every morning." |
+| 0:20 | Judge 2, on the DocUpdate phone view: New Rx → Maria → Otezla → Sign and send. Real DailyMed label on the order | "DocUpdate sends the script. Today, that's where the story ends." |
+| 0:40 | Pharmacy: declined at the quoted price. The phone's Rx Alerts shows **Not dispensed · Maria Lopez · Otezla**. The watch buzzes | "A patient who never started looks exactly like a drug that doesn't work." |
+| 0:55 | Judge 2 taps "Send to my coordinator." First time only: "Invite your coordinator" | "One tap just brought the person who gets patients started into the Impiricus network." |
 | 1:10 | Maria jumps to the top of Judge 1's queue with the reason and one fix: "Re-send copay card (commercial: eligible)." Judge 1 taps it | "One tap, not three phone calls." |
 | 1:25 | Hand Judge 2 the QR: "Now you're Maria." Their phone gets the card | — |
-| 1:35 | Judge 2 taps "Use at pharmacy": acknowledged, fill still pending. Vinh fires the separate pharmacy confirmation: price $410 → $0 (demo), chime, board reaches "Fill confirmed", watch: "Maria: Otezla pharmacy fill confirmed" | "The doctor heard about it twice: when it broke, and when it was fixed." |
+| 1:35 | Judge 2 taps "Use at pharmacy": acknowledged, fill still pending. Vinh fires the separate pharmacy confirmation: price $410 → $0 (demo), chime, the phone's Past Rx line reads **Fill confirmed**, watch: "Maria: Otezla pharmacy fill confirmed" | "The doctor heard about it twice: when it broke, and when it was fixed." |
 | 2:00 | James on Humira: 75 Prior Authorization Required, unable to reach after 3 calls. Judge 1 taps "Connect to access support" | "Different reason, different fix. The rule picks it, not AI." |
-| 2:30 | Doctor's before-visit card: "James Carter: Humira first fill confirmation is still pending. Review fill status before the visit." Boxed warning shown verbatim once Humira's label is verified | "This is the only screen the doctor needs." |
+| 2:30 | The phone's Home shows the before-visit card: "James Carter: Humira first fill confirmation is still pending. Review fill status before the visit." Boxed warning shown verbatim once Humira's label is verified | "This is the only thing the doctor needs to read." |
 | 2:50 | `/access`: first fills confirmed, time to first fill, coordinators active. Who-sees-what | "Market Access pays per confirmed first fill. Impiricus gets a daily user it never had." |
+| 3:15 | The before/after slide (6.10): DocUpdate's App Store home screen beside ours | "One alert type, one status line, one checkbox, one profile row. Not a new app." |
 | 3:30 | Close | "FirstDose makes the coordinator a daily Impiricus user and makes every doctor alert worth reading." |
 
 ## Lines to say word for word
@@ -163,8 +172,11 @@ Judge 1 = coordinator. Judge 2 = doctor (wears the watch), then becomes Maria vi
 | Is a coordinator really an HCP? | They decide whether a patient gets on therapy, and many are nurses or MAs. Even if you count only prescribers, the doctor stays the HCP you engage; the coordinator is how that engagement becomes a started patient |
 | Would a coordinator use this daily? | Chasing new starts by phone is already their whole job. This replaces guessing with a list of who's stuck and why. (Keomaria's quote here, if we get it) |
 | Won't doctors ignore more alerts? | The doctor gets only alerts that need them, plus one note before the visit. Silence means it worked |
-| Doesn't DocUpdate already track this? | It sends the script. We found nothing that tells the practice the patient never started, or why. (Confirm at 11 AM) |
-| Doesn't Surescripts flag abandonment? | It says a script wasn't picked up. We say why, route the one fix that matches, and show Market Access the confirmed first fills |
+| Doesn't DocUpdate already track this? | DocUpdate's FAQ says it doesn't currently receive fill confirmation, and your July article names the problem. We add the missing step after the script is sent: the reason and the one fix |
+| Doesn't Surescripts flag abandonment? | RxFill and First-Fill Abandonment (Oct 2025) say a script wasn't picked up. Neither says why. We say why, route the one fix that matches, and show Market Access the confirmed first fills |
+| Is that DocUpdate on the phone? | No. It's a concept built on DocUpdate's structure, labelled "Concept: FirstDose inside DocUpdate · Not affiliated". Their real screen is only on the comparison slide, credited to the App Store |
+| Who sees Maria's name? | Only the practice: the doctor's DocUpdate view and the coordinator's queue. Pharma sees counts |
+| How would a coordinator log in? | Staff accounts the way CoverMyMeds does them: staff identity, approved by a verified prescriber, under the practice's NPI |
 | Why not just build this into DocUpdate yourselves? | That's the idea: FirstDose is the missing step inside DocUpdate, after the script is sent. We built it against a stand-in so you can see it working today |
 | Does pharma see my patients? | No. Names, chart and fill status stay in the practice. Pharma sees counts only |
 | Won't this push doctors toward drugs? | It acts only after the doctor chose the drug and never suggests one. Nobody is paid per prescription |
@@ -192,8 +204,8 @@ Judge 1 = coordinator. Judge 2 = doctor (wears the watch), then becomes Maria vi
 | When (Sat unless noted) | What | Who |
 |---|---|---|
 | Now → 11 AM | Keep finishing the core loop and live wiring. `/sim` "Seed the week." Message Keomaria. No screen changes yet | Vinh, Minh, Deem |
-| 11 AM → 12 PM | Workshop: ask the five questions. Decide coordinator-first or doctor-first | Deem + one more |
-| 12 → 2 PM | `/coordinator` home + summary strip, `/doctor` invite step, `/access` coordinator tiles | Deem, Minh |
+| 11 AM → 12 PM | Workshop: ask the seven questions. Decide coordinator-first or doctor-first | Deem + one more |
+| 12 → 2 PM | `/coordinator` home (6.2), `/doctor` DocUpdate phone view (6.3), before/after slide (6.10), `/access` coordinator tiles (6.7) | Deem, Minh |
 | 2 PM | Cut check | All |
 | 2:30 PM | Impiricus mini event: test the new opener on them | Deem |
 | 3 → 6 PM | Polish; dry-run twice with strangers as coordinator and doctor | All |
@@ -201,9 +213,9 @@ Judge 1 = coordinator. Judge 2 = doctor (wears the watch), then becomes Maria vi
 | 9 PM | Claims frozen; writeup and poster rewritten around the coordinator | Deem |
 | Sun 6:30 AM | Submit to Devpost and expo.hexlabs.org | Deem |
 
-**Cut in this order:** 1. Grok voice handoff (keep the tap) · 2. `/access` coordinator tiles (say it out loud) · 3. "Invite your coordinator" step (slide) · 4. Board "whose move" labels.
+**Cut in this order (PLAN.md Phase 6 is the source):** 1. Grok voice handoff (keep the tap) · 2. NPPES colleague invite (6.6) · 3. `/access` coordinator tiles (6.7, say it out loud) · 4. Spanish voice message (6.8) · 5. "Waiting on" labels (6.11) · 6. Surfaces 3–4, the Concierge checkbox and the Profile row (show them on the slide instead).
 
-**Never cut:** the coordinator queue with a one-tap fix, the doctor's alert, the pharmacy re-run, the real DailyMed label, who-sees-what.
+**Never cut:** the coordinator queue with a one-tap fix, the phone's Rx Alerts card (surface 1), the pharmacy re-run, the real DailyMed label, who-sees-what.
 
 ## Sources
 

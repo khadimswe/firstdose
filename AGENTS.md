@@ -6,7 +6,9 @@ Read these before changing anything in FirstDose.
 2. **`PLAN.md`** holds status, owners, decisions and hard rules. Change status only in separate `status: <task#> <emoji> <description>` commits.
 3. **Specs:**
    - `docs/spec-v2-coordinator.md`: the v2 coordinator-first product spec (read its top section first); PLAN.md Phase 6 tracks it.
-   - `docs/IMPLEMENTATION.md`: reference task steps; current priorities and ownership are in PLAN.md.
+   - `docs/research/docupdate-teardown.md`: what DocUpdate does today and where FirstDose fits (the four surfaces).
+   - `docs/IMPLEMENTATION.md`: end-to-end task steps per owner; current priorities and status are in PLAN.md.
+   - `docs/tasks/{DEEM,VIHN,MINH}-TASKS.md`: each person's checklist.
    - `docs/architecture.md`: routes, tables, external services.
    - `docs/frontend-plan.md`: the screens and the `useEvents()` data layer.
    - `docs/who-sees-what.md`: what may cross from the practice side to Ascend.
@@ -18,9 +20,10 @@ Read these before changing anything in FirstDose.
 5. **Rules that make the demo trustworthy:**
    - Label text is verbatim from DailyMed.
    - Every sentence about a patient comes from `mock/templates.json`.
-   - Every stand-in is labelled with `<StandIn>`.
+   - Every stand-in is labelled with `<StandIn>`. DocUpdate-styled screens copy structure, never brand, and carry "Concept: FirstDose inside DocUpdate · Not affiliated".
+   - Screen copy uses fill wording (PLAN D8): "first fill pending", "Fill confirmed"; never "started" or "recovered".
    - Patients are fictional, with no PHI.
    - No secrets in git.
    - Stage named paths only; never `git add -A`.
 
-6. **Working flow:** separate module branches, one affected-owner reviewer, reviewed PRs into main. PLAN.md is the only active execution dashboard; phase/audit documents are frozen references. Keep the physical watch notification path; custom Connect IQ is optional.
+6. **Working flow:** separate module branches, one affected-owner reviewer, reviewed PRs into main. PLAN.md is the only active execution dashboard. Keep the physical watch notification path; custom Connect IQ is optional.
