@@ -1,110 +1,93 @@
 # Deem Tasks
 
-Personal task tracker. Source of truth is `PLAN.md`; this file is a convenience view only.
+Personal checklist. `PLAN.md` is the source of truth; steps for each task are in `docs/IMPLEMENTATION.md`. Product: `docs/spec-v2-coordinator.md`.
 
 Legend: [ ] not started · [-] in progress · [x] done · [!] blocked
 
----
-
-## Keys to gather (you sign up yourself; values go in `.env`, never in git)
-
-| Name | Where you get it | What it unblocks |
-|---|---|---|
-| `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID` | elevenlabs.io with the MLH code | 4.2 |
-| `.tech` domain | get.tech with the MLH code; try `getfirstdose.tech`, `firstdose-rx.tech` | Q4, submission |
-| Vercel | vercel.com, project `firstdose-web`, invite Vinh | 2.6 |
-| `OPENAI_API_KEY`, `OPENAI_BASE_URL` | live.hexlabs.org (only if used) | none yet |
+**Lane:** `app/(screens)/**`, `components/**`, `app/page.tsx`, `app/layout.tsx`, `app/globals.css`, `.github/workflows/**`, and the docs (`docs/**` except `architecture.md`, `backend-core.md` and the other owners' trackers), `README.md`. Shared, tell Vinh first: `mock/*.json`, `package.json`.
 
 ---
 
-## Lane ownership
+## Done (Phases 0–2)
 
-Files you own exclusively:
-- `app/(screens)/**`
-- `components/**`
-- `app/page.tsx`, `app/layout.tsx`, `app/globals.css`
-- Presentation publication and screen docs. Module owners maintain their reference docs; coordinate root README/PLAN changes. Submission draft: `docs/submission.md`.
-- `.github/workflows/**`
+- [x] 0.1 repo · 0.2 Next.js 16 scaffold · 0.3 CI · 0.7 contract fixes · 0.9 HexLabs registration
+- [x] 1.1 foundation · 1.2 `EventSource` · 1.3–1.6 sim, doctor, coordinator, patient
+- [x] 2.1 board · 2.4 access · 2.6 Vercel (mock mode) · 2.7 `?upto`, `?replay`, Autoplay
+- [x] ✂️ 1.13 live wiring (carried by Vinh's #9) · ✂️ 4.2 board mp3 (replaced by 6.8)
+- [x] v2 docs PR #10: PLAN brief, D7/D8, spec in fill wording, the four surfaces, trackers, stale docs removed
 
-Shared (⚠️ CONTRACT commits, tell Vinh first): `mock/*.json`, `package.json`.
+## Now → 11 AM workshop
 
----
+- [ ] **3.1** Ask the spec's questions 1–7 in order, plus Keomaria's four. Write the answers under PLAN → Open Questions.
+  - W6 (Q6) decides the lead.
+  - W3 (Q3) decides the header, and whether `/doctor` becomes the DocUpdate view.
+  - W1 (Q1) decides the pitch.
 
-## Phase 0: Setup
-- [x] **0.1** Repo, README, ABOUT, LICENSE.
-- [x] **0.2** Next.js 16 scaffold.
-- [x] **0.3** CI.
-- [x] **0.7** Contract fixes: `ev_21b` + `wrist.started`. ⚠️ CONTRACT.
-- [ ] **0.9** HexLabs team registration; #qna Notability question.
-- Repo stays public (decided Sat Sep 26).
+  Lock D7 in a status commit right after.
+- [ ] Watch DocUpdate's YouTube Short and the two product videos on docupdate.io (the teardown couldn't). Note anything that changes the four surfaces.
 
-## Phase 1: Core loop (Sat 12 AM to 4 AM)
-- [x] **1.1** Foundation: catalog, `derive.ts`, `useEvents()` mock source, `fill()`, `StandIn`, `LabelCard`, shadcn init. Merge before any screen.
-- [x] **1.2** Push `components/data/types.ts` (`EventSource`) and tell Vinh.
-- [x] **1.3** `/sim` bare.
-- [x] **1.4** `/doctor`.
-- [x] **1.5** `/coordinator`.
-- [x] **1.6** `/patient/[id]`.
-- [x] ✂️ **1.13** Live wiring. Carried by Vinh's PR #9, which is built on my #6's design. Close #6.
+## 6.0 Integration (first thing after the workshop)
 
-**Checkpoint:** follow the current Maria core gate in PLAN.md; the original 4 AM target is superseded.
+- [-] Reviews posted on #8 and #9. #2, #3 and #6 closed.
+- [ ] Merge #8, then #9, once their owners fix the review items. Tell Vinh to keep Phase 6 when he rebases #9 (his branch predates it).
+- [ ] Rebase #4 (QR) onto `main`. It encodes `<origin>/patient/rx_001`, never a token, and a scan without a session goes through #9's login. Regenerate the lockfile with npm.
+- [ ] Rebase #7 (access/sim) onto `main` and retarget it. Bring in #9's behaviour: practice counts when Tiger is unavailable; `/sim` offers only valid inputs live; Autoplay mock-only.
+- [ ] 2.6: redeploy in `supabase` mode (Vinh sets the private env). Keep a mock deploy as the fallback.
+- [ ] Reword `WhoSeesWhat` to match `docs/who-sees-what.md` (DocUpdate view on the practice side; "first fill confirmed").
 
-## Phase 2: The wow + deploy (Sat 4 AM to 11 AM)
-- [x] **2.1** `/board`.
-- [-] **2.2** James case + before-visit card (real boxed warning waits on 1.10).
-- [x] **2.4** `/access`.
-- [x] **2.6** Vercel deploy: production from `main`, in mock mode. Redeploy in `supabase` mode after #9.
-- [x] **2.7** `/sim` extras (`?upto=`, `?replay=1`, Autoplay).
+## 12–2 PM build (one branch per screen, mock first, then live)
 
-## Phase 3-4 (Sat 11 AM to 6 PM)
-- [ ] **3.1** Impiricus workshop at 11 AM. Ask the spec's questions 1–7 in order. W1 decides the lead, W3 the header, W6 the pitch.
-- [x] ✂️ **4.2** Replaced by 6.8. Close PR #3; reuse its `scripts/tts.mjs`.
-- [-] **4.3** Design pass: four screens merged; `/access` and `/sim` in PR #7 (rebase onto #9).
-- [-] **4.4** QR flow: built in PR #4. Rebase onto #9 and follow its login return path, without a token in the QR. Then test on a stranger's phone from the deployed HTTPS origin.
-- [ ] **4.7** Dry run; drive `/coordinator` at the table.
+- [ ] **6.3** DocUpdate phone view, `screen/doctor-docupdate`, **only if W3 = DocUpdate**. Otherwise move the Ascend thread to phone width. Priority order:
+  1. Rx Alerts card;
+  2. New Rx with the label;
+  3. the fill-status line;
+  4. Concierge and Profile.
+- [ ] **6.10** Before/after slide: their App Store home screenshot beside our Home still, credited, "Not affiliated".
+- [ ] **6.2** Coordinator home, `screen/coordinator-home`:
+  - `/` opens it;
+  - summary strip;
+  - sorted by time stuck;
+  - contact marks (C2);
+  - header per W3.
+- [ ] **6.11** "Waiting on" column in the queue, and a label on the board lanes.
+- [ ] **6.7 UI** Coordinator tiles on `/access` (needs 6.4 and Minh's rollup).
+- [ ] **6.6 UI** "Likely colleagues → Invite", names hidden (needs `/api/npi`).
+- [ ] **6.5 UI** "Raw message" toggle on `/sim` (needs Vinh's RxFill fields).
+- [ ] **6.8** Spanish patient message with `tts.mjs` (needs C3).
 
-## Phase 6: v2 pivot, the coordinator's daily queue (spec: `docs/spec-v2-coordinator.md`)
+**2 PM cut order:** Grok → 6.6 → 6.7 → 6.8 → 6.11 → surfaces 3–4 (shown on the slide instead). **Never cut:** the coordinator queue with its one-tap fix, the Rx Alerts card, the pharmacy re-run, the verified label, and who sees what.
 
-**Before 11 AM (no screen changes):**
-- [-] **6.0** Integrate the open PRs.
-  1. Review #8 (labels) and #9 (backend); they merge first.
-  2. Rebase #4 (QR) and #7 (access/sim) onto `main`.
-  3. Close #2 (folded into the v2 docs PR), #3 and #6.
+## 2:30–9 PM
 
-  Done 09:44: reviews posted and #2, #3, #6 closed. The rebases wait for the merges.
-- [-] v2 docs PR: PLAN.md brief, D7/D8 and the W/C questions; README; spec in fill wording; `docs/frontend-plan.md`; banners on doctor-first docs.
-- [ ] Workshop prep: the spec's questions 1–7, and Keomaria's four (K1: quote permission).
+- [ ] 2:30 Impiricus mini event: test the opener and the before/after slide.
+- [ ] **6.9** Presentation:
+  - rewrite `pitch-and-qa.md`;
+  - add the teardown facts, with sources, to `claims-and-evidence.md`;
+  - add the market-size slide;
+  - align the README tagline and the GitHub repo description with W3.
+- [ ] **4.4** QR on a stranger's phone from the HTTPS origin.
+- [ ] **4.7** Two dry runs with strangers, on the live origin, plus one mock fallback run.
+- [ ] 6 PM footage: the desktop queue, the phone's Rx Alerts, the watch close-up, and the judge's phone as Maria.
 
-**12–2 PM (after the workshop answers):**
-- [ ] **6.2** `/coordinator` home, on branch `screen/coordinator-home`.
-  - Summary strip.
-  - Sort by time stuck.
-  - Contact marks.
-  - Header per W3.
-  - `/` opens it.
+## 9 PM → Sun 6:30 AM
 
-  Needs C1 and C2.
-- [ ] **6.3** `/doctor` alerts inbox + before-visit card, "Sent from DocUpdate (stand-in)" and "Invite your coordinator". Branch `screen/doctor-inbox`. Needs C4.
-- [ ] **6.10** `/board` "whose move" labels. Branch `screen/board-whose-move`.
-- [ ] **6.7 UI** `/access` coordinator tiles. Needs 6.4 and Minh's rollup.
-- [ ] **6.6 UI** "Likely colleagues → Invite" (NPPES). Needs `/api/npi`.
-- [ ] **6.8** Coordinator-approved patient message, voiced in Spanish for Maria. Reuses `tts.mjs`. Needs C3.
-- [ ] **6.9** Rewrite `docs/presentation/*` around the coordinator, plus the market-size slide (use the spec's "about / our estimate" wording).
+- [ ] 9 PM claims freeze (5.1 with Vinh).
+- [ ] **5.2** Stills of every judge screen at its size, from the deployed origin. Look at each one.
+- [ ] **5.3** Video, 2–3 min, following the spec's demo. Done by Sun 5 AM.
+- [ ] **5.4** Writeup and poster: rewrite `docs/submission.md`.
+- [ ] **5.5** Submit to Devpost and expo.hexlabs.org, then reload and verify both.
 
-**Cut order at 2 PM:** Grok → 6.6 → 6.7 → 6.8 → 6.10.
+## Keys (yours; values in `.env`, never in git)
 
-## Phase 5 (Sat 9 PM to Sun 6:30 AM)
-- [ ] **5.2** Stills of every screen.
-- [ ] **5.3** Video.
-- [ ] **5.4** Writeup + poster.
-- [ ] **5.5** Submit to Devpost AND expo.hexlabs.org; reload-verify.
-
----
+| Name | Unblocks |
+|---|---|
+| `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID` (MLH code) | 6.8 |
+| `.tech` domain (`getfirstdose.tech`, `firstdose-rx.tech`) | Q4, submission |
+| Vercel `firstdose-web` (Vinh invited) | 2.6 |
 
 ## Hard rules
-1. Stage named paths only. Never `git add -A`.
-2. Status commits are separate from code commits.
-3. Never reword label text. Every patient sentence comes from `mock/templates.json`.
-4. Every screen runs on `mock/` with zero network before merge.
 
-Live wiring handoff: Vinh implements `EventSource`; Minh supplies labels/classifier/analytics. Deem owns optional microphone capture and confirmed-action UI. `POST /api/sim/fire` uses `{ ids: string[] }`; the adapter hides this HTTP detail from screens.
+1. Stage named paths only. Status commits are separate from code commits.
+2. Never reword label text. Every patient sentence comes from `mock/templates.json`. Fill wording only (D8).
+3. Every stand-in uses `<StandIn>`. DocUpdate: structure, never brand.
+4. Every screen runs on `mock/` with zero network before merge.

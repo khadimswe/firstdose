@@ -187,7 +187,7 @@ Full teardown: `docs/research/docupdate-teardown.md`. The judge wants proof we k
 **Impiricus workshop, 11 AM, in this order:**
 1. "Your FAQ says staff accounts are on the roadmap. What should a staff account do first?"
 2. "You published *'The Prescription Was Sent. The Patient Still Never Started It.'* in July. What's the product plan behind that article?"
-3. "If you built this, would it live inside DocUpdate, or in Ascend as a skill?" DocUpdate → header "FirstDose for DocUpdate." Ascend → "An Ascend skill for the practice." Demo and code unchanged either way.
+3. "If you built this, would it live inside DocUpdate, or in Ascend as a skill?" DocUpdate → header "FirstDose for DocUpdate", and `/doctor` becomes the DocUpdate phone view (6.3). Ascend → header "An Ascend skill for the practice"; the doctor surface stays the v1 Ascend thread on a phone, and the four surfaces move to a "where it could live" slide. The coordinator queue is the same either way.
 4. "Is DocUpdate certified for RxFill (`RxFillIndicator`) today, or is licensing Surescripts First-Fill Abandonment the likelier path?"
 5. "The v6.3.0 savings cards — structured secondary coverage or a pharmacy note? Are they Wallet programs?"
 6. "Do you count practice staff, like access coordinators and MAs, as HCPs you'd want to reach?" Yes → lead with the coordinator. No → lead with the doctor; the coordinator is the practice user.
