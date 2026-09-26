@@ -5,7 +5,17 @@ import { useMemo, useSyncExternalStore } from "react";
 
 import { CATALOG, SCRIPT } from "./catalog";
 import { accessSummary, beats, canActOn, deriveCases } from "./derive";
-import { getLiveAccess, getLiveEvents, liveAct, liveFire, liveReset, subscribeLive } from "./live";
+import {
+  dismissLiveError,
+  getLiveAccess,
+  getLiveError,
+  getLiveEvents,
+  liveAct,
+  liveFire,
+  liveReset,
+  subscribeLive,
+  type LiveError,
+} from "./live";
 import { DATA_MODE, type DataMode } from "./mode";
 import {
   getOverride,
@@ -86,13 +96,17 @@ function getMockEvents(): readonly FillEvent[] {
 const NO_EVENTS: readonly FillEvent[] = [];
 const getNoEvents = () => NO_EVENTS;
 const getNoAccess = (): AccessSummary | null => null;
+const getNoError = (): LiveError => null;
+const noop = () => {};
 
 // One source per build: NEXT_PUBLIC_DATA_SOURCE is inlined at build time.
 const SOURCE = LIVE
   ? {
       subscribe: subscribeLive,
       events: getLiveEvents,
-      access: getLiveAccess as () => AccessSummary | null,
+      access: getLiveAccess,
+      error: getLiveError,
+      dismissError: dismissLiveError,
       override: getServerOverride,
       fire: liveFire,
       act: liveAct,
@@ -102,6 +116,8 @@ const SOURCE = LIVE
       subscribe,
       events: getMockEvents,
       access: getNoAccess,
+      error: getNoError,
+      dismissError: noop,
       override: getOverride,
       fire,
       act,
@@ -129,12 +145,16 @@ export type EventsApi = {
   /** True when act(action, caseId) has something left to do. */
   canAct: (action: ScreenAction, caseId: string) => boolean;
   reset: () => Promise<void>;
+  /** Live only: the last failed load or command, for the error banner. Mock never fails. */
+  error: LiveError;
+  dismissError: () => void;
 };
 
 export function useEvents(): EventsApi {
   const events = useSyncExternalStore(SOURCE.subscribe, SOURCE.events, getNoEvents);
   const liveAccess = useSyncExternalStore(SOURCE.subscribe, SOURCE.access, getNoAccess);
   const override = useSyncExternalStore(SOURCE.subscribe, SOURCE.override, getServerOverride);
+  const error = useSyncExternalStore(SOURCE.subscribe, SOURCE.error, getNoError);
 
   return useMemo(() => {
     const fired = [...events];
@@ -157,6 +177,8 @@ export function useEvents(): EventsApi {
         return c !== undefined && canActOn(action, c);
       },
       reset: SOURCE.reset,
+      error,
+      dismissError: SOURCE.dismissError,
     };
-  }, [events, liveAccess, override]);
+  }, [events, liveAccess, override, error]);
 }
