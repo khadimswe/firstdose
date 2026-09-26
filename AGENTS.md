@@ -1,3 +1,11 @@
+# Current planning update ? September 26, 2026
+
+The user approved the three-person split: **Vinh** owns authoritative workflow, Supabase/Realtime, deterministic routing, watch and optional voice backend; **Minh** owns verified labels, then Gemini classification, then Tiger analytics; **Deem** owns screens, frontend integration, microphone capture/confirmation if retained, and presentation. This supersedes the two-person ownership below. Stephen/Tylin remain a separate team.
+
+Use `docs/STATUS.md`, `docs/phases/team-build-plan.md`, the six phase playbooks and `docs/winning-conditions.md` for current execution context. Main at `80646f7` now includes Deem's screen stack and task dashboard; this planning branch is rebased onto it. Presentation targets are not implementation evidence. Proposed contract corrections still require the existing mock-review process. Historical schedule targets below are internal checkpoints, not confirmed organizer deadlines. The legacy sponsor repetition/file-count instruction is flagged in `docs/presentation/claims-and-evidence.md`; do not fabricate provider use or treat that heuristic as an official rule.
+
+---
+
 # FirstDose — Master Plan
 
 Scaffold-level. Whoever owns a phase plans it deeper in `docs/phases/` as they go. This file is the contract: roles, phases, gates, cut order, and the rules every agent session follows.

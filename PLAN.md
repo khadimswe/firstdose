@@ -1,38 +1,43 @@
 # FIRSTDOSE: Plan & Coordination
 
-> Living status doc for Vihn + Deem. Updated on every task change and pushed to `main`.
+> September 26 integration: Deem's dashboard/task IDs and completed frontend work are preserved from `80646f7`. User-approved three-person roles and separate-branch workflow apply below. [All six phase playbooks](docs/phases/README.md), [branch workflow](docs/branch-workflow.md), [current status](docs/STATUS.md), [presentation](docs/presentation/README.md).
+>
+> Completed frontend rows mean mock UI implementation, not live backend/source/device verification. Existing task wording involving `started`, `recovered`, universal $0, automatic bridge samples, global reset and insert-only subscriptions describes the current contract; corrections in [Phase 0](docs/phases/phase-0-contract-and-readiness.md) require coordinated review before implementation. The physical watch remains core; only its custom widget is optional.
+
+> Living status doc for Vinh + Minh + Deem. Update on the owning branch and merge through a reviewed PR.
 > Single source of truth for who is working on what.
 > **Atomic commits. Never bundle a status change with code.**
 
-**Project:** FirstDose, a skill for Impiricus Ascend that catches patients who never start a new prescription, tells the doctor why on their wrist, routes the one right fix to the coordinator in one tap, and proves recovery to Market Access.
+**Project:** FirstDose turns a stuck first fill into a reviewed access task, then checks for a later pharmacy fill signal. A proposed Impiricus workflow with fictional patients and simulated pharmacy/partner services.
 
 **Team:**
-- **Vihn:** backend + AI/data + hardware (Supabase schema and Realtime, simulator API, reason enum, Gemini classifier, fix router, RxNorm/DailyMed label pipeline, Tiger Data, Grok STT, ntfy → Garmin, Connect IQ stretch).
+- **Vinh:** authoritative workflow, Supabase/schema/Realtime, deterministic router, simulator/API, ntfy -> Garmin and optional Grok backend/custom widget.
 - **Deem:** frontend + product (all six screens, `useEvents()` hook, design pass, demo script and table performance, writeup, video, poster).
+- **Minh:** verified RxNorm/DailyMed labels, then Gemini classification, then Tiger projection/analytics.
 
 **Hackathon:** HackGT 13, Georgia Tech, Sep 25-27 2026.
 
-**Deadline:** **Sunday Sep 27, 8:00 AM ET, hard.** Submit to **Devpost AND expo.hexlabs.org**. **Target submit: Sun 6:30 AM.** Expo Sun 9:30-11:00 AM.
+**Schedule:** Deem reports Sunday Sep 27, 8:00 AM ET as the cutoff and 9:30-11:00 AM expo. Keep the Sun 6:30 AM submission buffer. Exact current organizer cutoff/video cap still need source confirmation; see `docs/research/tracks-and-requirements.md`. Submit to Devpost AND expo.hexlabs.org.
 
-**Repo:** `github.com/khadimswe/firstdose`. Private until submission, then public.
+**Repo:** `github.com/khadimswe/firstdose`. No visibility change is performed by this plan; check actual settings before describing them.
 
 **Specs in the repo:** `docs/architecture.md` (flow, tables, API routes, external services), `docs/who-sees-what.md`, `mock/*.json` (data contract). If this file drifts from them, fix this file.
 
-**Not in the repo:** demo script, facts sheet, prize strategy. They live in `notes/` (gitignored), shared by DM.
+**In the repo:** `docs/presentation/` contains demo scripts, slide/poster copy, Q&A and a submission draft; `docs/research/` contains sourced prize/winner summaries. Personal research, credentials and private notes stay outside commits.
 
 **Legend:** ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️ cut
 
 **Stale lock TTL: 3 hours.** A 🟡 task without a fresh timestamp in Notes is claimable.
 
-**Coordination is manual.** Edit this file by hand, commit only `PLAN.md`, push. Commit message: `status: <task#> <emoji> <description>`.
+**Coordination is manual.** Update task status on the owning branch, keep status-only commits separate from application code, and use reviewed PRs into main. Follow `docs/branch-workflow.md`.
 
 ---
 
 ## Context: why this exists
 
-- **The problem:** 29% of new-to-brand prescriptions are never filled (IQVIA, *U.S. Medicine Use Trends 2026*). Abandonment is under 5% at $0 out of pocket and 60% over $500 (IQVIA, 2020). The practice finds out weeks later, and the doctor thinks the drug failed.
-- **The doctor line:** "A patient who never started looks exactly like a drug that doesn't work."
-- **Our answer:** per-patient reason, one compliant fix, proof of recovery, inside Impiricus Ascend. Surescripts and hubs say it didn't happen. We say why, fix it in one tap, and prove it worked.
+A stalled prescription needs a documented reason, an accountable next step and follow-up. The demo proves workflow behavior, not clinical recovery or causal effectiveness. Existing abandonment tools exist; validate the specific proposed contribution with Impiricus.
+
+Current objective, scope and claim boundaries: [product proposal](docs/product-proposal.md), [winning conditions](docs/winning-conditions.md), [claims register](docs/presentation/claims-and-evidence.md).
 
 ---
 
@@ -43,8 +48,8 @@
 | A prescription going dark, then recovering | `/board` Relay Board: red stop, price $410 → $0, chime | Deem (UI) + Vihn (events) |
 | Physical wow | Garmin buzz on the doctor judge's wrist, twice | Vihn |
 | A judge becomes the patient | QR → `/patient/rx_001` on their own phone | Deem |
-| Real data, not a mock | Verbatim DailyMed label card with byte-exact badge | Vihn (data) + Deem (card) |
-| The buyer | `/access`: recovered, time to first fill from Tiger Data, no names | Vihn (Tiger) + Deem (UI) |
+| Real data, not a mock | Verbatim DailyMed label card with byte-exact badge | Minh (data) + Deem (card) |
+| The buyer | `/access`: recovered, time to first fill from Tiger Data, no names | Minh (Tiger) + Deem (UI) |
 | Trust | Who-sees-what panel; every stand-in labelled | Deem |
 
 ---
@@ -78,7 +83,7 @@
 | 1.7 | Supabase schema: `patients`, `drugs`, `rx_cases`, `fill_events`, `labels`; seed from `mock/` | `supabase/migrations/**`, `scripts/seed.ts` | **Vihn** | ⬜ | 0.4, 0.6 | Field names identical to `mock/`. |
 | 1.8 | Router + table test (every reason × insurance; Medicare never gets a copay card) | `lib/server/router.ts`, `tests/router.test.ts` | **Vihn** | ⬜ | 0.4 | Pure function over `reasons.json → router.rows`. No AI. |
 | 1.9 | `lib/realtime.ts` (implements 1.2) + `/api/sim/fire`, `/api/sim/reset` | `lib/realtime.ts`, `app/api/sim/**` | **Vihn** | ⬜ | 1.2, 1.7 | Realtime channel `fill_events`, insert only. |
-| 1.10 | Label pipeline: RxNorm → DailyMed SPL → `labels` + byte-exact test | `lib/server/label.ts`, `tests/label.test.ts`, `mock/labels.json` | **Vihn** | ⬜ | 0.6 | Setids hardcoded. Fills RxCUIs + `labels.json`. |
+| 1.10 | Label pipeline: RxNorm → DailyMed SPL → `labels` + byte-exact test | `lib/server/label.ts`, `tests/label.test.ts`, `mock/labels.json` | **Minh** | ⬜ | 0.6 | Setids hardcoded. Fills RxCUIs + `labels.json`. |
 | 1.11 | Action routes: `/api/rx`, `/api/handoff`, `/api/fix`, `/api/patient/use` | `app/api/**` | **Vihn** | ⬜ | 1.7, 1.8 | Guarded transitions so a double tap can't double-fire. |
 | 1.12 | ntfy on `alert_sent` and `started` | `lib/server/ntfy.ts` | **Vihn** | ⬜ | 0.8, 1.9 | Action button → `/api/handoff`. |
 
@@ -89,10 +94,10 @@
 | # | Component | File(s) | Owner | Status | Deps | Notes |
 |---|---|---|---|---|---|---|
 | 2.1 | `/board` Relay Board: lanes, red stop, price counter, WebAudio chime | `app/(screens)/board/**` | **Deem** | ✅ | 1.1 | 1920×1080 dark. Sound needs one click to enable. |
-| 2.2 | James case on every screen + before-visit card with real boxed warning | `app/(screens)/doctor/**` | **Deem** | ✅ | 1.4, 1.10 | Template only, never free text. |
-| 2.3 | Tiger Data: `fill_events` hypertable + `daily_ttff` + `/api/access/summary` | `lib/server/tiger.ts`, `app/api/access/**` | **Vihn** | ⬜ | 1.7 | Dual-write, no patient names. |
+| 2.2 | James case on every screen + before-visit card with label renderer (verified source pending) | `app/(screens)/doctor/**` | **Deem** | ✅ | 1.4, 1.10 | Frontend built; source data and fidelity gate remain pending with Minh. |
+| 2.3 | Tiger Data: `fill_events` hypertable + `daily_ttff` + `/api/access/summary` | `lib/server/tiger.ts`, `app/api/access/**` | **Minh** | ⬜ | 1.7 | Dual-write, no patient names. |
 | 2.4 | `/access`: KPI tiles, reason bars, who-sees-what | `app/(screens)/access/**` | **Deem** | ✅ | 1.1, 2.3 | Type has no patient fields. |
-| 2.5 | Gemini classifier: note → reason enum (`responseSchema`) | `lib/server/classify.ts` | **Vihn** | ⬜ | 0.6 | List models at startup. ≤ 140 chars in, enum out. |
+| 2.5 | Gemini classifier: note → reason enum (`responseSchema`) | `lib/server/classify.ts` | **Minh** | ⬜ | 0.6 | List models at startup. ≤ 140 chars in, enum out. |
 | 2.6 | Vercel deploy (`firstdose-web`) | `.vercel/` | **Deem** | ⬜ | 1.9 | Check `.vercel/project.json` before every `--prod`. |
 | 2.7 | `/sim` extras: `?upto=`, `?replay=1`, Autoplay | `app/(screens)/sim/**` | **Deem** | ⬜ | 1.3 | Offline fallback for the board. |
 
@@ -106,7 +111,7 @@
 
 | # | Component | File(s) | Owner | Status | Deps | Notes |
 |---|---|---|---|---|---|---|
-| 4.1 | Grok STT handoff with keyterms + `/api/voice` | `lib/server/voice.ts`, `app/api/voice/**` | **Vihn** | ⬜ | 1.11 | Record the no-keyterm miss for the video. |
+| 4.1 | Grok STT handoff with keyterms + `/api/voice` | `lib/server/voice.ts`, `app/api/voice/**` | **Vihn** | ⬜ | 1.11 | Record actual trials with and without keyterms; do not presume failure. |
 | 4.2 | ElevenLabs "started" line on the board | `public/audio/**` | **Deem** | ⬜ | 2.1 | Pre-generate the mp3; no runtime call. |
 | 4.3 | Design pass on all screens | `app/(screens)/**` | **Deem** | 🟡 | Phase 2 | doctor, patient, coordinator, board done 2026-09-26 00:07; access + sim left. |
 | 4.4 | QR flow on a stranger's phone | n/a | **Deem** | ⬜ | 2.6 | |
@@ -121,7 +126,7 @@
 | 5.1 | Claims audit: every named product is really called in code; gitleaks full history | `docs/claims-audit.md` | **Vihn** | ⬜ | all | Sat 9 PM claims freeze. |
 | 5.2 | Stills of every judge screen (desktop + phone) from the deployed origin | `docs/stills/` | **Deem** | ⬜ | 2.6 | Look at each one. |
 | 5.3 | Video 2-3 min | `docs/video/` | **Deem** (Vihn edits once backend is frozen) | ⬜ | 5.2 | Done by Sun 5 AM. |
-| 5.4 | Devpost writeup + poster | `ABOUT.md` | **Deem** | ⬜ | 5.1 | |
+| 5.4 | Devpost writeup + poster | `docs/submission.md` | **Deem** | ⬜ | 5.1 | |
 | 5.5 | Flip repo public; submit to **Devpost AND expo.hexlabs.org**; reload-verify both | n/a | **Deem** | ⬜ | 5.4 | By Sun 6:30 AM. |
 
 ---
@@ -134,11 +139,11 @@ Full detail in `docs/architecture.md`. Summary:
 |---|---|---|---|
 | `mock/*.json` shapes | both | everyone | Frozen. Changes are ⚠️ CONTRACT commits. |
 | `useEvents()` | Deem | all screens | `{ mode, script, fired, cases, catalog, access, fire(ids), fireNext(caseId, type), reset() }` |
-| `EventSource` | Deem defines, Vihn implements | `useEvents()` | `load() / subscribe(onInsert) / fire(ids) / reset() / accessSummary()` in `components/data/types.ts` |
+| `EventSource` | Deem defines, Vihn implements | `useEvents()` | `load() / subscribe(onInsert) / act(action, rx, fix) / fire(ids) / reset() / accessSummary()` in `components/data/types.ts` |
 | `fill_events` row | Vihn | Deem | `mock/events.json → event_shape` |
 | `router(reason, insurance)` | Vihn | everyone | returns a key of `reasons.json → fixes` |
-| `GET /api/access/summary` | Vihn | Deem | `{ recovered, median_ttff_seconds, reason_tally }`, no patient fields |
-| Label | Vihn | Deem | `mock/labels.json → label_shape`; `byte_exact: true` or the UI shows red PLACEHOLDER |
+| `GET /api/access/summary` | Minh | Deem | `{ recovered, median_ttff_seconds, reason_tally }`, no patient fields |
+| Label | Minh | Deem | `mock/labels.json → label_shape`; `byte_exact: true` or the UI shows red PLACEHOLDER |
 
 **Contract changes require telling the other person before committing.** Mark such commits `⚠️ CONTRACT`.
 

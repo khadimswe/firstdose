@@ -23,7 +23,7 @@ Files you own exclusively:
 - `app/(screens)/**`
 - `components/**`
 - `app/page.tsx`, `app/layout.tsx`, `app/globals.css`
-- `docs/**` (except `docs/architecture.md`, which Vihn owns), `README.md`, `ABOUT.md`
+- Presentation publication and screen documentation. Phase/task documents are updated by their owners; coordinate root README/PLAN edits. Submission source is `docs/submission.md`; reconcile `docs/presentation/submission-draft.md` before finalizing.
 - `.github/workflows/**`
 
 Shared (⚠️ CONTRACT commits, tell Vihn first): `mock/*.json`, `package.json`.
@@ -75,3 +75,7 @@ Shared (⚠️ CONTRACT commits, tell Vihn first): `mock/*.json`, `package.json`
 2. Status commits are separate from code commits.
 3. Never reword label text. Every patient sentence comes from `mock/templates.json`.
 4. Every screen runs on `mock/` with zero network before merge.
+
+## Integration handoff
+
+Use [separate branches and reviewed PRs](../branch-workflow.md). Deem owns optional microphone capture and transcript/case confirmation UI; Vinh owns Grok backend. Minh supplies verified labels, classifier and analytics. Checked-off James/before-visit UI does not imply verified label data. Current contract corrections remain in [Phase 0](../phases/phase-0-contract-and-readiness.md).
