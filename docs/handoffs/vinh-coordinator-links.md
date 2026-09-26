@@ -1,6 +1,6 @@
 # Phase 6 coordinator linkage: backend handoff
 
-Tasks 6.4 and C7/6.12. Local branch `backend/coordinator-links` starts from `backend/seed-week` at `1bfac2f`, which already contains the committed coordinator pivot and the seed-week backend. It does not contain the concurrent uncommitted label/core fixes in `firstdose-vinh-backend`. Reconcile those branches through affected-owner review before integration. No hosted migration, deployment or real staff invitation is part of this change.
+Tasks 6.4 and C7/6.12. Branch `backend/coordinator-links` is stacked on `integration/coordinator-pivot` at `0b3a507` (PR #15), including the corrected labels and second-alert implementation. It has no seed-week runtime dependency. Review this focused diff against PR #15; retarget to `main` after that prerequisite merges. No hosted migration, deployment or real staff invitation is part of this change.
 
 ## Reviewable contract for Deem and Minh
 
@@ -41,7 +41,7 @@ Use `coordinator_assigned` and the case sidecar only as explicit assignment evid
 
 ## Database and reset
 
-Apply migrations in order through `202609260004_coordinator_links.sql` using the established database setup after review. `003` remains the retained fill-history reader. Seed the catalog with the existing `scripts/seed.ts`.
+Apply `202609260004_coordinator_links.sql` after the existing `001`/`002` migrations using the established database setup after review. Number `003` is reserved for the separate retained fill-history reader; linkage does not require it. Seed the catalog with the existing `scripts/seed.ts`.
 
 All coordinator writes lock `active_run`, the same row used by workflow writes/reset. Preconditions, events, assignment and revision increment happen in one transaction. There is no client revision precondition because the action is checked against locked current state; the run header prevents old-device writes from moving into a new run. Concurrent retries insert each event once. Link changes advance the shared revision, so old fill plans retry through their existing revision-conflict behavior.
 
@@ -49,4 +49,6 @@ Reset needs no new code: both tables are keyed by run. The active snapshot becom
 
 ## Verification and limits
 
-Tests cover the API/auth boundary, strict inputs and provider errors, actual PostgreSQL transitions, concurrent request/approval double taps, stale writes after reset, retained history, and browser-role denial. Local verification is recorded in PLAN after the checks finish. This is backend readiness; owner review, hosted apply, Deem's wiring and two-device UI verification remain open. Task 6.1 already has its own handoff; 6.5 has a separate RxFill module/handoff. C3 patient-message templates and C6 NPI review remain coordination items, not implemented by this linkage endpoint.
+Tests cover the API/auth boundary, strict inputs and provider errors, actual PostgreSQL transitions, concurrent request/approval double taps, stale writes after reset, retained history, and browser-role denial. Local verification is recorded in PLAN after the checks finish. This is backend readiness; owner review, hosted apply, Deem's wiring and two-device UI verification remain open. Task 6.1 has its own branch/handoff; 6.5 has a separate RxFill module/handoff. C3 patient-message templates and C6 NPI review remain coordination items, not implemented by this linkage endpoint.
+
+The newer C9 requirement keeps background seed cases under a separate, already-linked prescriber, preserving Dr. Demo's live approval beat. This endpoint currently links only `prescriber_demo`; its fixed-identity guard must not be bypassed to imply that the background prescriber is approved. Reconcile C9 in the seed-week module and review the UI's two-prescriber interpretation before combining it with this module. The latest demo plan also calls for both alerts on an Apple Watch with the iPhone locked (C8); prior Garmin receipt is separate evidence.
