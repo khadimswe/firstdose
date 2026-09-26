@@ -4,7 +4,7 @@ Personal task tracker. Source of truth is `PLAN.md`; this file is a convenience 
 
 ## Current local foundation
 
-Worktree: `C:/Users/Binep/firstdose-vinh-backend`, branch `backend/workflow-foundation`, based on main after Minh's plan merged. Supabase credentials are verified and the standalone ntfy → iPhone → Garmin FR55 smoke passed on September 26, confirmed by the user. Remaining provider configuration is still open. This slice implements local routing/command planning and prepares an ntfy smoke check; it does not expose production routes or claim live synchronization.
+Worktree: `C:/Users/Binep/firstdose-vinh-backend`, branch `backend/maria-core`, continuing the workflow foundation. The extra schema worktree/branch was removed at the user's request; schema and API changes are consolidated here. Supabase credentials and the standalone ntfy → iPhone → Garmin FR55 smoke were verified earlier. Migration, seed, atomic command persistence and guarded HTTP routes are now implemented locally in `fbfb6a6`; hosted application and live synchronization are not verified. See [backend API and persistence handoff](../backend-core.md) for exact headers, responses, verification commands and integration limits. `PLAN.md` records remaining work.
 
 Use Node 22.12 or newer within the 22.x release line (matching CI), or Node 24.x. Vitest 5 requires a supported Node release; Node 20 is insufficient.
 
@@ -26,7 +26,7 @@ The watch command defaults to a dry run. After setting `NTFY_TOPIC` (and optiona
 
 ### Next persistence and frontend handoff
 
-**Integration review, September 26:** local module checks do not pass the end-to-end gate. A direct planner-to-frontend replay reproduces these three failures: zero `alert_sent` events/wrist messages, final board stop 2 instead of 3, and access count 0 despite one independent pharmacy confirmation. The supplied review's `scratchpad/gates/zz-integration-gates.test.ts` was not found in either checkout; these observations were reproduced independently, not by running that seven-test file. Phase 0 remains active; the fixes below are required when Phase 1 resumes.
+**Integration review, September 26:** local module checks do not pass the end-to-end gate. A direct planner-to-frontend replay reproduces these three failures: zero `alert_sent` events/wrist messages, final board stop 2 instead of 3, and access count 0 despite one independent pharmacy confirmation. The supplied review's `scratchpad/gates/zz-integration-gates.test.ts` was not found in either checkout; these observations were reproduced independently, not by running that seven-test file. The fixes below remain required for the Phase 1 gate; persistence alone does not resolve them.
 
 | Gap | Required Phase 1 behavior and owner |
 |---|---|
@@ -36,12 +36,12 @@ The watch command defaults to a dry run. After setting `NTFY_TOPIC` (and optiona
 
 These failures block the Phase 1 gate and live integration. The 131 passing module tests establish narrower behavior only. Promotion of the reviewer's gate tests into the repository awaits access to the actual file and alignment with the agreed outcome/alert contract.
 
-1. Add Supabase migration/seed and a server command boundary that locks the active run, reads its committed history, calls the planner, and commits events plus notification outbox atomically. Use unique `(run_id, script_id)`; expose `script_id` as frontend `FillEvent.id`. Do not wrap the planner in an in-memory production route or claim pure-function retries prevent concurrent writes.
+1. Review and apply the prepared migration/seed to the intended Supabase project. The server reads a consistent snapshot, calls the planner, then locks/checks the same run and revision before committing events/outbox atomically; conflicts re-read and re-plan. Unique `(run_id, script_id)` maps to frontend `FillEvent.id`. The real PostgreSQL suite verifies concurrent commits/reset and the Maria planner; no in-memory production persistence is used.
 2. Reject stale run IDs at the command boundary; reset creates a new run. Use an active-run generation in snapshot/reconnect handling so a late load cannot restore the previous run. Agree this with Deem before implementing `lib/realtime.ts`.
 3. Preserve the four existing action routes and `/api/sim/fire { ids: string[] }`; the latter accepts only valid simulator beats, not screen actions. `/api/patient/use` emits `ev_10` only. `ev_11` is an independent simulated pharmacy confirmation. ISO timestamps come from commit time, not fixture offsets.
 4. New planner intentionally withholds unverified label/watch/provider-success beats and legacy `started`/`recovered` claims. It currently accepts simulator IDs `ev_04`, `ev_05`, `ev_11`, `ev_16`, `ev_17`, `ev_18`. Deem must coordinate simulator beat grouping and fill-confirmation copy before live integration; unchanged mock mode still behaves differently. Label visibility needs a verified-label/UI acknowledgment; ntfy delivery needs a committed outbox consumer. A supplied demo reason is not evidence of Gemini use.
 5. Deem's now-pushed `feat/live-source` imports a default `EventSource` from `lib/realtime.ts`, reloads every 15 seconds and on visibility changes. It currently substitutes local access totals on Tiger errors. Resolve reset races and display unavailable/lagging Tiger status before claiming live analytics. Minh supplies the real summary; Vinh supplies immutable committed events for replay.
-6. Keep all detailed rows below as integration gates until actual service/device checks pass. No Supabase migration, API, realtime adapter or Tiger/Gemini/Grok integration is complete in this local slice. The standalone physical watch smoke subsequently passed; workflow-triggered alerts remain pending.
+6. Keep all detailed rows below as integration gates until actual service/device checks pass. Migration/API code is locally verified; hosted application, realtime adapter and Tiger/Gemini/Grok integration remain pending. The standalone physical watch smoke passed; workflow-triggered alerts remain pending. No notification is sent by the database tests.
 
 ### Multiple coding tools
 
