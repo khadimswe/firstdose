@@ -45,6 +45,19 @@
     "filled": "The pharmacy confirmed your fill. This does not confirm a first dose."
   },
 
+  "patient_message": {
+    "_comment": "C3 (6.8): the coordinator-approved message to the patient, voiced with ElevenLabs. Access logistics only, never medical advice. Spanish needs a native speaker's review.",
+    "title": "Message from your practice",
+    "text": {
+      "en": "Your {drug} savings card is ready. Show it at the pharmacy.",
+      "es": "Su tarjeta de ahorro para {drug} está lista. Muéstrela en la farmacia."
+    },
+    "languages": { "en": "English", "es": "Español" },
+    "approve": "Approve and send",
+    "sent": "Sent to the patient",
+    "play": "Play message"
+  },
+
   "before_visit_card": {
     "text": "{patient_name}: {drug} first fill confirmation is still pending. Review fill status before the visit.",
     "sub":  "Prescribed {days_ago} days ago · {reason_label} · {fix_label} in progress"
