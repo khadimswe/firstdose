@@ -244,6 +244,93 @@ try {
     assert.equal(nextClaim.run_id, next.run_id);
     assert.notEqual(nextClaim.claim_id, claimed.claim_id);
   });
+  const coordinatorSnapshot = () => JSON.parse(sql("SELECT public.fd_coordinator_snapshot();"));
+  const coordinatorCommand = (run, action, caseId = null) => `SELECT public.fd_coordinator_command('${run}', '${action}', 'coord_demo', 'prescriber_demo', ${caseId ? `'${caseId}'` : 'NULL'});`;
+  await check("coordinator links require explicit approval and preserve immutable retry events", () => {
+    const fresh = JSON.parse(sql(`SELECT fd_reset('${snapshot().run_id}');`));
+    assert.deepEqual(coordinatorSnapshot().links, []);
+    fails(coordinatorCommand(fresh.run_id, "approve"), /P0001:.*invalid_transition/s);
+    fails(coordinatorCommand(fresh.run_id, "assign", "rx_001"), /P0001:.*invalid_transition/s);
+    const invited = JSON.parse(sql(coordinatorCommand(fresh.run_id, "invite")));
+    assert.deepEqual(invited.events.map(e => e.type), ["coordinator_invited", "coordinator_link_requested"]);
+    assert.equal(invited.links[0].status, "pending");
+    assert.deepEqual(JSON.parse(sql(coordinatorCommand(fresh.run_id, "request"))), invited);
+    const linked = JSON.parse(sql(coordinatorCommand(fresh.run_id, "approve")));
+    assert.equal(linked.links[0].status, "linked");
+    assert.equal(linked.events.at(-1).actor, "doctor");
+    assert.deepEqual(JSON.parse(sql(coordinatorCommand(fresh.run_id, "approve"))), linked);
+    fails(coordinatorCommand(fresh.run_id, "assign", "rx_001"), /P0001:.*invalid_transition/s);
+    sql(commit(snapshot(), [event("ev_01")]));
+    const assigned = JSON.parse(sql(coordinatorCommand(fresh.run_id, "assign", "rx_001")));
+    assert.equal(assigned.cases.find(c => c.case_id === "rx_001").coordinator_id, "coord_demo");
+    assert.deepEqual(JSON.parse(sql(coordinatorCommand(fresh.run_id, "assign", "rx_001"))), assigned);
+    assert.equal(snapshot().events.length, 1);
+    assert.equal(sql(`SELECT count(*) FROM notification_outbox WHERE run_id='${fresh.run_id}';`), "0");
+    assert.equal(assigned.events.length, 4);
+    for (const e of assigned.events) assert.ok(Number.isFinite(Date.parse(e.at)));
+  });
+  await check("coordinator API database boundary rejects fabricated identities and unknown cases", () => {
+    const before = coordinatorSnapshot();
+    for (const query of [
+      `SELECT fd_coordinator_command('${before.run_id}', 'request', 'other', 'prescriber_demo', NULL);`,
+      `SELECT fd_coordinator_command('${before.run_id}', 'request', 'coord_demo', 'real-npi', NULL);`,
+      coordinatorCommand(before.run_id, "delete"), coordinatorCommand(before.run_id, "request", "rx_001"),
+      coordinatorCommand(before.run_id, "assign", "missing"),
+      `SELECT fd_coordinator_command('${before.run_id}', NULL, 'coord_demo', 'prescriber_demo', NULL);`,
+    ]) fails(query, /22023/);
+    assert.deepEqual(coordinatorSnapshot(), before);
+  });
+  await check("coordinator concurrent request and approval double taps emit once", async () => {
+    const fresh = JSON.parse(sql(`SELECT fd_reset('${snapshot().run_id}');`));
+    for (const action of ["request", "approve"]) {
+      const results = await Promise.all([parallelSql(coordinatorCommand(fresh.run_id, action)), parallelSql(coordinatorCommand(fresh.run_id, action))]);
+      for (const result of results) assert.equal(result.status, 0, result.stderr);
+    }
+    assert.equal(coordinatorSnapshot().events.length, 3);
+    assert.equal(coordinatorSnapshot().revision, 2);
+  });
+  await check("coordinator revision fences stale fill plans and assignment double taps emit once", async () => {
+    const oldPlan = snapshot();
+    sql(commit(oldPlan, [event("ev_01")]));
+    const before = snapshot();
+    const results = await Promise.all([
+      parallelSql(coordinatorCommand(before.run_id, "assign", "rx_001")),
+      parallelSql(coordinatorCommand(before.run_id, "assign", "rx_001")),
+    ]);
+    for (const result of results) assert.equal(result.status, 0, result.stderr);
+    assert.equal(coordinatorSnapshot().events.filter(e => e.type === "coordinator_assigned").length, 1);
+    fails(commit(before, [event("ev_04", { actor: "pharmacy", type: "claim_run" })]), /P0001:.*revision_conflict/s);
+    sql(commit(snapshot(), [event("ev_04", { actor: "pharmacy", type: "claim_run" })]));
+    assert.equal(snapshot().events.length, 2);
+  });
+  await check("coordinator reset clears active links/assignments and rejects old-run writes", async () => {
+    const before = coordinatorSnapshot();
+    assert.equal(before.cases.find(c => c.case_id === "rx_001").coordinator_id, "coord_demo");
+    const results = await Promise.all([
+      parallelSql(`BEGIN; SELECT fd_reset('${before.run_id}'); SELECT pg_sleep(0.2); COMMIT;`),
+      parallelSql(coordinatorCommand(before.run_id, "invite")),
+    ]);
+    assert.equal(results[0].status, 0, results[0].stderr);
+    if (results[1].status !== 0) assert.match(results[1].stderr, /stale_run/);
+    const after = coordinatorSnapshot();
+    assert.notEqual(after.run_id, before.run_id);
+    assert.deepEqual(after.links, []); assert.deepEqual(after.events, []);
+    assert.ok(after.cases.every(c => c.coordinator_id === null));
+    fails(coordinatorCommand(before.run_id, "request"), /P0001:.*stale_run/s);
+    assert.equal(sql(`SELECT count(*) FROM coordinator_events WHERE run_id='${before.run_id}';`), "4");
+    assert.equal(sql(`SELECT coordinator_id FROM case_coordinators WHERE run_id='${before.run_id}' AND case_id='rx_001';`), "coord_demo");
+  });
+  await check("browser roles cannot read coordinator data or invoke coordinator RPCs", () => {
+    for (const role of ["anon", "authenticated"]) {
+      for (const table of ["coordinator_events", "case_coordinators"]) {
+        fails(`SELECT * FROM public.${table};`, /42501.*permission denied/s, role);
+        assert.equal(sql(`SELECT has_table_privilege('${role}', 'public.${table}', 'SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES,TRIGGER');`, "postgres"), "f");
+        assert.equal(sql(`SELECT relrowsecurity FROM pg_class WHERE oid='public.${table}'::regclass;`, "postgres"), "t");
+      }
+      fails("SELECT fd_coordinator_snapshot();", /42501.*permission denied/s, role);
+      fails(coordinatorCommand(snapshot().run_id, "request"), /42501.*permission denied/s, role);
+    }
+  });
   console.log(`${passed} database checks passed (${image}).`);
 } finally {
   const stopped = docker(["rm", "--force", container]);
