@@ -7,7 +7,7 @@ Owners: Vinh (workflow/integration), Minh (labels/classifier/analytics), Deem (s
 - `components/data/types.ts`: `EventSource`, `ScreenAction`, `FillEvent`, `RxCase`, `FixKey`, `AccessSummary`.
 - `components/data/useEvents.ts`: actual screen-facing `EventsApi`.
 - `mock/*.json`: existing shared fixtures. Behavioral corrections require coordinated review; prose does not change them.
-- Deem reports `feat/live-source` ready locally against a stand-in source. It has not been fetched or independently verified here. Main remains mock-only until that wiring and Vinh's adapter land.
+- `origin/feat/live-source` was fetched and inspected September 26: it imports the default adapter, reloads every 15 seconds/on visibility changes, and currently falls back to local analytics. It is not merged here. Main remains mock-only until that wiring and Vinh's adapter land.
 
 ## Frontend seam
 
@@ -53,7 +53,7 @@ Keep the four existing command routes; they can share one server command impleme
 | Label retrieval | GET `/api/label/[drug_id]` | Verified cached label payload from Minh |
 | Optional voice | POST `/api/voice` with audio | Transcript and proposed case/intent; explicit confirmation invokes the same handoff command |
 
-**Simulator body decision:** use `{ ids: string[] }`, not `{ event_id }`. A single event uses `{ "ids": ["ev_01"] }`. The adapter sends one ordered batch; screens already call `fire(ids)`. The old type comment mentioning one HTTP request per ID is descriptive text, not a different TypeScript signature. Deem should align that comment in his next data-layer change. The adapter should throw/report failed requests so wiring can display errors; it must not silently pretend a command succeeded.
+**Simulator body decision:** use `{ ids: string[] }`, not `{ event_id }`. A single simulator event uses `{ "ids": ["ev_04"] }` after prescription; `ev_01` belongs to the prescribe action and is not an allowed simulator command in the local planner. The adapter sends one ordered batch; screens already call `fire(ids)`. The old type comment mentioning one HTTP request per ID is descriptive text, not a different TypeScript signature. Deem should align that comment in his next data-layer change. The adapter should throw/report failed requests so wiring can display errors; it must not silently pretend a command succeeded.
 
 Server commands validate state and append events atomically. Unique event keys prevent duplicate rows; notification delivery must also avoid running twice for the same committed event. Keep provider credentials server-side and restrict client database writes. Full production identity/eligibility systems are out of scope for this fictional demo.
 
@@ -82,3 +82,18 @@ The physical watch path is ntfy -> iPhone -> Garmin, owned by Vinh. Record real 
 3. Label fidelity definition: exact extracted section text versus raw XML substring, with source/version/hash evidence. Do not silently change the meaning of `byte_exact`.
 
 The already merged `ev_21b` supplies a James action; it does not prove that action is appropriate. No mock edits are made by this documentation update.
+
+### September 26 review proposal — owner agreement pending
+
+These are concrete proposals for tasks 0.4–0.5, not evidence of Deem/Minh approval or implemented behavior:
+
+| Decision | Proposed contract | Reviewers |
+|---|---|---|
+| Acknowledgment and outcome | `ev_10` means patient acknowledgment only; independent pharmacy `ev_11` (`claim_run`, `Dispensed`) confirms a simulated fill. Final board stop is **Fill confirmed**; update its timestamps/colors, status pill, doctor/patient copy and audio trigger together. No ingestion claim. | Vinh + Deem |
+| Metrics | Preserve wire key `recovered` temporarily but define/display it as unique first fills confirmed after prescription. TTFF uses those two timestamps. Count the latest known reason once per case. Exclude acknowledgment-only cases. Tiger errors remain visible; no silent local replacement presented as Tiger. | Minh + Deem |
+| Doctor/watch alert | Define legacy `alert_sent` as practice app alert created, not physical delivery. Commit the template-backed alert and a unique outbox intent together after reason recording. Track provider acceptance separately; ambiguous delivery stays unknown because retries can duplicate a buzz. Queue fill-confirmed copy only after independent pharmacy confirmation. | Vinh + Deem |
+| Eligibility | Use `null` for unknown reason, matching the classifier boundary; route to access review and exclude from known-reason tallies. Commercial coverage alone is insufficient. James gets ACCESS_SUPPORT without separate bridge eligibility evidence. Distinguish unknown eligibility from government ineligibility in UI copy. | Vinh + Deem + Minh |
+| Run/reset | Proposed compatible extension: `subscribe(onInsert, onRunChange?)`. Snapshot carries run identity plus events; subscribe to active-run changes as well as inserts. On change, clear old state, increment client generation and discard old loads/summaries. Attach observed run identity to mutations; stale commands get 409. Deduplicate by run/script identity and reload on reconnect. | Vinh + Deem; Minh for run-scoped summaries |
+| Label proof | Adopt Minh's `spl-section-text-v1` extracted-narrative definition with original XML, identity/version and source/section hashes. Keep `byte_exact:false` until shared meaning and real artifacts pass review. Never claim raw XML substring equality when the check uses extracted text. | Minh + Vinh + Deem |
+
+**Data boundary proposal:** named alerts, case-linked events and pseudonymous Tiger ledger rows stay practice-controlled. `side:ascend` styling does not enforce that boundary; an event with `case_id` is not aggregate-only. Resolve the contradiction between the blanket prescription-count prohibition and intended outcome aggregates before partner export; only an explicitly approved aggregate allowlist may cross. Update who-sees-what copy and fixtures together. No real partner export is implemented or authorized by this proposal.
