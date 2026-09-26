@@ -14,7 +14,7 @@ import { isDeepStrictEqual } from 'node:util';
 
 import type { MetricEvent } from '@/lib/server/analytics/project';
 import { summarize } from '@/lib/server/analytics/summary';
-import { getAccessSummary, payloadHash, writeMetricBatch, EventConflictError } from '@/lib/server/analytics/store';
+import { closeAnalyticsPool, getAccessSummary, payloadHash, writeMetricBatch, EventConflictError } from '@/lib/server/analytics/store';
 
 function metric(run: string, over: Partial<MetricEvent> & { script_id: string; kind: MetricEvent['kind']; at: string }): MetricEvent {
   return { run_id: run, case_hash: over.case_hash ?? 'case-a', reason: null, ...over };
@@ -22,12 +22,12 @@ function metric(run: string, over: Partial<MetricEvent> & { script_id: string; k
 
 function fail(message: string): never {
   console.error(`FAIL ${message}`);
-  process.exit(1);
+  throw new Error('smoke_check_failed');
 }
 
 async function main(): Promise<void> {
-  const run = `smoke-${randomUUID()}`;
-  const other = `smoke-${randomUUID()}`;
+  const run = randomUUID();
+  const other = randomUUID();
   const base = '2026-09-26T10:00:00.000Z';
   console.log(`Synthetic run: ${run}`);
 
@@ -45,16 +45,16 @@ async function main(): Promise<void> {
   try {
     await writeMetricBatch(batch);
     console.log('PASS initial write');
-  } catch (error) {
-    fail(`initial write: ${error instanceof Error ? error.message : 'unknown'}`);
+  } catch {
+    fail('initial write: analytics_unavailable');
   }
 
   // Check 2: replay duplicates (identical payload) — no-op, no conflict.
   try {
     await writeMetricBatch(batch);
     console.log('PASS replay duplicates no-op');
-  } catch (error) {
-    fail(`replay duplicates: ${error instanceof Error ? error.message : 'unknown'}`);
+  } catch {
+    fail('replay duplicates: analytics_unavailable');
   }
 
   // Check 3: conflicting duplicate must be rejected.
@@ -66,22 +66,22 @@ async function main(): Promise<void> {
     if (error instanceof EventConflictError) {
       console.log('PASS conflicting duplicate rejected (event_conflict)');
     } else {
-      fail(`conflicting duplicate threw the wrong error: ${String(error)}`);
+      fail('conflicting duplicate threw an unexpected error');
     }
   }
 
   // Check 4: SQL summary equals the pure oracle on the same rows.
   const sql = await getAccessSummary(run);
   const oracle = summarize(batch, run);
-  // SQL GROUP BY does not promise row/key order; compare values, not JSON order.
-  if (!isDeepStrictEqual(sql, oracle)) {
+  const same = isDeepStrictEqual(sql, oracle);
+  if (!same) {
     fail(`SQL/oracle mismatch: sql=${JSON.stringify(sql)} oracle=${JSON.stringify(oracle)}`);
   }
   console.log(`PASS SQL matches oracle: ${JSON.stringify(sql)}`);
 
   // Check 5: another run is isolated (no cross-run leakage).
   const otherSummary = await getAccessSummary(other);
-  if (otherSummary.recovered !== 0 || otherSummary.median_ttff_seconds !== null) {
+  if (otherSummary.recovered !== 0 || otherSummary.median_ttff_seconds !== null || Object.keys(otherSummary.reason_tally).length !== 0) {
     fail(`run isolation broken: ${JSON.stringify(otherSummary)}`);
   }
   console.log('PASS other run isolated (zeros/null)');
@@ -95,7 +95,12 @@ async function main(): Promise<void> {
   console.log('Smoke complete: all checks passed for the synthetic run.');
 }
 
-main().catch((error: unknown) => {
-  console.error(`Smoke failed: ${error instanceof Error ? error.message : String(error)}`);
-  process.exit(1);
+main().catch(() => {
+  console.error('FAIL smoke: analytics_unavailable_or_check_failed');
+  process.exitCode = 1;
+}).finally(async () => {
+  await closeAnalyticsPool().catch(() => {
+    console.error('FAIL smoke cleanup: analytics_unavailable');
+    process.exitCode = 1;
+  });
 });

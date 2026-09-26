@@ -1,5 +1,5 @@
-import { commandHandler } from "@/lib/server/command-http";
+import { liveCommandHandler } from "@/lib/server/live-command-http";
 
 export const runtime = "nodejs";
 // Historical seed events never queue or deliver watch alerts.
-export const POST = commandHandler("seed_week");
+export const POST = liveCommandHandler("seed_week", { notifications: false });

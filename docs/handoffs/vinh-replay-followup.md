@@ -1,5 +1,7 @@
 # Replay and summary freshness: Vinh's integration seam
 
+Update: the modules are now connected in `integration/phase2-live`; see [current implementation, evidence and hosted acceptance gate](vinh-phase2-live.md). The preparation checkpoint below is retained for the original contract.
+
 Branch `backend/replay-followup`, based on main `3851e1d`. This prepares the workflow and polling adapter for Minh's C3 replay module. Tiger projection, storage, query and the summary route remain Minh's modules; none is replaced with simulated success.
 
 ## Committed command context

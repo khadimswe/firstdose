@@ -8,7 +8,7 @@
 
 import type { AccessSummary, ReasonKey } from '@/components/data/types';
 
-import type { MetricEvent } from './project';
+import { metricEventConflict, type MetricEvent } from './project';
 
 function median(values: number[]): number | null {
   if (values.length === 0) return null;
@@ -26,7 +26,9 @@ export function summarize(events: readonly MetricEvent[], runId: string): Access
   const byKey = new Map<string, MetricEvent>();
   for (const event of events) {
     if (event.run_id !== runId) continue;
-    const key = `${event.run_id}:${event.script_id}`;
+    const key = event.script_id;
+    const prior = byKey.get(key);
+    if (prior && metricEventConflict(prior, event)) throw new Error('event_conflict');
     byKey.set(key, event);
   }
 
@@ -45,21 +47,23 @@ export function summarize(events: readonly MetricEvent[], runId: string): Access
     return fold;
   };
 
-  // Establish the earliest prescription before matching fills. A fill at
-  // the same instant qualifies even when its script id sorts first.
+  // Find prescriptions first so an equal-time fill never depends on script order.
   for (const event of ordered) {
     if (event.kind !== 'prescribed') continue;
     const fold = foldOf(event.case_hash);
     const time = Date.parse(event.at);
-    if (fold.firstPrescribedAt === null || time < fold.firstPrescribedAt) {
-      fold.firstPrescribedAt = time;
-    }
+    if (fold.firstPrescribedAt === null || time < fold.firstPrescribedAt) fold.firstPrescribedAt = time;
   }
 
   for (const event of ordered) {
     const fold = foldOf(event.case_hash);
     const time = Date.parse(event.at);
     switch (event.kind) {
+      case 'prescribed':
+        if (fold.firstPrescribedAt === null || time < fold.firstPrescribedAt) {
+          fold.firstPrescribedAt = time;
+        }
+        break;
       case 'dispensed':
         // Only a fill at or after the case's prescription confirms; an early
         // stray fill must not hide a later valid confirmation.

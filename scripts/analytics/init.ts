@@ -9,23 +9,15 @@
 import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-
-import { stripSslParams, tigerSsl } from '@/lib/server/analytics/store';
+import { analyticsConnectionConfig } from '@/lib/server/analytics/store';
 
 async function main(): Promise<void> {
   const url = process.env.TIGER_DATABASE_URL;
   if (typeof url !== 'string' || url.length === 0) {
-    console.error('TIGER_DATABASE_URL is not set; schema init skipped. This is not a pass.');
-    process.exit(1);
+    throw new Error('analytics_unavailable');
   }
   const { default: pg } = await import('pg');
-  const client = new pg.Client({
-    connectionString: stripSslParams(url),
-    ssl: tigerSsl(),
-    connectionTimeoutMillis: 5_000,
-    statement_timeout: 10_000,
-    query_timeout: 15_000,
-  });
+  const client = new pg.Client(analyticsConnectionConfig(url));
   const schemaPath = resolve(dirname(fileURLToPath(import.meta.url)), 'schema.sql');
   try {
     await client.connect();
@@ -35,16 +27,12 @@ async function main(): Promise<void> {
     await client.query('CREATE EXTENSION IF NOT EXISTS timescaledb');
     await client.query(sql);
     console.log('Analytics schema applied (idempotent).');
-  } catch (error) {
-    // Never print the connection string or raw error details containing it.
-    console.error(`Schema init failed: ${error instanceof Error ? error.message : 'unknown error'}`);
-    process.exitCode = 1;
   } finally {
     await client.end().catch(() => undefined);
   }
 }
 
-main().catch((error: unknown) => {
-  console.error(String(error instanceof Error ? error.message : error));
-  process.exit(1);
+main().catch(() => {
+  console.error('FAIL schema init: analytics_unavailable');
+  process.exitCode = 1;
 });

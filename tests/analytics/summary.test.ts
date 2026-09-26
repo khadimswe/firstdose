@@ -21,6 +21,19 @@ function metric(over: Partial<MetricEvent> & { script_id: string; kind: MetricEv
 }
 
 describe('summarize — recovered count and median ttff', () => {
+  it('counts equal-time dispensing even when its script sorts before prescribing', () => {
+    expect(summarize([
+      metric({ script_id: 'z-prescribed', kind: 'prescribed', at: '2026-09-26T10:00:00.000Z' }),
+      metric({ script_id: 'a-dispensed', kind: 'dispensed', at: '2026-09-26T10:00:00.000Z' }),
+    ], RUN)).toEqual({ recovered: 1, median_ttff_seconds: 0, reason_tally: {} });
+  });
+
+  it('rejects conflicting duplicate identities in either input order', () => {
+    const first = metric({ script_id: 'p1', kind: 'prescribed', at: '2026-09-26T10:00:00.000Z' });
+    const changed = { ...first, at: '2026-09-26T10:01:00.000Z' };
+    expect(() => summarize([first, changed], RUN)).toThrow('event_conflict');
+    expect(() => summarize([changed, first], RUN)).toThrow('event_conflict');
+  });
   it('two cases at 60/120 seconds -> count 2, median 90', () => {
     const events = [
       metric({ script_id: 'p1', kind: 'prescribed', at: '2026-09-26T10:00:00Z' }),
