@@ -26,40 +26,21 @@ Legend: [ ] not started · [-] in progress · [x] done · [!] blocked
   Lock D7 in a status commit right after.
 - [ ] Watch DocUpdate's YouTube Short and the two product videos on docupdate.io (the teardown couldn't). Note anything that changes the four surfaces.
 
-## 6.0 Integration (first thing after the workshop)
+## Done Sat 13:00
 
-- [-] Reviews posted on #8 and #9. #2, #3 and #6 closed.
-- [ ] Merge #8, then #9, once their owners fix the review items. Tell Vinh to keep Phase 6 when he rebases #9 (his branch predates it).
-- [ ] Rebase #4 (QR) onto `main`. It encodes `<origin>/patient/rx_001`, never a token, and a scan without a session goes through #9's login. Regenerate the lockfile with npm.
-- [ ] Rebase #7 (access/sim) onto `main` and retarget it. Bring in #9's behaviour: practice counts when Tiger is unavailable; `/sim` offers only valid inputs live; Autoplay mock-only.
-- [ ] 2.6: redeploy in `supabase` mode (Vinh sets the private env). Keep a mock deploy as the fallback.
-- [ ] Reword `WhoSeesWhat` to match `docs/who-sees-what.md` (DocUpdate view on the practice side; "first fill confirmed").
-- [ ] After #9 merges, clear the lines in `docs/for-vihn.md` that #9 completed (RxCUIs, Realtime channel, `EventSource`, reset). Keep open items only.
+- [x] **6.0** Merged #10, #8, #9, #11–#14, #15, #4 and #7 into `main` (`4c80650`) and deleted the merged branches.
+- [x] **6.2 / 6.3 / 6.11 / 6.12** Coordinator app, DocUpdate phone view, Waiting on, Prescribers.
+- [x] **4.3** Design pass: access and sim (from #7) now carry #9's live behaviour.
+- [x] `WhoSeesWhat` reworded to `docs/who-sees-what.md`; the QR is on `/demo`; the `for-vihn.md` done lines are cleared.
+- [x] **6.9 / 6.10** Pitch, poster, judge answers and claims register; before/after slide spec and still.
 
-## 12–2 PM build (one branch per screen, mock first, then live)
+## Still open in my lane
 
-- [-] **6.3** DocUpdate phone view: **PR #12** (W3 answered: an Ascend skill that shows up in DocUpdate). Otherwise move the Ascend thread to phone width. Priority order:
-  1. Rx Alerts card;
-  2. New Rx with the label;
-  3. the fill-status line;
-  4. Concierge and Profile.
-- [ ] **6.10** Before/after slide: their App Store home screenshot beside our Home still, credited, "Not affiliated".
-- [-] **6.2** Coordinator home: **PR #11**, plus the `/demo` launcher that replaces the index:
-  - `/` opens it;
-  - summary strip;
-  - sorted by time stuck;
-  - contact marks (C2);
-  - header per W3.
-- [-] **6.12** Prescribers: **PR #13** (approve sheet in #12): link a prescriber by NPI, and the doctor approves on the phone (the approve sheet also opens on the first handoff). Mock overrides first; live needs Vinh's C7 events.
-- [-] **6.11** "Waiting on": the queue column is in #11, the board lanes in **PR #14**.
-- [ ] Merge the stack after #9: #11 → #12 → #13 → #14. Each one retargets to `main` as the one below merges.
-- [ ] After #9: rebase #4 and add the patient QR to `/demo`'s Maria card.
-- [ ] **6.7 UI** Coordinator tiles on `/access` (needs 6.4 and Minh's rollup).
-- [ ] **6.6 UI** "Likely colleagues → Invite", names hidden (needs `/api/npi`).
-- [ ] **6.5 UI** "Raw message" toggle on `/sim` (needs Vinh's RxFill fields).
-- [ ] **6.8** Spanish patient message with `tts.mjs` (needs C3).
-
-**2 PM cut order:** Grok → 6.6 → 6.7 → 6.8 → the 6.12 Prescribers page (keep the approve sheet) → 6.11 → surfaces 3–4 (shown on the slide instead). **Never cut:** the coordinator queue with its one-tap fix, the Rx Alerts card, the pharmacy re-run, the verified label, and who sees what.
+- [-] **6.8** Spanish patient message: a ⚠️ CONTRACT PR (template key + UI + mp3) waiting on Vinh's C3 review.
+- [ ] **Phase 1 gate 4** with Vinh: once the live Vercel env is set, flip `NEXT_PUBLIC_DATA_SOURCE=supabase`, redeploy, and run the two-device checklist (`docs/handoffs/deem-phase1.md`).
+- [ ] **4.4** QR on a stranger's phone from the deployed origin.
+- [ ] Slide 4 still: the coordinator Queue, once #17 seeds the week.
+- [ ] **6.7 UI / 6.6 UI** when Minh's rollup and `/api/npi` land.
 
 ## 2:30–9 PM
 
