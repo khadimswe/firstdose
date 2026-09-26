@@ -43,6 +43,7 @@
     { "id": "ev_19", "case_id": "rx_002", "at": 112, "actor": "system",      "type": "alert_sent",        "status_text": null, "reject_code": null, "note": "ntfy", "reason": "UNABLE_TO_REACH", "fix": null, "amount_usd": null, "wrist": "James: Humira not started. Hub can't reach him (3 calls).", "side": "practice" },
     { "id": "ev_20", "case_id": "rx_002", "at": 120, "actor": "doctor",      "type": "handoff",           "status_text": null, "reject_code": null, "note": "tap on ntfy action", "reason": "UNABLE_TO_REACH", "fix": null, "amount_usd": null, "wrist": null, "side": "practice" },
     { "id": "ev_21", "case_id": "rx_002", "at": 121, "actor": "system",      "type": "fix_chosen",        "status_text": null, "reject_code": null, "note": "router: commercial + UNABLE_TO_REACH", "reason": "UNABLE_TO_REACH", "fix": "BRIDGE_SAMPLE", "amount_usd": null, "wrist": null, "side": "practice" },
+    { "id": "ev_21b", "case_id": "rx_002", "at": 125, "actor": "coordinator", "type": "fix_sent",          "status_text": null, "reject_code": null, "note": "Bridge sample requested via QPharma / Medvantx (stand-in)", "reason": "UNABLE_TO_REACH", "fix": "BRIDGE_SAMPLE", "amount_usd": null, "wrist": null, "side": "ascend" },
     { "id": "ev_22", "case_id": "rx_002", "at": 130, "actor": "system",      "type": "before_visit_card", "status_text": null, "reject_code": null, "note": "template: '{name} never started {drug}. Consider this before escalating.'", "reason": "UNABLE_TO_REACH", "fix": "BRIDGE_SAMPLE", "amount_usd": null, "wrist": null, "side": "practice" }
   ]
 }

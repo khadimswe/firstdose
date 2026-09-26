@@ -3,7 +3,7 @@
 
   "wrist": {
     "stuck":   "{patient_short}: {drug} not started. {reason_short}.",
-    "started": "{patient_short} started {drug}. {price_line}",
+    "started": "{patient_short} started {drug}. $0 with copay card.",
     "max_chars": 200
   },
 
