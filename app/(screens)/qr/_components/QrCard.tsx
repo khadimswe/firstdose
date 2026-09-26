@@ -1,7 +1,7 @@
 "use client";
 
-import { PatientQr, usePatientUrl } from "@/components/PatientQr";
-import { StandIn } from "@/components/StandIn";
+import { Disclosure } from "@/components/Disclosure";
+import { PatientQr, qrCaption, usePatientUrl } from "@/components/PatientQr";
 
 /** The printed table card: one big QR to /patient/rx_001 on this deployment. */
 export function QrCard() {
@@ -16,9 +16,9 @@ export function QrCard() {
         </p>
       )}
       <PatientQr size={360} />
-      <p className="text-4xl font-semibold">Scan to become Maria.</p>
+      <p className="text-4xl font-semibold">{qrCaption()}</p>
       <p className="font-mono text-sm break-all text-neutral-500">{url}</p>
-      <StandIn kind="patients" className="text-neutral-500" />
+      <Disclosure className="text-neutral-500" />
     </main>
   );
 }

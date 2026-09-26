@@ -85,7 +85,7 @@ export function WhoSeesWhat() {
     <section className="space-y-4">
       <h2 className="text-lg font-semibold">Who sees what</h2>
       <p className="text-sm text-muted-foreground">
-        Proposed sharing boundary. This demo uses fictional records; the Ascend projection is not verified.
+        Proposed sharing boundary; the Ascend projection isn&apos;t verified.
       </p>
       <div className="grid items-center gap-4 md:grid-cols-[1fr_auto_1fr]">
         <Side title="Practice side (the doctor's office)" tone="practice" rows={PRACTICE} />

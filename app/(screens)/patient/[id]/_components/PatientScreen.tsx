@@ -2,7 +2,7 @@
 
 import { PatientMessage } from "@/components/PatientMessage";
 import { MessageDeliveryStatus } from "@/components/MessageDeliveryStatus";
-import { StandIn } from "@/components/StandIn";
+import { Disclosure } from "@/components/Disclosure";
 import { StatusPill } from "@/components/StatusPill";
 import { Button } from "@/components/ui/button";
 import { templates } from "@/components/copy/templates";
@@ -21,15 +21,15 @@ export function PatientScreen({ caseId }: { caseId: string }) {
   const cardReady =
     c.fix === "RESEND_COPAY_CARD" && c.events.some((e) => e.type === "fix_sent");
 
-  // No template exists for any other state, so no sentences: drug, status, stand-in.
+  // No template exists for any other state: show the drug, status and disclosure.
   if (!cardReady) {
     return (
       <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 p-5">
-        <StandIn kind={c.fix === "BRIDGE_SAMPLE" ? "samples" : "wallet"} />
         <h1 className="text-xl font-semibold">
           {c.drug.brand} {c.drug.strength}
         </h1>
         <StatusPill c={c} className="h-7 px-3 text-sm" />
+        <Disclosure className="mt-auto" />
       </main>
     );
   }
@@ -67,6 +67,7 @@ export function PatientScreen({ caseId }: { caseId: string }) {
           </div>
         </div>
       )}
+      <Disclosure />
     </main>
   );
 }

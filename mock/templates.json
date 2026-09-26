@@ -9,7 +9,7 @@
   },
 
   "reason_short": {
-    "DECLINED_AT_PRICE": "Declined at price ({quote} demo)",
+    "DECLINED_AT_PRICE": "Declined at price ({quote})",
     "COPAY_NOT_APPLIED": "Copay card not applied",
     "UNABLE_TO_REACH":   "Hub can't reach patient (3 calls)",
     "PA_REQUIRED":       "Prior auth required (reject 75)",
@@ -38,7 +38,7 @@
 
   "patient_card": {
     "title": "{drug} savings card",
-    "standin": "Impiricus Wallet (stand-in)",
+    "standin": "Impiricus Wallet",
     "pays_line": "You pay: {patient_pays_label}",
     "action": "Use at pharmacy",
     "acknowledged": "Savings card acknowledged. Pharmacy fill confirmation is still pending.",
@@ -67,7 +67,7 @@
     "stops": ["Doctor", "Pharmacy", "Patient", "Fill confirmed"],
     "confirmation_count": "Pharmacy fills confirmed: {count}",
     "stuck_label": "STUCK · {reason_short}",
-    "price_from_label": "{quote} demo quote (high-deductible plan)",
+    "price_from_label": "{quote} quoted at the pharmacy (deductible not met)",
     "price_to_label": "$0 with copay card (as little as $0, per {manufacturer})",
     "wac_context": "List price {wac} ({wac_source})"
   },
@@ -78,20 +78,34 @@
     "ttff": "Median time to first fill",
     "reason_tally": "Stuck reasons",
     "footer": "Aggregate counts of prescribed cases with a pharmacy fill confirmation. No names or counts by prescriber. A fill does not establish treatment start or clinical recovery.",
-    "source_mock": "Mock event counts · simulated pharmacy",
-    "source_practice": "Practice event counts · simulated pharmacy · Tiger unavailable",
+    "source_mock": "Practice event counts",
+    "source_practice": "Practice event counts · Tiger unavailable",
     "source_tiger": "Tiger aggregate counts",
     "tiger_unavailable": "Tiger summary unavailable. Showing practice event counts."
+  },
+
+  "disclosure": {
+    "footer": "Synthetic patients and pharmacy activity · Impiricus, Wallet and partner names shown as a concept"
+  },
+
+  "qr": {
+    "caption": "Scan to open {patient_short}'s card."
+  },
+
+  "market": {
+    "title": "Georgia market · Medicare Part D",
+    "prescribers": "prescribers",
+    "claims": "claims",
+    "pa_share": "of Georgia Part D plans that cover it require prior authorization",
+    "source_line": "{source} · {year}"
   },
 
   "standin_labels": {
     "pharmacy": "Simulated pharmacy · real RxFill vocabulary",
     "hub":      "Simulated hub · real hub vocabulary",
-    "ascend":   "Impiricus Ascend (stand-in)",
-    "wallet":   "Impiricus Wallet (stand-in)",
-    "samples":  "QPharma / Medvantx (stand-in)",
-    "price":    "demo",
-    "patients": "Fictional test records · no PHI",
+    "ascend":   "Impiricus Ascend",
+    "wallet":   "Impiricus Wallet",
+    "samples":  "QPharma / Medvantx",
     "label":    "Verbatim from DailyMed · no AI-written drug claims"
   }
 }

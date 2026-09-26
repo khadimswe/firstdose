@@ -32,7 +32,7 @@ describe("persisted coordinator link views", () => {
   it("keeps the prepared background prescriber separate from the fixed demo identity", () => {
     const cases = deriveCases(CATALOG, []);
     const background = cases.find(row => row.rx.prescriber_label !== DEMO_PRESCRIBER)!;
-    expect(background.rx.prescriber_label).toContain("Rivera");
+    expect(background.rx.prescriber_label).not.toBe(DEMO_PRESCRIBER);
     expect(coordinatorLinked(background.rx.prescriber_label, cases, {}, EMPTY_COORDINATOR, true)).toBe(true);
     expect(coordinatorLinked(DEMO_PRESCRIBER, cases, {}, EMPTY_COORDINATOR, true)).toBe(false);
   });

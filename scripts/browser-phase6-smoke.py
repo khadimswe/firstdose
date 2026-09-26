@@ -6,10 +6,16 @@ Rendered/browser evidence only: no physical notification, audio, or hosted proof
 import json
 import os
 import re
+from pathlib import Path
 from playwright.sync_api import sync_playwright, expect
 
 origin = os.environ.get("FIRSTDOSE_TEST_ORIGIN", "http://localhost:3126").rstrip("/")
 token = os.environ.get("FIRSTDOSE_TEST_TOKEN")
+root = Path(__file__).resolve().parents[1]
+catalog = json.loads((root / "mock/patients.json").read_text(encoding="utf-8-sig"))
+week = json.loads((root / "data/demo-week.json").read_text(encoding="utf-8-sig"))
+live_prescriber = next(row["prescriber_label"] for row in catalog["cases"] if row["id"] == "rx_001")
+background_prescriber = week["cases"][0]["prescriber_label"]
 if not token or os.environ.get("FIRSTDOSE_TEST_ALLOW_RESET") != "1":
     raise SystemExit("Set FIRSTDOSE_TEST_TOKEN and FIRSTDOSE_TEST_ALLOW_RESET=1 for the target demo.")
 
@@ -42,13 +48,13 @@ with sync_playwright() as p:
             expect(coordinator.get_by_role("tab", name=re.compile(rf"^{name}\s+{count}$"))).to_be_visible()
         prescribers = desktop.new_page()
         prescribers.goto(origin + "/coordinator/prescribers")
-        rivera = prescribers.get_by_role("row").filter(has_text="Dr. Rivera (demo)")
-        demo = prescribers.get_by_role("row").filter(has_text="Dr. Demo (judge 1)")
-        expect(rivera).to_contain_text("Linked")
+        background = prescribers.get_by_role("row").filter(has_text=background_prescriber)
+        demo = prescribers.get_by_role("row").filter(has_text=live_prescriber)
+        expect(background).to_contain_text("Linked")
         expect(demo).to_contain_text("Not linked")
-        print("PASS seeded 3/2/8 queue belongs to Rivera; live doctor still pending")
+        print("PASS seeded 3/2/8 queue has a separate prescriber; live doctor still pending")
 
-        prescribers.get_by_role("button", name="Request Dr. Demo approval", exact=True).click()
+        prescribers.get_by_role("button", name=f"Request {live_prescriber} approval", exact=True).click()
         expect(demo).to_contain_text("Pending approval")
         doctor = phone.new_page()
         login(doctor, "/doctor/profile")

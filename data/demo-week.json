@@ -1,5 +1,5 @@
 {
-  "_comment": "Fictional test records - no PHI. Fixed background week approved by C1. Simulated history, not provider evidence. Maria and James remain the interactive cases.",
+  "_comment": "Synthetic records, no PHI. Fixed background week (PLAN C1), under a second synthetic prescriber (C9). Maria and James remain the interactive cases.",
   "patients": [
     {
       "id": "week_pt_01",
@@ -8,12 +8,12 @@
       "age": 67,
       "insurance": {
         "type": "medicare",
-        "plan_label": "Medicare (demo)",
+        "plan_label": "Medicare",
         "copay_card_eligible": false
       },
       "state": "GA",
-      "condition_label": "Plaque psoriasis (demo)",
-      "phone_label": "Fictional test record"
+      "condition_label": "Plaque psoriasis",
+      "phone_label": "Background record"
     },
     {
       "id": "week_pt_02",
@@ -22,12 +22,12 @@
       "age": 30,
       "insurance": {
         "type": "commercial",
-        "plan_label": "Commercial (demo)",
+        "plan_label": "Commercial",
         "copay_card_eligible": true
       },
       "state": "GA",
-      "condition_label": "Rheumatoid arthritis (demo)",
-      "phone_label": "Fictional test record"
+      "condition_label": "Rheumatoid arthritis",
+      "phone_label": "Background record"
     },
     {
       "id": "week_pt_03",
@@ -36,12 +36,12 @@
       "age": 32,
       "insurance": {
         "type": "commercial",
-        "plan_label": "Commercial (demo)",
+        "plan_label": "Commercial",
         "copay_card_eligible": true
       },
       "state": "GA",
-      "condition_label": "Plaque psoriasis (demo)",
-      "phone_label": "Fictional test record"
+      "condition_label": "Plaque psoriasis",
+      "phone_label": "Background record"
     },
     {
       "id": "week_pt_04",
@@ -50,12 +50,12 @@
       "age": 34,
       "insurance": {
         "type": "commercial",
-        "plan_label": "Commercial (demo)",
+        "plan_label": "Commercial",
         "copay_card_eligible": true
       },
       "state": "GA",
-      "condition_label": "Rheumatoid arthritis (demo)",
-      "phone_label": "Fictional test record"
+      "condition_label": "Rheumatoid arthritis",
+      "phone_label": "Background record"
     },
     {
       "id": "week_pt_05",
@@ -64,12 +64,12 @@
       "age": 36,
       "insurance": {
         "type": "medicaid",
-        "plan_label": "Medicaid (demo)",
+        "plan_label": "Medicaid",
         "copay_card_eligible": false
       },
       "state": "GA",
-      "condition_label": "Plaque psoriasis (demo)",
-      "phone_label": "Fictional test record"
+      "condition_label": "Plaque psoriasis",
+      "phone_label": "Background record"
     },
     {
       "id": "week_pt_06",
@@ -78,12 +78,12 @@
       "age": 38,
       "insurance": {
         "type": "commercial",
-        "plan_label": "Commercial (demo)",
+        "plan_label": "Commercial",
         "copay_card_eligible": true
       },
       "state": "GA",
-      "condition_label": "Rheumatoid arthritis (demo)",
-      "phone_label": "Fictional test record"
+      "condition_label": "Rheumatoid arthritis",
+      "phone_label": "Background record"
     },
     {
       "id": "week_pt_07",
@@ -92,12 +92,12 @@
       "age": 40,
       "insurance": {
         "type": "commercial",
-        "plan_label": "Commercial (demo)",
+        "plan_label": "Commercial",
         "copay_card_eligible": true
       },
       "state": "GA",
-      "condition_label": "Plaque psoriasis (demo)",
-      "phone_label": "Fictional test record"
+      "condition_label": "Plaque psoriasis",
+      "phone_label": "Background record"
     },
     {
       "id": "week_pt_08",
@@ -106,12 +106,12 @@
       "age": 42,
       "insurance": {
         "type": "commercial",
-        "plan_label": "Commercial (demo)",
+        "plan_label": "Commercial",
         "copay_card_eligible": true
       },
       "state": "GA",
-      "condition_label": "Rheumatoid arthritis (demo)",
-      "phone_label": "Fictional test record"
+      "condition_label": "Rheumatoid arthritis",
+      "phone_label": "Background record"
     },
     {
       "id": "week_pt_09",
@@ -120,12 +120,12 @@
       "age": 44,
       "insurance": {
         "type": "commercial",
-        "plan_label": "Commercial (demo)",
+        "plan_label": "Commercial",
         "copay_card_eligible": true
       },
       "state": "GA",
-      "condition_label": "Plaque psoriasis (demo)",
-      "phone_label": "Fictional test record"
+      "condition_label": "Plaque psoriasis",
+      "phone_label": "Background record"
     },
     {
       "id": "week_pt_10",
@@ -134,12 +134,12 @@
       "age": 46,
       "insurance": {
         "type": "commercial",
-        "plan_label": "Commercial (demo)",
+        "plan_label": "Commercial",
         "copay_card_eligible": true
       },
       "state": "GA",
-      "condition_label": "Rheumatoid arthritis (demo)",
-      "phone_label": "Fictional test record"
+      "condition_label": "Rheumatoid arthritis",
+      "phone_label": "Background record"
     },
     {
       "id": "week_pt_11",
@@ -148,12 +148,12 @@
       "age": 48,
       "insurance": {
         "type": "commercial",
-        "plan_label": "Commercial (demo)",
+        "plan_label": "Commercial",
         "copay_card_eligible": true
       },
       "state": "GA",
-      "condition_label": "Plaque psoriasis (demo)",
-      "phone_label": "Fictional test record"
+      "condition_label": "Plaque psoriasis",
+      "phone_label": "Background record"
     },
     {
       "id": "week_pt_12",
@@ -162,12 +162,12 @@
       "age": 50,
       "insurance": {
         "type": "commercial",
-        "plan_label": "Commercial (demo)",
+        "plan_label": "Commercial",
         "copay_card_eligible": true
       },
       "state": "GA",
-      "condition_label": "Rheumatoid arthritis (demo)",
-      "phone_label": "Fictional test record"
+      "condition_label": "Rheumatoid arthritis",
+      "phone_label": "Background record"
     },
     {
       "id": "week_pt_13",
@@ -176,12 +176,12 @@
       "age": 52,
       "insurance": {
         "type": "commercial",
-        "plan_label": "Commercial (demo)",
+        "plan_label": "Commercial",
         "copay_card_eligible": true
       },
       "state": "GA",
-      "condition_label": "Plaque psoriasis (demo)",
-      "phone_label": "Fictional test record"
+      "condition_label": "Plaque psoriasis",
+      "phone_label": "Background record"
     }
   ],
   "cases": [
@@ -189,7 +189,7 @@
       "id": "week_rx_01",
       "patient_id": "week_pt_01",
       "drug_id": "drug_otezla",
-      "prescriber_label": "Dr. Rivera (demo)",
+      "prescriber_label": "Dr. Colin Mercer",
       "prescribed_at": "2026-09-20T16:00:00+00:00",
       "status": "prescribed",
       "reason": null,
@@ -201,7 +201,7 @@
       "id": "week_rx_02",
       "patient_id": "week_pt_02",
       "drug_id": "drug_humira",
-      "prescriber_label": "Dr. Rivera (demo)",
+      "prescriber_label": "Dr. Colin Mercer",
       "prescribed_at": "2026-09-21T02:00:00+00:00",
       "status": "prescribed",
       "reason": null,
@@ -213,7 +213,7 @@
       "id": "week_rx_03",
       "patient_id": "week_pt_03",
       "drug_id": "drug_otezla",
-      "prescriber_label": "Dr. Rivera (demo)",
+      "prescriber_label": "Dr. Colin Mercer",
       "prescribed_at": "2026-09-21T12:00:00+00:00",
       "status": "prescribed",
       "reason": null,
@@ -225,7 +225,7 @@
       "id": "week_rx_04",
       "patient_id": "week_pt_04",
       "drug_id": "drug_humira",
-      "prescriber_label": "Dr. Rivera (demo)",
+      "prescriber_label": "Dr. Colin Mercer",
       "prescribed_at": "2026-09-21T22:00:00+00:00",
       "status": "prescribed",
       "reason": null,
@@ -237,7 +237,7 @@
       "id": "week_rx_05",
       "patient_id": "week_pt_05",
       "drug_id": "drug_otezla",
-      "prescriber_label": "Dr. Rivera (demo)",
+      "prescriber_label": "Dr. Colin Mercer",
       "prescribed_at": "2026-09-22T08:00:00+00:00",
       "status": "prescribed",
       "reason": null,
@@ -249,7 +249,7 @@
       "id": "week_rx_06",
       "patient_id": "week_pt_06",
       "drug_id": "drug_humira",
-      "prescriber_label": "Dr. Rivera (demo)",
+      "prescriber_label": "Dr. Colin Mercer",
       "prescribed_at": "2026-09-22T18:00:00+00:00",
       "status": "prescribed",
       "reason": null,
@@ -261,7 +261,7 @@
       "id": "week_rx_07",
       "patient_id": "week_pt_07",
       "drug_id": "drug_otezla",
-      "prescriber_label": "Dr. Rivera (demo)",
+      "prescriber_label": "Dr. Colin Mercer",
       "prescribed_at": "2026-09-23T04:00:00+00:00",
       "status": "prescribed",
       "reason": null,
@@ -273,7 +273,7 @@
       "id": "week_rx_08",
       "patient_id": "week_pt_08",
       "drug_id": "drug_humira",
-      "prescriber_label": "Dr. Rivera (demo)",
+      "prescriber_label": "Dr. Colin Mercer",
       "prescribed_at": "2026-09-23T14:00:00+00:00",
       "status": "prescribed",
       "reason": null,
@@ -285,7 +285,7 @@
       "id": "week_rx_09",
       "patient_id": "week_pt_09",
       "drug_id": "drug_otezla",
-      "prescriber_label": "Dr. Rivera (demo)",
+      "prescriber_label": "Dr. Colin Mercer",
       "prescribed_at": "2026-09-24T00:00:00+00:00",
       "status": "prescribed",
       "reason": null,
@@ -297,7 +297,7 @@
       "id": "week_rx_10",
       "patient_id": "week_pt_10",
       "drug_id": "drug_humira",
-      "prescriber_label": "Dr. Rivera (demo)",
+      "prescriber_label": "Dr. Colin Mercer",
       "prescribed_at": "2026-09-24T10:00:00+00:00",
       "status": "prescribed",
       "reason": null,
@@ -309,7 +309,7 @@
       "id": "week_rx_11",
       "patient_id": "week_pt_11",
       "drug_id": "drug_otezla",
-      "prescriber_label": "Dr. Rivera (demo)",
+      "prescriber_label": "Dr. Colin Mercer",
       "prescribed_at": "2026-09-24T20:00:00+00:00",
       "status": "prescribed",
       "reason": null,
@@ -321,7 +321,7 @@
       "id": "week_rx_12",
       "patient_id": "week_pt_12",
       "drug_id": "drug_humira",
-      "prescriber_label": "Dr. Rivera (demo)",
+      "prescriber_label": "Dr. Colin Mercer",
       "prescribed_at": "2026-09-25T06:00:00+00:00",
       "status": "prescribed",
       "reason": null,
@@ -333,7 +333,7 @@
       "id": "week_rx_13",
       "patient_id": "week_pt_13",
       "drug_id": "drug_otezla",
-      "prescriber_label": "Dr. Rivera (demo)",
+      "prescriber_label": "Dr. Colin Mercer",
       "prescribed_at": "2026-09-25T16:00:00+00:00",
       "status": "prescribed",
       "reason": null,

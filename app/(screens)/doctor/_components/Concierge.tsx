@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Check, CircleCheck } from "lucide-react";
 
-import { StandIn } from "@/components/StandIn";
 import { Button } from "@/components/ui/button";
 import { liveCases } from "@/components/data/links";
 import { useEvents } from "@/components/data/useEvents";
@@ -79,12 +78,8 @@ export function Concierge() {
         <p className="text-sm text-white/75">Ask for samples, a rep, or help getting a patient started.</p>
       </header>
 
-      <Option label="Request free samples" checked={false} disabled>
-        <StandIn kind="concierge" />
-      </Option>
-      <Option label="Speak with a rep" checked={false} disabled>
-        <StandIn kind="concierge" />
-      </Option>
+      <Option label="Request free samples" checked={false} disabled />
+      <Option label="Speak with a rep" checked={false} disabled />
       <Option label="Help my patient start" checked={help} onToggle={() => setHelp((h) => !h)}>
         {help && (
           <div className="space-y-2">

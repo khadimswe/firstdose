@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { BadgeCheck, UserRound } from "lucide-react";
 
-import { StandIn } from "@/components/StandIn";
+import { maskedNpi, prescriberRecord } from "@/components/data/reference";
 import { Button } from "@/components/ui/button";
 import { useCoordinator } from "@/components/data/coordinator";
 import { useLocal } from "@/components/data/local";
@@ -32,10 +32,12 @@ export function Profile() {
           </span>
           <div>
             <p className="font-semibold">{me}</p>
-            <p className="text-sm text-muted-foreground">Prescriber</p>
+            <p className="text-sm text-muted-foreground">
+              {prescriberRecord(me)?.specialty ?? "Prescriber"}
+              {prescriberRecord(me) && ` · NPI ${maskedNpi(prescriberRecord(me)!.npi)}`}
+            </p>
           </div>
         </div>
-        <StandIn kind="prescriber" />
       </section>
 
       <section className="space-y-3 rounded-2xl bg-white p-4 text-foreground shadow-sm" aria-labelledby="my-coordinator">
@@ -54,13 +56,13 @@ export function Profile() {
         <p className="text-sm">
           {linked
             ? "Your practice's access coordinator works on your patients' access."
-            : coordinator.live && !pending ? "Review access for the fictional demo coordinator." : "Your practice's access coordinator asked to help your patients get their first fill."}
+            : coordinator.live && !pending ? "Review access for your practice's coordinator." : "Your practice's access coordinator asked to help your patients get their first fill."}
         </p>
         <CanList />
         {coordinator.live && <>
-          <p role="status" aria-atomic="true" className="text-sm">{linked ? "Coordinator approval is saved for this demo run." : coordinator.pending ? "Saving coordinator link…" : coordinator.ready ? pending ? "Coordinator request is waiting for approval." : "No coordinator link is saved for this run." : "Checking saved coordinator links…"}</p>
+          <p role="status" aria-atomic="true" className="text-sm">{linked ? "Coordinator approval is saved for this run." : coordinator.pending ? "Saving coordinator link…" : coordinator.ready ? pending ? "Coordinator request is waiting for approval." : "No coordinator link is saved for this run." : "Checking saved coordinator links…"}</p>
           <p role="alert" className="text-sm text-stuck">{coordinator.error}</p>
-          {coordinator.loginPath && <a href={coordinator.loginPath} className="text-sm underline">Sign in to the staff demo</a>}
+          {coordinator.loginPath && <a href={coordinator.loginPath} className="text-sm underline">Sign in to continue</a>}
           {coordinator.error && <Button variant="outline" onClick={() => void coordinator.refresh()}>Reconnect</Button>}
         </>}
         {!linked && (
@@ -73,7 +75,7 @@ export function Profile() {
           </Button>
         )}
         <p className="text-xs text-muted-foreground">
-          {coordinator.live ? "Simulated staff approval in a shared demo session. This does not verify a prescriber's identity." : "Concept: staff access follows prescriber approval, as in CoverMyMeds delegation."}
+          Staff access follows prescriber approval, as in CoverMyMeds delegation.
         </p>
       </section>
 

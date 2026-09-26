@@ -1,4 +1,4 @@
-import { DemoPrice } from "@/components/DemoPrice";
+import { Price } from "@/components/Price";
 import { StandInBand } from "@/components/StandIn";
 import { StatusPill } from "@/components/StatusPill";
 import { fill, money } from "@/components/copy/fill";
@@ -46,7 +46,7 @@ export function WalletPass({ c }: { c: CaseView }) {
         {hasConfirmedFill(c) && (
           <div className="flex items-center gap-3">
             <StatusPill c={c} className="h-7 px-3 text-sm" />
-            {c.amountUsd !== null && <DemoPrice usd={c.amountUsd} className="text-lg font-semibold" />}
+            {c.amountUsd !== null && <Price usd={c.amountUsd} className="text-lg font-semibold" />}
           </div>
         )}
       </div>

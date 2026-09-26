@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { BadgeCheck, Link2, Smartphone, UserRound } from "lucide-react";
 
-import { StandIn } from "@/components/StandIn";
+import { maskedNpi, prescriberRecord } from "@/components/data/reference";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -29,7 +29,7 @@ const STEPS = [
   {
     icon: Smartphone,
     title: "They approve you in DocUpdate",
-    text: "The delegation concept needs verified prescriber approval. This demo records simulated approval on the doctor's phone.",
+    text: "They review your access permissions and approve you on their phone.",
   },
   { icon: BadgeCheck, title: "Their stuck patients reach your queue", text: "You can send access fixes. You can't sign or change prescriptions." },
 ];
@@ -86,16 +86,16 @@ export function PrescribersScreen() {
         </div>
         <Button disabled={coordinator.live && (!coordinator.ready || coordinator.pending || coordinator.snapshot?.links[0]?.status === "linked")}
           onClick={() => coordinator.live ? void coordinator.request() : setOpen(true)}>
-          <Link2 /> {coordinator.live ? "Request Dr. Demo approval" : "Link a prescriber"}
+          <Link2 /> {coordinator.live ? `Request ${DEMO_PRESCRIBER} approval` : "Link a prescriber"}
         </Button>
       </header>
 
       {coordinator.live && <section className="space-y-2 rounded-xl border border-dashed p-4">
-        <p className="text-sm">Simulated staff linking for Dr. Demo only. This shared session does not verify real professional roles. Background Dr. Rivera has a separate prepared demo link.</p>
-        <p className="text-xs text-muted-foreground">Linking arbitrary NPIs is unavailable in live demo mode. No real invitation is sent.</p>
-        <p role="status" aria-atomic="true" className="text-sm">{coordinator.pending ? "Saving the approval request…" : !coordinator.ready ? "Checking saved coordinator links…" : coordinator.snapshot?.links[0]?.status === "linked" ? "Dr. Demo approved the coordinator for this run." : coordinator.snapshot?.links[0]?.status === "pending" ? "Request saved. Approve it on the doctor's Profile tab." : "No request is saved for Dr. Demo yet."}</p>
+        <p className="text-sm">Request access for {DEMO_PRESCRIBER}. Other linked prescribers have an existing practice relationship.</p>
+        <p className="text-xs text-muted-foreground">Additional NPI requests are unavailable in this shared session. No invitation is sent.</p>
+        <p role="status" aria-atomic="true" className="text-sm">{coordinator.pending ? "Saving the approval request…" : !coordinator.ready ? "Checking saved coordinator links…" : coordinator.snapshot?.links[0]?.status === "linked" ? `${DEMO_PRESCRIBER} approved the coordinator for this run.` : coordinator.snapshot?.links[0]?.status === "pending" ? "Request saved. Approve it on the doctor's Profile tab." : `No request is saved for ${DEMO_PRESCRIBER} yet.`}</p>
         <p role="alert" className="text-sm text-stuck">{coordinator.error}</p>
-        {coordinator.loginPath && <a href="/api/demo-login?next=%2Fcoordinator%2Fprescribers" className="text-sm underline">Sign in to the staff demo</a>}
+        {coordinator.loginPath && <a href="/api/demo-login?next=%2Fcoordinator%2Fprescribers" className="text-sm underline">Sign in to continue</a>}
         {coordinator.error && <Button variant="outline" onClick={() => void coordinator.refresh()}>Reconnect</Button>}
       </section>}
 
@@ -118,14 +118,15 @@ export function PrescribersScreen() {
                       <UserRound className="size-4 text-muted-foreground" /> {r.p}
                     </div>
                   </td>
-                  <td className="p-3">
-                    <StandIn kind="prescriber" />
+                  <td className="p-3 font-mono">
+                    {prescriberRecord(r.p) ? `NPI ${maskedNpi(prescriberRecord(r.p)!.npi)}` : "—"}
+                    <div className="font-sans text-xs text-muted-foreground">{prescriberRecord(r.p)?.specialty}</div>
                   </td>
                   <td className="p-3">
                     <StatusBadge linked={r.linked} label={r.status} />
                   </td>
                   <td className="p-3 text-muted-foreground">
-                    {r.since ? `Approved ${time(r.since)}` : r.viaHandoff ? "Approved with the first handoff" : coordinator.live ? r.p !== DEMO_PRESCRIBER && r.linked ? "Prepared background demo link" : r.status === "Pending approval" ? "Requested, waiting in DocUpdate" : "—" : "Requested, waiting in DocUpdate"}
+                    {r.since ? `Approved ${time(r.since)}` : r.viaHandoff ? "Approved with the first handoff" : coordinator.live ? r.p !== DEMO_PRESCRIBER && r.linked ? "Existing practice link" : r.status === "Pending approval" ? "Requested, waiting in DocUpdate" : "—" : "Requested, waiting in DocUpdate"}
                   </td>
                 </tr>
               ))}

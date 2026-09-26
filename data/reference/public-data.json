@@ -1,0 +1,47 @@
+{
+  "_comment": "Real public data, aggregates only. Every value carries its source and year; re-verify before changing (queries in docs/research/public-data-sources.md). Never add an individual prescriber's name, NPI or prescription counts.",
+  "retrieved": "2026-09-26",
+  "drugs": {
+    "drug_otezla": {
+      "ndc": "55513-0137-60",
+      "rxcui": "1492746",
+      "nadac_per_unit_usd": 90.57171,
+      "nadac_unit": "tablet",
+      "nadac_effective": "2026-09-23",
+      "nadac_source": "NADAC, data.medicaid.gov"
+    },
+    "drug_humira": {
+      "ndc": "00074-0554-02",
+      "rxcui": "1872980",
+      "nadac_per_unit_usd": 3367.41479,
+      "nadac_unit": "pen",
+      "nadac_effective": "2026-09-23",
+      "nadac_source": "NADAC, data.medicaid.gov"
+    }
+  },
+  "market": {
+    "state": "Georgia",
+    "part_d_prescribing": {
+      "source": "CMS Medicare Part D Prescribers by Geography and Drug",
+      "year": 2024,
+      "rows": [
+        { "drug_id": "drug_otezla", "brand": "Otezla", "prescribers": 614, "claims": 6661 },
+        { "drug_id": "drug_humira", "brand": "Humira(CF) Pen", "prescribers": 717, "claims": 15295 }
+      ]
+    },
+    "formulary": {
+      "source": "CMS Part D formulary files (Sep 2026)",
+      "year": 2026,
+      "rows": [
+        { "drug_id": "drug_otezla", "covered_share": 0.539, "pa_share_of_covered": 0.902 },
+        { "drug_id": "drug_humira", "covered_share": 0.336, "pa_share_of_covered": 1.0 }
+      ]
+    }
+  },
+  "payer_mix": {
+    "state": "Georgia",
+    "source": "KFF State Health Facts, total population",
+    "year": 2024,
+    "shares": { "employer": 0.4829, "non_group": 0.0773, "medicaid": 0.169, "medicare": 0.1309, "military": 0.0202, "uninsured": 0.1197 }
+  }
+}

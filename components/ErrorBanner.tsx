@@ -28,7 +28,7 @@ export function ErrorBanner() {
       )}
       {error.loginPath && (
         <a className="inline-block font-semibold underline" href={`${error.loginPath}?next=${encodeURIComponent(pathname)}`}>
-          Sign in to demo
+          Sign in
         </a>
       )}
       {error.action && (

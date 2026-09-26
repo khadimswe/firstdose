@@ -9,11 +9,11 @@ import { voiceResult } from "@/app/(screens)/doctor/_components/voice";
 const ui = vi.hoisted(() => ({ cases: [] as CaseView[], live: true, linked: false, pending: false, ready: true,
   act: vi.fn(async () => {}), handoff: vi.fn(async () => true), localApprove: vi.fn(), request: vi.fn(async () => true), approve: vi.fn(async () => true) }));
 vi.mock("@/components/data/useEvents", () => ({ useEvents: () => ({ cases: ui.cases, canAct: () => true, act: ui.act }) }));
-vi.mock("@/components/data/local", () => ({ useLocal: () => ({ approved: { "Dr. Demo (judge 1)": 1 }, marks: {}, requests: [] }), local: { approve: ui.localApprove } }));
-vi.mock("@/components/data/coordinator", () => ({ DEMO_PRESCRIBER: "Dr. Demo (judge 1)", useCoordinator: () => ({
+vi.mock("@/components/data/local", () => ({ useLocal: () => ({ approved: { [ui.cases[0]?.rx.prescriber_label ?? ""]: 1 }, marks: {}, requests: [] }), local: { approve: ui.localApprove } }));
+vi.mock("@/components/data/coordinator", async () => { const { CATALOG, isWeekCase } = await import("@/components/data/catalog"); return { DEMO_PRESCRIBER: CATALOG.cases.find(row => !isWeekCase(row.id))!.prescriber_label, useCoordinator: () => ({
   live: ui.live, ready: ui.ready, pending: ui.pending, error: null, loginPath: null, snapshot: { links: [], events: [], cases: [] },
   linked: () => ui.linked, handoff: ui.handoff, request: ui.request, approve: ui.approve, refresh: vi.fn(),
-}) }));
+}) }; });
 import { useHandoff } from "@/app/(screens)/doctor/_components/ApproveSheet";
 import { Profile } from "@/app/(screens)/doctor/_components/Profile";
 import { PrescribersScreen } from "@/app/(screens)/coordinator/_components/PrescribersScreen";
@@ -30,10 +30,11 @@ describe("coordinator approval UI", () => {
     expect(html).toContain("Not linked"); expect(html).not.toContain("already verified");
     expect(html).toContain('role="status"'); expect(html).toContain('role="alert"');
   });
-  it("exposes only the fixed demo request in live prescribers", () => {
+  it("uses the catalog identity and NPI records for the scoped live request", () => {
     const html = renderToStaticMarkup(createElement(PrescribersScreen));
-    expect(html).toContain("Request Dr. Demo approval"); expect(html).toContain("arbitrary NPIs is unavailable");
-    expect(html).toContain("does not verify real professional roles");
+    expect(html).toContain(`Request ${ui.cases[0].rx.prescriber_label} approval`);
+    expect(html).toContain("Additional NPI requests are unavailable");
+    expect(html).toContain("NPI "); expect(html).not.toContain("Dr. Demo");
   });
   it("routes a voice-confirmed proposal through persisted assignment and handoff", async () => {
     ui.linked = true;

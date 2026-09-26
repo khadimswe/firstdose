@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState } from "react";
 
-import { StandIn } from "@/components/StandIn";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -77,16 +76,12 @@ export function QueueScreen() {
             New prescriptions from the prescribers you work with that haven&apos;t reached a confirmed fill.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <StandIn kind="pharmacy" />
-          {mode === "mock" && <StandIn kind="price" />}
-        </div>
       </header>
 
       {coordinator.live && <div>
         <p role="status" aria-atomic="true" className="text-sm text-muted-foreground">{coordinator.ready ? "Queue uses saved coordinator approvals for this run." : "Checking coordinator approvals…"}</p>
         <p role="alert" className="text-sm text-stuck">{coordinator.error}</p>
-        {coordinator.loginPath && <a href="/api/demo-login?next=%2Fcoordinator" className="text-sm underline">Sign in to the staff demo</a>}
+        {coordinator.loginPath && <a href="/api/demo-login?next=%2Fcoordinator" className="text-sm underline">Sign in to continue</a>}
       </div>}
 
       {pending.length > 0 && (

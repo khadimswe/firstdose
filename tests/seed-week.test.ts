@@ -17,9 +17,12 @@ const buckets = (events: ReturnType<typeof seedWeekEvents>) => {
 describe("fictional seed week", () => {
   it("gives the prepared queue its own prescriber without approving the live doctor", () => {
     const cases = deriveCases(catalog, seedWeekEvents(now));
-    expect(new Set(WEEK_CASES.map(row => row.prescriber_label))).toEqual(new Set(["Dr. Rivera (demo)"]));
-    expect(isLinked("Dr. Rivera (demo)", cases, {})).toBe(true);
-    expect(isLinked("Dr. Demo (judge 1)", cases, {})).toBe(false);
+    const background = WEEK_CASES[0].prescriber_label;
+    const live = CATALOG.cases.find(row => row.id === "rx_001")!.prescriber_label;
+    expect(new Set(WEEK_CASES.map(row => row.prescriber_label))).toEqual(new Set([background]));
+    expect(background).not.toBe(live);
+    expect(isLinked(background, cases, {})).toBe(true);
+    expect(isLinked(live, cases, {})).toBe(false);
   });
 
   it("has 13 fixed separate records and the same 3/2/8 queue in offline and persisted form", () => {

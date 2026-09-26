@@ -257,8 +257,16 @@ Full detail in `docs/architecture.md`. Summary:
 ### D2: No AI-written drug or patient text
 Label text is a byte-exact substring of the DailyMed SPL. Every sentence about a patient comes from `mock/templates.json`. Gemini outputs only a reason enum. **Locked 2026-09-25.**
 
-### D3: Every stand-in is labelled on screen
-Ascend, Wallet, QPharma, Medvantx, pharmacy, hub and prices use `<StandIn>`. Patients are fictional; no PHI anywhere. **Locked 2026-09-25.**
+### D3: One honest disclosure, real data with sources, synthetic everything else (revised)
+- **Product screens** (coordinator, doctor, patient, board, access, QR) carry no mock, demo, stand-in or fictional wording.
+  - One footer line per shell discloses synthetic patients and pharmacy activity, and says the partner names are a concept.
+  - DocUpdate-style screens keep "Concept: FirstDose inside DocUpdate · Not affiliated".
+- **Real public data** (CMS, NADAC, openFDA/RxNav, NPPES) shows its source and year: `data/reference/public-data.json`.
+- **Synthetic:** patients and prescribers, with names that match no NPPES record and unassigned valid-format NPIs.
+- **Operator tools** (`/sim`, `/demo`) may say simulator or offline.
+- **Guarded by** `tests/no-fake-labels.test.ts`.
+
+**Revised 2026-09-26 13:50 (Deem; supersedes "every stand-in is labelled").**
 
 ### D4: Specialty drugs use status events, not a clock
 Only retail uses the 48-hour rule. **Locked 2026-09-25.**
@@ -344,4 +352,4 @@ The DocUpdate-styled screens copy structure: dark navy, a purple primary, the bo
 5. Every screen runs on `mock/` with zero network before it's merged.
 6. Every number on screen, in the README, video or Devpost comes from the sourced facts sheet in `notes/`.
 
-_Last updated: Sat Sep 26, 13:05 ET by Deem (everything merged to main 4c80650; 4.3, 6.0, 6.2, 6.3, 6.9, 6.10, 6.11, 6.12 ✅; Phase 1 open only for the deployed two-device run)._
+_Last updated: Sat Sep 26, 13:50 ET by Deem (D3 revised: synthetic data with real public reference data, one footer disclosure; C7 UI in #28; 6.1 UI in #22; voice UI in #25; 6.13 handoff in #24)._

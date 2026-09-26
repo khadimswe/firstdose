@@ -7,8 +7,8 @@ export function MessageDeliveryStatus({ ready, pending, error, refresh }: {
   ready: boolean; pending: boolean; error: string | null; refresh: () => Promise<void>;
 }) {
   const pathname = usePathname();
-  const description = error === "unauthorized" ? "Sign in to the demo to load messages."
-    : error === "stale_run" ? "The demo was reset. Review the new run before trying again."
+  const description = error === "unauthorized" ? "Sign in to load messages."
+    : error === "stale_run" ? "The workflow was reset. Review the current state before trying again."
     : error === "invalid_transition" ? "Message approval is unavailable or a different language was already approved."
     : error ? "Messages could not be synchronized. Try again."
     : pending ? "Saving message…" : !ready ? "Loading messages…" : "";

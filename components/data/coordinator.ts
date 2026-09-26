@@ -35,7 +35,7 @@ export function useCoordinator() {
     handoff: (c: CaseView) => coordinatorLive.approveAndHandoff(c.id, async runId => {
       const source = await sharedSource();
       const current = coordinatorLive.getSnapshot();
-      if (!current.ready || current.snapshot?.run_id !== runId) throw new Error("The demo changed. Review the new run before sending.");
+      if (!current.ready || current.snapshot?.run_id !== runId) throw new Error("The run changed. Review the new run before sending.");
       await source.act("handoff", c.rx, c.fix);
     }),
   };

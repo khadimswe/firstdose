@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 
-import { StandIn } from "@/components/StandIn";
 import { Button } from "@/components/ui/button";
 import { templates } from "@/components/copy/templates";
 import { hasConfirmedFill } from "@/components/data/derive";
@@ -44,9 +43,6 @@ export function PatientDetails({ patientId }: { patientId: string }) {
         </Row>
         <Row label="Condition">{patient.condition_label}</Row>
         <Row label="Plan">{patient.insurance.plan_label}</Row>
-        <div className="py-2">
-          <StandIn kind="patients" />
-        </div>
       </section>
 
       <h2 className="text-lg font-semibold">Past Prescriptions</h2>

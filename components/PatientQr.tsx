@@ -6,9 +6,12 @@
 import { QRCodeSVG } from "qrcode.react";
 import { useSyncExternalStore } from "react";
 
+import { fill } from "@/components/copy/fill";
+import { templates } from "@/components/copy/templates";
+import { CATALOG, QR_CASE_ID } from "@/components/data/catalog";
 import { cn } from "@/lib/utils";
 
-const PATIENT_PATH = "/patient/rx_001";
+const PATIENT_PATH = `/patient/${QR_CASE_ID}`;
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]", "0.0.0.0"]);
 
 const noSubscribe = () => () => {};
@@ -48,4 +51,11 @@ export function PatientQr({
       {caption && <figcaption className="text-center">{caption}</figcaption>}
     </figure>
   );
+}
+
+/** "Scan to open Maria's card.", from the template and the QR case's patient. */
+export function qrCaption(): string {
+  const rx = CATALOG.cases.find((c) => c.id === QR_CASE_ID);
+  const patient = CATALOG.patients.find((p) => p.id === rx?.patient_id);
+  return fill(templates.qr.caption, { patient_short: patient?.display_short ?? "" });
 }

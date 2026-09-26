@@ -26,14 +26,14 @@ function ApproveSheet({ open, withHandoff, onApprove, onClose, pending = false, 
     <SheetContent side="bottom" className="mx-auto max-w-[430px] rounded-t-2xl">
       <SheetHeader>
         <SheetTitle className="text-lg">{linked && withHandoff ? "Send to your access coordinator?" : "Approve your access coordinator?"}</SheetTitle>
-        <SheetDescription>Review the access coordinator&apos;s permissions for this demo.</SheetDescription>
+        <SheetDescription>Review the access coordinator&apos;s permissions.</SheetDescription>
       </SheetHeader>
       <div className="px-4">
         <CanList />
-        {live && <p className="mt-3 text-xs text-muted-foreground">Simulated staff approval in this shared demo. No real account invitation is sent.</p>}
+        {live && <p className="mt-3 text-xs text-muted-foreground">Approval applies to this shared session. No account invitation is sent.</p>}
         <p role="status" aria-atomic="true" className="mt-2 text-sm">{pending ? "Saving coordinator approval and case access…" : disabled ? "Link state or case is not ready. Review the current run." : ""}</p>
         <p role="alert" className="text-sm text-stuck">{error}</p>
-        {loginPath && <a href={loginPath} className="text-sm underline">Sign in to the staff demo</a>}
+        {loginPath && <a href={loginPath} className="text-sm underline">Sign in to continue</a>}
       </div>
       <SheetFooter>
         <Button disabled={pending || disabled} className="h-12 rounded-full bg-du-purple text-base text-white hover:bg-du-purple/90" onClick={onApprove}>

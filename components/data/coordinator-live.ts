@@ -42,7 +42,7 @@ export function createCoordinatorLiveStore(options: {
   const active = (life: number, generation: number) => life === lifecycle && generation === epoch && listeners.size > 0;
   function fail(error: unknown, syncing = false) {
     const status = error instanceof LinkError ? error.status : (error as { status?: number })?.status;
-    update({ error: status === 401 ? "Sign in to the staff demo to continue." : error instanceof Error ? error.message : "Coordinator request failed. Try again.",
+    update({ error: status === 401 ? "Sign in to continue." : error instanceof Error ? error.message : "Coordinator request failed. Try again.",
       loginPath: status === 401 ? "/api/demo-login?next=%2Fdoctor%2Fprofile" : null,
       ...(syncing || status === 401 || status === 409 ? { ready: false } : {}) });
   }
@@ -50,7 +50,7 @@ export function createCoordinatorLiveStore(options: {
     const controller = new AbortController(); const timeout = setTimeout(() => controller.abort(), 10_000);
     try {
       const response = await fetcher("/api/coordinator", { credentials: "same-origin", cache: "no-store", ...init, signal: controller.signal });
-      if (!response.ok) throw new LinkError(response.status === 409 ? "The demo changed. Refresh the link state before trying again." : "Coordinator request failed. Try again.", response.status);
+      if (!response.ok) throw new LinkError(response.status === 409 ? "The run changed. Refresh the link state before trying again." : "Coordinator request failed. Try again.", response.status);
       return parse(await response.json());
     } finally { clearTimeout(timeout); }
   }
@@ -94,9 +94,9 @@ export function createCoordinatorLiveStore(options: {
     const task = (async () => {
       try {
         await operation(async (action, caseId) => {
-          if (!valid()) throw new LinkError("The demo was reset. Review the new run.");
+          if (!valid()) throw new LinkError("The run was reset. Review the new run.");
           const next = await request({ method: "POST", headers: { "Content-Type": "application/json", "X-FirstDose-Run": run }, body: JSON.stringify({ action, coordinator_id: "coord_demo", prescriber_id: "prescriber_demo", ...(caseId ? { case_id: caseId } : {}) }) });
-          if (!valid() || next.run_id !== run) throw new LinkError("The demo was reset. Review the new run.");
+          if (!valid() || next.run_id !== run) throw new LinkError("The run was reset. Review the new run.");
           accept(next);
         }, valid);
         return valid();
@@ -125,10 +125,10 @@ export function createCoordinatorLiveStore(options: {
     approve: () => perform("approve-profile", write => approve(write)),
     approveAndHandoff: (caseId: string, handoff: (runId: string) => Promise<void>) => perform(`handoff:${caseId}`, async (write, valid) => {
       await approve(write);
-      if (!valid()) throw new LinkError("The demo was reset. Review the new run.");
+      if (!valid()) throw new LinkError("The run was reset. Review the new run.");
       if (!state.snapshot?.cases.some(row => row.case_id === caseId && row.coordinator_id === "coord_demo")) await write("assign", caseId);
       if (!state.snapshot?.cases.some(row => row.case_id === caseId && row.coordinator_id === "coord_demo")) throw new LinkError("Case access was not confirmed. Refresh and try again.");
-      if (!valid()) throw new LinkError("The demo was reset. Review the new run.");
+      if (!valid()) throw new LinkError("The run was reset. Review the new run.");
       await handoff(state.snapshot!.run_id);
     }),
   };

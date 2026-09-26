@@ -39,7 +39,7 @@ export function createLiveStore(options: { source: () => Promise<SeedableSource>
   }
   function describe(value: unknown) {
     const e = value as { status?: number; code?: string } | undefined;
-    if (e?.status === 401) { loginPath = "/api/demo-login"; return "Sign in to the demo to continue."; }
+    if (e?.status === 401) { loginPath = "/api/demo-login"; return "Sign in to continue."; }
     if (e?.code === "stale_run") return "The demo was reset. Check the new run before trying again.";
     return value instanceof Error ? value.message : "The request could not be completed.";
   }

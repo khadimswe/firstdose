@@ -11,6 +11,7 @@ Updated Sat Sep 26, 2026, 13:05 (Deem). This register governs factual wording in
 | The live workflow works end to end in browsers | #15 (Vinh): the full v2 flow across three independent browser sessions against hosted Supabase; 14 PostgreSQL checks | "Works live across browsers". **Not yet**: "on two physical devices"; the deployed live run is still open |
 | The patient's tap is acknowledgment only | #9 and #15 tests; the board and access count only the separate pharmacy confirmation | "The tap isn't a fill; the pharmacy confirms the fill" |
 | Otezla's label is verbatim DailyMed | #15: the full saved narratives, RxCUI 1492746, and the build verifies the saved XML, RxNorm and artifact | "Verbatim from DailyMed, verified" for **Otezla only**. Humira still shows the placeholder |
+| No mock or demo wording on product screens | `tests/no-fake-labels.test.ts`; a browser text scan of 13 product routes (Sat 13:45) | "Synthetic data, real public reference data" |
 | Watch alerts | #15: the reason alert and the pharmacy-fill alert were accepted once, and the user confirmed both on iPhone and Garmin | "Buzzes the doctor's wrist" (Garmin). The Apple Watch path is C8, still to check |
 | Prescriber approval | Mock: approving on the phone flips the desktop to Linked across tabs (Chrome). Live: the approval travels with the first handoff | "The doctor approves the coordinator in one tap." Don't show a Profile-only approval reaching the desktop in live mode until C7 |
 | Gemini, Tiger, ElevenLabs, Grok | Not merged (Grok is draft #16) | Don't name them as working until 5.1 finds them called in code |
@@ -38,6 +39,21 @@ Updated Sat Sep 26, 2026, 13:05 (Deem). This register governs factual wording in
 | Roughly 280,000 full-time jobs' worth of access work weekly | Our calculation: 866,460 × 13 h ÷ 40 h | Hours, not people |
 | 70,000–115,000 dedicated access staff | Our estimate (40% of doctors, one person per 3–5 doctors) | Always say "our estimate" |
 | CoverMyMeds verifies staff to prescribers by NPI and a faxed code | [CoverMyMeds](https://www.covermymeds.com/main/insights/articles/steps-to-npi-verification-with-covermymeds/) | |
+
+**On screen since Sat 13:50** (`data/reference/public-data.json`; queries in `docs/research/public-data-sources.md`):
+
+| Fact (as it appears) | Source | Notes |
+|---|---|---|
+| Otezla in Georgia: 614 prescribers, 6,661 claims | CMS Medicare Part D Prescribers by Geography and Drug, 2024 | Medicare Part D only; aggregate |
+| Humira(CF) Pen in Georgia: 717 prescribers, 15,295 claims | Same, 2024 | Humira(CF) Pen row only |
+| 90% of the Georgia Part D plans that cover Otezla require prior auth (100% for Humira(CF) Pen) | CMS Part D formulary files, Sep 2026 | Otezla is covered by 53.9% of Georgia plans, Humira(CF) Pen by 33.6% |
+| Otezla 30 mg costs pharmacies $90.57 a tablet; a Humira(CF) Pen $3,367.41 | NADAC, effective Sep 23, 2026 | Reference only, not yet on screen |
+
+**Disclosure (PLAN D3, revised):**
+- Product screens carry one footer line: "Synthetic patients and pharmacy activity · Impiricus, Wallet and partner names shown as a concept."
+- DocUpdate-style screens keep "Concept: FirstDose inside DocUpdate · Not affiliated".
+- Real data shows its source and year.
+- Patients, prescribers (Dr. Nadia Okafor, Dr. Colin Mercer) and pharmacy activity are synthetic.
 
 Internal context only, never on a slide: the DocUpdate job post ("not building healthcare software for administrators"), app-review quotes, and Impiricus's "3x Higher NRx Lift" (their claim about their product, not ours).
 
