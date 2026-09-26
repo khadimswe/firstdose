@@ -1,6 +1,6 @@
 # Phase 2 live integration
 
-`integration/phase2-live` combines main `5444149`, Minh's `data/access-metrics` (`dfd360f`) and `backend/reason-classifier`, retaining their commits. This completes the backend wiring prepared in PRs #17 and #26. Hosted Tiger acceptance remains pending: its local URL is empty and the user requested local checks first.
+`integration/phase2-live` combines Minh's classifier and analytics with the backend wiring prepared in PRs #17 and #26. Merge `b9418dd` includes main's Tiger PR #37. Hosted Tiger and retained Supabase replay checks passed on September 26 after local credentials were configured. Deployed browser acceptance remains pending.
 
 ## Workflow and Gemini
 
@@ -15,7 +15,7 @@ Live model evidence, September 26:
 - `gemini-3.8-flash`: price-refusal hit the deadline (4,029 ms) and returned null; the full smoke failed. This was not counted as successful live acceptance.
 - `gemini-3.1-flash-lite`: the production classifier returned the expected values for price refusal (704 ms), unable-to-reach (3,838 ms), no documented reason (3,525 ms) and an injection-shaped fixture (866 ms). All four passed in this run. Null is deliberately ambiguous between UNKNOWN, rejected output and provider failure; these tests establish safe fallback, not a guarantee the provider answered UNKNOWN.
 
-Use private `GEMINI_API_KEY` and pin `GEMINI_MODEL=gemini-3.1-flash-lite` for this tested configuration, then verify on the deployed runtime. The pin was provided only to the test process; this branch did not change local or hosted secrets. One passing run is not a latency guarantee; the failure path remains necessary.
+Use private `GEMINI_API_KEY` and pin `GEMINI_MODEL=gemini-3.1-flash-lite` for this tested configuration, then verify on the deployed runtime. The tested pin is now saved in the ignored local backend environment file. A subsequent smoke returned the expected price/unreachable enums in 2,052/1,889 ms; both null fixtures reached the deadline (4,045/4,008 ms), demonstrating safe timeout fallback. One passing run is not a latency guarantee; the failure path remains necessary.
 
 ## Replay and summaries
 
@@ -41,11 +41,18 @@ node scripts/test-phase2-database.mjs
 
 The new database runner creates and removes a disposable loopback-only PostgreSQL container. It applies the workflow migrations and catalog, exercises the production reader against actual SQL, and uses the analytics ledger/table/query SQL with an injected local pool. It checks acknowledgment versus confirmation, duplicate/concurrent replay, privacy fields, conflict rollback, failure/retry, reset isolation and SQL/oracle parity. It deliberately omits Timescale hypertable creation and does not load `.env`, contact hosted Supabase/Tiger or send watch notifications.
 
+Hosted evidence on September 26, using the integration code at `b9418dd`:
+
+- Verified TLS connection, Timescale extension and the existing `firstdose.fill_events` hypertable. No schema migration was needed.
+- Six Tiger smoke checks passed on a fresh synthetic run: initial write, identical replay, conflicting duplicate rejection, SQL/oracle parity (2 fills, median 90 seconds), run isolation and stable checksums.
+- Production `replayCommittedRun` read a retained hosted Supabase run with 10 committed events and projected 3 allowlisted HMAC metrics into Tiger. SQL matched the pure oracle; two concurrent retries preserved row count, source history and timestamps.
+- Production `readLiveAccessSummary` and authenticated summary handler passed against the active empty run, including exact summary, run/revision headers and no-store. Unauthenticated requests returned 401, stale revision 409 and missing HMAC configuration 503. The missing configuration was injected only into the test process and restored.
+- The hosted workflow snapshot was unchanged. These checks called backend functions and the handler locally against hosted providers; they do not establish deployed Next `after` execution or browser acceptance.
+
 Before declaring tasks 2.3/2.5 fully deployed:
 
 1. Minh reviews the integration of his modules and shared `pg`, `@types/pg`, `@google/genai` dependencies. Deem reviews current/unavailable display behavior and the null-classification handoff path.
-2. Configure private `TIGER_DATABASE_URL`, stable random 32+ character `ANALYTICS_HMAC_KEY`, `GEMINI_API_KEY` and the tested model pin. Preserve the HMAC key for existing runs; changing it correctly conflicts with immutable existing projections.
-3. Review and apply `scripts/analytics/schema.sql` using `scripts/analytics/init.ts`, then run `scripts/analytics/smoke.ts` against Tiger. Scripts use fresh synthetic run IDs and do not delete other runs. Confirm actual hypertable creation, duplicate/conflict handling and SQL results. PostgreSQL-only tests are not this proof.
-4. Confirm the hosted Supabase retained-run reader migration/catalog are applied, deploy the reviewed integration, and exercise authenticated two-client workflow/replay/reset and the live summary screen. Keep physical watch receipt separate from provider acceptance.
+2. Configure the deployment with private `TIGER_DATABASE_URL`, the same stable `ANALYTICS_HMAC_KEY`, `GEMINI_API_KEY` and the tested model pin. Local configuration is complete. Preserve the HMAC key for existing runs; changing it correctly conflicts with immutable existing projections.
+3. Deploy the reviewed integration and exercise authenticated two-client workflow/replay/reset and the live summary screen. The hosted retained-run reader and Tiger checks above pass; catalog completeness and deployed behavior still require acceptance. Keep physical watch receipt separate from provider acceptance.
 
-No hosted database migration, hosted environment change or production deployment was performed by this integration session.
+Verification wrote synthetic smoke metrics and replayed retained metrics to Tiger. It did not change the hosted workflow, apply a database migration, change hosted environment settings or deploy production.
