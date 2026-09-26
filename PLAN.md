@@ -212,7 +212,7 @@ Current objective, scope and claim boundaries: [v2 spec](docs/spec-v2-coordinato
 
 | # | Component | File(s) | Owner | Status | Deps | Notes |
 |---|---|---|---|---|---|---|
-| 4.1 | Grok STT handoff with keyterms + `/api/voice` | `lib/server/voice.ts`, `app/api/voice/**` | **Vinh** | ⬜ | 1.11 | Record actual trials with and without keyterms; do not presume failure. |
+| 4.1 | Grok STT handoff with keyterms + `/api/voice` | `lib/server/voice.ts`, `app/api/voice/**` | **Vinh** | 🟡 | 1.11 | Sep 26 12:46 PM ET: backend on backend/voice-handoff, synced with main and demo-session login. 363 tests (65 voice), lint/build pass; actual xAI synthetic baseline/keyterm trials both resolve Maria correctly, session-authenticated HTTP route returns 200. Human microphone capture, Deem confirmation UI and confirmed live handoff remain pending. See docs/voice-handoff.md. |
 | 4.2 | ElevenLabs "started" line on the board | `public/audio/**` | **Deem** | ✂️ | 2.1 | Replaced by 6.8 (the patient message). PR #3 closes; its `scripts/tts.mjs` is reused. |
 | 4.3 | Design pass on all screens | `app/(screens)/**` | **Deem** | 🟡 | Phase 2 | doctor, patient, coordinator, board done 2026-09-26 00:07; access + sim left. |
 | 4.4 | QR flow on a stranger's phone | n/a | **Deem** | 🟡 | 2.6 | QR built (PR #4). It must follow #9's login return path and never encode a token. Stranger-phone test on the deployed HTTPS origin is still to do. |
