@@ -1,45 +1,43 @@
 # FIRSTDOSE: Plan & Coordination
 
-## v2 pivot brief (Sat Sep 26, 09:40)
+## v2 pivot brief (Sat Sep 26, 11:15)
 
-FirstDose becomes **the access coordinator's daily queue**; the doctor hears about a patient only when it matters. Spec: `docs/spec-v2-coordinator.md` (read its top section first). The engine, router and `mock/*.json` shapes are unchanged.
+FirstDose becomes **the access coordinator's daily queue**; the doctor hears about a patient only when it matters. Inside DocUpdate it adds four surfaces, not a new app: an Rx Alerts type, a fill-status line, a Concierge checkbox and a "My coordinator" profile row. The picture is **phone = the doctor's DocUpdate view, desktop = the coordinator's queue**. Spec: `docs/spec-v2-coordinator.md`. Evidence: `docs/research/docupdate-teardown.md`. The engine, router and `mock/*.json` shapes are unchanged.
 
-- **Gate, 11 AM Impiricus workshop:** the answers decide three things.
-  - W1 (spec Q1) decides the lead: coordinator-first or doctor-first.
-  - W3 (spec Q3) decides the header: "FirstDose for DocUpdate · Access queue" or "An Ascend skill for the practice".
-  - W6 (spec Q6) decides the pitch: "what the first staff account does".
+- **Gate, 11 AM Impiricus workshop** (questions reordered on `main`):
+  - W6 (spec Q6) decides the lead: coordinator-first or doctor-first.
+  - W3 (spec Q3) decides the header, and the doctor surface. DocUpdate → `/doctor` becomes the DocUpdate phone view (6.3). Ascend → the v1 Ascend thread moves to phone width, and the four surfaces go on a slide.
+  - W1 (spec Q1) decides the pitch: "what the first staff account does".
 
   Record the answers under Open Questions, then lock D7.
-- **Before 11 AM:** only 6.1 (Vinh, Seed the week) is built. Everyone else does reviews, docs and integration (6.0). No screen changes.
-- **Integration order (6.0):**
-  - #8 (verified labels) and #9 (backend) merge first, after review.
-  - Deem then rebases #4 (QR, following #9's login return path) and #7 (access/sim design) onto `main`.
-  - #2, #3 and #6 close: #2 is folded into the v2 docs PR, #3's script is reused in 6.8, and #6 is carried by #9.
-- **Copy (D8):** screens use the templates' fill wording ("first fill pending", "pharmacy fill confirmed"). Nothing on screen claims a patient "started" or "recovered". "A patient who never started looks exactly like a drug that doesn't work" stays as the spoken problem statement.
-- **Build window, 12–2 PM:**
-  1. 6.2 coordinator home.
-  2. 6.3 doctor inbox.
-  3. 6.11 "whose move" on the board.
-  4. Then the 6.7 and 6.6 screen work, 6.8 and 6.9.
-
-  The cut order and the never-cut list are under Phase 6.
+- **Integration first (6.0):**
+  - #8 (labels) and #9 (backend) merge first. #9 predates Phase 6, so its rebase keeps `main`'s Phase 6 and brief.
+  - Deem then rebases #4 (QR) and #7 (access/sim).
+  - Screen work builds on `main` after #9, so live mode and the fill wording come with it.
+- **Copy (D8) and brand (D9):**
+  - Screens use fill wording, and the alert chip is the pharmacy status as it arrived.
+  - DocUpdate screens copy structure, never brand, and carry "Concept: FirstDose inside DocUpdate · Not affiliated".
+- **Build order after the workshop:** 6.0 merges → 6.3 + 6.10 → 6.2 + 6.11 → 6.7, 6.6, 6.8 and 6.9 as the cut order allows. Vinh runs 6.1, 6.4 and 6.5 in parallel.
+- **Per-person lists:** `docs/tasks/{DEEM,VIHN,MINH}-TASKS.md`. **Steps:** `docs/IMPLEMENTATION.md`.
 
 ## Execution brief (engine and gates; still valid under v2)
 
 This dashboard is the execution source of truth. Keep presentation work in `docs/presentation/`; freeze the other planning/audit documents as reference snapshots. Do not maintain parallel schedules. This local revision responds to review and awaits team feedback; it does not change the shared mock contract or merge itself into main.
 
-**Synced source:** main `1557160` has six screens on mock data, state-based button guards, replay/autoplay and the v2 spec. Open PRs: #8 verified labels (Minh), #9 persisted backend (Vinh, draft), #4 QR and #7 access/sim design (Deem). `/api/sim/fire` takes `{ ids: string[] }` (`docs/architecture.md`).
+**Synced source:** main `56b5a46` has six screens on mock data, state-based button guards, replay/autoplay, the v2 spec with the four surfaces, and the DocUpdate teardown. Open PRs:
+- #10, v2 docs (Deem);
+- #8, verified labels (Minh);
+- #9, persisted backend (Vinh, draft). It carries the status for 0.4–0.9 and 1.7–1.12;
+- #4, QR, and #7, access/sim design (Deem).
 
-**Immediate work (before 11 AM):**
-- Vinh: 6.1 Seed the week, plus review fixes on #9.
-- Minh: review fixes on #8.
-- Deem: the v2 docs PR and reviews of #8 and #9.
+`/api/sim/fire` takes `{ ids: string[] }`.
 
-No screen changes until the workshop answers are in.
+**Immediate work:**
+- Vinh: 6.1 Seed the week (C1 first), review fixes on #9, and the second wrist alert.
+- Minh: the six review fixes on #8.
+- Deem: the workshop, then merges and rebases (6.0).
 
-**Rebaseline:** retire the 4 AM promise. Target a Saturday morning core check around 7 AM, conditional on the initial watch/deployment/contract results; record actual progress rather than another guaranteed estimate. Maria alone is the first gate. Keep 2 PM scope review, 6 PM footage and 9 PM claim freeze as internal targets; confirm the official submission cutoff.
-
-**Small contract review:** separate acknowledgment from simulator dispensing; add UNKNOWN and a government-coverage block; add run identity with an explicit run-change/reconnect path; enforce unique `(run_id, script_id)`. Time-box the review to 45 minutes. Preserve simple server-side validated, atomic transitions; a unique event constraint alone does not prevent races or duplicate external notifications. Use prepared fictional eligibility evidence rather than a full eligibility engine. Do not infer card eligibility from commercial insurance alone.
+No screen changes until the workshop answers are in and #9 has merged.
 
 **Thin backend:** reuse scripted rows and the existing EventSource seam. One shared command implementation can serve the agreed routes; a new `/api/act` is optional, not required to rename every API. Vinh's #9 carries the live wiring, built on the design from Deem's #6, so #6 closes. `main` runs mock mode until #9 merges. Keep basic database grants/RLS and guarded writes; a full production identity system is outside this demo. Privacy separation may be presented as proposed unless implemented and verified.
 
@@ -82,7 +80,7 @@ It's a proposed Impiricus workflow (inside DocUpdate or as an Ascend skill; deci
 **Team:**
 - **Vinh:** authoritative workflow, Supabase/schema/Realtime, deterministic router, simulator/API, ntfy -> Garmin and optional Grok backend/custom widget.
 - **Deem:** frontend + product. That covers:
-  - all screens, including the v2 coordinator home and doctor inbox;
+  - all screens, including the v2 coordinator home and the DocUpdate phone view;
   - the design pass;
   - the demo script and table performance;
   - the writeup, video and poster.
@@ -96,9 +94,9 @@ It's a proposed Impiricus workflow (inside DocUpdate or as an Ascend skill; deci
 
 **Repo:** `github.com/khadimswe/firstdose`. Public, and it stays public through submission (Deem, Sat Sep 26). The live demo link is in the README.
 
-**Specs in the repo:** `docs/architecture.md` (flow, tables, API routes, external services), `docs/who-sees-what.md`, `mock/*.json` (data contract). If this file drifts from them, fix this file.
+**Specs in the repo:** `docs/spec-v2-coordinator.md` (product), `docs/research/docupdate-teardown.md` (evidence), `docs/architecture.md` (flow, tables, API routes, external services), `docs/who-sees-what.md`, `mock/*.json` (data contract). If this file drifts from them, fix this file.
 
-**In the repo:** `docs/presentation/` contains demo scripts, slide/poster copy, Q&A and a submission draft; `docs/research/` contains sourced prize/winner summaries. Personal research, credentials and private notes stay outside commits.
+**In the repo:** `docs/presentation/` has the slide/poster copy, Q&A and the claims register (the demo script is the spec's 4-minute demo); `docs/research/` has the DocUpdate teardown and the prize/winner summaries. Personal research, credentials and private notes stay outside commits.
 
 **Legend:** ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️ cut
 
@@ -112,7 +110,7 @@ It's a proposed Impiricus workflow (inside DocUpdate or as an Ascend skill; deci
 
 A stalled prescription needs a documented reason, an accountable next step and follow-up. The demo proves workflow behavior, not clinical recovery or causal effectiveness. Existing abandonment tools exist; validate the specific proposed contribution with Impiricus.
 
-Current objective, scope and claim boundaries: [product proposal](docs/product-proposal.md), [winning conditions](docs/winning-conditions.md), [claims register](docs/presentation/claims-and-evidence.md).
+Current objective, scope and claim boundaries: [v2 spec](docs/spec-v2-coordinator.md), [DocUpdate teardown](docs/research/docupdate-teardown.md), [claims register](docs/presentation/claims-and-evidence.md).
 
 ---
 
@@ -120,8 +118,9 @@ Current objective, scope and claim boundaries: [product proposal](docs/product-p
 
 | What a judge must see | Surface | Owner |
 |---|---|---|
-| A coordinator's real Monday | `/coordinator` home: summary strip, a queue sorted by time stuck, one-tap fix | Deem (UI) + Vinh (6.1 seed) |
-| A prescription going dark, then recovering | `/board` Relay Board: red stop, price $410 → $0, chime | Deem (UI) + Vinh (events) |
+| A coordinator's real Monday | `/coordinator` home on the desktop: summary strip, a queue sorted by time stuck, one-tap fix | Deem (UI) + Vinh (6.1 seed) |
+| FirstDose inside DocUpdate | `/doctor` on a phone: the Rx Alerts card, New Rx with the label, fill status on past prescriptions (6.3), and the before/after slide (6.10) | Deem |
+| A prescription going dark, then getting its fill | Price $410 → $0 and the chime; `/board` on a second screen if one is free | Deem (UI) + Vinh (events) |
 | Physical wow | Garmin buzz on the doctor judge's wrist, twice | Vinh |
 | A judge becomes the patient | QR → `/patient/rx_001` on their own phone | Deem |
 | Real data, not a mock | Verbatim DailyMed label card with byte-exact badge | Minh (data) + Deem (card) |
@@ -153,7 +152,7 @@ Current objective, scope and claim boundaries: [product proposal](docs/product-p
 | 1.1 | Frontend foundation: catalog, `derive.ts`, `useEvents()` (mock source), `fill()`, `StandIn`, `LabelCard`, shadcn init | `components/data/**`, `components/copy/**`, `components/*.tsx` | **Deem** | ✅ | 0.4 | No `?replay` or Autoplay yet. Merge before any screen. |
 | 1.2 | `EventSource` interface published to Vinh | `components/data/types.ts` | **Deem** | ✅ | 1.1 | ⚠️ CONTRACT. Vinh implements it in 1.9. |
 | 1.3 | `/sim` bare: Reset + Fire per beat | `app/(screens)/sim/**` | **Deem** | ✅ | 1.1 | Drives every other screen in a second tab. |
-| 1.4 | `/doctor`: prescribe → label card → alert → "Send to my coordinator" | `app/(screens)/doctor/**` | **Deem** | ✅ | 1.1 | iPad 1180×820. Never suggests a drug. |
+| 1.4 | `/doctor`: prescribe → label card → alert → "Send to my coordinator" | `app/(screens)/doctor/**` | **Deem** | ✅ | 1.1 | v1 iPad 1180×820 EHR + Ascend thread; becomes the DocUpdate phone view in 6.3. Never suggests a drug. |
 | 1.5 | `/coordinator`: work queue, ONE fix button per case | `app/(screens)/coordinator/**` | **Deem** | ✅ | 1.1 | Desk-first table (md and up); cards + pinned fix button on a phone (390×844). |
 | 1.6 | `/patient/[id]`: Wallet pass stand-in, "Use at pharmacy" | `app/(screens)/patient/[id]/**` | **Deem** | ✅ | 1.1 | No barcode, BIN/PCN or member number. |
 | 1.7 | Supabase schema: `patients`, `drugs`, `rx_cases`, `fill_events`, `labels`; seed from `mock/` | `supabase/migrations/**`, `scripts/seed.ts` | **Vinh** | ⬜ | 0.4, 0.6 | Field names identical to `mock/`. |
@@ -182,7 +181,7 @@ Current objective, scope and claim boundaries: [product proposal](docs/product-p
 
 | # | Component | File(s) | Owner | Status | Deps | Notes |
 |---|---|---|---|---|---|---|
-| 3.1 | Impiricus workshop, Klaus 1456 | n/a | **both** | ⬜ | n/a | Deem + one more. Ask the spec's questions 1–7 in order (Q1 lead, Q3 header, Q6 pitch). Record the answers under Open Questions (W1–W7) and lock D7. |
+| 3.1 | Impiricus workshop, Klaus 1456 | n/a | **both** | ⬜ | n/a | Deem + one more. Ask the spec's questions 1–7 in order (Q6 lead, Q3 header and doctor surface, Q1 pitch). Record the answers under Open Questions (W1–W7) and lock D7. |
 
 ### Phase 4: Voice, polish, design (Sat 12 PM to 6 PM)
 
@@ -211,24 +210,24 @@ Current objective, scope and claim boundaries: [product proposal](docs/product-p
 
 ## Phase 6 — v2 pivot: the coordinator's daily queue (Sat, after the 11 AM workshop)
 
-Spec: `docs/spec-v2-coordinator.md`. Gate: the 11 AM answers decide the lead (W1), the header (W3) and the pitch (W6). Engine, router and `mock/` shapes unchanged. Screen copy follows D8.
+Spec: `docs/spec-v2-coordinator.md` ("the four surfaces"). Steps: `docs/IMPLEMENTATION.md`. Gate: the 11 AM answers decide the lead (W6), the header and doctor surface (W3), and the pitch (W1). Screen work starts after #9 merges. Engine, router and `mock/` shapes unchanged. Copy follows D8; DocUpdate screens follow D9.
 
 | # | Task | Owner | Status | Deps | Notes |
 |---|---|---|---|---|---|
 | 6.0 | Integrate the open PRs: review and merge #8 (labels) and #9 (backend); Deem rebases #4 (QR + #9 login return) and #7 (access/sim design); close #2, #3 and #6 | Deem + Vinh + Minh | 🟡 | none | Order in the v2 brief. Sat 09:44: screens-side reviews posted on #8 (✅) and #9 (✅, with a QR sign-in question). #2, #3 and #6 closed. Rebases of #4 and #7 wait for #8 and #9 to merge. |
 | 6.1 | `/sim` "Seed the week": pre-load 10–15 started/waiting patients | Vinh | ⬜ | none | Build now; helps either pitch |
 | 6.2 | `/coordinator` = home screen: summary strip (stuck / waiting / fill confirmed, per D8), sort by time stuck, "Reached patient / Left message" marks, header per W3 | Deem | ⬜ | 11 AM | Medium. `/` opens it, and the screen index moves to `/screens`. Needs C1 and C2. |
-| 6.3 | `/doctor` becomes the DocUpdate phone view (phone-width): Rx Alerts card with the "Not started" alert type, Past-Rx fill-status line (Sent → Received → Filled / Stuck + reason), Concierge "Help my patient start" checkbox (deep-links the handoff), Profile "My coordinator" invite. Structure not brand; "Concept: FirstDose inside DocUpdate · Not affiliated" on every styled screen. See spec: four surfaces | Deem | ⬜ | 11 AM | Small |
+| 6.3 | `/doctor` becomes the DocUpdate phone view (phone-width): Rx Alerts card with the "Not started" alert type, Past-Rx fill-status line (Sent → Received → Filled / Stuck + reason), Concierge "Help my patient start" checkbox (deep-links the handoff), Profile "My coordinator" invite. Structure not brand; "Concept: FirstDose inside DocUpdate · Not affiliated" on every styled screen. See spec: four surfaces | Deem | ⬜ | W3, 6.0 | Medium: rebuilds the `/doctor` shell (reuses `LabelCard`, the alert derivation, `boardStop`). Only if W3 = DocUpdate; otherwise the Ascend thread moves to phone width. Chip = pharmacy `status_text`; title, reason and button from templates (D8). |
 | 6.4 | `coordinator_id` on cases + `coordinator_invited` event | Vinh | ⬜ | none | ⚠️ CONTRACT if it touches mock shapes |
-| 6.5 | RxFill-shaped `/sim` events + "raw message" toggle (`NotDispensed`, `RxFillIndicator`), labelled simulated | Vinh | ⬜ | none | Mostly relabeling |
-| 6.6 | `/api/npi`: NPPES lookup + ZIP/taxonomy colleague search, cached; UI "Likely colleagues → Invite", names hidden, "public NPPES record, not users" | Vinh or Minh (API), Deem (UI) | ⬜ | 6.2 | Run from deployed app |
+| 6.5 | RxFill-shaped `/sim` events + "raw message" toggle (`NotDispensed`, `RxFillIndicator`), labelled simulated | Vinh (events), Deem (`/sim` toggle) | ⬜ | none | Mostly relabeling. The toggle lives in #7's console. |
+| 6.6 | `/api/npi`: NPPES lookup + ZIP/taxonomy colleague search, cached; UI "Likely colleagues → Invite", names hidden, "public NPPES record, not users" | Minh (API, proposed; C6), Deem (UI) | ⬜ | 6.2 | Run from deployed app. Verify field names on a live call. |
 | 6.7 | `/access` tiles: coordinators active this week, fixes per coordinator (Tiger rollup) | Minh (data), Deem (UI) | ⬜ | 2.3 | Retention proof |
 | 6.8 | ElevenLabs: coordinator-approved patient message, templated, voiced in patient's language (Spanish for Maria) | Deem | ⬜ | 6.2 | Replaces the plain "started" mp3 job. Reuses PR #3's `tts.mjs`. Needs C3. |
-| 6.9 | Rewrite `docs/presentation/*` around the coordinator; market-size slide; align README tagline with Q3 answer | Deem | ⬜ | 11 AM | 12–2 PM window |
+| 6.9 | Rewrite `docs/presentation/*` around the coordinator; market-size slide; align README tagline with Q3 answer | Deem | ⬜ | 11 AM | Also: teardown facts into the claims register with sources, and the GitHub repo description (R1). |
 | 6.10 | Before/after slide: DocUpdate's real App Store home screenshot beside our `/doctor` (credited, "Not affiliated") | Deem | ⬜ | 6.3 | The one-glance pitch |
-| 6.11 | `/board` "whose move": each lane shows Doctor / Coordinator / Patient / Pharmacy | Deem | ⬜ | 6.0 | Small. Last in the cut order. |
+| 6.11 | "Waiting on" (whose move): Doctor / Coordinator / Patient / Pharmacy, as a column in the coordinator queue and a label on `/board` lanes | Deem | ⬜ | 6.2 | Small. One derived function. |
 
-**v2 cut order (2 PM):** Grok voice → 6.6 NPPES invite → 6.7 tiles → 6.8 voice message → board "whose move" labels. **Never cut:** coordinator queue with one-tap fix, doctor alert, pharmacy re-run, real DailyMed label, who-sees-what.
+**v2 cut order (2 PM):** Grok voice → 6.6 NPPES invite → 6.7 tiles → 6.8 voice message → 6.11 "Waiting on" → surfaces 3–4 (shown on the slide instead). **Never cut:** coordinator queue with one-tap fix, the doctor's Rx Alerts card, pharmacy re-run, real DailyMed label, who-sees-what.
 
 ## Shared Contracts
 
@@ -238,10 +237,10 @@ Full detail in `docs/architecture.md`. Summary:
 |---|---|---|---|
 | `mock/*.json` shapes | both | everyone | Frozen. Changes are ⚠️ CONTRACT commits. |
 | `useEvents()` | Deem | all screens | `{ mode, override, script, beats, fired, firedIds, cases, catalog, access, fire(ids), act(action, caseId), canAct(action, caseId), reset() }`; `action` is `prescribe \| handoff \| fix \| use_card` |
-| `EventSource` | Deem defines, Vinh implements | `useEvents()` | `load() / subscribe(onInsert) / act(action, rx, fix) / fire(ids) / reset() / accessSummary()` in `components/data/types.ts` |
+| `EventSource` | Deem defines, Vinh implements | `useEvents()` | `load() / subscribe(onInsert) / act(action, rx, fix) / fire(ids) / reset() / accessSummary()` in `components/data/types.ts`. #9 extends it to `subscribe(onInsert, onRunChange, onError, onSync)` |
 | `fill_events` row | Vinh | Deem | `mock/events.json → event_shape` |
 | `router(reason, insurance)` | Vinh | everyone | returns a key of `reasons.json → fixes` |
-| `GET /api/access/summary` | Minh | Deem | `{ recovered, median_ttff_seconds, reason_tally }`, no patient fields |
+| `GET /api/access/summary` | Minh | Deem | `{ recovered, median_ttff_seconds, reason_tally }`, no patient fields. `recovered` now means first fills confirmed (#9) |
 | Label | Minh | Deem | `mock/labels.json → label_shape`; `byte_exact: true` or the UI shows red PLACEHOLDER |
 
 **Contract changes require telling the other person before committing.** Mark such commits `⚠️ CONTRACT`.
@@ -269,11 +268,14 @@ Only retail uses the 48-hour rule. **Locked 2026-09-25.**
 ### D6: Claim only what is live
 A sponsor tool is named in the writeup only if 5.1 finds it called in code. **Locked 2026-09-25.**
 
-### D7: v2 leads with the coordinator (pending W1)
-The coordinator queue is the home screen and the first thing judges see. The doctor gets an alerts inbox and the before-visit card. If W1 says Impiricus counts only prescribers, the doctor leads and the coordinator is the practice user; the screens stay the same. **Proposed 2026-09-26; lock at the workshop.**
+### D7: v2 leads with the coordinator (pending W6)
+The coordinator queue is the home screen and the first thing judges see. The doctor gets the DocUpdate phone view (if W3 = DocUpdate) with the Rx Alerts card and the before-visit card. If W6 says Impiricus counts only prescribers, the doctor leads and the coordinator is the practice user; the screens stay the same. **Proposed 2026-09-26; lock at the workshop.**
 
 ### D8: On-screen copy follows the templates' fill wording
 Screens say "first fill pending" and "pharmacy fill confirmed" (the templates in PR #9). Nothing on screen, in the README or in the video claims a patient started or recovered. "A patient who never started looks exactly like a drug that doesn't work" is the spoken problem statement, not a claim. **Locked 2026-09-26.**
+
+### D9: DocUpdate is structure, never brand, and sits on the practice side
+The DocUpdate-styled screens copy structure: dark navy, a purple primary, the bottom tab bar, the card anatomy. They never use DocUpdate's logo, wordmark or screenshots. Every such screen carries `<StandIn>` "Concept: FirstDose inside DocUpdate · Not affiliated". Their real App Store screenshot appears only on the 6.10 slide, credited. The DocUpdate view is the prescriber's own tool, so it is practice side: patient names and fill status appear only there and in the coordinator's queue. **Locked 2026-09-26 (spec, "the four surfaces").**
 
 ---
 
@@ -284,19 +286,25 @@ Screens say "first fill pending" and "pharmacy fill confirmed" (the templates in
 - [ ] **Q3:** Is Notability a challenge or a third sponsor track? Ask #qna. Needs Deem.
 - [ ] **Q4:** Which `.tech` domain is free (`getfirstdose.tech`, `firstdose-rx.tech`)? Needs Deem.
 
-**Workshop, 11 AM.** Full list in the spec; these three gate the build.
-- [ ] **W1 (spec Q1):** Does Impiricus count practice staff (access coordinators, MAs) as HCPs they'd reach?
+**Workshop, 11 AM.** Full list and order in the spec; three answers gate the build.
+- [ ] **W6 (spec Q6):** Does Impiricus count practice staff (access coordinators, MAs) as HCPs they'd reach?
   - Yes → the coordinator leads.
   - No → the doctor leads, and the coordinator is the practice user (D7).
-- [ ] **W3 (spec Q3):** Would this live inside DocUpdate, or in Ascend as a skill? The answer picks the `/coordinator` header.
-- [ ] **W6 (spec Q6):** "Staff accounts are on your roadmap. What should a staff account do first?" The answer shapes the pitch line.
+- [ ] **W3 (spec Q3):** Would this live inside DocUpdate, or in Ascend as a skill?
+  - The answer picks the `/coordinator` header.
+  - It also picks the doctor surface: the DocUpdate view (6.3) or the Ascend thread on a phone.
+- [ ] **W1 (spec Q1):** "Staff accounts are on your roadmap. What should a staff account do first?" The answer shapes the pitch line.
+- [ ] **W2, W4, W5, W7 (spec Q2, Q4, Q5, Q7):** the product plan behind the July article, RxFill versus First-Fill Abandonment, how savings cards are sent, and recovered versus time to first fill. Record the answers; they shape 6.9 and the Q&A.
 - [ ] **K1:** Can we quote Keomaria by name in the demo? Needs Deem.
 
 **Phase 6 contract questions.** `mock/` is frozen, so each of these needs Vinh + Deem.
 - [ ] **C1 (6.1):** Where do the seeded week's 10–15 fictional patients live in mock mode (the offline fallback)? What are they called? The screens currently show only Maria and James.
 - [ ] **C2 (6.2):** Are "Reached patient / Left message" marks an event, or local-only this weekend?
 - [ ] **C3 (6.8):** The coordinator-approved patient message (and its Spanish version) needs a template key (⚠️ CONTRACT), or an explicit exception to D2.
-- [ ] **C4:** Can the DocUpdate stand-in label extend `<StandIn>` in code (`components/copy/`) rather than `templates.json`?
+- [ ] **C4:** Can the DocUpdate stand-in label extend `<StandIn>` in code (`components/copy/`) rather than `templates.json`? Proposed text (spec, D9): "Concept: FirstDose inside DocUpdate · Not affiliated".
+- [ ] **C5 (4.4):** On the judge's phone, the QR lands on #9's login and a team member types the private code. Accept that, or add a patient-scoped acknowledge-only path (never a token in the QR)? Needs Vinh.
+- [ ] **C6 (6.6):** Minh builds `/api/npi` (proposed), with Vinh reviewing? Needs Vinh + Minh.
+- [ ] **R1 (6.9):** After W3, change the GitHub repo description, which still says "A skill for Impiricus Ascend…". Deem does it by hand.
 
 ---
 
@@ -309,4 +317,4 @@ Screens say "first fill pending" and "pharmacy fill confirmed" (the templates in
 5. Every screen runs on `mock/` with zero network before it's merged.
 6. Every number on screen, in the README, video or Devpost comes from the sourced facts sheet in `notes/`.
 
-_Last updated: Sat Sep 26, 09:40 ET by Deem (v2 pivot brief, D7/D8, 6.0 and 6.10, workshop and contract questions; synced with main 1557160)._
+_Last updated: Sat Sep 26, 11:15 ET by Deem (four DocUpdate surfaces: W6/W3/W1 remap, D9, 6.3/6.5/6.6/6.11 rows, C5/C6/R1; synced with main 56b5a46)._
