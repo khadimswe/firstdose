@@ -1,7 +1,7 @@
-import { fill, money } from "@/components/copy/fill";
+import { clock, fill, money } from "@/components/copy/fill";
 import { templates } from "@/components/copy/templates";
 import { boardStop } from "@/components/data/derive";
-import type { CaseView } from "@/components/data/types";
+import type { CaseView, FillEvent } from "@/components/data/types";
 import { cn } from "@/lib/utils";
 
 const STOPS = templates.board.stops;
@@ -19,11 +19,24 @@ export function stuckLabel(c: CaseView) {
   return fill(templates.board.stuck_label, { reason_short: short });
 }
 
+/** When the case reached each stop: prescribed, first pharmacy/hub event, dispensed, started. */
+function stopTimes(c: CaseView) {
+  const at = (p: (e: FillEvent) => boolean) => c.events.find(p)?.at;
+  return [
+    at((e) => e.type === "prescribed"),
+    at((e) => e.actor === "pharmacy" || e.actor === "hub"),
+    at((e) => e.type === "claim_run" && e.status_text === "Dispensed"),
+    at((e) => e.type === "started"),
+  ];
+}
+
 /** One prescription's route. With no case, draws the empty route. */
 export function RelayLane({ c }: { c?: CaseView }) {
   const stop = c ? boardStop(c) : -1;
   const stuck = c ? isStuck(c) : false;
   const started = c?.status === "started";
+  const times = c ? stopTimes(c) : [];
+  const stuckAt = c?.events.find((e) => e.type === "reason_classified")?.at;
 
   return (
     <section className="grid grid-cols-[220px_minmax(0,1fr)] items-start gap-8">
@@ -72,13 +85,26 @@ export function RelayLane({ c }: { c?: CaseView }) {
                   >
                     {label}
                   </span>
+                  {times[i] !== undefined && (
+                    <span className="font-mono text-lg text-muted-foreground">
+                      {clock(times[i]!)}
+                    </span>
+                  )}
                 </li>
               );
             })}
           </ol>
         </div>
         {c && stuck && (
-          <p className="text-center text-3xl font-semibold text-stuck">{stuckLabel(c)}</p>
+          <p className="text-center text-3xl font-semibold text-stuck">
+            {stuckLabel(c)}
+            {stuckAt !== undefined && (
+              <span className="font-mono font-normal text-muted-foreground">
+                {" "}
+                · since {clock(stuckAt)}
+              </span>
+            )}
+          </p>
         )}
       </div>
     </section>
