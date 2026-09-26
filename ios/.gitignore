@@ -1,0 +1,8 @@
+FirstDoseRx.xcodeproj/
+.build/
+DerivedData/
+*.xcarchive/
+*.ipa
+*.xcresult/
+Local.xcconfig
+FirstDoseRx/Assets.xcassets/AppIcon.appiconset/AppIcon.png
