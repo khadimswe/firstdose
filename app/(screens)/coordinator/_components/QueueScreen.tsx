@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   atSeconds,
-  hasConfirmedFill,
   prescribers,
   queueBucket,
   stuckEvent,
@@ -58,8 +57,9 @@ export function QueueScreen() {
   const buckets: Record<QueueBucket, CaseView[]> = { needs_you: [], waiting: [], confirmed: [] };
   for (const c of [...mine].sort(byStuckAge)) buckets[queueBucket(c)].push(c);
 
-  const stuck = mine.filter((c) => c.status === "stuck" || c.status === "handed_off").length;
-  const waiting = mine.filter((c) => !hasConfirmedFill(c) && c.status !== "stuck" && c.status !== "handed_off").length;
+  // The strip counts the same buckets as the tabs, so the numbers always match.
+  const stuck = buckets.needs_you.length;
+  const waiting = buckets.waiting.length;
   const confirmed = buckets.confirmed.length;
 
   const canFix = (id: string) => canAct("fix", id);
@@ -79,7 +79,7 @@ export function QueueScreen() {
       </header>
 
       {coordinator.live && <div>
-        <p role="status" aria-atomic="true" className="text-sm text-muted-foreground">{coordinator.ready ? "Queue uses saved coordinator approvals for this run." : "Checking coordinator approvals…"}</p>
+        <p role="status" aria-atomic="true" className="text-sm text-muted-foreground">{coordinator.ready ? "" : "Checking approvals…"}</p>
         <p role="alert" className="text-sm text-stuck">{coordinator.error}</p>
         {coordinator.loginPath && <a href="/api/demo-login?next=%2Fcoordinator" className="text-sm underline">Sign in to continue</a>}
       </div>}
@@ -103,7 +103,7 @@ export function QueueScreen() {
       <SummaryStrip
         stats={[
           { label: "Stuck", value: stuck, hint: "Reason reported, no fix sent yet", tone: "stuck" },
-          { label: "Waiting", value: waiting, hint: "On the patient, pharmacy or access team" },
+          { label: "Waiting", value: waiting, hint: "On the doctor, patient, pharmacy or access team" },
           { label: "Fill confirmed this week", value: confirmed, hint: "Confirmed by the pharmacy", tone: "done" },
         ]}
       />

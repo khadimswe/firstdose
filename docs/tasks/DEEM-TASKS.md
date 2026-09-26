@@ -36,10 +36,12 @@ Legend: [ ] not started · [-] in progress · [x] done · [!] blocked
 
 ## Still open in my lane
 
-- [-] **6.8** Spanish patient message: a ⚠️ CONTRACT PR (template key + UI + mp3) waiting on Vinh's C3 review.
-- [ ] **Phase 1 gate 4** with Vinh: once the live Vercel env is set, flip `NEXT_PUBLIC_DATA_SOURCE=supabase`, redeploy, and run the two-device checklist (`docs/handoffs/deem-phase1.md`).
+- [x] **6.8 / C3** Spanish patient message: shipped inside Vinh's #32 with its persistence; #21 closed as superseded.
+- [x] Owner review of #32 (#35): product-voice status copy, queue counts that match the tabs, message case from data.
+- [x] Vercel: access code set, unused keys removed, production offline until Vinh re-seeds (Sat).
+- [ ] **Phase 1 gate 4** with Vinh: after his hosted migrations 005/006 and re-seed, flip `NEXT_PUBLIC_DATA_SOURCE=supabase`, redeploy, and run the two-device checklist (`docs/handoffs/deem-phase1.md`).
 - [ ] **4.4** QR on a stranger's phone from the deployed origin.
-- [ ] Slide 4 still: the coordinator Queue, once #17 seeds the week.
+- [x] Slide 4 still: the seeded coordinator Queue (#33).
 - [ ] **6.7 UI / 6.6 UI** when Minh's rollup and `/api/npi` land.
 
 ## 2:30–9 PM

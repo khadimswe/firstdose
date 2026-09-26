@@ -33,7 +33,7 @@ describe("coordinator approval UI", () => {
   it("uses the catalog identity and NPI records for the scoped live request", () => {
     const html = renderToStaticMarkup(createElement(PrescribersScreen));
     expect(html).toContain(`Request ${ui.cases[0].rx.prescriber_label} approval`);
-    expect(html).toContain("Additional NPI requests are unavailable");
+    expect(html).toContain("approved you yet.");
     expect(html).toContain("NPI "); expect(html).not.toContain("Dr. Demo");
   });
   it("routes a voice-confirmed proposal through persisted assignment and handoff", async () => {

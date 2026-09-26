@@ -60,7 +60,7 @@ export function Profile() {
         </p>
         <CanList />
         {coordinator.live && <>
-          <p role="status" aria-atomic="true" className="text-sm">{linked ? "Coordinator approval is saved for this run." : coordinator.pending ? "Saving coordinator link…" : coordinator.ready ? pending ? "Coordinator request is waiting for approval." : "No coordinator link is saved for this run." : "Checking saved coordinator links…"}</p>
+          <p role="status" aria-atomic="true" className="text-sm">{coordinator.pending ? "Saving…" : !coordinator.ready ? "Checking…" : ""}</p>
           <p role="alert" className="text-sm text-stuck">{coordinator.error}</p>
           {coordinator.loginPath && <a href={coordinator.loginPath} className="text-sm underline">Sign in to continue</a>}
           {coordinator.error && <Button variant="outline" onClick={() => void coordinator.refresh()}>Reconnect</Button>}
