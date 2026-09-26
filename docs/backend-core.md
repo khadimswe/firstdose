@@ -15,7 +15,7 @@ All tables use RLS and deny `anon`/`authenticated` access. Only `service_role` c
 
 Outbox rows are unique per run/event and queued only for events with a wrist message. `202609260002_notification_delivery.sql` adds atomic delivery claims. After a committed command, Next.js `after()` runs a bounded worker that claims at most two pending messages from the active run. Old-run pending messages are skipped. Claims carry a unique identity; only that claim can record `accepted` (ntfy HTTP acceptance) or `unknown` (a failed or ambiguous send). Claimed/unknown messages are never automatically reclaimed or resent. This avoids duplicate retries at the cost of requiring manual investigation of unresolved delivery. A send already in flight can finish after reset; its audit stays attached to its original run. No scheduled retry service is introduced.
 
-The reason alert is template-backed; `alert_sent` records creation of the app alert, not device receipt. An accepted outbox row also does not establish physical receipt. A second pharmacy-confirmation wrist alert still requires reviewed truthful copy; the existing “started” template is not used to claim a patient started treatment.
+The reason alert is template-backed; `alert_sent` records creation of the app alert, not device receipt. An accepted outbox row also does not establish physical receipt. The second alert uses `wrist.fill_confirmed` after independent pharmacy confirmation; physical watch receipt remains a separate check.
 
 ## HTTP contract
 
@@ -74,7 +74,7 @@ After migration and frontend integration, verify two real clients, reset/reconne
 
 ## Phase 2: committed-history handoff to Minh
 
-The reader is included in `backend/seed-week`, rebased onto main `ca4da47` for owner review. It supplies the durable input for Minh's analytics replay; it does not implement Tiger projection, storage, summaries or Gemini classification.
+The reader is included in `backend/seed-week`, with main `4c80650` merged for owner review. It supplies the durable input for Minh's analytics replay; it does not implement Tiger projection, storage, summaries or Gemini classification.
 
 Migration `202609260003_read_run.sql` adds `fd_read_run(run UUID)` after the merged Phase 1 notification-delivery migration `002`. It returns one database snapshot of the requested run's events, ordered by committed sequence. Reset retains this history, so retrying an old run cannot accidentally read the new active run. An existing empty run returns an empty array; an unknown run or failed read is an error at the TypeScript boundary. Only `service_role` can execute this read; existing table restrictions remain in force.
 
@@ -96,9 +96,9 @@ Confirmed planner semantics for integration: Maria's `use_card` action emits onl
 
 Remaining dependencies: Minh's classifier/replay modules and real-provider checks; Vinh's replay trigger and freshness handling; Deem's adapter/UI integration; reviewed hosted migrations and the Maria two-device/watch gate. The reader itself adds no HTTP endpoint or shared fixture; this branch's separate seed-week feature adds a guarded simulator endpoint and prepared background data. Neither feature includes provider credentials or a production deployment.
 
-Publication verification on September 26: the combined branch passed 320 unit tests, 14 PostgreSQL checks (including real empty/retained run reads and denied browser access), lint and production build. Gitleaks found no leaks in the branch history, and configured private-value scans passed. On Windows, the inherited label-source test required restoring exact Git XML bytes after automatic CRLF conversion; the committed artifact is unchanged. Read-only agent review found no blocking issues. An affected-owner review is still required before merging.
+Publication verification on September 26: the combined branch passed 361 unit tests, 14 PostgreSQL checks (including real empty/retained run reads and denied browser access), lint and production build with offline label verification. Gitleaks found no leaks in the branch history, and configured private-value scans passed. The database label assertion normalizes equivalent timestamp encodings while comparing every other field exactly. Read-only agent review found no blocking issues. An affected-owner review is still required before merging. Published as draft PR #17.
 
-Publication base: main `ca4da47` includes the merged backend PR #9, coordinator shell #11 and doctor view #12. Rebase retained both notification-delivery and committed-reader database assertions plus main's v2 PLAN brief. Unmerged teammate screen/closure changes are outside this branch. The Phase 2 reader migration has not been applied to the hosted project.
+Publication base: main `4c80650` includes the backend, coordinator screens and Phase 1 closure fixes through PR #15. The merge retains both notification-delivery and committed-reader database assertions plus main's v2 PLAN brief. This PR's changes are scoped to the reader and seed-week backend, tests and handoffs. The Phase 2 reader migration has not been applied to the hosted project.
 
 ## Phase 1 closure integration on the v2 screens
 
