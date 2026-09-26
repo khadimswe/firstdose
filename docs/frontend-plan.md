@@ -60,3 +60,35 @@ Rules the layer enforces:
 1. Run `npm run lint && NEXT_PUBLIC_DATA_SOURCE=mock npm run build`.
 2. Check each screen at its target size, with `/sim` in a second tab, one beat at a time. The network panel shows only same-origin requests.
 3. Check the diff has no keys and no drug or label text typed into `app/` or `components/`.
+
+## v2 screen changes (Phase 6, after the 11 AM workshop)
+
+Spec: `docs/spec-v2-coordinator.md`. PLAN.md rows 6.x carry the status.
+
+**Before 11 AM, nothing on screen changes.** The workshop answers decide three things (PLAN.md → W1, W3, W6):
+- the lead;
+- the `/coordinator` header;
+- the pitch.
+
+Rules that apply to every change:
+- **Copy follows PLAN D8.** Screens say "first fill pending" and "pharmacy fill confirmed", and never claim a patient started or recovered. Every patient sentence still comes from `templates.json`.
+- **Nothing in `mock/*.json` changes.** New stand-in labels, such as DocUpdate, extend `<StandIn>` in code (PLAN C4).
+- **Live mode comes from PR #9.** Its hook subscribes with `subscribe(onInsert, onRunChange, onError, onSync)`, and screens keep reading only `useEvents()`.
+
+| Row | Screen | Change | Depends on |
+|---|---|---|---|
+| 6.2 | `/coordinator` → home | `/` opens it (the screen index moves to `/screens`). See the list below this table. | W1, W3; C1 for the seeded week (6.1); C2 for the marks |
+| 6.3 | `/doctor` | Becomes an alerts inbox plus the before-visit card. The order panel reads "Sent from DocUpdate (stand-in)". The first handoff shows "Invite your coordinator". | W1; 6.4 to persist the invite |
+| 6.10 | `/board` | Each lane shows whose move it is: Doctor / Coordinator / Patient / Pharmacy. | none |
+| 6.7 | `/access` | New tiles: coordinators active this week, fixes per coordinator (aggregate only). | 6.4 + Minh's rollup |
+| 6.6 | `/coordinator` | "Likely colleagues at this practice → Invite" from `/api/npi`. Names are hidden, labelled "public NPPES record, not users". | 6.2 + the API |
+| 6.8 | `/coordinator` → `/patient` | The coordinator approves a templated patient message, voiced with ElevenLabs in the patient's language (Spanish for Maria). Reuses PR #3's `scripts/tts.mjs` and the board's unlock-on-click pattern. Never medical advice. | 6.2; C3 for the template |
+
+**The new `/coordinator` home (6.2):**
+- A summary strip: stuck / waiting / fill confirmed this week.
+- The queue sorted by time stuck.
+- "Reached patient / Left message" marks.
+- The header from W3: "FirstDose for DocUpdate · Access queue" or "An Ascend skill for the practice".
+- The desk table stays, with cards on a phone.
+
+**Cut order at 2 PM:** Grok voice → 6.6 → 6.7 → 6.8 → 6.10. **Never cut** the coordinator queue with its one-tap fix, the doctor alert, the pharmacy re-run, the verified label, or who sees what.

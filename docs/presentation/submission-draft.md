@@ -1,3 +1,5 @@
+> **Superseded 2026-09-26 09:40:** the submission is now coordinator-first. Source of truth: `docs/spec-v2-coordinator.md`. This draft gets rewritten in 6.9 and at the 9 PM claims freeze.
+
 # FirstDose submission draft
 
 Prepared September 26, 2026. **Working draft, not ready to submit.** Update against a reviewed release SHA and the current event form. This copy describes the inspected prototype, not a completed backend. Deem owns final prose; all owners verify their claims.

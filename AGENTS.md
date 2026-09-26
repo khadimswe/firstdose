@@ -5,6 +5,7 @@ Read these before changing anything in FirstDose.
 1. **This is Next.js 16**, which differs from most training data: route `params` are Promises, `PageProps` / `LayoutProps` are global helpers, and Turbopack is the default. Read the relevant guide in `node_modules/next/dist/docs/` before writing route code.
 2. **`PLAN.md`** holds status, owners, decisions and hard rules. Change status only in separate `status: <task#> <emoji> <description>` commits.
 3. **Specs:**
+   - `docs/spec-v2-coordinator.md`: the v2 coordinator-first product spec (read its top section first); PLAN.md Phase 6 tracks it.
    - `docs/IMPLEMENTATION.md`: reference task steps; current priorities and ownership are in PLAN.md.
    - `docs/architecture.md`: routes, tables, external services.
    - `docs/frontend-plan.md`: the screens and the `useEvents()` data layer.

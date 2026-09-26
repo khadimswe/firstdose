@@ -1,3 +1,5 @@
+> **Superseded 2026-09-26 09:40 for scope and story:** v2 is coordinator-first (`docs/spec-v2-coordinator.md`); PLAN.md Phase 6 holds the current cut order. The evidence and quality bars below still apply.
+
 # FirstDose: conditions for a competitive demo
 
 Updated September 26, 2026. These are our execution targets, not an official judging rubric or a prediction of an award. Read alongside the [winner evidence](research/winner-lessons.md) and [entry requirements](research/tracks-and-requirements.md).

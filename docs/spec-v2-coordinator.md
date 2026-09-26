@@ -7,8 +7,9 @@ Sat Sep 26, 2026 · Deem · Supersedes the doctor-first spec. Final lead (coordi
 - **This spec changes the story and the screens, not the engine.** The loop, router, mock contract and who-sees-what are unchanged.
 - **Read with it:** `PLAN.md` (v2 tasks are rows 6.x), `docs/architecture.md`, `docs/frontend-plan.md`, `mock/*.json`.
 - **Supersedes:** the doctor-first framing in `docs/presentation/demo-script.md` and `pitch-and-qa.md` (banners added; they get rewritten 12–2 PM after the workshop), and the v1 spec's "Who it's for" section.
-- **Gate:** no screen changes before the 11 AM workshop answers, except 6.1 (seed the week). Q1's answer picks the lead (coordinator vs doctor); Q3's answer picks the header (DocUpdate vs Ascend).
+- **Gate:** no screen changes before the 11 AM workshop answers, except 6.1 (seed the week). Q1's answer picks the lead (coordinator vs doctor); Q3's answer picks the header (DocUpdate vs Ascend); Q6's answer shapes the pitch (what the first staff account does). PLAN.md tracks them as W1, W3 and W6.
 - **Status updates:** tick the 6.x rows in `PLAN.md` with `status:` commits, same as every other task.
+- **Screen copy (PLAN D8):** screens use the templates' fill wording, "first fill pending" and "pharmacy fill confirmed". Nothing on screen claims a patient started or recovered. "A patient who never started looks exactly like a drug that doesn't work" stays as the spoken problem statement. The demo and lines below follow this.
 
 ## The idea
 
@@ -34,10 +35,10 @@ DocUpdate already promises "direct access to reps, samples and patient support."
 
 | Person | How often | What they see | What they do |
 |---|---|---|---|
-| **Access coordinator** (main user) | Every workday, first thing | Morning summary ("3 stuck, 2 waiting, 11 started this week"), then a queue sorted by who's slipping soonest, each with a reason | One fix per stuck patient (re-send copay card, request bridge sample, connect to access support); mark "Reached patient" / "Left message" |
-| **Doctor** | A few alerts a week, plus before visits | Alert when a fix needs them; note before a follow-up: "James never started Humira. Consider this before escalating" | One tap: "Send to my coordinator" (first time: "Invite your coordinator"). Watch buzzes only when it matters |
+| **Access coordinator** (main user) | Every workday, first thing | Morning summary ("3 stuck, 2 waiting, 11 fills confirmed this week"), then a queue sorted by who's slipping soonest, each with a reason | One fix per stuck patient (re-send copay card, request bridge sample, connect to access support); mark "Reached patient" / "Left message" |
+| **Doctor** | A few alerts a week, plus before visits | Alert when a fix needs them; note before a follow-up: "James Carter: Humira first fill confirmation is still pending. Review fill status before the visit." | One tap: "Send to my coordinator" (first time: "Invite your coordinator"). Watch buzzes only when it matters |
 | **Patient** | Once, when stuck | Copay card or support link on their phone | "Use at pharmacy" |
-| **Market Access** (buyer) | Weekly | Patients recovered, time to first fill, stuck reasons, coordinators active. No names | Pays per patient recovered, never per prescription |
+| **Market Access** (buyer) | Weekly | First fills confirmed, time to first fill, stuck reasons, coordinators active. No names | Pays per confirmed first fill, never per prescription |
 
 ## Market size: the people Impiricus doesn't reach yet
 
@@ -64,7 +65,7 @@ There's no government job code for "access coordinator," so we size it three way
 
 ## What changes
 
-The core loop is unchanged: prescribe → stuck → alert → handoff → fix → re-run → started.
+The core loop is unchanged: prescribe → stuck → alert → handoff → fix → acknowledgment → separate pharmacy confirmation → fill confirmed.
 
 | | Item | Owner | Size |
 |---|---|---|---|
@@ -76,7 +77,7 @@ The core loop is unchanged: prescribe → stuck → alert → handoff → fix �
 | Change | `/doctor` shrinks to an alerts inbox + before-visit card. Order panel labelled "Sent from DocUpdate (stand-in)". First handoff shows "Invite your coordinator" | Deem | small |
 | Change | `/board` shows whose move it is: Doctor, Coordinator, Patient, Pharmacy | Deem | small |
 | Add | `/access` tiles: coordinators active this week, fixes per coordinator | Deem + Minh | small |
-| Add | `/sim` "Seed the week": pre-load 10–15 started and waiting patients so the queue looks like a real Monday | Vinh | small |
+| Add | `/sim` "Seed the week": pre-load 10–15 fill-confirmed and waiting patients so the queue looks like a real Monday | Vinh | small |
 | Add | `coordinator_id` on cases; `coordinator_invited` event. Router unchanged | Vinh | small |
 | Cut | "The doctor opens it every morning" | — | — |
 | Cut first if behind | Grok voice handoff (keep the tap) | Vinh | — |
@@ -135,16 +136,16 @@ Judge 1 = coordinator. Judge 2 = doctor (wears the watch), then becomes Maria vi
 
 | Time | What happens | What we say |
 |---|---|---|
-| 0:00 | Big screen: coordinator queue, Monday morning. "3 stuck, 2 waiting, 11 started" | "Impiricus reaches the doctor who writes the prescription. This is the person who gets the patient on it. She opens this every morning." |
+| 0:00 | Big screen: coordinator queue, Monday morning. "3 stuck, 2 waiting, 11 fills confirmed" | "Impiricus reaches the doctor who writes the prescription. This is the person who gets the patient on it. She opens this every morning." |
 | 0:20 | Judge 2 prescribes Otezla for Maria, "sent from DocUpdate." Real DailyMed label | "DocUpdate sends the script. Today, that's where the story ends." |
 | 0:40 | Pharmacy: declined at quoted price. Board turns red. Judge 2's watch buzzes | "A patient who never started looks exactly like a drug that doesn't work." |
 | 0:55 | Judge 2 taps "Send to my coordinator." First time: "Invite your coordinator" | "One tap just brought the person who gets patients started into the Impiricus network." |
 | 1:10 | Maria jumps to the top of Judge 1's queue with the reason and one fix: "Re-send copay card (commercial: eligible)." Judge 1 taps it | "One tap, not three phone calls." |
 | 1:25 | Hand Judge 2 the QR: "Now you're Maria." Their phone gets the card | — |
-| 1:35 | Judge 2 taps "Use at pharmacy." Price $410 → $0, chime, board green, watch: "Maria started" | "The doctor heard about it twice: when it broke, and when it was fixed." |
+| 1:35 | Judge 2 taps "Use at pharmacy": acknowledged, fill still pending. Vinh fires the separate pharmacy confirmation: price $410 → $0 (demo), chime, board reaches "Fill confirmed", watch: "Maria: Otezla pharmacy fill confirmed" | "The doctor heard about it twice: when it broke, and when it was fixed." |
 | 2:00 | James on Humira: 75 Prior Authorization Required, unable to reach after 3 calls. Judge 1 taps "Connect to access support" | "Different reason, different fix. The rule picks it, not AI." |
-| 2:30 | Doctor's before-visit card: "James never started Humira. Consider this before escalating." Real boxed warning | "This is the only screen the doctor needs." |
-| 2:50 | `/access`: recovered, time to first fill, coordinators active. Who-sees-what | "Market Access pays per patient recovered. Impiricus gets a daily user it never had." |
+| 2:30 | Doctor's before-visit card: "James Carter: Humira first fill confirmation is still pending. Review fill status before the visit." Boxed warning shown verbatim once Humira's label is verified | "This is the only screen the doctor needs." |
+| 2:50 | `/access`: first fills confirmed, time to first fill, coordinators active. Who-sees-what | "Market Access pays per confirmed first fill. Impiricus gets a daily user it never had." |
 | 3:30 | Close | "FirstDose makes the coordinator a daily Impiricus user and makes every doctor alert worth reading." |
 
 ## Lines to say word for word
@@ -153,7 +154,7 @@ Judge 1 = coordinator. Judge 2 = doctor (wears the watch), then becomes Maria vi
 - **The gap:** "DocUpdate sends the script. After that, nobody can see whether the patient started."
 - **Why doctors care:** "A patient who never started looks exactly like a drug that doesn't work."
 - **Why they'll trust it:** "The doctor hears about it twice: when it broke, and when it was fixed."
-- **The buyer:** "Market Access pays per patient recovered, never per prescription."
+- **The buyer:** "Market Access pays per confirmed first fill, never per prescription."
 
 ## Judge questions
 
@@ -163,7 +164,7 @@ Judge 1 = coordinator. Judge 2 = doctor (wears the watch), then becomes Maria vi
 | Would a coordinator use this daily? | Chasing new starts by phone is already their whole job. This replaces guessing with a list of who's stuck and why. (Keomaria's quote here, if we get it) |
 | Won't doctors ignore more alerts? | The doctor gets only alerts that need them, plus one note before the visit. Silence means it worked |
 | Doesn't DocUpdate already track this? | It sends the script. We found nothing that tells the practice the patient never started, or why. (Confirm at 11 AM) |
-| Doesn't Surescripts flag abandonment? | It says a script wasn't picked up. We say why, route the one fix that matches, and prove recovery to Market Access |
+| Doesn't Surescripts flag abandonment? | It says a script wasn't picked up. We say why, route the one fix that matches, and show Market Access the confirmed first fills |
 | Why not just build this into DocUpdate yourselves? | That's the idea: FirstDose is the missing step inside DocUpdate, after the script is sent. We built it against a stand-in so you can see it working today |
 | Does pharma see my patients? | No. Names, chart and fill status stay in the practice. Pharma sees counts only |
 | Won't this push doctors toward drugs? | It acts only after the doctor chose the drug and never suggests one. Nobody is paid per prescription |

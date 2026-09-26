@@ -1,3 +1,5 @@
+> **Superseded 2026-09-26 09:40:** the product is now coordinator-first. Source of truth: `docs/spec-v2-coordinator.md`. This doc stays as a reference snapshot of the v1 doctor-first proposal.
+
 # FirstDose product proposal
 
 Updated September 25, 2026. Team: Vinh, Minh, Deem. The team split is accepted; this document is the working product and presentation brief. It does not claim the planned backend already exists.
