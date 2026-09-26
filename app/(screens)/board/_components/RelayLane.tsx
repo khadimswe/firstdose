@@ -1,6 +1,6 @@
 import { clock, fill, money } from "@/components/copy/fill";
 import { templates } from "@/components/copy/templates";
-import { boardStop, hasConfirmedFill, isConfirmedFill } from "@/components/data/derive";
+import { boardStop, hasConfirmedFill, isConfirmedFill, waitingOn } from "@/components/data/derive";
 import type { CaseView, FillEvent } from "@/components/data/types";
 import { cn } from "@/lib/utils";
 
@@ -47,6 +47,12 @@ export function RelayLane({ c }: { c?: CaseView }) {
             <div className="text-xl text-muted-foreground">
               {c.drug.brand} {c.drug.strength}
             </div>
+            {waitingOn(c) && (
+              <div className="mt-3 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-lg">
+                <span className="text-muted-foreground">Waiting on</span>
+                <span className="font-semibold">{waitingOn(c)}</span>
+              </div>
+            )}
           </>
         )}
       </div>
