@@ -31,6 +31,27 @@ DocUpdate already promises "direct access to reps, samples and patient support."
 | **Patient** | Once, when stuck | Copay card or support link on their phone | "Use at pharmacy" |
 | **Market Access** (buyer) | Weekly | Patients recovered, time to first fill, stuck reasons, coordinators active. No names | Pays per patient recovered, never per prescription |
 
+## Market size: the people Impiricus doesn't reach yet
+
+There's no government job code for "access coordinator," so we size it three ways: sourced facts, one calculation, and one clearly labelled estimate.
+
+| Layer | Number | How we got it |
+|---|---|---|
+| Impiricus's reach today | **1M+ opted-in HCPs** | Impiricus homepage: "Trusted by 1M+ Opted-In HCPs." DocUpdate is built for licensed prescribers only |
+| Doctors doing direct patient care | **866,460** | AAMC 2025 Key Findings (2024 data) |
+| Access work per doctor | **13 hours a week**, 39 prior authorizations | AMA survey of 1,000 physicians, late 2024 ("physicians and their staff") |
+| Practices with staff who do only prior auth | **40% of physicians** | Same AMA survey |
+| **Access workload nationally** | **≈ 280,000 full-time jobs' worth, every week** | 866,460 doctors × 13 h ÷ 40 h. Our calculation; includes some doctor time |
+| **Broad pool: medical assistants in doctors' offices** | **≈ 467,000** | BLS: 833,900 medical assistant jobs in 2025, 56% in offices of physicians |
+| **Core users: dedicated access / prior-auth staff** | **≈ 70,000 to 115,000** | *Estimate.* 40% of 866,460 doctors ≈ 347,000 doctors with dedicated staff, at one dedicated person per 3 to 5 doctors. Ask Keomaria how many her office has |
+
+**Say it like this:** "Behind Impiricus's million doctors are about 467,000 medical assistants in their offices, and roughly 280,000 full-time jobs' worth of prior-auth and access work every week. None of Impiricus's products are built for them. FirstDose is."
+
+**Rules for these numbers on screen:**
+- Say "about" or "roughly" for the two calculated numbers, and "our estimate" for the 70k–115k range. Never show the estimate as a sourced fact.
+- The 280,000 counts hours, not people, and it includes some doctor time. Call it "full-time jobs' worth of work," not "280,000 coordinators."
+- If a judge asks how many access coordinators exist: "There's no official count. The closest real numbers are 467,000 medical assistants in doctors' offices and 13 hours of access work per doctor per week. Our estimate for staff who do only this is 70 to 115 thousand."
+
 **Is a coordinator an HCP?** They're often MAs, nurses or reimbursement specialists. Ask at 11 AM. If Impiricus counts only prescribers, the doctor stays the HCP they engage and the coordinator is the practice-level user who turns that engagement into a started patient. Until confirmed, say "the person who gets patients started," not "a new HCP."
 
 ## What changes
@@ -131,4 +152,8 @@ Judge 1 = coordinator. Judge 2 = doctor (wears the watch), then becomes Maria vi
 
 - [DocUpdate](https://www.docupdate.io/) · [App Store](https://apps.apple.com/us/app/docupdate/id6478404244) · [Google Play](https://play.google.com/store/apps/details?id=com.impericus.prescriber&hl=en_US)
 - [Impiricus solutions](https://impiricus.com/our-solutions/), products, homepage; Wallet launch; Ascend launch (Nov 2025); QPharma (Aug 2026) and Medvantx (Sep 2026) integrations
+- [Impiricus homepage](https://impiricus.com/) ("Trusted by 1M+ Opted-In HCPs")
+- [AAMC 2025 Key Findings](https://www.aamc.org/data-reports/data/2025-key-findings) (866,460 direct patient care physicians, 2024)
+- [AMA prior authorization survey](https://www.ama-assn.org/practice-management/prior-authorization/fixing-prior-auth-nearly-40-prior-authorizations-week-way) (39 PAs and 13 hours per physician per week; 40% with dedicated staff)
+- [BLS Occupational Outlook: Medical Assistants](https://www.bls.gov/ooh/healthcare/medical-assistants.htm) (833,900 jobs in 2025; 56% in offices of physicians)
 - FirstDose repo `khadimswe/firstdose`, v1 spec, one-pager, build plan
