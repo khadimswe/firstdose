@@ -1,5 +1,7 @@
 # Phase 6 coordinator linkage: backend handoff
 
+**September 26 web integration:** `components/data/coordinator-live.ts` and `coordinator.ts` now connect Profile, the approve sheet, Prescribers, the queue and sidebar to this API. Live mode ignores local approvals. Typed and voice-confirmed handoffs await persisted approval and assignment; partial retries resume from server state. Commands remain disabled until the coordinator snapshot and the fill adapter report the same run, including approval before any prescription. Tests cover endpoint lag in either direction, consecutive resets, duplicate taps and failed writes. C9's separate Dr. Rivera fixture is merged. See [the current integration/deployment handoff](phase6-integration.md); the original backend-only scope and historical validation below describe PR #19.
+
 Tasks 6.4 and C7/6.12. Branch `backend/coordinator-links` is based on `main` at `4c80650`, after PRs #15 (corrected labels and second alert) and #7 (access/simulator) merged. It has no seed-week runtime dependency. Review this focused diff directly against `main`. No hosted migration, deployment or real staff invitation is part of this change.
 
 ## Reviewable contract for Deem and Minh
