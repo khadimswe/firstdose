@@ -1,4 +1,4 @@
-# Notes for Vihn (things the frontend needs from your side)
+# Notes for Vinh (things the frontend needs from your side)
 
 Deem appends here instead of touching your code. Clear a line when it's done.
 
@@ -6,11 +6,11 @@ Deem appends here instead of touching your code. Clear a line when it's done.
 - [ ] `mock/labels.json` filled from SPL with `byte_exact: true`
 - [ ] Supabase tables match `mock/patients.json` (`rx_cases`) and `mock/events.json` (`fill_events`), same field names, so `useEvents()` is a one-line switch
 - [ ] Realtime channel name: `fill_events` (insert only)
-- [ ] `/api/sim/fire` endpoint: POST `{ event_id }` replays that event from `mock/events.json` into Supabase, so `/sim` works the same in both modes
+- [ ] `/api/sim/fire` endpoint: POST `{ ids: string[] }` replays those events in order from `mock/events.json` into Supabase, so `/sim` works the same in both modes
 - [ ] ntfy body ≤ 200 chars; use `templates.json → wrist`
 - [ ] `/api/access/summary` returns `{ recovered, median_ttff_seconds, reason_tally: {REASON: n} }` from Tiger `daily_ttff`
 
-## Supabase mode for `useEvents()` (needed for the 4 AM gate on more than one device)
+## Supabase mode for `useEvents()` (needed for the core gate on more than one device)
 
 Mock mode only syncs tabs on one laptop. For the iPad, the judge's phone and the big screen to update together, `useEvents()` needs a live source. The interface is `EventSource` in `components/data/types.ts`:
 
@@ -18,8 +18,8 @@ Mock mode only syncs tabs on one laptop. For the iPad, the judge's phone and the
   - `load()`: rows already in `fill_events`, oldest first
   - `subscribe(onInsert)`: Realtime inserts on `fill_events`; returns an unsubscribe function
   - `act(action, rx, fix)`: the screen buttons, one per route in `docs/architecture.md`: `prescribe` → `/api/rx`, `handoff` → `/api/handoff`, `fix` → `/api/fix`, `use_card` → `/api/patient/use`
-  - `fire(ids)`: `/sim` only, `POST /api/sim/fire` for each id, in order
-  - `reset()`: `POST /api/sim/reset` (clears `fill_events` for a fresh run)
+  - `fire(ids)`: `/sim` only, one `POST /api/sim/fire` with `{ ids }`, in order
+  - `reset()`: `POST /api/sim/reset`; agree new-run signal and hook reload before implementation (see architecture)
   - `accessSummary()`: `GET /api/access/summary`
 - [ ] Keep each row's `id` equal to the mock event id (`ev_01`...) so `/sim` can tick off fired beats
 - [ ] `/api/sim/reset` endpoint
@@ -28,7 +28,7 @@ Mock mode only syncs tabs on one laptop. For the iPad, the judge's phone and the
 
 - [ ] Pull `main` first. The shadcn install changed `package.json` and `package-lock.json`. Keep both dependency sets and run `npm install` to regenerate the lockfile; don't hand-merge it.
 - [ ] Implement `EventSource` from `components/data/types.ts` as it is on `main` (it includes `act()`).
-- [ ] `docs/architecture.md` (yours): the "Frontend contract" section still shows the old `useEvents()` shape; point it at `components/data/types.ts`. It also says `/api/sim/fire { event_id }` while IMPLEMENTATION 1.9 says `{ ids }`. Pick one; `lib/realtime.ts` hides it from the screens either way.
+- [x] Documentation aligned on this planning branch: frontend contract points to `types.ts` / `useEvents.ts`; `/api/sim/fire` uses `{ ids: string[] }`. Vinh keeps the existing four command routes. This check marks documentation only, not implemented endpoints.
 
 ## Template change to agree on (from the design pass)
 

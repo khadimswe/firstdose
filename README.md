@@ -6,7 +6,7 @@ FirstDose turns a stuck first fill into a reviewed access task, then checks for 
 
 ## Current state
 
-Main at `80646f7` now includes Deem's six frontend views, scripted mock cases, coordination dashboard and task trackers. This planning branch is rebased onto that push. Backend APIs, cross-device Realtime, real provider clients and verified label data are still pending. See [current status](docs/STATUS.md) for evidence and limits.
+This planning branch includes main `b11a01e`: six frontend views, scripted cases, state-based button guards, replay/autoplay and Deem's coordination documents. Backend APIs, cross-device Realtime, real provider clients and verified label data are still pending. See [current status](docs/STATUS.md) for evidence and limits.
 
 Fictional patients, pharmacy events, prices and partner services are explicitly simulated. A fill signal does not prove ingestion, clinical recovery or that our intervention caused the fill. Ascend/Wallet connections are stand-ins, not approved live integrations.
 
@@ -36,7 +36,7 @@ Use [PLAN.md](PLAN.md) for current execution and the presentation pack for demo 
 
 - [Objective and product proposal](docs/product-proposal.md)
 - [Winning conditions and scope priorities](docs/winning-conditions.md)
-- [All phases, owners and gates](docs/phases/README.md)
+- [Current execution, owners and gates](PLAN.md)
 - [Tracks, sponsors and unconfirmed requirements](docs/research/tracks-and-requirements.md)
 - [Technology owners, implementation gaps and prize evidence](PLAN.md#selected-technology-coverage)
 - [Past-winner evidence and lessons](docs/research/winner-lessons.md)
