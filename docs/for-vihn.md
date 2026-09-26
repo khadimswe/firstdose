@@ -24,3 +24,7 @@ Mock mode only syncs tabs on one laptop. For the iPad, the judge's phone and the
 - [ ] Keep each row's `id` equal to the mock event id (`ev_01`...) so `/sim` can tick off fired beats
 - [ ] `/api/sim/reset` endpoint
 - [ ] (optional) `public/audio/started-maria.mp3` for the ElevenLabs line; the board plays it if present
+
+## Template change to agree on (from the design pass)
+
+- [ ] `templates.json → coordinator_card.fix_line` renders as "Suggested fix: Re-send copay card (Impiricus Wallet (stand-in))", brackets inside brackets, because `fixes[].via` already ends in "(stand-in)". Proposal: `"Suggested fix: {fix_label} · {fix_via}"`. Frontend picks it up with no code change.
