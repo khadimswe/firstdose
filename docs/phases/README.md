@@ -1,8 +1,8 @@
 # Phase plans
 
-One file per phase, written by whoever owns it, only as deep as it needs to be. PLAN.md is the scaffold; these are the details.
+Superseded. The per-phase files planned here were never needed:
 
-- `phase-1-core-loop.md` (Vihn + Deem)
-- `phase-2-wow.md` (Deem: board + price counter; Vihn: Tiger + classifier)
-- `phase-4-voice-qr.md` (Vihn: Grok; Deem: QR flow)
-- `phase-5-ship.md` (Deem)
+- Status, owners and hard rules: `PLAN.md`
+- Task-level steps for both lanes: `docs/IMPLEMENTATION.md`
+- Screens and the frontend data layer: `docs/frontend-plan.md`
+- Routes, tables and external services: `docs/architecture.md`

@@ -1,6 +1,6 @@
 # About FirstDose
 
-*Devpost "About the project" draft. Freeze claims Sat 9 PM. Every number here is traced in `docs/facts.md`.*
+*Devpost "About the project" draft. Freeze claims Sat 9 PM. Every number here is traced in the sourced facts sheet in `notes/` (shared by DM, not in the repo).*
 
 ## Inspiration
 

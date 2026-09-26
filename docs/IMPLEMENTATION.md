@@ -53,7 +53,7 @@ firstdose/
     api/rx|handoff|fix|patient/use|sim/fire|sim/reset|voice|access/summary|label/[drug_id]   (V)
   components/
     data/types.ts               # EventSource, FillEvent, CaseView, AccessSummary (D defines)
-    data/{catalog,store,derive,source-mock,useEvents}.ts   (D)
+    data/{catalog,store,derive,mode,useEvents}.ts   (D; store.ts is the mock source)
     copy/{templates,fill}.ts    (D)
     ui/ + StandIn, LabelCard, StatusPill, ReasonChip, SideBadge, WristMirror, WhoSeesWhat   (D)
   lib/
@@ -115,8 +115,16 @@ export interface EventSource {
 
 `act()` maps: `prescribe` → `POST /api/rx { patient_id, drug_id }`, `handoff` → `POST /api/handoff { case_id }`, `fix` → `POST /api/fix { case_id, fix }`, `use_card` → `POST /api/patient/use { case_id }`. Rows keep the mock event `id` (`ev_01`…) so `/sim` can tick off fired beats.
 
-- `useEvents()` → `{ mode, script, fired, cases, catalog, access, fire, fireNext, reset }`.
+- `useEvents()` → `{ mode, script, beats, fired, firedIds, cases, catalog, access, fire, act, canAct, reset }`. Screens call `act(action, caseId)`; only `/sim` calls `fire(ids)`.
 - Test: `tests/derive.test.ts`: firing `ev_01..ev_06` gives Maria `status: "stuck"`, `reason: "DECLINED_AT_PRICE"`; firing through `ev_12` gives `status: "started"`; `accessSummary` after `ev_13` returns `recovered: 1` and has no key named `name` or `patient_id`.
+
+### Task 1.13 (D): Live source for `useEvents()`
+
+**Files:** `components/data/{mode,live,useEvents}.ts`
+
+- [ ] **Step 1 (before 1.9):** `canAct` follows case state instead of mock event ids: `prescribe` if not ordered; `handoff` if `stuck`; `fix` if `handed_off` with a fix chosen; `use_card` if `fix_sent` with `RESEND_COPAY_CARD` and the card not yet used. It mirrors 1.11's guards, so buttons disable correctly whatever ids the API routes write.
+- [ ] **Step 2 (after 1.9):** `DATA_MODE = REQUESTED_MODE`. `live.ts` holds fired events from `source.load()` plus `source.subscribe()` inserts (deduped by `id`) and re-fetches `accessSummary()` after inserts (500 ms debounce). In live mode `act` → `source.act(action, rx, fix)`, `fire` → `source.fire(ids)`, `reset` → `source.reset()`.
+- [ ] **Step 3:** Maria's loop across two browsers in `supabase` mode. This is the Sat 4 AM checkpoint.
 
 ### Task 1.7 (V): Supabase schema + seed
 

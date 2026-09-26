@@ -23,7 +23,7 @@ Files you own exclusively:
 - `app/(screens)/**`
 - `components/**`
 - `app/page.tsx`, `app/layout.tsx`, `app/globals.css`
-- `docs/**` (except `docs/architecture.md`, which Vihn owns), `README.md`, `ABOUT.md`
+- `docs/**` (except `docs/architecture.md`, which Vihn owns; the Devpost draft is `docs/submission.md`), `README.md`
 - `.github/workflows/**`
 
 Shared (⚠️ CONTRACT commits, tell Vihn first): `mock/*.json`, `package.json`.
@@ -45,6 +45,7 @@ Shared (⚠️ CONTRACT commits, tell Vihn first): `mock/*.json`, `package.json`
 - [x] **1.4** `/doctor`.
 - [x] **1.5** `/coordinator`.
 - [x] **1.6** `/patient/[id]`.
+- [ ] **1.13** Wire `useEvents()` to Vihn's `lib/realtime.ts` (live source; buttons enabled by case state). Needed for the checkpoint.
 
 **CHECKPOINT Sat 4 AM:** Maria's loop across two devices in `supabase` mode.
 

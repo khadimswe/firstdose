@@ -73,7 +73,7 @@
 | 1.2 | `EventSource` interface published to Vihn | `components/data/types.ts` | **Deem** | ✅ | 1.1 | ⚠️ CONTRACT. Vihn implements it in 1.9. |
 | 1.3 | `/sim` bare: Reset + Fire per beat | `app/(screens)/sim/**` | **Deem** | ✅ | 1.1 | Drives every other screen in a second tab. |
 | 1.4 | `/doctor`: prescribe → label card → alert → "Send to my coordinator" | `app/(screens)/doctor/**` | **Deem** | ✅ | 1.1 | iPad 1180×820. Never suggests a drug. |
-| 1.5 | `/coordinator`: queue card, ONE fix button | `app/(screens)/coordinator/**` | **Deem** | ✅ | 1.1 | Phone 390×844. |
+| 1.5 | `/coordinator`: work queue, ONE fix button per case | `app/(screens)/coordinator/**` | **Deem** | ✅ | 1.1 | Desk-first table (md and up); cards + pinned fix button on a phone (390×844). |
 | 1.6 | `/patient/[id]`: Wallet pass stand-in, "Use at pharmacy" | `app/(screens)/patient/[id]/**` | **Deem** | ✅ | 1.1 | No barcode, BIN/PCN or member number. |
 | 1.7 | Supabase schema: `patients`, `drugs`, `rx_cases`, `fill_events`, `labels`; seed from `mock/` | `supabase/migrations/**`, `scripts/seed.ts` | **Vihn** | ⬜ | 0.4, 0.6 | Field names identical to `mock/`. |
 | 1.8 | Router + table test (every reason × insurance; Medicare never gets a copay card) | `lib/server/router.ts`, `tests/router.test.ts` | **Vihn** | ⬜ | 0.4 | Pure function over `reasons.json → router.rows`. No AI. |
@@ -81,6 +81,7 @@
 | 1.10 | Label pipeline: RxNorm → DailyMed SPL → `labels` + byte-exact test | `lib/server/label.ts`, `tests/label.test.ts`, `mock/labels.json` | **Vihn** | ⬜ | 0.6 | Setids hardcoded. Fills RxCUIs + `labels.json`. |
 | 1.11 | Action routes: `/api/rx`, `/api/handoff`, `/api/fix`, `/api/patient/use` | `app/api/**` | **Vihn** | ⬜ | 1.7, 1.8 | Guarded transitions so a double tap can't double-fire. |
 | 1.12 | ntfy on `alert_sent` and `started` | `lib/server/ntfy.ts` | **Vihn** | ⬜ | 0.8, 1.9 | Action button → `/api/handoff`. |
+| 1.13 | Wire `useEvents()` to `lib/realtime.ts`: live source, buttons enabled by case state | `components/data/**` | **Deem** | ⬜ | 1.9 | `mode.ts` runs mock until this lands, whatever the env var says. Needed for the checkpoint. |
 
 **CHECKPOINT Sat 4 AM:** Maria's loop runs end to end across two devices in `supabase` mode: prescribe → stuck → wrist buzz → handoff → one fix → patient taps → re-run → started buzz. If not, stop and fix together before Phase 2.
 
@@ -121,7 +122,7 @@
 | 5.1 | Claims audit: every named product is really called in code; gitleaks full history | `docs/claims-audit.md` | **Vihn** | ⬜ | all | Sat 9 PM claims freeze. |
 | 5.2 | Stills of every judge screen (desktop + phone) from the deployed origin | `docs/stills/` | **Deem** | ⬜ | 2.6 | Look at each one. |
 | 5.3 | Video 2-3 min | `docs/video/` | **Deem** (Vihn edits once backend is frozen) | ⬜ | 5.2 | Done by Sun 5 AM. |
-| 5.4 | Devpost writeup + poster | `ABOUT.md` | **Deem** | ⬜ | 5.1 | |
+| 5.4 | Devpost writeup + poster | `docs/submission.md` | **Deem** | ⬜ | 5.1 | |
 | 5.5 | Flip repo public; submit to **Devpost AND expo.hexlabs.org**; reload-verify both | n/a | **Deem** | ⬜ | 5.4 | By Sun 6:30 AM. |
 
 ---
@@ -133,8 +134,8 @@ Full detail in `docs/architecture.md`. Summary:
 | Contract | Owner | Consumers | Definition |
 |---|---|---|---|
 | `mock/*.json` shapes | both | everyone | Frozen. Changes are ⚠️ CONTRACT commits. |
-| `useEvents()` | Deem | all screens | `{ mode, script, fired, cases, catalog, access, fire(ids), fireNext(caseId, type), reset() }` |
-| `EventSource` | Deem defines, Vihn implements | `useEvents()` | `load() / subscribe(onInsert) / fire(ids) / reset() / accessSummary()` in `components/data/types.ts` |
+| `useEvents()` | Deem | all screens | `{ mode, script, beats, fired, firedIds, cases, catalog, access, fire(ids), act(action, caseId), canAct(action, caseId), reset() }`; `action` is `prescribe \| handoff \| fix \| use_card` |
+| `EventSource` | Deem defines, Vihn implements | `useEvents()` | `load() / subscribe(onInsert) / act(action, rx, fix) / fire(ids) / reset() / accessSummary()` in `components/data/types.ts` |
 | `fill_events` row | Vihn | Deem | `mock/events.json → event_shape` |
 | `router(reason, insurance)` | Vihn | everyone | returns a key of `reasons.json → fixes` |
 | `GET /api/access/summary` | Vihn | Deem | `{ recovered, median_ttff_seconds, reason_tally }`, no patient fields |
