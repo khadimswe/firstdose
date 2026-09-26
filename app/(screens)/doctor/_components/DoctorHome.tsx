@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 
 import { useHandoff } from "./ApproveSheet";
 import { FillLine, sentDate } from "./FillLine";
+import { VoiceHandoff } from "./VoiceHandoff";
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -124,7 +125,7 @@ function BeforeVisitCard({ c, catalog }: { c: CaseView; catalog: Catalog }) {
 
 /** The Prescriber tab: Rx Alerts, before-visit notes, recent patients with fill status. */
 export function DoctorHome() {
-  const { cases: allCases, catalog, canAct } = useEvents();
+  const { cases: allCases, catalog, canAct, mode } = useEvents();
   const cases = liveCases(allCases);
   const { request, sheet } = useHandoff();
   const [query, setQuery] = useState("");
@@ -146,6 +147,8 @@ export function DoctorHome() {
             {alerts.length + visits.length} {alerts.length + visits.length === 1 ? "alert" : "alerts"}
           </span>
         </div>
+        {/* Voice needs the live server session; the offline build has none. */}
+        {mode === "supabase" && alerts.some((c) => canAct("handoff", c.id)) && <VoiceHandoff onConfirm={request} />}
         {alerts.length === 0 && visits.length === 0 && (
           <p className="rounded-2xl border border-white/15 p-4 text-sm text-white/70">
             No alerts. FirstDose tells you only when a new prescription needs you.
