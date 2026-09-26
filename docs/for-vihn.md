@@ -23,7 +23,7 @@ Mock mode only syncs tabs on one laptop. For the iPad, the judge's phone and the
   - `accessSummary()`: `GET /api/access/summary`
 - [ ] Keep each row's `id` equal to the mock event id (`ev_01`...) so `/sim` can tick off fired beats
 - [ ] `/api/sim/reset` endpoint
-- [ ] (optional) `public/audio/started-maria.mp3` for the ElevenLabs line; the board plays it if present
+- [ ] (optional) `public/audio/started-maria.mp3` for the ElevenLabs line. The board only has the WebAudio chime today; Deem wires the mp3 once the file exists
 
 ## Template change to agree on (from the design pass)
 
