@@ -202,6 +202,16 @@ export type AccessSummary = {
 };
 
 /**
+ * The buttons on the screens. Live, each one is an API route in
+ * docs/architecture.md; on mock, each fires the same events that route writes.
+ */
+export type ScreenAction =
+  | "prescribe" // /doctor → POST /api/rx { patient_id, drug_id }: prescribed, label_shown, copay_card_sent
+  | "handoff" // /doctor → POST /api/handoff { case_id }: handoff, fix_chosen
+  | "fix" // /coordinator → POST /api/fix { case_id, fix }: fix_sent
+  | "use_card"; // /patient → POST /api/patient/use { case_id }: copay_card_used … recovered
+
+/**
  * Supabase mode. Vihn implements this in lib/realtime.ts; useEvents() calls it
  * when NEXT_PUBLIC_DATA_SOURCE=supabase. Rows keep the mock event `id` so /sim
  * can tell which beats have fired.
@@ -211,7 +221,9 @@ export interface EventSource {
   load(): Promise<FillEvent[]>;
   /** Calls onInsert for every new fill_events row. Returns an unsubscribe function. */
   subscribe(onInsert: (event: FillEvent) => void): () => void;
-  /** Replays these mock/events.json ids into fill_events, in order (POST /api/sim/fire). */
+  /** A screen button. `rx` gives the route its body (patient_id, drug_id, fix). */
+  act(action: ScreenAction, rx: RxCase, fix: FixKey | null): Promise<void>;
+  /** /sim only: replays these mock/events.json ids, in order (POST /api/sim/fire per id). */
   fire(ids: string[]): Promise<void>;
   /** Clears fill_events for a fresh run (POST /api/sim/reset). */
   reset(): Promise<void>;

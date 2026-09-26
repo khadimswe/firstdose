@@ -17,7 +17,8 @@ Mock mode only syncs tabs on one laptop. For the iPad, the judge's phone and the
 - [ ] `lib/realtime.ts` exporting an object that implements `EventSource`:
   - `load()`: rows already in `fill_events`, oldest first
   - `subscribe(onInsert)`: Realtime inserts on `fill_events`; returns an unsubscribe function
-  - `fire(ids)`: `POST /api/sim/fire` for each id, in order
+  - `act(action, rx, fix)`: the screen buttons, one per route in `docs/architecture.md`: `prescribe` → `/api/rx`, `handoff` → `/api/handoff`, `fix` → `/api/fix`, `use_card` → `/api/patient/use`
+  - `fire(ids)`: `/sim` only, `POST /api/sim/fire` for each id, in order
   - `reset()`: `POST /api/sim/reset` (clears `fill_events` for a fresh run)
   - `accessSummary()`: `GET /api/access/summary`
 - [ ] Keep each row's `id` equal to the mock event id (`ev_01`...) so `/sim` can tick off fired beats

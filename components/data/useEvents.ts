@@ -14,6 +14,7 @@ import type {
   CaseView,
   EventType,
   FillEvent,
+  ScreenAction,
 } from "./types";
 
 const BEATS = beats(SCRIPT);
@@ -35,12 +36,22 @@ async function fire(ids: string[]) {
   setFired(SCRIPT.filter((e) => all.has(e.id)).map((e) => e.id));
 }
 
-/** Fires the whole beat holding the next unfired event of `type` for this case. */
-async function fireNext(caseId: string, type: EventType) {
-  const next = nextEvent(new Set(getSnapshot()), caseId, type);
-  if (!next) return;
-  const beat = BEATS.find((b) => b.events.some((e) => e.id === next.id))!;
-  await fire(beat.events.map((e) => e.id));
+// On mock, each screen button fires the beats holding the same events its live
+// API route writes (docs/architecture.md). use_card also runs the claim re-run.
+const ACTION_EVENTS: Record<ScreenAction, EventType[]> = {
+  prescribe: ["prescribed"],
+  handoff: ["handoff"],
+  fix: ["fix_sent"],
+  use_card: ["copay_card_used", "started"],
+};
+
+async function act(action: ScreenAction, caseId: string) {
+  for (const type of ACTION_EVENTS[action]) {
+    const next = nextEvent(new Set(getSnapshot()), caseId, type);
+    if (!next) return;
+    const beat = BEATS.find((b) => b.events.some((e) => e.id === next.id))!;
+    await fire(beat.events.map((e) => e.id));
+  }
 }
 
 async function reset() {
@@ -58,10 +69,12 @@ export type EventsApi = {
   cases: CaseView[];
   catalog: Catalog;
   access: AccessSummary;
+  /** /sim only: fire these script events. */
   fire: (ids: string[]) => Promise<void>;
-  fireNext: (caseId: string, type: EventType) => Promise<void>;
-  /** True when fireNext(caseId, type) would fire something. */
-  canFire: (caseId: string, type: EventType) => boolean;
+  /** A screen button (prescribe, handoff, fix, use_card) for one case. */
+  act: (action: ScreenAction, caseId: string) => Promise<void>;
+  /** True when act(action, caseId) has something left to do. */
+  canAct: (action: ScreenAction, caseId: string) => boolean;
   reset: () => Promise<void>;
 };
 
@@ -81,8 +94,9 @@ export function useEvents(): EventsApi {
       catalog: CATALOG,
       access: accessSummary(fired),
       fire,
-      fireNext,
-      canFire: (caseId, type) => nextEvent(firedIds, caseId, type) !== undefined,
+      act,
+      canAct: (action, caseId) =>
+        nextEvent(firedIds, caseId, ACTION_EVENTS[action][0]) !== undefined,
       reset,
     };
   }, [ids]);
