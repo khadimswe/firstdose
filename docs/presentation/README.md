@@ -4,6 +4,7 @@ Updated September 26, 2026 against main `015c342`: verified Humira label, Minh s
 
 ## Current guides
 
+- [Live demo: step by step — 12 pages](FirstDose-Live-Demo-Step-by-Step.pdf): device setup, exact clicks, expected results, named spoken lines and Minh's one-page operator cue card. **Use this during rehearsal and the live demo.** It puts James after Maria to preserve her watch-alert sequence. [Readable version](live-demo-step-by-step.md).
 - [Master guide — 45 pages](FirstDose-Master-Guide.pdf): pitch, graphs, architecture, feature explanations, ELI5 analogies, evidence, business math and all named scripts.
 - [Vinh — full prep, 61 pages](FirstDose-Vinh-Full-Prep.pdf)
 - [Minh — full prep, 61 pages](FirstDose-Minh-Full-Prep.pdf)
@@ -14,7 +15,7 @@ Each personal PDF includes that speaker's script, 42 detailed questions and the 
 
 The script corrects polling versus Realtime, James's classified hub reason, proposed partner integration/payment, independent fill evidence and the Tiger metric boundary. Both labels are now verified in merged source. The clips are original recordings, not a final edited submission. Device receipt and deployed Humira acceptance remain separate from recorded branch-local tests.
 
-[Build instructions and editable sources](../../scripts/presentation/README.md) reproduce all four PDFs and the script. The two screenshots show a recorded hosted audit. Economic graphs show hypothetical inputs. Representative feedback is attributed as team-reported qualitative evidence.
+[Build instructions and editable sources](../../scripts/presentation/README.md) reproduce the four preparation PDFs, live-demo companion and scripts. The two screenshots show a recorded hosted audit. Economic graphs show hypothetical inputs. Representative feedback is attributed as team-reported qualitative evidence.
 
 ## Historical planning references
 

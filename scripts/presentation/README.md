@@ -9,9 +9,12 @@ python scripts/presentation/export_script.py
 python scripts/presentation/build_master.py
 python scripts/presentation/build_full_personal_prep.py
 python scripts/presentation/verify_pdfs.py
+python scripts/presentation/build_live_runbook.py
 ```
 
-Outputs are the Markdown script and four PDFs in `docs/presentation`. Temporary plots, rendered pages and contact sheets go in ignored `.presentation-build/`. Fonts use Arial on Windows, or system DejaVu Sans under `/usr/share/fonts/truetype/dejavu` on Linux. Fonts are embedded in PDFs; font files are not distributed in this repository.
+Outputs are the Markdown scripts, four preparation PDFs and a 12-page live-demo companion in `docs/presentation`. Temporary plots, rendered pages and contact sheets go in ignored `.presentation-build/`. Fonts use Arial on Windows, or system DejaVu Sans under `/usr/share/fonts/truetype/dejavu` on Linux. Fonts are embedded in PDFs; font files are not distributed in this repository.
+
+`build_live_runbook.py` builds and checks the separate click-by-click guide, readable companion and page renders. Its operator sequence puts James after Maria and supersedes the earlier suggestion to prepare James in the background. It includes the user-reported rehearsal outcomes without treating them as new automated deployment or device tests.
 
 `pitch_script.json` is the shared source for the team script and each personal script. `deep_qa.py` holds the detailed questioning material. `build_master.py`, `master_pages_aligned.py`, `feature_appendix.py`, `speaker_pages.py` and `revision_pages.py` draw the master; `business_sources_page.py` supplies source links. The personal builder reuses the master drawing helpers and appends the complete master while preserving navigation.
 
