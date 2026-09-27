@@ -1,5 +1,7 @@
 # Pitch, slide copy and judge questions (v2)
 
+> Historical draft. The September 26 [revised live script](live-pitch-and-qa.md) and [PDF pack](README.md) supersede this rehearsal copy, including its implementation claims. Current speaking split: Khadim opens/closes, Vinh demos, Minh explains AI. This file is retained for context.
+
 Sat Sep 26, 2026 · Deem. Paste-ready content, not a rendered deck. The 4-minute demo script is in `../spec-v2-coordinator.md`. Every fact below must match a row in [claims and evidence](claims-and-evidence.md); every number carries its source there.
 
 **One line:** "Impiricus reaches the doctor who writes the prescription. FirstDose reaches the person who gets the patient on it, every day."
