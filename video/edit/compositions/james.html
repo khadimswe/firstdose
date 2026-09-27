@@ -1,0 +1,274 @@
+<!doctype html>
+<html><head><meta charset="UTF-8" /></head>
+<body>
+<template id="james-template">
+<style>
+@font-face { font-family: "Geist"; src: url("assets/fonts/Geist-Variable.woff2") format("woff2"); font-weight: 100 900; }
+@font-face { font-family: "Geist Mono"; src: url("assets/fonts/GeistMono-Variable.woff2") format("woff2"); font-weight: 100 900; }
+
+#james-root { position: absolute; inset: 0; overflow: hidden; background: #f3f4f8; color: #0e1116;
+  font-family: "Geist", "Helvetica Neue", sans-serif; }
+#james-root .wrap { position: absolute; inset: 0; }
+#james-root .glow { position: absolute; width: 1400px; height: 1400px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(44,91,214,.20) 0%, rgba(44,91,214,.07) 38%, rgba(44,91,214,0) 68%); }
+#james-root .glow2 { position: absolute; width: 1000px; height: 1000px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(109,59,209,.14) 0%, rgba(109,59,209,0) 65%); }
+#james-root .dots { position: absolute; inset: 0; opacity: .5;
+  background-image: radial-gradient(rgba(14,17,22,.13) 1.4px, transparent 1.6px); background-size: 34px 34px; }
+#james-root .face { position: absolute; border-radius: 50%; overflow: hidden; background: #d8dbe4;
+  box-shadow: 0 0 0 6px #fff, 0 0 0 9px rgba(44,91,214,.55), 0 24px 60px rgba(14,17,22,.22); }
+#james-root .face video { position: absolute; object-fit: cover; }
+#james-root .ring { position: absolute; border-radius: 50%; border: 3px solid rgba(44,91,214,.35); }
+#james-root .who { position: absolute; }
+#james-root .who .n { font-size: 44px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.05; }
+#james-root .who .r { font-size: 24px; font-weight: 450; color: #545b6b; margin-top: 6px; }
+#james-root .pill { display: inline-flex; align-items: center; gap: 10px; font: 600 20px "Geist Mono", monospace;
+  letter-spacing: .02em; padding: 8px 16px; border-radius: 999px; background: #fff; border: 2px solid #dadde6; color: #0e1116; }
+#james-root .pill i { width: 12px; height: 12px; border-radius: 50%; background: #c8261b; display: block; }
+#james-root .pill.live i { background: #e5372b; box-shadow: 0 0 0 5px rgba(229,55,43,.18); }
+#james-root .caps { position: absolute; }
+#james-root .cap { position: absolute; left: 0; right: 0; bottom: 0; opacity: 0; font-size: 34px; line-height: 1.3;
+  font-weight: 560; color: #0e1116; letter-spacing: -0.005em; }
+#james-root .cap .w { color: #6c7383; }
+#james-root .cap .w.e { font-weight: 760; }
+#james-root .foot { position: absolute; left: 80px; right: 80px; bottom: 22px; font: 500 19px "Geist Mono", monospace;
+  color: #545b6b; letter-spacing: .01em; }
+#james-root .mono { font-family: "Geist Mono", monospace; }
+#james-root .card { background: #fff; border: 2px solid #dadde6; border-radius: 28px; box-shadow: 0 18px 50px rgba(14,17,22,.10); }
+#james-root .kicker { font: 600 22px "Geist Mono", monospace; letter-spacing: .06em; text-transform: uppercase; color: #2c5bd6; }
+#james-root .dslot { position: absolute; left:760px; top:200px; width:1100px; height:619px;
+  border-radius: 22px; overflow: hidden; background: #fff; box-shadow: 0 0 0 2px #dadde6, 0 30px 70px rgba(14,17,22,.18); }
+#james-root .dinner { position: absolute; left:0; top:0; width:1100px; height:619px; transform-origin: 0 0; }
+#james-root .dinner video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+#james-root .pslot { position: absolute; left:1380px; top:121px; width:400px; height:838px;
+  border-radius: 58px; background: #101218; padding: 12px; box-shadow: 0 30px 80px rgba(14,17,22,.30); }
+#james-root .pscreen { position: absolute; left: 12px; top: 12px; right: 12px; bottom: 12px; border-radius: 46px; overflow: hidden; background: #fff; }
+#james-root .pscreen video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+#james-root .slabel { position: absolute; font: 600 19px "Geist Mono", monospace; letter-spacing: .05em; text-transform: uppercase;
+  color: #545b6b; background: rgba(255,255,255,.9); border: 2px solid #dadde6; border-radius: 999px; padding: 6px 14px; white-space: nowrap; }
+#james-root .step { position: absolute; left: 80px; top: 420px; width: 600px; opacity: 0; }
+#james-root .step .num { font: 600 22px "Geist Mono", monospace; color: #2c5bd6; letter-spacing: .06em; }
+#james-root .step .t { font-size: 58px; font-weight: 820; letter-spacing: -0.035em; line-height: 1.02; margin-top: 14px; }
+#james-root .step .s { font-size: 28px; font-weight: 420; color: #545b6b; line-height: 1.32; margin-top: 18px; }
+#james-root .step .s b { color: #0e1116; font-weight: 700; }
+#james-root .tag { display: inline-block; font: 600 22px "Geist Mono", monospace; padding: 8px 14px; border-radius: 12px; margin: 16px 10px 0 0; }
+#james-root .tag.red { background: #fbe6e4; color: #c8261b; } .tag.green { background: #e2f3e8; color: #17703e; }
+#james-root .tag.blue { background: #e5ecfb; color: #2c5bd6; } .tag.ink { background: #eceef3; color: #0e1116; }
+#james-root .flow { display: flex; align-items: center; gap: 12px; margin-top: 22px; flex-wrap: wrap; }
+#james-root .flow .box { font-size: 23px; font-weight: 600; padding: 12px 16px; border-radius: 14px; background: #fff; border: 2px solid #dadde6; }
+#james-root .flow .ar { font-size: 28px; color: #545b6b; }
+#james-root .stat { display: inline-block; vertical-align: top; margin: 22px 26px 0 0; }
+#james-root .stat .v { font-size: 96px; font-weight: 850; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }
+#james-root .stat .l { font-size: 22px; color: #545b6b; margin-top: 8px; max-width: 260px; line-height: 1.25; }</style>
+<div id="james-root" data-composition-id="james" data-width="1920" data-height="1080" data-duration="46.2">
+<div class="wrap"><div class="glow" id="james-glow" style="left:700px;top:-200px"></div><div class="glow2" id="james-glow2" style="left:-300px;top:600px"></div><div class="dots"></div>
+<div class="ring" id="james-ring" style="left:62px;top:62px;width:266px;height:266px"></div><div class="face" id="james-face" style="left:80px;top:80px;width:230px;height:230px"><video id="james-facev" class="clip" src="assets/faces/minh-1.mp4" data-start="0" data-duration="46.2" data-media-start="0" data-track-index="6" data-layout-allow-overflow muted playsinline style="left:-96.7px;top:-52.3px;width:423.4px;height:282.3px"></video></div>
+<div class="who" id="james-who" style="left:350px;top:110px"><div class="n">Minh</div><div class="r">Labels, AI & analytics</div><div style="margin-top:18px"><span class="pill live"><i></i>LIVE · firstdose.vercel.app</span></div></div>
+<div class="dslot" id="james-desk"><div class="dinner" id="james-dinner">
+<video id="james-d0" class="clip" src="assets/footage/desk.mp4" data-start="0.0" data-duration="3.5" data-media-start="102.05" data-track-index="2" muted playsinline></video>
+<video id="james-d1" class="clip" src="assets/footage/desk.mp4" data-start="3.5" data-duration="7.4" data-media-start="108.05" data-track-index="2" muted playsinline></video>
+<video id="james-d2" class="clip" src="assets/footage/desk.mp4" data-start="10.9" data-duration="4.0" data-media-start="120.05" data-track-index="2" muted playsinline></video>
+<video id="james-d3" class="clip" src="assets/footage/desk.mp4" data-start="14.9" data-duration="10.9" data-media-start="125.55" data-track-index="2" muted playsinline></video>
+<video id="james-d4" class="clip" src="assets/footage/desk.mp4" data-start="25.8" data-duration="8.7" data-media-start="144.65" data-track-index="2" muted playsinline></video>
+<video id="james-d5" class="clip" src="assets/footage/desk.mp4" data-start="34.5" data-duration="6.5" data-media-start="138.65" data-track-index="2" muted playsinline></video>
+<video id="james-d6" class="clip" src="assets/footage/desk.mp4" data-start="41.0" data-duration="5.2" data-media-start="147.55" data-track-index="2" muted playsinline></video>
+</div></div>
+<div class="pslot" id="james-phone"><div class="pscreen">
+<video id="james-p0" class="clip" src="assets/footage/doctor.mp4" data-start="0.0" data-duration="3.5" data-media-start="101.99" data-track-index="3" muted playsinline></video>
+<video id="james-p1" class="clip" src="assets/footage/doctor.mp4" data-start="3.5" data-duration="7.4" data-media-start="107.99" data-track-index="3" muted playsinline></video>
+<video id="james-p2" class="clip" src="assets/footage/doctor.mp4" data-start="10.9" data-duration="4.0" data-media-start="119.99" data-track-index="3" muted playsinline></video>
+<video id="james-p3" class="clip" src="assets/footage/doctor.mp4" data-start="14.9" data-duration="10.9" data-media-start="125.49" data-track-index="3" muted playsinline></video>
+<video id="james-p4" class="clip" src="assets/footage/doctor.mp4" data-start="25.8" data-duration="8.7" data-media-start="144.59" data-track-index="3" muted playsinline></video>
+<video id="james-p5" class="clip" src="assets/footage/doctor.mp4" data-start="34.5" data-duration="6.5" data-media-start="138.59" data-track-index="3" muted playsinline></video>
+<video id="james-p6" class="clip" src="assets/footage/doctor.mp4" data-start="41.0" data-duration="5.2" data-media-start="147.49" data-track-index="3" muted playsinline></video>
+</div></div>
+<div class="slabel" id="james-dl" style="left:778px;top:150px">Coordinator · desktop</div>
+<div class="slabel" id="james-pl-doctor" style="left:1410px;top:115px;opacity:0">Doctor · DocUpdate concept</div>
+<div class="slabel" id="james-pl-patient" style="left:1410px;top:115px;opacity:0">Patient · Maria's phone</div>
+<div class="step" id="james-s0"><div class="num">01 · SECOND CASE</div><div class="t">James · Humira.</div><div class="s"><span class="tag red">Prior auth required</span><span class="tag red">Unreachable after 3 calls</span></div></div>
+<div class="step" id="james-s1"><div class="num">02 · GEMINI</div><div class="t">Messy note in, one reason out.</div><div class="s"><div class="flow"><span class="box">Pharmacy note</span><span class="ar">→</span><span class="box" style="border-color:#6d3bd1;color:#6d3bd1">Gemini</span><span class="ar">→</span><span class="box">Reason code</span></div><div style="margin-top:14px">…or <b>unknown</b>, which goes to a person.</div></div></div>
+<div class="step" id="james-s2"><div class="num">03 · RULES, NOT AI</div><div class="t">A rule picks the fix.</div><div class="s"><span class="tag blue">Connect to access support</span><div style="margin-top:14px">No model writes drug or patient text.</div></div></div>
+<div class="step" id="james-s3"><div class="num">04 · TIGER DATA</div><div class="t">Every step is an event.</div><div class="s"><div class="stat"><div class="v" id="james-n1">9</div><div class="l">first fills confirmed</div></div><div class="stat"><div class="v" id="james-n2">60s</div><div class="l">median time to first fill (demo clock)</div></div></div></div>
+<div class="step" id="james-s4"><div class="num">05 · WHO SEES WHAT</div><div class="t">Pharma sees counts. Never a name.</div><div class="s"><span class="tag blue">Practice: names + fill status</span><span class="tag ink">Pharma: aggregate counts</span></div></div>
+<div class="caps" style="left:80px;top:820px;width:620px;height:190px;text-align:left"><p class="cap" id="james-c0" style="font-size:33px"><span class="w" id="james-c0w0">James</span> <span class="w" id="james-c0w1">is</span> <span class="w" id="james-c0w2">on</span> <span class="w e" id="james-c0w3">Humira.</span></p><p class="cap" id="james-c1" style="font-size:33px"><span class="w" id="james-c1w0">His</span> <span class="w" id="james-c1w1">pharmacy</span> <span class="w" id="james-c1w2">note</span> <span class="w" id="james-c1w3">says</span> <span class="w e" id="james-c1w4">prior</span> <span class="w" id="james-c1w5">authorization</span> <span class="w e" id="james-c1w6">required,</span></p><p class="cap" id="james-c2" style="font-size:33px"><span class="w" id="james-c2w0">and</span> <span class="w" id="james-c2w1">he</span> <span class="w" id="james-c2w2">couldn&#x27;t</span> <span class="w" id="james-c2w3">be</span> <span class="w" id="james-c2w4">reached</span> <span class="w" id="james-c2w5">after</span> <span class="w" id="james-c2w6">three</span> <span class="w" id="james-c2w7">calls.</span></p><p class="cap" id="james-c3" style="font-size:33px"><span class="w e" id="james-c3w0">Gemini</span> <span class="w" id="james-c3w1">reads</span> <span class="w" id="james-c3w2">that</span> <span class="w" id="james-c3w3">messy</span> <span class="w" id="james-c3w4">note</span></p><p class="cap" id="james-c4" style="font-size:33px"><span class="w" id="james-c4w0">and</span> <span class="w" id="james-c4w1">returns</span> <span class="w" id="james-c4w2">one</span> <span class="w" id="james-c4w3">reason</span> <span class="w" id="james-c4w4">code,</span> <span class="w" id="james-c4w5">or</span> <span class="w e" id="james-c4w6">unknown,</span></p><p class="cap" id="james-c5" style="font-size:33px"><span class="w" id="james-c5w0">which</span> <span class="w" id="james-c5w1">goes</span> <span class="w" id="james-c5w2">to</span> <span class="w" id="james-c5w3">a</span> <span class="w" id="james-c5w4">person.</span></p><p class="cap" id="james-c6" style="font-size:33px"><span class="w" id="james-c6w0">Then</span> <span class="w" id="james-c6w1">a</span> <span class="w e" id="james-c6w2">rule,</span> <span class="w" id="james-c6w3">not</span> <span class="w e" id="james-c6w4">AI,</span></p><p class="cap" id="james-c7" style="font-size:33px"><span class="w" id="james-c7w0">picks</span> <span class="w" id="james-c7w1">the</span> <span class="w" id="james-c7w2">fix:</span> <span class="w" id="james-c7w3">connect</span> <span class="w" id="james-c7w4">to</span> <span class="w" id="james-c7w5">access</span> <span class="w" id="james-c7w6">support.</span></p><p class="cap" id="james-c8" style="font-size:33px"><span class="w" id="james-c8w0">No</span> <span class="w" id="james-c8w1">model</span> <span class="w" id="james-c8w2">writes</span> <span class="w" id="james-c8w3">drug</span> <span class="w" id="james-c8w4">or</span> <span class="w" id="james-c8w5">patient</span> <span class="w" id="james-c8w6">text.</span></p><p class="cap" id="james-c9" style="font-size:33px"><span class="w" id="james-c9w0">Every</span> <span class="w" id="james-c9w1">step</span> <span class="w" id="james-c9w2">lands</span> <span class="w" id="james-c9w3">in</span> <span class="w" id="james-c9w4">an</span> <span class="w" id="james-c9w5">event</span> <span class="w" id="james-c9w6">history</span> <span class="w" id="james-c9w7">on</span> <span class="w e" id="james-c9w8">Tiger</span> <span class="w e" id="james-c9w9">Data,</span></p><p class="cap" id="james-c10" style="font-size:33px"><span class="w" id="james-c10w0">so</span> <span class="w" id="james-c10w1">the</span> <span class="w" id="james-c10w2">office</span> <span class="w" id="james-c10w3">sees</span> <span class="w" id="james-c10w4">confirmed</span> <span class="w" id="james-c10w5">first</span> <span class="w" id="james-c10w6">fills</span> <span class="w" id="james-c10w7">and</span> <span class="w" id="james-c10w8">time</span> <span class="w" id="james-c10w9">to</span> <span class="w" id="james-c10w10">first</span> <span class="w" id="james-c10w11">fill.</span></p><p class="cap" id="james-c11" style="font-size:33px"><span class="w" id="james-c11w0">Pharma</span> <span class="w" id="james-c11w1">sees</span> <span class="w e" id="james-c11w2">counts</span> <span class="w e" id="james-c11w3">only,</span></p><p class="cap" id="james-c12" style="font-size:33px"><span class="w" id="james-c12w0">never</span> <span class="w" id="james-c12w1">a</span> <span class="w" id="james-c12w2">name.</span></p></div>
+<div class="foot">Recorded live on firstdose.vercel.app · Sep 26, 2026 · Synthetic patients &amp; pharmacy events · DocUpdate concept, not affiliated</div>
+</div>
+</div>
+<script>
+(() => {
+const tl = gsap.timeline({ paused: true });
+tl.fromTo("#james-glow",{scale:.92,opacity:.8},{scale:1.08,opacity:1,duration:3,ease:"sine.inOut",yoyo:true,repeat:7},0);tl.fromTo("#james-glow2",{x:0,y:0},{x:120,y:-60,duration:23.10,ease:"sine.inOut",yoyo:true,repeat:1},0);
+tl.fromTo("#james-s0",{opacity:0,x:-40},{opacity:1,x:0,duration:.55,ease:"power3.out"},0.3);
+tl.fromTo("#james-s0 .s > *",{opacity:0,y:16},{opacity:1,y:0,duration:.4,stagger:.12,ease:"back.out(1.6)"},0.6499999999999999);
+tl.to("#james-s0",{opacity:0,x:30,duration:.3,ease:"power2.in"},10.7);
+tl.fromTo("#james-s1",{opacity:0,x:-40},{opacity:1,x:0,duration:.55,ease:"power3.out"},11.0);
+tl.fromTo("#james-s1 .s > *",{opacity:0,y:16},{opacity:1,y:0,duration:.4,stagger:.12,ease:"back.out(1.6)"},11.35);
+tl.to("#james-s1",{opacity:0,x:30,duration:.3,ease:"power2.in"},19.3);
+tl.fromTo("#james-s2",{opacity:0,x:-40},{opacity:1,x:0,duration:.55,ease:"power3.out"},19.6);
+tl.fromTo("#james-s2 .s > *",{opacity:0,y:16},{opacity:1,y:0,duration:.4,stagger:.12,ease:"back.out(1.6)"},19.950000000000003);
+tl.to("#james-s2",{opacity:0,x:30,duration:.3,ease:"power2.in"},30.3);
+tl.fromTo("#james-s3",{opacity:0,x:-40},{opacity:1,x:0,duration:.55,ease:"power3.out"},30.6);
+tl.fromTo("#james-s3 .s > *",{opacity:0,y:16},{opacity:1,y:0,duration:.4,stagger:.12,ease:"back.out(1.6)"},30.950000000000003);
+tl.to("#james-s3",{opacity:0,x:30,duration:.3,ease:"power2.in"},42.0);
+(() => { const el=document.querySelector("#james-n1"); const o={v:0};tl.fromTo(o,{v:0},{v:9,duration:1.1,ease:"power2.out",onUpdate:()=>{el.textContent=Math.round(o.v)+"";},onComplete:()=>{el.textContent="9";}},31.1);tl.fromTo(el,{scale:.8},{scale:1,duration:1.1,ease:"power2.out"},31.1); })();
+(() => { const el=document.querySelector("#james-n2"); const o={v:0};tl.fromTo(o,{v:0},{v:60,duration:1.1,ease:"power2.out",onUpdate:()=>{el.textContent=Math.round(o.v)+"s";},onComplete:()=>{el.textContent="60s";}},31.1);tl.fromTo(el,{scale:.8},{scale:1,duration:1.1,ease:"power2.out"},31.1); })();
+tl.fromTo("#james-s4",{opacity:0,x:-40},{opacity:1,x:0,duration:.55,ease:"power3.out"},42.3);
+tl.fromTo("#james-s4 .s > *",{opacity:0,y:16},{opacity:1,y:0,duration:.4,stagger:.12,ease:"back.out(1.6)"},42.65);
+tl.fromTo("#james-c0w0",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},0.00);
+tl.fromTo("#james-c0w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},0.78);
+tl.fromTo("#james-c0w2",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},1.02);
+tl.fromTo("#james-c0w3",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},1.20);
+tl.fromTo("#james-c0",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},0.00);
+tl.to("#james-c0",{opacity:0,y:-6,duration:.1,ease:"power1.in"},1.92);
+tl.fromTo("#james-c1w0",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},2.10);
+tl.fromTo("#james-c1w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},2.22);
+tl.fromTo("#james-c1w2",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},2.66);
+tl.fromTo("#james-c1w3",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},3.14);
+tl.fromTo("#james-c1w4",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},3.74);
+tl.fromTo("#james-c1w5",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},4.22);
+tl.fromTo("#james-c1w6",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},5.50);
+tl.fromTo("#james-c1",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},2.02);
+tl.to("#james-c1",{opacity:0,y:-6,duration:.1,ease:"power1.in"},6.95);
+tl.fromTo("#james-c2w0",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},7.14);
+tl.fromTo("#james-c2w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},7.22);
+tl.fromTo("#james-c2w2",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},7.44);
+tl.fromTo("#james-c2w3",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},7.92);
+tl.fromTo("#james-c2w4",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},8.32);
+tl.fromTo("#james-c2w5",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},8.72);
+tl.fromTo("#james-c2w6",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},9.38);
+tl.fromTo("#james-c2w7",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},9.88);
+tl.fromTo("#james-c2",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},7.06);
+tl.to("#james-c2",{opacity:0,y:-6,duration:.1,ease:"power1.in"},10.84);
+tl.fromTo("#james-c3w0",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},11.02);
+tl.fromTo("#james-c3w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},11.52);
+tl.fromTo("#james-c3w2",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},12.01);
+tl.fromTo("#james-c3w3",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},12.51);
+tl.fromTo("#james-c3w4",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},13.00);
+tl.fromTo("#james-c3",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},10.94);
+tl.to("#james-c3",{opacity:0,y:-6,duration:.1,ease:"power1.in"},13.68);
+tl.fromTo("#james-c4w0",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},13.86);
+tl.fromTo("#james-c4w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},14.27);
+tl.fromTo("#james-c4w2",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},14.69);
+tl.fromTo("#james-c4w3",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},15.10);
+tl.fromTo("#james-c4w4",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},15.51);
+tl.fromTo("#james-c4w5",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},15.92);
+tl.fromTo("#james-c4w6",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},16.34);
+tl.fromTo("#james-c4",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},13.78);
+tl.to("#james-c4",{opacity:0,y:-6,duration:.1,ease:"power1.in"},17.00);
+tl.fromTo("#james-c5w0",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},17.22);
+tl.fromTo("#james-c5w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},17.30);
+tl.fromTo("#james-c5w2",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},17.80);
+tl.fromTo("#james-c5w3",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},18.16);
+tl.fromTo("#james-c5w4",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},18.44);
+tl.fromTo("#james-c5",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},17.14);
+tl.to("#james-c5",{opacity:0,y:-6,duration:.1,ease:"power1.in"},19.32);
+tl.fromTo("#james-c6w0",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},19.50);
+tl.fromTo("#james-c6w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},19.64);
+tl.fromTo("#james-c6w2",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},19.94);
+tl.fromTo("#james-c6w3",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},20.60);
+tl.fromTo("#james-c6w4",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},20.70);
+tl.fromTo("#james-c6",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},19.42);
+tl.to("#james-c6",{opacity:0,y:-6,duration:.1,ease:"power1.in"},21.82);
+tl.fromTo("#james-c7w0",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},22.00);
+tl.fromTo("#james-c7w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},22.22);
+tl.fromTo("#james-c7w2",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},22.64);
+tl.fromTo("#james-c7w3",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},22.90);
+tl.fromTo("#james-c7w4",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},23.80);
+tl.fromTo("#james-c7w5",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},24.26);
+tl.fromTo("#james-c7w6",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},24.70);
+tl.fromTo("#james-c7",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},21.92);
+tl.to("#james-c7",{opacity:0,y:-6,duration:.1,ease:"power1.in"},25.35);
+tl.fromTo("#james-c8w0",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},25.55);
+tl.fromTo("#james-c8w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},26.06);
+tl.fromTo("#james-c8w2",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},26.96);
+tl.fromTo("#james-c8w3",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},27.62);
+tl.fromTo("#james-c8w4",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},28.42);
+tl.fromTo("#james-c8w5",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},28.68);
+tl.fromTo("#james-c8w6",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},29.32);
+tl.fromTo("#james-c8",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},25.47);
+tl.to("#james-c8",{opacity:0,y:-6,duration:.1,ease:"power1.in"},30.35);
+tl.fromTo("#james-c9w0",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},30.58);
+tl.fromTo("#james-c9w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},31.11);
+tl.fromTo("#james-c9w2",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},31.63);
+tl.fromTo("#james-c9w3",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},32.16);
+tl.fromTo("#james-c9w4",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},32.69);
+tl.fromTo("#james-c9w5",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},33.22);
+tl.fromTo("#james-c9w6",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},33.74);
+tl.fromTo("#james-c9w7",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},34.27);
+tl.fromTo("#james-c9w8",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},34.80);
+tl.fromTo("#james-c9w9",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},35.32);
+tl.fromTo("#james-c9",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},30.50);
+tl.to("#james-c9",{opacity:0,y:-6,duration:.1,ease:"power1.in"},36.10);
+tl.fromTo("#james-c10w0",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},36.30);
+tl.fromTo("#james-c10w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},36.52);
+tl.fromTo("#james-c10w2",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},37.28);
+tl.fromTo("#james-c10w3",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},37.64);
+tl.fromTo("#james-c10w4",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},38.26);
+tl.fromTo("#james-c10w5",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},38.92);
+tl.fromTo("#james-c10w6",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},39.44);
+tl.fromTo("#james-c10w7",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},39.86);
+tl.fromTo("#james-c10w8",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},40.52);
+tl.fromTo("#james-c10w9",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},40.84);
+tl.fromTo("#james-c10w10",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},41.08);
+tl.fromTo("#james-c10w11",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},41.32);
+tl.fromTo("#james-c10",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},36.22);
+tl.to("#james-c10",{opacity:0,y:-6,duration:.1,ease:"power1.in"},42.15);
+tl.fromTo("#james-c11w0",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},42.34);
+tl.fromTo("#james-c11w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},42.93);
+tl.fromTo("#james-c11w2",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},43.52);
+tl.fromTo("#james-c11w3",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},44.11);
+tl.fromTo("#james-c11",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},42.26);
+tl.to("#james-c11",{opacity:0,y:-6,duration:.1,ease:"power1.in"},44.95);
+tl.fromTo("#james-c12w0",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},45.14);
+tl.fromTo("#james-c12w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},45.38);
+tl.fromTo("#james-c12w2",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},45.66);
+tl.fromTo("#james-c12",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},45.06);
+tl.to("#james-c12",{opacity:0,y:-6,duration:.1,ease:"power1.in"},46.10);
+tl.to("#james-desk",{x:-60,y:20,scale:0.82,opacity:0.3,filter:"blur(5px)",duration:0.001,ease:"power3.inOut"},0);
+tl.to("#james-phone",{x:-230,y:0,scale:1.08,opacity:1,duration:0.001,ease:"power3.inOut"},0);
+tl.to("#james-dl",{opacity:0,duration:0.001},0);
+tl.to("#james-dinner",{scale:1,x:0.0,y:0.0,duration:0.001,ease:"power2.inOut"},0);
+tl.to("#james-pl-doctor",{opacity:1,duration:.3},0);
+tl.to("#james-pl-patient",{opacity:0,duration:.3},0);
+tl.to(["#james-pl-doctor","#james-pl-patient"],{x:-230,y:-66.00000000000003,duration:0.001,ease:"power3.inOut"},0);
+tl.to("#james-desk",{x:-60,y:20,scale:0.82,opacity:0.3,filter:"blur(5px)",duration:0.8,ease:"power3.inOut"},3.25);
+tl.to("#james-phone",{x:-230,y:0,scale:1.08,opacity:1,duration:0.8,ease:"power3.inOut"},3.25);
+tl.to("#james-dl",{opacity:0,duration:0.8},3.25);
+tl.to("#james-dinner",{scale:1,x:0.0,y:0.0,duration:1.1,ease:"power2.inOut"},3.65);
+tl.to(["#james-pl-doctor","#james-pl-patient"],{x:-230,y:-66.00000000000003,duration:0.8,ease:"power3.inOut"},3.25);
+tl.to("#james-desk",{x:-60,y:20,scale:0.82,opacity:0.3,filter:"blur(5px)",duration:0.8,ease:"power3.inOut"},10.65);
+tl.to("#james-phone",{x:-230,y:0,scale:1.08,opacity:1,duration:0.8,ease:"power3.inOut"},10.65);
+tl.to("#james-dl",{opacity:0,duration:0.8},10.65);
+tl.to("#james-dinner",{scale:1,x:0.0,y:0.0,duration:1.1,ease:"power2.inOut"},11.05);
+tl.to(["#james-pl-doctor","#james-pl-patient"],{x:-230,y:-66.00000000000003,duration:0.8,ease:"power3.inOut"},10.65);
+tl.to("#james-desk",{x:0,y:-10,scale:1.0,opacity:1,filter:"blur(0px)",duration:0.8,ease:"power3.inOut"},14.65);
+tl.to("#james-phone",{x:520,y:0,scale:0.9,opacity:0,duration:0.8,ease:"power3.inOut"},14.65);
+tl.to("#james-dl",{opacity:1,duration:0.8},14.65);
+tl.to("#james-dinner",{scale:1.55,x:-605.0,y:-126.5,duration:1.1,ease:"power2.inOut"},15.05);
+tl.to("#james-pl-doctor",{opacity:0,duration:.3},14.65);
+tl.to("#james-pl-patient",{opacity:0,duration:.3},14.65);
+tl.to(["#james-pl-doctor","#james-pl-patient"],{x:520,y:-12.00000000000001,duration:0.8,ease:"power3.inOut"},14.65);
+tl.to("#james-desk",{x:40,y:-10,scale:1.02,opacity:1,filter:"blur(0px)",duration:0.8,ease:"power3.inOut"},25.55);
+tl.to("#james-phone",{x:520,y:0,scale:0.9,opacity:0,duration:0.8,ease:"power3.inOut"},25.55);
+tl.to("#james-dl",{opacity:0,duration:0.8},25.55);
+tl.to("#james-dinner",{scale:1.0,x:-0.0,y:-0.0,duration:1.1,ease:"power2.inOut"},25.95);
+tl.to(["#james-pl-doctor","#james-pl-patient"],{x:520,y:-12.00000000000001,duration:0.8,ease:"power3.inOut"},25.55);
+tl.to("#james-desk",{x:40,y:-10,scale:1.02,opacity:1,filter:"blur(0px)",duration:0.8,ease:"power3.inOut"},34.25);
+tl.to("#james-phone",{x:520,y:0,scale:0.9,opacity:0,duration:0.8,ease:"power3.inOut"},34.25);
+tl.to("#james-dl",{opacity:0,duration:0.8},34.25);
+tl.to("#james-dinner",{scale:1.45,x:-0.0,y:-27.0,duration:1.1,ease:"power2.inOut"},34.65);
+tl.to(["#james-pl-doctor","#james-pl-patient"],{x:520,y:-12.00000000000001,duration:0.8,ease:"power3.inOut"},34.25);
+tl.to("#james-desk",{x:40,y:-10,scale:1.02,opacity:1,filter:"blur(0px)",duration:0.8,ease:"power3.inOut"},40.75);
+tl.to("#james-phone",{x:520,y:0,scale:0.9,opacity:0,duration:0.8,ease:"power3.inOut"},40.75);
+tl.to("#james-dl",{opacity:0,duration:0.8},40.75);
+tl.to("#james-dinner",{scale:1.2,x:-0.0,y:-36.0,duration:1.1,ease:"power2.inOut"},41.15);
+tl.to(["#james-pl-doctor","#james-pl-patient"],{x:520,y:-12.00000000000001,duration:0.8,ease:"power3.inOut"},40.75);
+tl.fromTo("#james-face",{scale:.6,opacity:0},{scale:1,opacity:1,duration:.7,ease:"back.out(1.5)"},0.05);
+tl.fromTo("#james-who",{x:-20,opacity:0},{x:0,opacity:1,duration:.5,ease:"power3.out"},0.3);
+tl.fromTo("#james-root .wrap",{opacity:0,scale:.985,filter:"blur(14px)"},{opacity:1,scale:1,filter:"blur(0px)",duration:.6,ease:"power2.out"},0);
+tl.to("#james-root .wrap",{opacity:0,scale:1.03,filter:"blur(16px)",duration:.45,ease:"power1.in"},45.75);
+window.__timelines["james"] = tl;
+})();
+</script>
+</template>
+</body></html>

@@ -32,6 +32,8 @@ media/raw/
 *.mov
 *.mp4
 !video/*.mov
+!video/*.mp4
+!video/edit/assets/**/*.mp4
 
 # garmin build output
 *.prg

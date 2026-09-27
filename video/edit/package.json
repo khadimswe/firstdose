@@ -1,0 +1,15 @@
+{
+  "name": "firstdose-demo-video",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx --yes hyperframes@0.8.79 preview",
+    "check": "npx --yes hyperframes@0.8.79 check",
+    "render": "npx --yes hyperframes@0.8.79 render",
+    "publish": "npx --yes hyperframes@0.8.79 publish",
+    "build": "node build.mjs"
+  },
+  "devDependencies": {
+    "@hyperframes/core": "^0.8.79"
+  }
+}

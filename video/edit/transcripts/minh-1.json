@@ -1,0 +1,497 @@
+{
+"text": "James is on Humira, his pharmacy not safe via authorization required, and he couldn't be reached after three calls, Gemini reached that message not and returned one recent call or unknown. We go to a person, then a room, not AI, pick the fits correct to access support, no model, right, rush, or patient tests, every step leads in uneven history on tiger data. So the office C confirms first field and time to first field, pharmacy count only, never a name.",
+"words": [
+{
+"text": "James",
+"start": 0.0,
+"end": 0.78,
+"p": 0.55
+},
+{
+"text": "is",
+"start": 0.78,
+"end": 1.02,
+"p": 0.37
+},
+{
+"text": "on",
+"start": 1.02,
+"end": 1.2,
+"p": 0.86
+},
+{
+"text": "Humira,",
+"start": 1.2,
+"end": 1.72,
+"p": 0.6
+},
+{
+"text": "his",
+"start": 2.1,
+"end": 2.22,
+"p": 0.42
+},
+{
+"text": "pharmacy",
+"start": 2.22,
+"end": 2.66,
+"p": 0.98
+},
+{
+"text": "not",
+"start": 2.66,
+"end": 3.14,
+"p": 0.34
+},
+{
+"text": "safe",
+"start": 3.14,
+"end": 3.74,
+"p": 0.63
+},
+{
+"text": "via",
+"start": 3.74,
+"end": 4.22,
+"p": 0.15
+},
+{
+"text": "authorization",
+"start": 4.22,
+"end": 5.5,
+"p": 0.92
+},
+{
+"text": "required,",
+"start": 5.5,
+"end": 6.48,
+"p": 0.49
+},
+{
+"text": "and",
+"start": 7.14,
+"end": 7.22,
+"p": 0.97
+},
+{
+"text": "he",
+"start": 7.22,
+"end": 7.44,
+"p": 0.98
+},
+{
+"text": "couldn't",
+"start": 7.44,
+"end": 7.92,
+"p": 0.95
+},
+{
+"text": "be",
+"start": 7.92,
+"end": 8.32,
+"p": 0.98
+},
+{
+"text": "reached",
+"start": 8.32,
+"end": 8.72,
+"p": 0.93
+},
+{
+"text": "after",
+"start": 8.72,
+"end": 9.38,
+"p": 0.94
+},
+{
+"text": "three",
+"start": 9.38,
+"end": 9.88,
+"p": 0.57
+},
+{
+"text": "calls,",
+"start": 9.88,
+"end": 10.38,
+"p": 0.95
+},
+{
+"text": "Gemini",
+"start": 11.02,
+"end": 11.3,
+"p": 0.57
+},
+{
+"text": "reached",
+"start": 11.3,
+"end": 11.78,
+"p": 0.36
+},
+{
+"text": "that",
+"start": 11.78,
+"end": 12.24,
+"p": 0.7
+},
+{
+"text": "message",
+"start": 12.24,
+"end": 12.7,
+"p": 0.51
+},
+{
+"text": "not",
+"start": 12.7,
+"end": 13.14,
+"p": 0.66
+},
+{
+"text": "and",
+"start": 13.14,
+"end": 13.86,
+"p": 0.82
+},
+{
+"text": "returned",
+"start": 13.86,
+"end": 14.28,
+"p": 0.8
+},
+{
+"text": "one",
+"start": 14.28,
+"end": 14.84,
+"p": 0.89
+},
+{
+"text": "recent",
+"start": 14.84,
+"end": 15.22,
+"p": 0.96
+},
+{
+"text": "call",
+"start": 15.22,
+"end": 15.52,
+"p": 0.98
+},
+{
+"text": "or",
+"start": 15.52,
+"end": 16.12,
+"p": 0.75
+},
+{
+"text": "unknown.",
+"start": 16.12,
+"end": 16.62,
+"p": 0.99
+},
+{
+"text": "We",
+"start": 17.22,
+"end": 17.3,
+"p": 0.53
+},
+{
+"text": "go",
+"start": 17.3,
+"end": 17.8,
+"p": 0.81
+},
+{
+"text": "to",
+"start": 17.8,
+"end": 18.16,
+"p": 0.99
+},
+{
+"text": "a",
+"start": 18.16,
+"end": 18.44,
+"p": 0.96
+},
+{
+"text": "person,",
+"start": 18.44,
+"end": 18.82,
+"p": 0.98
+},
+{
+"text": "then",
+"start": 19.5,
+"end": 19.64,
+"p": 0.98
+},
+{
+"text": "a",
+"start": 19.64,
+"end": 19.94,
+"p": 0.53
+},
+{
+"text": "room,",
+"start": 19.94,
+"end": 20.14,
+"p": 0.42
+},
+{
+"text": "not",
+"start": 20.6,
+"end": 20.7,
+"p": 0.98
+},
+{
+"text": "AI,",
+"start": 20.7,
+"end": 21.2,
+"p": 0.89
+},
+{
+"text": "pick",
+"start": 22.0,
+"end": 22.22,
+"p": 0.29
+},
+{
+"text": "the",
+"start": 22.22,
+"end": 22.64,
+"p": 0.96
+},
+{
+"text": "fits",
+"start": 22.64,
+"end": 22.9,
+"p": 0.21
+},
+{
+"text": "correct",
+"start": 22.9,
+"end": 23.8,
+"p": 0.72
+},
+{
+"text": "to",
+"start": 23.8,
+"end": 24.26,
+"p": 0.99
+},
+{
+"text": "access",
+"start": 24.26,
+"end": 24.7,
+"p": 0.67
+},
+{
+"text": "support,",
+"start": 24.7,
+"end": 25.24,
+"p": 0.91
+},
+{
+"text": "no",
+"start": 25.55,
+"end": 26.06,
+"p": 0.16
+},
+{
+"text": "model,",
+"start": 26.06,
+"end": 26.62,
+"p": 0.58
+},
+{
+"text": "right,",
+"start": 26.96,
+"end": 27.14,
+"p": 0.43
+},
+{
+"text": "rush,",
+"start": 27.62,
+"end": 27.88,
+"p": 0.31
+},
+{
+"text": "or",
+"start": 28.42,
+"end": 28.68,
+"p": 0.94
+},
+{
+"text": "patient",
+"start": 28.68,
+"end": 29.32,
+"p": 0.9
+},
+{
+"text": "tests,",
+"start": 29.32,
+"end": 29.88,
+"p": 0.51
+},
+{
+"text": "every",
+"start": 30.58,
+"end": 30.92,
+"p": 0.93
+},
+{
+"text": "step",
+"start": 30.92,
+"end": 31.32,
+"p": 0.98
+},
+{
+"text": "leads",
+"start": 31.32,
+"end": 31.78,
+"p": 0.06
+},
+{
+"text": "in",
+"start": 31.78,
+"end": 32.44,
+"p": 0.48
+},
+{
+"text": "uneven",
+"start": 32.44,
+"end": 33.14,
+"p": 0.86
+},
+{
+"text": "history",
+"start": 33.14,
+"end": 34.1,
+"p": 0.97
+},
+{
+"text": "on",
+"start": 34.1,
+"end": 34.62,
+"p": 0.92
+},
+{
+"text": "tiger",
+"start": 34.62,
+"end": 35.06,
+"p": 0.33
+},
+{
+"text": "data.",
+"start": 35.06,
+"end": 35.68,
+"p": 0.92
+},
+{
+"text": "So",
+"start": 36.3,
+"end": 36.52,
+"p": 0.95
+},
+{
+"text": "the",
+"start": 36.52,
+"end": 37.28,
+"p": 0.47
+},
+{
+"text": "office",
+"start": 37.28,
+"end": 37.64,
+"p": 0.28
+},
+{
+"text": "C",
+"start": 37.64,
+"end": 38.26,
+"p": 0.58
+},
+{
+"text": "confirms",
+"start": 38.26,
+"end": 38.92,
+"p": 0.67
+},
+{
+"text": "first",
+"start": 38.92,
+"end": 39.44,
+"p": 0.86
+},
+{
+"text": "field",
+"start": 39.44,
+"end": 39.86,
+"p": 0.86
+},
+{
+"text": "and",
+"start": 39.86,
+"end": 40.52,
+"p": 0.81
+},
+{
+"text": "time",
+"start": 40.52,
+"end": 40.84,
+"p": 0.86
+},
+{
+"text": "to",
+"start": 40.84,
+"end": 41.08,
+"p": 0.97
+},
+{
+"text": "first",
+"start": 41.08,
+"end": 41.32,
+"p": 0.98
+},
+{
+"text": "field,",
+"start": 41.32,
+"end": 41.84,
+"p": 0.99
+},
+{
+"text": "pharmacy",
+"start": 42.34,
+"end": 42.98,
+"p": 0.04
+},
+{
+"text": "count",
+"start": 42.98,
+"end": 44.2,
+"p": 0.49
+},
+{
+"text": "only,",
+"start": 44.2,
+"end": 44.7,
+"p": 0.98
+},
+{
+"text": "never",
+"start": 45.14,
+"end": 45.38,
+"p": 0.99
+},
+{
+"text": "a",
+"start": 45.38,
+"end": 45.66,
+"p": 0.74
+},
+{
+"text": "name.",
+"start": 45.66,
+"end": 45.88,
+"p": 1.0
+}
+]
+}

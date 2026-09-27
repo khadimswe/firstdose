@@ -1,0 +1,335 @@
+{
+"text": "About 467,000 medical assistants work in doctors' offices. None of Empiricus products are built for them. First dose is. In a roost of tickses, Empiricus already runs. Wallet, Concierge, Q Pharma, and MedDance. Empiricus reaches the doctor who writes the prescription. First dose reaches the person who gets the patient on it every day.",
+"words": [
+{
+"text": "About",
+"start": 0.0,
+"end": 0.66,
+"p": 0.85
+},
+{
+"text": "467",
+"start": 0.66,
+"end": 2.0,
+"p": 0.91
+},
+{
+"text": ",000",
+"start": 2.0,
+"end": 2.58,
+"p": 0.95
+},
+{
+"text": "medical",
+"start": 2.58,
+"end": 2.86,
+"p": 0.99
+},
+{
+"text": "assistants",
+"start": 2.86,
+"end": 3.4,
+"p": 0.99
+},
+{
+"text": "work",
+"start": 3.4,
+"end": 3.94,
+"p": 0.99
+},
+{
+"text": "in",
+"start": 3.94,
+"end": 4.18,
+"p": 1.0
+},
+{
+"text": "doctors'",
+"start": 4.18,
+"end": 4.42,
+"p": 0.66
+},
+{
+"text": "offices.",
+"start": 4.76,
+"end": 4.94,
+"p": 1.0
+},
+{
+"text": "None",
+"start": 5.44,
+"end": 5.54,
+"p": 0.99
+},
+{
+"text": "of",
+"start": 5.54,
+"end": 5.74,
+"p": 1.0
+},
+{
+"text": "Empiricus",
+"start": 5.74,
+"end": 6.22,
+"p": 0.85
+},
+{
+"text": "products",
+"start": 6.22,
+"end": 6.94,
+"p": 0.52
+},
+{
+"text": "are",
+"start": 6.94,
+"end": 7.38,
+"p": 0.99
+},
+{
+"text": "built",
+"start": 7.38,
+"end": 7.56,
+"p": 0.99
+},
+{
+"text": "for",
+"start": 7.56,
+"end": 7.76,
+"p": 1.0
+},
+{
+"text": "them.",
+"start": 7.76,
+"end": 7.96,
+"p": 1.0
+},
+{
+"text": "First",
+"start": 8.42,
+"end": 8.58,
+"p": 0.96
+},
+{
+"text": "dose",
+"start": 8.58,
+"end": 8.78,
+"p": 0.98
+},
+{
+"text": "is.",
+"start": 8.78,
+"end": 9.1,
+"p": 0.98
+},
+{
+"text": "In",
+"start": 9.38,
+"end": 9.44,
+"p": 0.93
+},
+{
+"text": "a",
+"start": 9.44,
+"end": 9.6,
+"p": 0.63
+},
+{
+"text": "roost",
+"start": 9.6,
+"end": 9.76,
+"p": 0.67
+},
+{
+"text": "of",
+"start": 9.76,
+"end": 9.92,
+"p": 0.87
+},
+{
+"text": "tickses,",
+"start": 9.92,
+"end": 10.44,
+"p": 0.78
+},
+{
+"text": "Empiricus",
+"start": 10.72,
+"end": 11.04,
+"p": 1.0
+},
+{
+"text": "already",
+"start": 11.04,
+"end": 11.34,
+"p": 0.98
+},
+{
+"text": "runs.",
+"start": 11.34,
+"end": 11.7,
+"p": 1.0
+},
+{
+"text": "Wallet,",
+"start": 12.16,
+"end": 12.36,
+"p": 0.29
+},
+{
+"text": "Concierge,",
+"start": 12.78,
+"end": 13.32,
+"p": 0.9
+},
+{
+"text": "Q",
+"start": 13.72,
+"end": 13.82,
+"p": 0.97
+},
+{
+"text": "Pharma,",
+"start": 13.82,
+"end": 14.18,
+"p": 0.43
+},
+{
+"text": "and",
+"start": 14.62,
+"end": 14.72,
+"p": 0.98
+},
+{
+"text": "MedDance.",
+"start": 14.72,
+"end": 15.1,
+"p": 0.55
+},
+{
+"text": "Empiricus",
+"start": 15.92,
+"end": 16.48,
+"p": 1.0
+},
+{
+"text": "reaches",
+"start": 16.48,
+"end": 16.8,
+"p": 1.0
+},
+{
+"text": "the",
+"start": 16.8,
+"end": 17.04,
+"p": 0.99
+},
+{
+"text": "doctor",
+"start": 17.04,
+"end": 17.28,
+"p": 0.99
+},
+{
+"text": "who",
+"start": 17.28,
+"end": 17.48,
+"p": 0.99
+},
+{
+"text": "writes",
+"start": 17.48,
+"end": 17.66,
+"p": 0.95
+},
+{
+"text": "the",
+"start": 17.66,
+"end": 17.86,
+"p": 0.98
+},
+{
+"text": "prescription.",
+"start": 17.86,
+"end": 18.3,
+"p": 0.99
+},
+{
+"text": "First",
+"start": 18.8,
+"end": 19.0,
+"p": 0.99
+},
+{
+"text": "dose",
+"start": 19.0,
+"end": 19.26,
+"p": 1.0
+},
+{
+"text": "reaches",
+"start": 19.26,
+"end": 19.68,
+"p": 0.99
+},
+{
+"text": "the",
+"start": 19.68,
+"end": 19.9,
+"p": 1.0
+},
+{
+"text": "person",
+"start": 19.9,
+"end": 20.24,
+"p": 0.98
+},
+{
+"text": "who",
+"start": 20.24,
+"end": 20.56,
+"p": 0.99
+},
+{
+"text": "gets",
+"start": 20.56,
+"end": 20.72,
+"p": 0.99
+},
+{
+"text": "the",
+"start": 20.72,
+"end": 20.92,
+"p": 0.99
+},
+{
+"text": "patient",
+"start": 20.92,
+"end": 21.1,
+"p": 1.0
+},
+{
+"text": "on",
+"start": 21.1,
+"end": 21.36,
+"p": 1.0
+},
+{
+"text": "it",
+"start": 21.36,
+"end": 21.62,
+"p": 1.0
+},
+{
+"text": "every",
+"start": 21.62,
+"end": 22.0,
+"p": 0.59
+},
+{
+"text": "day.",
+"start": 22.0,
+"end": 22.28,
+"p": 1.0
+}
+]
+}

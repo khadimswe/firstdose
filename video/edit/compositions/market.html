@@ -1,0 +1,154 @@
+<!doctype html>
+<html><head><meta charset="UTF-8" /></head>
+<body>
+<template id="market-template">
+<style>
+@font-face { font-family: "Geist"; src: url("assets/fonts/Geist-Variable.woff2") format("woff2"); font-weight: 100 900; }
+@font-face { font-family: "Geist Mono"; src: url("assets/fonts/GeistMono-Variable.woff2") format("woff2"); font-weight: 100 900; }
+
+#market-root { position: absolute; inset: 0; overflow: hidden; background: #f3f4f8; color: #0e1116;
+  font-family: "Geist", "Helvetica Neue", sans-serif; }
+#market-root .wrap { position: absolute; inset: 0; }
+#market-root .glow { position: absolute; width: 1400px; height: 1400px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(44,91,214,.20) 0%, rgba(44,91,214,.07) 38%, rgba(44,91,214,0) 68%); }
+#market-root .glow2 { position: absolute; width: 1000px; height: 1000px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(109,59,209,.14) 0%, rgba(109,59,209,0) 65%); }
+#market-root .dots { position: absolute; inset: 0; opacity: .5;
+  background-image: radial-gradient(rgba(14,17,22,.13) 1.4px, transparent 1.6px); background-size: 34px 34px; }
+#market-root .face { position: absolute; border-radius: 50%; overflow: hidden; background: #d8dbe4;
+  box-shadow: 0 0 0 6px #fff, 0 0 0 9px rgba(44,91,214,.55), 0 24px 60px rgba(14,17,22,.22); }
+#market-root .face video { position: absolute; object-fit: cover; }
+#market-root .ring { position: absolute; border-radius: 50%; border: 3px solid rgba(44,91,214,.35); }
+#market-root .who { position: absolute; }
+#market-root .who .n { font-size: 44px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.05; }
+#market-root .who .r { font-size: 24px; font-weight: 450; color: #545b6b; margin-top: 6px; }
+#market-root .pill { display: inline-flex; align-items: center; gap: 10px; font: 600 20px "Geist Mono", monospace;
+  letter-spacing: .02em; padding: 8px 16px; border-radius: 999px; background: #fff; border: 2px solid #dadde6; color: #0e1116; }
+#market-root .pill i { width: 12px; height: 12px; border-radius: 50%; background: #c8261b; display: block; }
+#market-root .pill.live i { background: #e5372b; box-shadow: 0 0 0 5px rgba(229,55,43,.18); }
+#market-root .caps { position: absolute; }
+#market-root .cap { position: absolute; left: 0; right: 0; bottom: 0; opacity: 0; font-size: 34px; line-height: 1.3;
+  font-weight: 560; color: #0e1116; letter-spacing: -0.005em; }
+#market-root .cap .w { color: #6c7383; }
+#market-root .cap .w.e { font-weight: 760; }
+#market-root .foot { position: absolute; left: 80px; right: 80px; bottom: 22px; font: 500 19px "Geist Mono", monospace;
+  color: #545b6b; letter-spacing: .01em; }
+#market-root .mono { font-family: "Geist Mono", monospace; }
+#market-root .card { background: #fff; border: 2px solid #dadde6; border-radius: 28px; box-shadow: 0 18px 50px rgba(14,17,22,.10); }
+#market-root .kicker { font: 600 22px "Geist Mono", monospace; letter-spacing: .06em; text-transform: uppercase; color: #2c5bd6; }
+</style>
+<div id="market-root" data-composition-id="market" data-width="1920" data-height="1080" data-duration="22.6">
+<div class="wrap">
+<div class="glow" id="market-glow" style="left:700px;top:-100px"></div><div class="glow2" id="market-glow2" style="left:-300px;top:600px"></div><div class="dots"></div>
+<div class="ring" id="market-ring" style="left:62px;top:62px;width:266px;height:266px"></div><div class="face" id="market-face" style="left:80px;top:80px;width:230px;height:230px"><video id="market-facev" class="clip" src="assets/faces/khadim-3.mp4" data-start="0" data-duration="22.6" data-media-start="0" data-track-index="6" data-layout-allow-overflow muted playsinline style="left:-108.5px;top:-52.3px;width:423.4px;height:282.3px"></video></div>
+<div class="who" id="market-who" style="left:350px;top:110px"><div class="n">Khadim</div><div class="r">Product & screens</div></div>
+<div id="market-a" style="position:absolute;left:800px;top:130px;width:1040px">
+                <div class="kicker">The people Impiricus doesn't reach yet</div>
+                <div id="market-num" style="font-size:230px;font-weight:880;letter-spacing:-0.055em;line-height:.9;margin-top:24px;font-variant-numeric:tabular-nums;color:#2c5bd6">467,000</div>
+                <div style="font-size:46px;font-weight:760;letter-spacing:-0.02em;margin-top:18px">medical assistants work in doctors' offices.</div>
+                <div class="mono" style="font-size:20px;color:#545b6b;margin-top:14px">About · BLS Occupational Outlook: 833,900 jobs (2025) × ~56% in physician offices</div>
+                <div id="market-b" style="font-size:42px;font-weight:600;color:#545b6b;margin-top:56px">None of Impiricus's products are built for them.</div>
+                <div id="market-c" style="font-size:76px;font-weight:880;letter-spacing:-0.04em;margin-top:10px">FirstDose is.</div></div>
+<div id="market-r" style="position:absolute;left:800px;top:150px;width:1040px;opacity:0">
+                <div class="kicker">Routes to fixes Impiricus already runs</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:34px"><div class="card mk-chip" id="market-ch0" style="padding:26px 30px;font-size:40px;font-weight:800;letter-spacing:-0.02em">Wallet<div class="mono" style="font-size:19px;color:#545b6b;font-weight:500;margin-top:6px;letter-spacing:0">copay resources by QR</div></div><div class="card mk-chip" id="market-ch1" style="padding:26px 30px;font-size:40px;font-weight:800;letter-spacing:-0.02em">Concierge<div class="mono" style="font-size:19px;color:#545b6b;font-weight:500;margin-top:6px;letter-spacing:0">samples & reps</div></div><div class="card mk-chip" id="market-ch2" style="padding:26px 30px;font-size:40px;font-weight:800;letter-spacing:-0.02em">QPharma<div class="mono" style="font-size:19px;color:#545b6b;font-weight:500;margin-top:6px;letter-spacing:0">sampling · Aug 25, 2026</div></div><div class="card mk-chip" id="market-ch3" style="padding:26px 30px;font-size:40px;font-weight:800;letter-spacing:-0.02em">Medvantx<div class="mono" style="font-size:19px;color:#545b6b;font-weight:500;margin-top:6px;letter-spacing:0">patient access · Sep 8, 2026</div></div></div>
+                <div class="mono" style="font-size:20px;color:#545b6b;margin-top:30px">Partner names shown as a concept · FirstDose adds the fill signal and the reason</div></div>
+<div id="market-close" style="position:absolute;left:800px;top:230px;width:1040px;opacity:0">
+                <div id="market-l1" style="font-size:58px;font-weight:700;letter-spacing:-0.03em;line-height:1.1;color:#545b6b">Impiricus reaches the doctor who writes the prescription.</div>
+                <div id="market-l2" style="font-size:78px;font-weight:880;letter-spacing:-0.045em;line-height:1.02;margin-top:44px"><span style="color:#2c5bd6">FirstDose</span> reaches the person who gets the patient on it, every day.</div></div>
+<div class="caps" style="left:80px;top:820px;width:620px;height:190px;text-align:left"><p class="cap" id="market-c0" style="font-size:33px"><span class="w" id="market-c0w0">About</span> <span class="w e" id="market-c0w1">467,000</span> <span class="w" id="market-c0w2">medical</span> <span class="w" id="market-c0w3">assistants</span> <span class="w" id="market-c0w4">work</span> <span class="w" id="market-c0w5">in</span> <span class="w" id="market-c0w6">doctors&#x27;</span> <span class="w" id="market-c0w7">offices.</span></p><p class="cap" id="market-c1" style="font-size:33px"><span class="w" id="market-c1w0">None</span> <span class="w" id="market-c1w1">of</span> <span class="w" id="market-c1w2">Impiricus&#x27;s</span> <span class="w" id="market-c1w3">products</span> <span class="w" id="market-c1w4">are</span> <span class="w" id="market-c1w5">built</span> <span class="w" id="market-c1w6">for</span> <span class="w" id="market-c1w7">them.</span></p><p class="cap" id="market-c2" style="font-size:33px"><span class="w e" id="market-c2w0">FirstDose</span> <span class="w e" id="market-c2w1">is,</span></p><p class="cap" id="market-c3" style="font-size:33px"><span class="w" id="market-c3w0">and</span> <span class="w" id="market-c3w1">it</span> <span class="w" id="market-c3w2">routes</span> <span class="w" id="market-c3w3">to</span> <span class="w" id="market-c3w4">fixes</span> <span class="w" id="market-c3w5">Impiricus</span> <span class="w" id="market-c3w6">already</span> <span class="w" id="market-c3w7">runs:</span></p><p class="cap" id="market-c4" style="font-size:33px"><span class="w e" id="market-c4w0">Wallet,</span> <span class="w e" id="market-c4w1">Concierge,</span> <span class="w e" id="market-c4w2">QPharma</span> <span class="w" id="market-c4w3">and</span> <span class="w e" id="market-c4w4">Medvantx.</span></p><p class="cap" id="market-c5" style="font-size:33px"><span class="w" id="market-c5w0">Impiricus</span> <span class="w" id="market-c5w1">reaches</span> <span class="w" id="market-c5w2">the</span> <span class="w" id="market-c5w3">doctor</span> <span class="w" id="market-c5w4">who</span> <span class="w" id="market-c5w5">writes</span> <span class="w" id="market-c5w6">the</span> <span class="w" id="market-c5w7">prescription.</span></p><p class="cap" id="market-c6" style="font-size:33px"><span class="w e" id="market-c6w0">FirstDose</span> <span class="w" id="market-c6w1">reaches</span> <span class="w" id="market-c6w2">the</span> <span class="w" id="market-c6w3">person</span> <span class="w" id="market-c6w4">who</span> <span class="w" id="market-c6w5">gets</span> <span class="w" id="market-c6w6">the</span> <span class="w" id="market-c6w7">patient</span> <span class="w" id="market-c6w8">on</span> <span class="w" id="market-c6w9">it,</span> <span class="w" id="market-c6w10">every</span> <span class="w" id="market-c6w11">day.</span></p></div>
+<div class="foot">Market figures: BLS OOH 2025; FirstDose team estimate where noted · Concept, not affiliated with Impiricus or DocUpdate</div>
+</div>
+</div>
+<script>
+(() => {
+const tl = gsap.timeline({ paused: true });
+tl.fromTo("#market-glow",{scale:.92,opacity:.8},{scale:1.08,opacity:1,duration:3,ease:"sine.inOut",yoyo:true,repeat:3},0);tl.fromTo("#market-glow2",{x:0,y:0},{x:120,y:-60,duration:11.30,ease:"sine.inOut",yoyo:true,repeat:1},0);
+tl.fromTo("#market-c0w0",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},0.00);
+tl.fromTo("#market-c0w1",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},0.63);
+tl.fromTo("#market-c0w2",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},1.26);
+tl.fromTo("#market-c0w3",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},1.89);
+tl.fromTo("#market-c0w4",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},2.52);
+tl.fromTo("#market-c0w5",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},3.16);
+tl.fromTo("#market-c0w6",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},3.79);
+tl.fromTo("#market-c0w7",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},4.42);
+tl.fromTo("#market-c0",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},0.00);
+tl.to("#market-c0",{opacity:0,y:-6,duration:.1,ease:"power1.in"},5.26);
+tl.fromTo("#market-c1w0",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},5.44);
+tl.fromTo("#market-c1w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},5.54);
+tl.fromTo("#market-c1w2",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},5.74);
+tl.fromTo("#market-c1w3",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},6.22);
+tl.fromTo("#market-c1w4",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},6.94);
+tl.fromTo("#market-c1w5",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},7.38);
+tl.fromTo("#market-c1w6",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},7.56);
+tl.fromTo("#market-c1w7",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},7.76);
+tl.fromTo("#market-c1",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},5.36);
+tl.to("#market-c1",{opacity:0,y:-6,duration:.1,ease:"power1.in"},8.24);
+tl.fromTo("#market-c2w0",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},8.42);
+tl.fromTo("#market-c2w1",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},8.73);
+tl.fromTo("#market-c2",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},8.34);
+tl.to("#market-c2",{opacity:0,y:-6,duration:.1,ease:"power1.in"},9.20);
+tl.fromTo("#market-c3w0",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},9.38);
+tl.fromTo("#market-c3w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},9.44);
+tl.fromTo("#market-c3w2",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},9.60);
+tl.fromTo("#market-c3w3",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},9.76);
+tl.fromTo("#market-c3w4",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},9.92);
+tl.fromTo("#market-c3w5",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},10.72);
+tl.fromTo("#market-c3w6",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},11.04);
+tl.fromTo("#market-c3w7",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},11.34);
+tl.fromTo("#market-c3",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},9.30);
+tl.to("#market-c3",{opacity:0,y:-6,duration:.1,ease:"power1.in"},11.98);
+tl.fromTo("#market-c4w0",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},12.16);
+tl.fromTo("#market-c4w1",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},12.84);
+tl.fromTo("#market-c4w2",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},13.52);
+tl.fromTo("#market-c4w3",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},14.19);
+tl.fromTo("#market-c4w4",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},14.87);
+tl.fromTo("#market-c4",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},12.08);
+tl.to("#market-c4",{opacity:0,y:-6,duration:.1,ease:"power1.in"},15.74);
+tl.fromTo("#market-c5w0",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},15.92);
+tl.fromTo("#market-c5w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},16.48);
+tl.fromTo("#market-c5w2",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},16.80);
+tl.fromTo("#market-c5w3",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},17.04);
+tl.fromTo("#market-c5w4",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},17.28);
+tl.fromTo("#market-c5w5",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},17.48);
+tl.fromTo("#market-c5w6",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},17.66);
+tl.fromTo("#market-c5w7",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},17.86);
+tl.fromTo("#market-c5",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},15.84);
+tl.to("#market-c5",{opacity:0,y:-6,duration:.1,ease:"power1.in"},18.62);
+tl.fromTo("#market-c6w0",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},18.80);
+tl.fromTo("#market-c6w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},19.09);
+tl.fromTo("#market-c6w2",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},19.38);
+tl.fromTo("#market-c6w3",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},19.66);
+tl.fromTo("#market-c6w4",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},19.95);
+tl.fromTo("#market-c6w5",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},20.24);
+tl.fromTo("#market-c6w6",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},20.52);
+tl.fromTo("#market-c6w7",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},20.81);
+tl.fromTo("#market-c6w8",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},21.10);
+tl.fromTo("#market-c6w9",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},21.39);
+tl.fromTo("#market-c6w10",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},21.68);
+tl.fromTo("#market-c6w11",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},21.96);
+tl.fromTo("#market-c6",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},18.72);
+tl.to("#market-c6",{opacity:0,y:-6,duration:.1,ease:"power1.in"},22.50);
+tl.fromTo("#market-face",{scale:.6,opacity:0},{scale:1,opacity:1,duration:.7,ease:"back.out(1.5)"},0.05);
+tl.fromTo("#market-who",{x:-20,opacity:0},{x:0,opacity:1,duration:.5,ease:"power3.out"},0.3);
+tl.fromTo("#market-a",{opacity:0,y:30},{opacity:1,y:0,duration:.6,ease:"power3.out"},0.1);
+(() => { const el=document.querySelector("#market-num"); const o={v:0}; tl.fromTo(o,{v:0},{v:467000,duration:1.8,ease:"power3.out",onUpdate:()=>{el.textContent=Math.round(o.v).toLocaleString("en-US");},onComplete:()=>{el.textContent="467,000";}},0.4); tl.fromTo(el,{scale:.75},{scale:1,duration:1.8,ease:"power3.out",transformOrigin:"0% 50%"},0.4); })();
+tl.fromTo("#market-b",{opacity:0,y:20},{opacity:1,y:0,duration:.5},5.44);
+tl.fromTo("#market-c",{opacity:0,scale:.8},{opacity:1,scale:1,duration:.55,ease:"back.out(1.8)",transformOrigin:"0% 50%"},8.42);
+tl.to("#market-a",{opacity:0,y:-30,duration:.4,ease:"power2.in"},9.2);
+tl.fromTo("#market-r",{opacity:0},{opacity:1,duration:.4},9.5);
+tl.fromTo("#market-ch0",{opacity:0,y:30,scale:.9},{opacity:1,y:0,scale:1,duration:.45,ease:"back.out(1.8)"},12.1);
+tl.fromTo("#market-ch1",{opacity:0,y:30,scale:.9},{opacity:1,y:0,scale:1,duration:.45,ease:"back.out(1.8)"},12.7);
+tl.fromTo("#market-ch2",{opacity:0,y:30,scale:.9},{opacity:1,y:0,scale:1,duration:.45,ease:"back.out(1.8)"},13.65);
+tl.fromTo("#market-ch3",{opacity:0,y:30,scale:.9},{opacity:1,y:0,scale:1,duration:.45,ease:"back.out(1.8)"},14.55);
+tl.to("#market-r",{opacity:0,y:-30,duration:.4,ease:"power2.in"},15.5);
+tl.fromTo("#market-close",{opacity:0},{opacity:1,duration:.3},15.8);
+tl.fromTo("#market-l1",{opacity:0,y:30},{opacity:1,y:0,duration:.6,ease:"power3.out"},15.9);
+tl.fromTo("#market-l2",{opacity:0,y:40},{opacity:1,y:0,duration:.7,ease:"power3.out"},18.75);
+tl.fromTo("#market-root .wrap",{opacity:0,scale:.985,filter:"blur(14px)"},{opacity:1,scale:1,filter:"blur(0px)",duration:.6,ease:"power2.out"},0);
+tl.to("#market-root .wrap",{opacity:0,scale:1.03,filter:"blur(16px)",duration:.45,ease:"power1.in"},22.15);
+window.__timelines["market"] = tl;
+})();
+</script>
+</template>
+</body></html>

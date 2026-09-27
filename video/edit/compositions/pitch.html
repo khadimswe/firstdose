@@ -1,0 +1,175 @@
+<!doctype html>
+<html><head><meta charset="UTF-8" /></head>
+<body>
+<template id="pitch-template">
+<style>
+@font-face { font-family: "Geist"; src: url("assets/fonts/Geist-Variable.woff2") format("woff2"); font-weight: 100 900; }
+@font-face { font-family: "Geist Mono"; src: url("assets/fonts/GeistMono-Variable.woff2") format("woff2"); font-weight: 100 900; }
+
+#pitch-root { position: absolute; inset: 0; overflow: hidden; background: #f3f4f8; color: #0e1116;
+  font-family: "Geist", "Helvetica Neue", sans-serif; }
+#pitch-root .wrap { position: absolute; inset: 0; }
+#pitch-root .glow { position: absolute; width: 1400px; height: 1400px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(44,91,214,.20) 0%, rgba(44,91,214,.07) 38%, rgba(44,91,214,0) 68%); }
+#pitch-root .glow2 { position: absolute; width: 1000px; height: 1000px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(109,59,209,.14) 0%, rgba(109,59,209,0) 65%); }
+#pitch-root .dots { position: absolute; inset: 0; opacity: .5;
+  background-image: radial-gradient(rgba(14,17,22,.13) 1.4px, transparent 1.6px); background-size: 34px 34px; }
+#pitch-root .face { position: absolute; border-radius: 50%; overflow: hidden; background: #d8dbe4;
+  box-shadow: 0 0 0 6px #fff, 0 0 0 9px rgba(44,91,214,.55), 0 24px 60px rgba(14,17,22,.22); }
+#pitch-root .face video { position: absolute; object-fit: cover; }
+#pitch-root .ring { position: absolute; border-radius: 50%; border: 3px solid rgba(44,91,214,.35); }
+#pitch-root .who { position: absolute; }
+#pitch-root .who .n { font-size: 44px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.05; }
+#pitch-root .who .r { font-size: 24px; font-weight: 450; color: #545b6b; margin-top: 6px; }
+#pitch-root .pill { display: inline-flex; align-items: center; gap: 10px; font: 600 20px "Geist Mono", monospace;
+  letter-spacing: .02em; padding: 8px 16px; border-radius: 999px; background: #fff; border: 2px solid #dadde6; color: #0e1116; }
+#pitch-root .pill i { width: 12px; height: 12px; border-radius: 50%; background: #c8261b; display: block; }
+#pitch-root .pill.live i { background: #e5372b; box-shadow: 0 0 0 5px rgba(229,55,43,.18); }
+#pitch-root .caps { position: absolute; }
+#pitch-root .cap { position: absolute; left: 0; right: 0; bottom: 0; opacity: 0; font-size: 34px; line-height: 1.3;
+  font-weight: 560; color: #0e1116; letter-spacing: -0.005em; }
+#pitch-root .cap .w { color: #6c7383; }
+#pitch-root .cap .w.e { font-weight: 760; }
+#pitch-root .foot { position: absolute; left: 80px; right: 80px; bottom: 22px; font: 500 19px "Geist Mono", monospace;
+  color: #545b6b; letter-spacing: .01em; }
+#pitch-root .mono { font-family: "Geist Mono", monospace; }
+#pitch-root .card { background: #fff; border: 2px solid #dadde6; border-radius: 28px; box-shadow: 0 18px 50px rgba(14,17,22,.10); }
+#pitch-root .kicker { font: 600 22px "Geist Mono", monospace; letter-spacing: .06em; text-transform: uppercase; color: #2c5bd6; }
+</style>
+<div id="pitch-root" data-composition-id="pitch" data-width="1920" data-height="1080" data-duration="15.6">
+<div class="wrap">
+<div class="glow" id="pitch-glow" style="left:700px;top:-100px"></div><div class="glow2" id="pitch-glow2" style="left:-300px;top:600px"></div><div class="dots"></div>
+<div class="ring" id="pitch-ring" style="left:62px;top:62px;width:266px;height:266px"></div><div class="face" id="pitch-face" style="left:80px;top:80px;width:230px;height:230px"><video id="pitch-facev" class="clip" src="assets/faces/khadim-2.mp4" data-start="0" data-duration="15.6" data-media-start="0" data-track-index="6" data-layout-allow-overflow muted playsinline style="left:-100.6px;top:-52.3px;width:423.4px;height:282.3px"></video></div>
+<div class="who" id="pitch-who" style="left:350px;top:110px"><div class="n">Khadim</div><div class="r">Product & screens</div></div>
+<div id="pitch-big" style="position:absolute;left:80px;top:420px;width:600px">
+                <div class="kicker">The product</div>
+                <div style="font-size:64px;font-weight:850;letter-spacing:-0.04em;line-height:1.02;margin-top:14px">The missing step after the script is sent.</div></div>
+<div id="pitch-win" style="position:absolute;left:760px;top:70px;width:1100px;height:900px;border-radius:26px;overflow:hidden;background:#fff;
+                 box-shadow:0 0 0 2px #dadde6,0 40px 90px rgba(14,17,22,.20)">
+              <div style="height:56px;background:#eef0f5;display:flex;align-items:center;gap:10px;padding:0 22px;border-bottom:2px solid #dadde6">
+                <i style="width:14px;height:14px;border-radius:50%;background:#e5534b;display:block"></i><i style="width:14px;height:14px;border-radius:50%;background:#e8b43a;display:block"></i><i style="width:14px;height:14px;border-radius:50%;background:#43b05c;display:block"></i>
+                <div class="mono" style="margin-left:22px;font-size:18px;color:#545b6b;background:#fff;border-radius:10px;padding:6px 18px">FirstDose · product concept</div></div>
+              <div style="position:absolute;left:0;right:0;top:58px;bottom:0;overflow:hidden">
+<div id="pitch-page" style="position:absolute;left:0;top:0;width:1100px">
+  <section style="height:842px;overflow:hidden;padding:56px 80px 0">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="font-size:34px;font-weight:850;letter-spacing:-0.03em">First<span style="color:#2c5bd6">Dose</span></div>
+      <div class="mono" style="font-size:19px;color:#545b6b">Concept · Impiricus Ascend skill · in DocUpdate</div></div>
+    <div id="pitch-h1" style="font-size:86px;font-weight:880;letter-spacing:-0.045em;line-height:.98;margin-top:64px"><span style="display:block">Catch the prescriptions</span>that <span style="color:#c8261b">stall.</span></div>
+    <div id="pitch-sub" style="font-size:31px;color:#545b6b;line-height:1.35;margin-top:34px;max-width:880px">Impiricus reaches the doctor who writes the prescription. FirstDose reaches the person who gets the patient on it, every day.</div>
+    <div id="pitch-chips" style="margin-top:40px"><span class="tag blue">An Impiricus Ascend skill</span><span class="tag ink">Shows up in DocUpdate</span></div>
+    <div id="pitch-cite" style="margin-top:40px;padding-top:22px;border-top:2px solid #dadde6;font-size:25px;color:#545b6b;line-height:1.35">
+      <span style="color:#0e1116;font-weight:700">“The Prescription Was Sent. The Patient Still Never Started It.”</span>
+      <span class="mono" style="display:block;margin-top:8px;font-size:19px">DocUpdate article, Jul 9, 2026 · they named the problem; FirstDose is the step after send</span></div>
+  </section>
+  <section style="height:842px;overflow:hidden;padding:56px 80px 0">
+    <div class="kicker">Two different moments</div>
+    <div style="font-size:64px;font-weight:840;letter-spacing:-0.04em;margin-top:16px;line-height:1.02"><span style="display:block">Spark fires on the prescription.</span>FirstDose fires on the <span style="color:#c8261b">non-fill.</span></div>
+    <div style="position:relative;height:300px;margin-top:70px">
+      <div id="pitch-line" style="position:absolute;left:0;right:0;top:120px;height:6px;border-radius:3px;background:#dadde6;transform-origin:0 50%"></div>
+      <div id="pitch-m1" style="position:absolute;left:40px;top:40px;width:420px">
+        <div style="width:30px;height:30px;border-radius:50%;background:#6d3bd1;margin:68px 0 0 0"></div>
+        <div style="font-size:34px;font-weight:780;margin-top:24px">Rx written</div><div class="mono" style="font-size:22px;color:#6d3bd1;margin-top:6px">→ Spark engages the doctor</div></div>
+      <div id="pitch-m2" style="position:absolute;left:520px;top:40px;width:460px">
+        <div style="width:30px;height:30px;border-radius:50%;background:#c8261b;margin:68px 0 0 0;box-shadow:0 0 0 10px rgba(200,38,27,.15)"></div>
+        <div style="font-size:34px;font-weight:780;margin-top:24px">Rx not filled</div><div class="mono" style="font-size:22px;color:#c8261b;margin-top:6px">→ FirstDose routes one fix</div></div>
+    </div>
+  </section>
+  <section style="height:842px;overflow:hidden;padding:56px 80px 0">
+    <div class="kicker">What it adds</div>
+    <div id="pitch-k1" class="card" style="padding:40px 44px;margin-top:30px">
+      <div class="mono" style="font-size:21px;color:#2c5bd6">FOR DOCUPDATE</div>
+      <div style="font-size:50px;font-weight:820;letter-spacing:-0.03em;margin-top:10px">Its first staff account.</div>
+      <div style="font-size:27px;color:#545b6b;margin-top:10px">The doctor approves their access coordinator in one tap.</div></div>
+    <div id="pitch-k2" class="card" style="padding:40px 44px;margin-top:28px">
+      <div class="mono" style="font-size:21px;color:#17703e">FOR MARKET ACCESS</div>
+      <div style="font-size:50px;font-weight:820;letter-spacing:-0.03em;margin-top:10px">Pay per <span style="color:#17703e">confirmed first fill.</span></div>
+      <div style="font-size:27px;color:#545b6b;margin-top:10px">Never per prescription. Counts only, no patient names.</div></div>
+  </section>
+</div></div></div>
+<div class="caps" style="left:80px;top:820px;width:620px;height:190px;text-align:left"><p class="cap" id="pitch-c0" style="font-size:33px"><span class="w" id="pitch-c0w0">So</span> <span class="w" id="pitch-c0w1">we</span> <span class="w" id="pitch-c0w2">created</span> <span class="w e" id="pitch-c0w3">FirstDose.</span></p><p class="cap" id="pitch-c1" style="font-size:33px"><span class="w" id="pitch-c1w0">It&#x27;s</span> <span class="w" id="pitch-c1w1">an</span> <span class="w e" id="pitch-c1w2">Ascend</span> <span class="w e" id="pitch-c1w3">skill</span> <span class="w" id="pitch-c1w4">inside</span> <span class="w" id="pitch-c1w5">DocUpdate.</span></p><p class="cap" id="pitch-c2" style="font-size:33px"><span class="w e" id="pitch-c2w0">Spark</span> <span class="w" id="pitch-c2w1">fires</span> <span class="w" id="pitch-c2w2">when</span> <span class="w" id="pitch-c2w3">a</span> <span class="w" id="pitch-c2w4">prescription</span> <span class="w" id="pitch-c2w5">is</span> <span class="w" id="pitch-c2w6">written.</span></p><p class="cap" id="pitch-c3" style="font-size:33px"><span class="w e" id="pitch-c3w0">FirstDose</span> <span class="w" id="pitch-c3w1">fires</span> <span class="w" id="pitch-c3w2">when</span> <span class="w" id="pitch-c3w3">it</span> <span class="w" id="pitch-c3w4">is</span> <span class="w" id="pitch-c3w5">unfilled.</span></p><p class="cap" id="pitch-c4" style="font-size:33px"><span class="w" id="pitch-c4w0">It</span> <span class="w" id="pitch-c4w1">gives</span> <span class="w" id="pitch-c4w2">DocUpdate</span> <span class="w" id="pitch-c4w3">its</span> <span class="w" id="pitch-c4w4">first</span> <span class="w" id="pitch-c4w5">staff</span> <span class="w" id="pitch-c4w6">account,</span></p><p class="cap" id="pitch-c5" style="font-size:33px"><span class="w" id="pitch-c5w0">and</span> <span class="w" id="pitch-c5w1">Market</span> <span class="w" id="pitch-c5w2">Access</span> <span class="w" id="pitch-c5w3">pays</span> <span class="w" id="pitch-c5w4">per</span> <span class="w e" id="pitch-c5w5">confirmed</span> <span class="w" id="pitch-c5w6">first</span> <span class="w e" id="pitch-c5w7">fill,</span></p><p class="cap" id="pitch-c6" style="font-size:33px"><span class="w" id="pitch-c6w0">never</span> <span class="w" id="pitch-c6w1">per</span> <span class="w" id="pitch-c6w2">prescription.</span></p></div>
+<div class="foot">Concept: FirstDose inside DocUpdate · Not affiliated · Impiricus, Spark and partner names shown as a concept</div>
+</div>
+</div>
+<script>
+(() => {
+const tl = gsap.timeline({ paused: true });
+tl.fromTo("#pitch-glow",{scale:.92,opacity:.8},{scale:1.08,opacity:1,duration:3,ease:"sine.inOut",yoyo:true,repeat:2},0);tl.fromTo("#pitch-glow2",{x:0,y:0},{x:120,y:-60,duration:7.80,ease:"sine.inOut",yoyo:true,repeat:1},0);
+tl.fromTo("#pitch-c0w0",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},0.00);
+tl.fromTo("#pitch-c0w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},0.51);
+tl.fromTo("#pitch-c0w2",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},1.02);
+tl.fromTo("#pitch-c0w3",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},1.54);
+tl.fromTo("#pitch-c0",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},0.00);
+tl.to("#pitch-c0",{opacity:0,y:-6,duration:.1,ease:"power1.in"},2.26);
+tl.fromTo("#pitch-c1w0",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},2.44);
+tl.fromTo("#pitch-c1w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},2.75);
+tl.fromTo("#pitch-c1w2",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},3.06);
+tl.fromTo("#pitch-c1w3",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},3.37);
+tl.fromTo("#pitch-c1w4",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},3.68);
+tl.fromTo("#pitch-c1w5",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},3.99);
+tl.fromTo("#pitch-c1",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},2.36);
+tl.to("#pitch-c1",{opacity:0,y:-6,duration:.1,ease:"power1.in"},4.50);
+tl.fromTo("#pitch-c2w0",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},4.68);
+tl.fromTo("#pitch-c2w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},4.90);
+tl.fromTo("#pitch-c2w2",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},5.20);
+tl.fromTo("#pitch-c2w3",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},5.38);
+tl.fromTo("#pitch-c2w4",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},5.52);
+tl.fromTo("#pitch-c2w5",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},5.84);
+tl.fromTo("#pitch-c2w6",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},6.10);
+tl.fromTo("#pitch-c2",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},4.60);
+tl.to("#pitch-c2",{opacity:0,y:-6,duration:.1,ease:"power1.in"},6.66);
+tl.fromTo("#pitch-c3w0",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},6.84);
+tl.fromTo("#pitch-c3w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},7.21);
+tl.fromTo("#pitch-c3w2",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},7.58);
+tl.fromTo("#pitch-c3w3",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},7.95);
+tl.fromTo("#pitch-c3w4",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},8.31);
+tl.fromTo("#pitch-c3w5",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},8.68);
+tl.fromTo("#pitch-c3",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},6.76);
+tl.to("#pitch-c3",{opacity:0,y:-6,duration:.1,ease:"power1.in"},9.22);
+tl.fromTo("#pitch-c4w0",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},9.40);
+tl.fromTo("#pitch-c4w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},9.52);
+tl.fromTo("#pitch-c4w2",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},9.70);
+tl.fromTo("#pitch-c4w3",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},10.24);
+tl.fromTo("#pitch-c4w4",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},10.44);
+tl.fromTo("#pitch-c4w5",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},10.62);
+tl.fromTo("#pitch-c4w6",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},10.90);
+tl.fromTo("#pitch-c4",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},9.32);
+tl.to("#pitch-c4",{opacity:0,y:-6,duration:.1,ease:"power1.in"},11.04);
+tl.fromTo("#pitch-c5w0",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},11.22);
+tl.fromTo("#pitch-c5w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},11.57);
+tl.fromTo("#pitch-c5w2",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},11.92);
+tl.fromTo("#pitch-c5w3",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},12.26);
+tl.fromTo("#pitch-c5w4",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},12.61);
+tl.fromTo("#pitch-c5w5",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},12.96);
+tl.fromTo("#pitch-c5w6",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},13.30);
+tl.fromTo("#pitch-c5w7",{color:"#6c7383"},{color:"#2c5bd6",duration:.12,immediateRender:false},13.65);
+tl.fromTo("#pitch-c5",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},11.14);
+tl.to("#pitch-c5",{opacity:0,y:-6,duration:.1,ease:"power1.in"},14.16);
+tl.fromTo("#pitch-c6w0",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},14.34);
+tl.fromTo("#pitch-c6w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},14.44);
+tl.fromTo("#pitch-c6w2",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},14.68);
+tl.fromTo("#pitch-c6",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},14.26);
+tl.to("#pitch-c6",{opacity:0,y:-6,duration:.1,ease:"power1.in"},15.50);
+tl.fromTo("#pitch-face",{scale:.6,opacity:0},{scale:1,opacity:1,duration:.7,ease:"back.out(1.5)"},0.05);
+tl.fromTo("#pitch-who",{x:-20,opacity:0},{x:0,opacity:1,duration:.5,ease:"power3.out"},0.3);
+tl.fromTo("#pitch-big",{x:-30,opacity:0},{x:0,opacity:1,duration:.6,ease:"power3.out"},0.5);
+tl.fromTo("#pitch-win",{y:80,opacity:0,rotateX:14,scale:.94},{y:0,opacity:1,rotateX:0,scale:1,duration:1.0,ease:"power3.out",transformPerspective:1600},0.1);
+tl.fromTo("#pitch-h1",{y:40,opacity:0},{y:0,opacity:1,duration:.7,ease:"power3.out"},0.6);
+tl.fromTo("#pitch-sub",{y:30,opacity:0},{y:0,opacity:1,duration:.6,ease:"power3.out"},1.0);
+tl.fromTo("#pitch-chips .tag",{y:20,opacity:0},{y:0,opacity:1,duration:.45,stagger:.15,ease:"back.out(1.7)"},2.5);
+tl.fromTo("#pitch-cite",{y:20,opacity:0},{y:0,opacity:1,duration:.5,ease:"power3.out"},1.5);
+tl.fromTo("#pitch-page",{y:0},{y:-842,duration:1.0,ease:"power3.inOut"},4.3);
+tl.fromTo("#pitch-line",{scaleX:0},{scaleX:1,duration:1.2,ease:"power2.out"},4.7);
+tl.fromTo("#pitch-m1",{y:30,opacity:0},{y:0,opacity:1,duration:.5,ease:"back.out(1.6)"},4.9);
+tl.fromTo("#pitch-m2",{y:30,opacity:0},{y:0,opacity:1,duration:.5,ease:"back.out(1.6)"},6.9);
+tl.to("#pitch-page",{y:-1684,duration:1.0,ease:"power3.inOut"},9.0);
+tl.fromTo("#pitch-k1",{x:60,opacity:0},{x:0,opacity:1,duration:.6,ease:"power3.out"},9.5);
+tl.fromTo("#pitch-k2",{x:60,opacity:0},{x:0,opacity:1,duration:.6,ease:"power3.out"},11.3);
+tl.fromTo("#pitch-root .wrap",{opacity:0,scale:.985,filter:"blur(14px)"},{opacity:1,scale:1,filter:"blur(0px)",duration:.6,ease:"power2.out"},0);
+tl.to("#pitch-root .wrap",{opacity:0,scale:1.03,filter:"blur(16px)",duration:.45,ease:"power1.in"},15.15);
+window.__timelines["pitch"] = tl;
+})();
+</script>
+</template>
+</body></html>
