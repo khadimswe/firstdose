@@ -1,0 +1,67 @@
+{
+  "k1-hook": {
+    "source": "kadim beat 1.mov",
+    "duration": 18.0,
+    "ranges": [
+      {
+        "src_in": 0.0,
+        "src_out": 18.0,
+        "out_start": 0.0
+      }
+    ],
+    "measured_I": "-21.16"
+  },
+  "k2-intro": {
+    "source": "kadim beat 2.mov",
+    "duration": 16.0,
+    "ranges": [
+      {
+        "src_in": 0.0,
+        "src_out": 16.0,
+        "out_start": 0.0
+      }
+    ],
+    "measured_I": "-22.03"
+  },
+  "v-maria": {
+    "source": "vinh beat 1.mov",
+    "duration": 52.18,
+    "ranges": [
+      {
+        "src_in": 0.0,
+        "src_out": 36.25,
+        "out_start": 0.0
+      },
+      {
+        "src_in": 36.95,
+        "src_out": 53.0,
+        "out_start": 36.13
+      }
+    ],
+    "measured_I": "-20.16"
+  },
+  "m-james": {
+    "source": "minnh beat 1.mov",
+    "duration": 46.35,
+    "ranges": [
+      {
+        "src_in": 0.0,
+        "src_out": 46.35,
+        "out_start": 0.0
+      }
+    ],
+    "measured_I": "-17.23"
+  },
+  "k3-close": {
+    "source": "kadim beat 3.mov",
+    "duration": 22.4,
+    "ranges": [
+      {
+        "src_in": 0.15,
+        "src_out": 22.55,
+        "out_start": 0.0
+      }
+    ],
+    "measured_I": "-23.04"
+  }
+}

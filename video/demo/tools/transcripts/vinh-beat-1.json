@@ -1,0 +1,1770 @@
+{
+	"systeminfo": "WHISPER : VITISAI = 0 | COREML = 0 | OPENVINO = 0 | MTL : EMBED_LIBRARY = 1 | CPU : NEON = 1 | ARM_FMA = 1 | MATMUL_INT8 = 1 | DOTPROD = 1 | ACCELERATE = 1 | OPENMP = 1 | REPACK = 1 | ",
+	"model": {
+		"type": "large",
+		"multilingual": true,
+		"vocab": 51866,
+		"audio": {
+			"ctx": 1500,
+			"state": 1280,
+			"head": 20,
+			"layer": 32
+		},
+		"text": {
+			"ctx": 448,
+			"state": 1280,
+			"head": 20,
+			"layer": 4
+		},
+		"mels": 128,
+		"ftype": 8
+	},
+	"params": {
+		"model": ".work/models/ggml-large-v3-turbo-q5_0.bin",
+		"language": "en",
+		"translate": false
+	},
+	"result": {
+		"language": "en"
+	},
+	"transcription": [
+		{
+			"timestamps": {
+				"from": "00:00:00,000",
+				"to": "00:00:00,000"
+			},
+			"offsets": {
+				"from": 0,
+				"to": 0
+			},
+			"text": ""
+		},
+		{
+			"timestamps": {
+				"from": "00:00:00,000",
+				"to": "00:00:00,250"
+			},
+			"offsets": {
+				"from": 0,
+				"to": 250
+			},
+			"text": " This"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:00,250",
+				"to": "00:00:00,490"
+			},
+			"offsets": {
+				"from": 250,
+				"to": 490
+			},
+			"text": " is"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:00,490",
+				"to": "00:00:00,560"
+			},
+			"offsets": {
+				"from": 490,
+				"to": 560
+			},
+			"text": " the"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:00,560",
+				"to": "00:00:01,370"
+			},
+			"offsets": {
+				"from": 560,
+				"to": 1370
+			},
+			"text": " coordinator's"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:01,370",
+				"to": "00:00:01,780"
+			},
+			"offsets": {
+				"from": 1370,
+				"to": 1780
+			},
+			"text": " cue."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:01,780",
+				"to": "00:00:02,080"
+			},
+			"offsets": {
+				"from": 1780,
+				"to": 2080
+			},
+			"text": " She's"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:02,080",
+				"to": "00:00:02,280"
+			},
+			"offsets": {
+				"from": 2080,
+				"to": 2280
+			},
+			"text": " the"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:02,280",
+				"to": "00:00:02,630"
+			},
+			"offsets": {
+				"from": 2280,
+				"to": 2630
+			},
+			"text": " person"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:02,630",
+				"to": "00:00:02,810"
+			},
+			"offsets": {
+				"from": 2630,
+				"to": 2810
+			},
+			"text": " who"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:02,810",
+				"to": "00:00:03,120"
+			},
+			"offsets": {
+				"from": 2810,
+				"to": 3120
+			},
+			"text": " gets"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:03,120",
+				"to": "00:00:03,540"
+			},
+			"offsets": {
+				"from": 3120,
+				"to": 3540
+			},
+			"text": " patients"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:03,540",
+				"to": "00:00:03,780"
+			},
+			"offsets": {
+				"from": 3540,
+				"to": 3780
+			},
+			"text": " onto"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:03,780",
+				"to": "00:00:04,090"
+			},
+			"offsets": {
+				"from": 3780,
+				"to": 4090
+			},
+			"text": " their"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:04,090",
+				"to": "00:00:04,820"
+			},
+			"offsets": {
+				"from": 4090,
+				"to": 4820
+			},
+			"text": " medication,"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:04,820",
+				"to": "00:00:05,130"
+			},
+			"offsets": {
+				"from": 4820,
+				"to": 5130
+			},
+			"text": " and"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:05,130",
+				"to": "00:00:05,180"
+			},
+			"offsets": {
+				"from": 5130,
+				"to": 5180
+			},
+			"text": " she"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:05,180",
+				"to": "00:00:05,480"
+			},
+			"offsets": {
+				"from": 5180,
+				"to": 5480
+			},
+			"text": " opens"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:05,480",
+				"to": "00:00:05,720"
+			},
+			"offsets": {
+				"from": 5480,
+				"to": 5720
+			},
+			"text": " this"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:05,720",
+				"to": "00:00:06,040"
+			},
+			"offsets": {
+				"from": 5720,
+				"to": 6040
+			},
+			"text": " every"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:06,040",
+				"to": "00:00:06,740"
+			},
+			"offsets": {
+				"from": 6040,
+				"to": 6740
+			},
+			"text": " morning."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:06,740",
+				"to": "00:00:07,150"
+			},
+			"offsets": {
+				"from": 6740,
+				"to": 7150
+			},
+			"text": " Maria"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:07,150",
+				"to": "00:00:07,200"
+			},
+			"offsets": {
+				"from": 7150,
+				"to": 7200
+			},
+			"text": " is"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:07,200",
+				"to": "00:00:07,260"
+			},
+			"offsets": {
+				"from": 7200,
+				"to": 7260
+			},
+			"text": " a"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:07,260",
+				"to": "00:00:07,860"
+			},
+			"offsets": {
+				"from": 7260,
+				"to": 7860
+			},
+			"text": " fictional"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:07,860",
+				"to": "00:00:08,560"
+			},
+			"offsets": {
+				"from": 7860,
+				"to": 8560
+			},
+			"text": " patient."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:08,560",
+				"to": "00:00:09,020"
+			},
+			"offsets": {
+				"from": 8560,
+				"to": 9020
+			},
+			"text": " Her"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:09,020",
+				"to": "00:00:09,140"
+			},
+			"offsets": {
+				"from": 9020,
+				"to": 9140
+			},
+			"text": " doctor"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:09,140",
+				"to": "00:00:09,470"
+			},
+			"offsets": {
+				"from": 9140,
+				"to": 9470
+			},
+			"text": " signs"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:09,470",
+				"to": "00:00:09,600"
+			},
+			"offsets": {
+				"from": 9470,
+				"to": 9600
+			},
+			"text": " an"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:09,600",
+				"to": "00:00:10,020"
+			},
+			"offsets": {
+				"from": 9600,
+				"to": 10020
+			},
+			"text": " Otezla"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:10,020",
+				"to": "00:00:10,810"
+			},
+			"offsets": {
+				"from": 10020,
+				"to": 10810
+			},
+			"text": " prescription"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:10,810",
+				"to": "00:00:10,970"
+			},
+			"offsets": {
+				"from": 10810,
+				"to": 10970
+			},
+			"text": " and"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:10,970",
+				"to": "00:00:11,160"
+			},
+			"offsets": {
+				"from": 10970,
+				"to": 11160
+			},
+			"text": " doc"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:11,160",
+				"to": "00:00:11,550"
+			},
+			"offsets": {
+				"from": 11160,
+				"to": 11550
+			},
+			"text": " update"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:11,550",
+				"to": "00:00:11,800"
+			},
+			"offsets": {
+				"from": 11550,
+				"to": 11800
+			},
+			"text": " with"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:11,800",
+				"to": "00:00:12,230"
+			},
+			"offsets": {
+				"from": 11800,
+				"to": 12230
+			},
+			"text": " the"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:12,230",
+				"to": "00:00:12,340"
+			},
+			"offsets": {
+				"from": 12230,
+				"to": 12340
+			},
+			"text": " label"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:12,340",
+				"to": "00:00:12,850"
+			},
+			"offsets": {
+				"from": 12340,
+				"to": 12850
+			},
+			"text": " verbatim"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:12,850",
+				"to": "00:00:13,110"
+			},
+			"offsets": {
+				"from": 12850,
+				"to": 13110
+			},
+			"text": " from"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:13,110",
+				"to": "00:00:13,440"
+			},
+			"offsets": {
+				"from": 13110,
+				"to": 13440
+			},
+			"text": " Daily"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:13,440",
+				"to": "00:00:13,920"
+			},
+			"offsets": {
+				"from": 13440,
+				"to": 13920
+			},
+			"text": " Med."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:13,920",
+				"to": "00:00:14,410"
+			},
+			"offsets": {
+				"from": 13920,
+				"to": 14410
+			},
+			"text": " Today,"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:14,410",
+				"to": "00:00:14,700"
+			},
+			"offsets": {
+				"from": 14410,
+				"to": 14700
+			},
+			"text": " that's"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:14,700",
+				"to": "00:00:15,000"
+			},
+			"offsets": {
+				"from": 14700,
+				"to": 15000
+			},
+			"text": " where"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:15,000",
+				"to": "00:00:15,180"
+			},
+			"offsets": {
+				"from": 15000,
+				"to": 15180
+			},
+			"text": " the"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:15,180",
+				"to": "00:00:15,480"
+			},
+			"offsets": {
+				"from": 15180,
+				"to": 15480
+			},
+			"text": " story"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:15,480",
+				"to": "00:00:15,920"
+			},
+			"offsets": {
+				"from": 15480,
+				"to": 15920
+			},
+			"text": " ends."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:15,920",
+				"to": "00:00:16,430"
+			},
+			"offsets": {
+				"from": 15920,
+				"to": 16430
+			},
+			"text": " Here,"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:16,430",
+				"to": "00:00:16,520"
+			},
+			"offsets": {
+				"from": 16430,
+				"to": 16520
+			},
+			"text": " the"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:16,520",
+				"to": "00:00:17,050"
+			},
+			"offsets": {
+				"from": 16520,
+				"to": 17050
+			},
+			"text": " pharmacy"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:17,050",
+				"to": "00:00:17,520"
+			},
+			"offsets": {
+				"from": 17050,
+				"to": 17520
+			},
+			"text": " reports"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:17,520",
+				"to": "00:00:17,650"
+			},
+			"offsets": {
+				"from": 17520,
+				"to": 17650
+			},
+			"text": " it"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:17,650",
+				"to": "00:00:17,850"
+			},
+			"offsets": {
+				"from": 17650,
+				"to": 17850
+			},
+			"text": " was"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:17,850",
+				"to": "00:00:17,980"
+			},
+			"offsets": {
+				"from": 17850,
+				"to": 17980
+			},
+			"text": " in"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:17,980",
+				"to": "00:00:18,650"
+			},
+			"offsets": {
+				"from": 17980,
+				"to": 18650
+			},
+			"text": " dispense,"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:18,650",
+				"to": "00:00:19,110"
+			},
+			"offsets": {
+				"from": 18650,
+				"to": 19110
+			},
+			"text": " decline"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:19,110",
+				"to": "00:00:19,260"
+			},
+			"offsets": {
+				"from": 19110,
+				"to": 19260
+			},
+			"text": " at"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:19,260",
+				"to": "00:00:19,440"
+			},
+			"offsets": {
+				"from": 19260,
+				"to": 19440
+			},
+			"text": " the"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:19,440",
+				"to": "00:00:20,040"
+			},
+			"offsets": {
+				"from": 19440,
+				"to": 20040
+			},
+			"text": " price."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:20,040",
+				"to": "00:00:20,040"
+			},
+			"offsets": {
+				"from": 20040,
+				"to": 20040
+			},
+			"text": ""
+		},
+		{
+			"timestamps": {
+				"from": "00:00:20,040",
+				"to": "00:00:20,280"
+			},
+			"offsets": {
+				"from": 20040,
+				"to": 20280
+			},
+			"text": " The"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:20,280",
+				"to": "00:00:20,670"
+			},
+			"offsets": {
+				"from": 20280,
+				"to": 20670
+			},
+			"text": " doctor's"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:20,670",
+				"to": "00:00:20,960"
+			},
+			"offsets": {
+				"from": 20670,
+				"to": 20960
+			},
+			"text": " watch"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:20,960",
+				"to": "00:00:21,300"
+			},
+			"offsets": {
+				"from": 20960,
+				"to": 21300
+			},
+			"text": " buzzes"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:21,300",
+				"to": "00:00:21,530"
+			},
+			"offsets": {
+				"from": 21300,
+				"to": 21530
+			},
+			"text": " with"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:21,530",
+				"to": "00:00:21,610"
+			},
+			"offsets": {
+				"from": 21530,
+				"to": 21610
+			},
+			"text": " a"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:21,610",
+				"to": "00:00:22,110"
+			},
+			"offsets": {
+				"from": 21610,
+				"to": 22110
+			},
+			"text": " reason."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:22,110",
+				"to": "00:00:22,270"
+			},
+			"offsets": {
+				"from": 22110,
+				"to": 22270
+			},
+			"text": " One"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:22,270",
+				"to": "00:00:22,550"
+			},
+			"offsets": {
+				"from": 22270,
+				"to": 22550
+			},
+			"text": " tap,"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:22,550",
+				"to": "00:00:22,780"
+			},
+			"offsets": {
+				"from": 22550,
+				"to": 22780
+			},
+			"text": " sent"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:22,780",
+				"to": "00:00:22,890"
+			},
+			"offsets": {
+				"from": 22780,
+				"to": 22890
+			},
+			"text": " to"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:22,890",
+				"to": "00:00:23,000"
+			},
+			"offsets": {
+				"from": 22890,
+				"to": 23000
+			},
+			"text": " my"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:23,000",
+				"to": "00:00:23,810"
+			},
+			"offsets": {
+				"from": 23000,
+				"to": 23810
+			},
+			"text": " coordinator."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:23,810",
+				"to": "00:00:24,030"
+			},
+			"offsets": {
+				"from": 23810,
+				"to": 24030
+			},
+			"text": " The"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:24,030",
+				"to": "00:00:24,270"
+			},
+			"offsets": {
+				"from": 24030,
+				"to": 24270
+			},
+			"text": " first"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:24,270",
+				"to": "00:00:24,610"
+			},
+			"offsets": {
+				"from": 24270,
+				"to": 24610
+			},
+			"text": " time,"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:24,610",
+				"to": "00:00:24,780"
+			},
+			"offsets": {
+				"from": 24610,
+				"to": 24780
+			},
+			"text": " the"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:24,780",
+				"to": "00:00:25,170"
+			},
+			"offsets": {
+				"from": 24780,
+				"to": 25170
+			},
+			"text": " doctor"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:25,170",
+				"to": "00:00:25,590"
+			},
+			"offsets": {
+				"from": 25170,
+				"to": 25590
+			},
+			"text": " approves"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:25,590",
+				"to": "00:00:26,020"
+			},
+			"offsets": {
+				"from": 25590,
+				"to": 26020
+			},
+			"text": " their"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:26,020",
+				"to": "00:00:26,690"
+			},
+			"offsets": {
+				"from": 26020,
+				"to": 26690
+			},
+			"text": " coordinator."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:26,690",
+				"to": "00:00:26,740"
+			},
+			"offsets": {
+				"from": 26690,
+				"to": 26740
+			},
+			"text": " A"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:26,740",
+				"to": "00:00:27,190"
+			},
+			"offsets": {
+				"from": 26740,
+				"to": 27190
+			},
+			"text": " staff"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:27,190",
+				"to": "00:00:27,550"
+			},
+			"offsets": {
+				"from": 27190,
+				"to": 27550
+			},
+			"text": " account,"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:27,550",
+				"to": "00:00:27,720"
+			},
+			"offsets": {
+				"from": 27550,
+				"to": 27720
+			},
+			"text": " the"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:27,720",
+				"to": "00:00:27,890"
+			},
+			"offsets": {
+				"from": 27720,
+				"to": 27890
+			},
+			"text": " way"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:27,890",
+				"to": "00:00:28,510"
+			},
+			"offsets": {
+				"from": 27890,
+				"to": 28510
+			},
+			"text": " CoverMyMeds"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:28,510",
+				"to": "00:00:28,710"
+			},
+			"offsets": {
+				"from": 28510,
+				"to": 28710
+			},
+			"text": " does"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:28,710",
+				"to": "00:00:29,300"
+			},
+			"offsets": {
+				"from": 28710,
+				"to": 29300
+			},
+			"text": " it."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:29,300",
+				"to": "00:00:29,650"
+			},
+			"offsets": {
+				"from": 29300,
+				"to": 29650
+			},
+			"text": " Inside"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:29,650",
+				"to": "00:00:29,830"
+			},
+			"offsets": {
+				"from": 29650,
+				"to": 29830
+			},
+			"text": " the"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:29,830",
+				"to": "00:00:30,120"
+			},
+			"offsets": {
+				"from": 29830,
+				"to": 30120
+			},
+			"text": " app,"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:30,120",
+				"to": "00:00:30,330"
+			},
+			"offsets": {
+				"from": 30120,
+				"to": 30330
+			},
+			"text": " they"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:30,330",
+				"to": "00:00:30,740"
+			},
+			"offsets": {
+				"from": 30330,
+				"to": 30740
+			},
+			"text": " already"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:30,740",
+				"to": "00:00:31,140"
+			},
+			"offsets": {
+				"from": 30740,
+				"to": 31140
+			},
+			"text": " use."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:31,140",
+				"to": "00:00:31,530"
+			},
+			"offsets": {
+				"from": 31140,
+				"to": 31530
+			},
+			"text": " Maria"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:31,530",
+				"to": "00:00:31,880"
+			},
+			"offsets": {
+				"from": 31530,
+				"to": 31880
+			},
+			"text": " jumps"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:31,880",
+				"to": "00:00:32,270"
+			},
+			"offsets": {
+				"from": 31880,
+				"to": 32270
+			},
+			"text": " to"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:32,270",
+				"to": "00:00:32,300"
+			},
+			"offsets": {
+				"from": 32270,
+				"to": 32300
+			},
+			"text": " the"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:32,300",
+				"to": "00:00:32,530"
+			},
+			"offsets": {
+				"from": 32300,
+				"to": 32530
+			},
+			"text": " top"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:32,530",
+				"to": "00:00:32,680"
+			},
+			"offsets": {
+				"from": 32530,
+				"to": 32680
+			},
+			"text": " of"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:32,680",
+				"to": "00:00:32,910"
+			},
+			"offsets": {
+				"from": 32680,
+				"to": 32910
+			},
+			"text": " the"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:32,910",
+				"to": "00:00:33,340"
+			},
+			"offsets": {
+				"from": 32910,
+				"to": 33340
+			},
+			"text": " queue"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:33,340",
+				"to": "00:00:33,610"
+			},
+			"offsets": {
+				"from": 33340,
+				"to": 33610
+			},
+			"text": " with"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:33,610",
+				"to": "00:00:33,840"
+			},
+			"offsets": {
+				"from": 33610,
+				"to": 33840
+			},
+			"text": " one"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:33,840",
+				"to": "00:00:34,450"
+			},
+			"offsets": {
+				"from": 33840,
+				"to": 34450
+			},
+			"text": " fix."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:34,450",
+				"to": "00:00:34,920"
+			},
+			"offsets": {
+				"from": 34450,
+				"to": 34920
+			},
+			"text": " Resend"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:34,920",
+				"to": "00:00:35,050"
+			},
+			"offsets": {
+				"from": 34920,
+				"to": 35050
+			},
+			"text": " the"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:35,050",
+				"to": "00:00:35,430"
+			},
+			"offsets": {
+				"from": 35050,
+				"to": 35430
+			},
+			"text": " copay"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:35,430",
+				"to": "00:00:36,000"
+			},
+			"offsets": {
+				"from": 35430,
+				"to": 36000
+			},
+			"text": " card."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:37,280",
+				"to": "00:00:37,280"
+			},
+			"offsets": {
+				"from": 37280,
+				"to": 37280
+			},
+			"text": ""
+		},
+		{
+			"timestamps": {
+				"from": "00:00:37,280",
+				"to": "00:00:37,770"
+			},
+			"offsets": {
+				"from": 37280,
+				"to": 37770
+			},
+			"text": " Maria"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:37,770",
+				"to": "00:00:38,000"
+			},
+			"offsets": {
+				"from": 37770,
+				"to": 38000
+			},
+			"text": " opens"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:38,000",
+				"to": "00:00:38,210"
+			},
+			"offsets": {
+				"from": 38000,
+				"to": 38210
+			},
+			"text": " her"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:38,210",
+				"to": "00:00:38,570"
+			},
+			"offsets": {
+				"from": 38210,
+				"to": 38570
+			},
+			"text": " cards"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:38,570",
+				"to": "00:00:38,710"
+			},
+			"offsets": {
+				"from": 38570,
+				"to": 38710
+			},
+			"text": " on"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:38,710",
+				"to": "00:00:38,910"
+			},
+			"offsets": {
+				"from": 38710,
+				"to": 38910
+			},
+			"text": " her"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:38,910",
+				"to": "00:00:39,340"
+			},
+			"offsets": {
+				"from": 38910,
+				"to": 39340
+			},
+			"text": " phone"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:39,340",
+				"to": "00:00:39,490"
+			},
+			"offsets": {
+				"from": 39340,
+				"to": 39490
+			},
+			"text": " and"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:39,490",
+				"to": "00:00:39,780"
+			},
+			"offsets": {
+				"from": 39490,
+				"to": 39780
+			},
+			"text": " taps"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:39,780",
+				"to": "00:00:40,070"
+			},
+			"offsets": {
+				"from": 39780,
+				"to": 40070
+			},
+			"text": " used"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:40,070",
+				"to": "00:00:40,210"
+			},
+			"offsets": {
+				"from": 40070,
+				"to": 40210
+			},
+			"text": " at"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:40,210",
+				"to": "00:00:41,080"
+			},
+			"offsets": {
+				"from": 40210,
+				"to": 41080
+			},
+			"text": " pharmacy."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:41,080",
+				"to": "00:00:41,400"
+			},
+			"offsets": {
+				"from": 41080,
+				"to": 41400
+			},
+			"text": " That's"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:41,400",
+				"to": "00:00:41,510"
+			},
+			"offsets": {
+				"from": 41400,
+				"to": 41510
+			},
+			"text": " an"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:41,510",
+				"to": "00:00:42,430"
+			},
+			"offsets": {
+				"from": 41510,
+				"to": 42430
+			},
+			"text": " acknowledgement,"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:42,430",
+				"to": "00:00:42,590"
+			},
+			"offsets": {
+				"from": 42430,
+				"to": 42590
+			},
+			"text": " not"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:42,590",
+				"to": "00:00:42,640"
+			},
+			"offsets": {
+				"from": 42590,
+				"to": 42640
+			},
+			"text": " a"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:42,640",
+				"to": "00:00:43,260"
+			},
+			"offsets": {
+				"from": 42640,
+				"to": 43260
+			},
+			"text": " fill."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:43,260",
+				"to": "00:00:43,300"
+			},
+			"offsets": {
+				"from": 43260,
+				"to": 43300
+			},
+			"text": " The"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:43,300",
+				"to": "00:00:43,620"
+			},
+			"offsets": {
+				"from": 43300,
+				"to": 43620
+			},
+			"text": " case"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:43,620",
+				"to": "00:00:44,020"
+			},
+			"offsets": {
+				"from": 43620,
+				"to": 44020
+			},
+			"text": " stays"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:44,020",
+				"to": "00:00:44,840"
+			},
+			"offsets": {
+				"from": 44020,
+				"to": 44840
+			},
+			"text": " pending."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:44,840",
+				"to": "00:00:45,120"
+			},
+			"offsets": {
+				"from": 44840,
+				"to": 45120
+			},
+			"text": " Only"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:45,120",
+				"to": "00:00:45,380"
+			},
+			"offsets": {
+				"from": 45120,
+				"to": 45380
+			},
+			"text": " when"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:45,380",
+				"to": "00:00:45,580"
+			},
+			"offsets": {
+				"from": 45380,
+				"to": 45580
+			},
+			"text": " the"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:45,580",
+				"to": "00:00:46,300"
+			},
+			"offsets": {
+				"from": 45580,
+				"to": 46300
+			},
+			"text": " pharmacy"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:46,300",
+				"to": "00:00:46,680"
+			},
+			"offsets": {
+				"from": 46300,
+				"to": 46680
+			},
+			"text": " confirms"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:46,680",
+				"to": "00:00:46,950"
+			},
+			"offsets": {
+				"from": 46680,
+				"to": 46950
+			},
+			"text": " does"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:46,950",
+				"to": "00:00:47,140"
+			},
+			"offsets": {
+				"from": 46950,
+				"to": 47140
+			},
+			"text": " it"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:47,140",
+				"to": "00:00:47,380"
+			},
+			"offsets": {
+				"from": 47140,
+				"to": 47380
+			},
+			"text": " say"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:47,380",
+				"to": "00:00:47,710"
+			},
+			"offsets": {
+				"from": 47380,
+				"to": 47710
+			},
+			"text": " fill"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:47,710",
+				"to": "00:00:48,720"
+			},
+			"offsets": {
+				"from": 47710,
+				"to": 48720
+			},
+			"text": " confirmed."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:48,720",
+				"to": "00:00:48,910"
+			},
+			"offsets": {
+				"from": 48720,
+				"to": 48910
+			},
+			"text": " The"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:48,910",
+				"to": "00:00:49,510"
+			},
+			"offsets": {
+				"from": 48910,
+				"to": 49510
+			},
+			"text": " doctor"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:49,510",
+				"to": "00:00:49,620"
+			},
+			"offsets": {
+				"from": 49510,
+				"to": 49620
+			},
+			"text": " heard"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:49,620",
+				"to": "00:00:49,910"
+			},
+			"offsets": {
+				"from": 49620,
+				"to": 49910
+			},
+			"text": " about"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:49,910",
+				"to": "00:00:50,050"
+			},
+			"offsets": {
+				"from": 49910,
+				"to": 50050
+			},
+			"text": " it"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:50,050",
+				"to": "00:00:50,460"
+			},
+			"offsets": {
+				"from": 50050,
+				"to": 50460
+			},
+			"text": " twice,"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:50,460",
+				"to": "00:00:50,710"
+			},
+			"offsets": {
+				"from": 50460,
+				"to": 50710
+			},
+			"text": " when"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:50,710",
+				"to": "00:00:50,830"
+			},
+			"offsets": {
+				"from": 50710,
+				"to": 50830
+			},
+			"text": " it"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:50,830",
+				"to": "00:00:51,260"
+			},
+			"offsets": {
+				"from": 50830,
+				"to": 51260
+			},
+			"text": " broke,"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:51,260",
+				"to": "00:00:51,610"
+			},
+			"offsets": {
+				"from": 51260,
+				"to": 51610
+			},
+			"text": " and"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:51,610",
+				"to": "00:00:51,700"
+			},
+			"offsets": {
+				"from": 51610,
+				"to": 51700
+			},
+			"text": " when"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:51,700",
+				"to": "00:00:51,820"
+			},
+			"offsets": {
+				"from": 51700,
+				"to": 51820
+			},
+			"text": " it"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:51,820",
+				"to": "00:00:52,010"
+			},
+			"offsets": {
+				"from": 51820,
+				"to": 52010
+			},
+			"text": " was"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:52,010",
+				"to": "00:00:52,620"
+			},
+			"offsets": {
+				"from": 52010,
+				"to": 52620
+			},
+			"text": " fixed."
+		}
+	]
+}

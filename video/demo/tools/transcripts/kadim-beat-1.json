@@ -1,0 +1,604 @@
+{
+	"systeminfo": "WHISPER : VITISAI = 0 | COREML = 0 | OPENVINO = 0 | MTL : EMBED_LIBRARY = 1 | CPU : NEON = 1 | ARM_FMA = 1 | MATMUL_INT8 = 1 | DOTPROD = 1 | ACCELERATE = 1 | OPENMP = 1 | REPACK = 1 | ",
+	"model": {
+		"type": "large",
+		"multilingual": true,
+		"vocab": 51866,
+		"audio": {
+			"ctx": 1500,
+			"state": 1280,
+			"head": 20,
+			"layer": 32
+		},
+		"text": {
+			"ctx": 448,
+			"state": 1280,
+			"head": 20,
+			"layer": 4
+		},
+		"mels": 128,
+		"ftype": 8
+	},
+	"params": {
+		"model": ".work/models/ggml-large-v3-turbo-q5_0.bin",
+		"language": "en",
+		"translate": false
+	},
+	"result": {
+		"language": "en"
+	},
+	"transcription": [
+		{
+			"timestamps": {
+				"from": "00:00:00,000",
+				"to": "00:00:00,000"
+			},
+			"offsets": {
+				"from": 0,
+				"to": 0
+			},
+			"text": ""
+		},
+		{
+			"timestamps": {
+				"from": "00:00:00,000",
+				"to": "00:00:00,580"
+			},
+			"offsets": {
+				"from": 0,
+				"to": 580
+			},
+			"text": " DocUpdate"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:00,580",
+				"to": "00:00:01,100"
+			},
+			"offsets": {
+				"from": 580,
+				"to": 1100
+			},
+			"text": " published"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:01,100",
+				"to": "00:00:01,350"
+			},
+			"offsets": {
+				"from": 1100,
+				"to": 1350
+			},
+			"text": " this"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:01,350",
+				"to": "00:00:02,060"
+			},
+			"offsets": {
+				"from": 1350,
+				"to": 2060
+			},
+			"text": " headline."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:02,060",
+				"to": "00:00:02,400"
+			},
+			"offsets": {
+				"from": 2060,
+				"to": 2400
+			},
+			"text": " The"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:02,400",
+				"to": "00:00:02,880"
+			},
+			"offsets": {
+				"from": 2400,
+				"to": 2880
+			},
+			"text": " prescription"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:02,880",
+				"to": "00:00:03,030"
+			},
+			"offsets": {
+				"from": 2880,
+				"to": 3030
+			},
+			"text": " was"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:03,030",
+				"to": "00:00:03,420"
+			},
+			"offsets": {
+				"from": 3030,
+				"to": 3420
+			},
+			"text": " sent."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:03,420",
+				"to": "00:00:03,830"
+			},
+			"offsets": {
+				"from": 3420,
+				"to": 3830
+			},
+			"text": " The"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:03,830",
+				"to": "00:00:03,960"
+			},
+			"offsets": {
+				"from": 3830,
+				"to": 3960
+			},
+			"text": " patient"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:03,960",
+				"to": "00:00:04,220"
+			},
+			"offsets": {
+				"from": 3960,
+				"to": 4220
+			},
+			"text": " still"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:04,220",
+				"to": "00:00:04,500"
+			},
+			"offsets": {
+				"from": 4220,
+				"to": 4500
+			},
+			"text": " never"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:04,500",
+				"to": "00:00:04,880"
+			},
+			"offsets": {
+				"from": 4500,
+				"to": 4880
+			},
+			"text": " started"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:04,880",
+				"to": "00:00:05,180"
+			},
+			"offsets": {
+				"from": 4880,
+				"to": 5180
+			},
+			"text": " it."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:05,180",
+				"to": "00:00:05,930"
+			},
+			"offsets": {
+				"from": 5180,
+				"to": 5930
+			},
+			"text": " Surescripts"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:05,930",
+				"to": "00:00:06,200"
+			},
+			"offsets": {
+				"from": 5930,
+				"to": 6200
+			},
+			"text": " says"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:06,200",
+				"to": "00:00:06,410"
+			},
+			"offsets": {
+				"from": 6200,
+				"to": 6410
+			},
+			"text": " one"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:06,410",
+				"to": "00:00:06,590"
+			},
+			"offsets": {
+				"from": 6410,
+				"to": 6590
+			},
+			"text": " in"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:06,590",
+				"to": "00:00:06,800"
+			},
+			"offsets": {
+				"from": 6590,
+				"to": 6800
+			},
+			"text": " four"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:06,800",
+				"to": "00:00:07,100"
+			},
+			"offsets": {
+				"from": 6800,
+				"to": 7100
+			},
+			"text": " new"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:07,100",
+				"to": "00:00:07,870"
+			},
+			"offsets": {
+				"from": 7100,
+				"to": 7870
+			},
+			"text": " prescriptions"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:07,870",
+				"to": "00:00:08,310"
+			},
+			"offsets": {
+				"from": 7870,
+				"to": 8310
+			},
+			"text": " are"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:08,310",
+				"to": "00:00:08,400"
+			},
+			"offsets": {
+				"from": 8310,
+				"to": 8400
+			},
+			"text": " never"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:08,400",
+				"to": "00:00:09,260"
+			},
+			"offsets": {
+				"from": 8400,
+				"to": 9260
+			},
+			"text": " dispensed."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:09,260",
+				"to": "00:00:09,530"
+			},
+			"offsets": {
+				"from": 9260,
+				"to": 9530
+			},
+			"text": " And"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:09,530",
+				"to": "00:00:09,530"
+			},
+			"offsets": {
+				"from": 9530,
+				"to": 9530
+			},
+			"text": " a"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:09,530",
+				"to": "00:00:10,010"
+			},
+			"offsets": {
+				"from": 9530,
+				"to": 10010
+			},
+			"text": " patient"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:10,010",
+				"to": "00:00:10,240"
+			},
+			"offsets": {
+				"from": 10010,
+				"to": 10240
+			},
+			"text": " who"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:10,240",
+				"to": "00:00:10,550"
+			},
+			"offsets": {
+				"from": 10240,
+				"to": 10550
+			},
+			"text": " never"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:10,550",
+				"to": "00:00:11,030"
+			},
+			"offsets": {
+				"from": 10550,
+				"to": 11030
+			},
+			"text": " started"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:11,030",
+				"to": "00:00:11,370"
+			},
+			"offsets": {
+				"from": 11030,
+				"to": 11370
+			},
+			"text": " looks"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:11,370",
+				"to": "00:00:11,880"
+			},
+			"offsets": {
+				"from": 11370,
+				"to": 11880
+			},
+			"text": " exactly"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:11,880",
+				"to": "00:00:12,110"
+			},
+			"offsets": {
+				"from": 11880,
+				"to": 12110
+			},
+			"text": " like"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:12,110",
+				"to": "00:00:12,190"
+			},
+			"offsets": {
+				"from": 12110,
+				"to": 12190
+			},
+			"text": " a"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:12,190",
+				"to": "00:00:12,460"
+			},
+			"offsets": {
+				"from": 12190,
+				"to": 12460
+			},
+			"text": " drug"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:12,460",
+				"to": "00:00:12,730"
+			},
+			"offsets": {
+				"from": 12460,
+				"to": 12730
+			},
+			"text": " that"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:12,730",
+				"to": "00:00:13,190"
+			},
+			"offsets": {
+				"from": 12730,
+				"to": 13190
+			},
+			"text": " doesn't"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:13,190",
+				"to": "00:00:13,670"
+			},
+			"offsets": {
+				"from": 13190,
+				"to": 13670
+			},
+			"text": " work."
+		},
+		{
+			"timestamps": {
+				"from": "00:00:13,670",
+				"to": "00:00:13,960"
+			},
+			"offsets": {
+				"from": 13670,
+				"to": 13960
+			},
+			"text": " The"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:13,960",
+				"to": "00:00:14,280"
+			},
+			"offsets": {
+				"from": 13960,
+				"to": 14280
+			},
+			"text": " person"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:14,280",
+				"to": "00:00:14,480"
+			},
+			"offsets": {
+				"from": 14280,
+				"to": 14480
+			},
+			"text": " who"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:14,480",
+				"to": "00:00:14,680"
+			},
+			"offsets": {
+				"from": 14480,
+				"to": 14680
+			},
+			"text": " can"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:14,680",
+				"to": "00:00:14,970"
+			},
+			"offsets": {
+				"from": 14680,
+				"to": 14970
+			},
+			"text": " fix"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:14,970",
+				"to": "00:00:15,010"
+			},
+			"offsets": {
+				"from": 14970,
+				"to": 15010
+			},
+			"text": " it"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:15,010",
+				"to": "00:00:15,140"
+			},
+			"offsets": {
+				"from": 15010,
+				"to": 15140
+			},
+			"text": " is"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:15,140",
+				"to": "00:00:15,620"
+			},
+			"offsets": {
+				"from": 15140,
+				"to": 15620
+			},
+			"text": " someone"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:15,620",
+				"to": "00:00:15,750"
+			},
+			"offsets": {
+				"from": 15620,
+				"to": 15750
+			},
+			"text": " in"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:15,750",
+				"to": "00:00:16,220"
+			},
+			"offsets": {
+				"from": 15750,
+				"to": 16220
+			},
+			"text": " Puricus"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:16,220",
+				"to": "00:00:16,420"
+			},
+			"offsets": {
+				"from": 16220,
+				"to": 16420
+			},
+			"text": " has"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:16,420",
+				"to": "00:00:16,860"
+			},
+			"offsets": {
+				"from": 16420,
+				"to": 16860
+			},
+			"text": " never"
+		},
+		{
+			"timestamps": {
+				"from": "00:00:16,860",
+				"to": "00:00:17,700"
+			},
+			"offsets": {
+				"from": 16860,
+				"to": 17700
+			},
+			"text": " reached."
+		}
+	]
+}
