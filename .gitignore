@@ -37,3 +37,6 @@ media/raw/
 *.prg
 bin/
 notes/
+
+# Presentation renders and PDF verification artifacts
+.presentation-build/

@@ -1,6 +1,28 @@
 # FirstDose presentation pack
 
-Being rewritten around the coordinator after the 11 AM workshop (PLAN task 6.9). Nothing here claims a rendered deck or video.
+Updated September 26, 2026 against main `015c342`: verified Humira label, Minh sign-off and original demo recordings merged. The current rehearsal split is **Khadim opens/closes, Vinh drives the demo, Minh explains AI briefly**.
+
+## Current guides
+
+- **Simple visual/audio pack:** [10-page visual cheat sheet](FirstDose-Vinh-Visual-Cheat-Sheet.pdf), [individual diagram PNGs (ZIP)](FirstDose-Vinh-Diagram-Images.zip), [11:06 plain-language podcast](FirstDose-Vinh-Simple-Study-Podcast.mp3), and [timestamped transcript](FirstDose-Vinh-Simple-Study-Podcast-Transcript.md). Follows the Maria-only demo and common judge questions, with less detail than the full technical study episode.
+- [Vinh: 30 judge questions and answers — 10 pages](FirstDose-Vinh-Judge-Questions-and-Answers.pdf): short spoken technical answers, follow-up details and six wording corrections for the Maria-only three-minute run sheet. [Readable version](FirstDose-Vinh-Judge-Questions-and-Answers.md).
+- **Vinh's technical demo pack (September 27):** [focused PDF](FirstDose-Vinh-Technical-Demo.pdf), [study podcast MP3](FirstDose-Vinh-Study-Podcast.mp3), [short rehearsal MP3](FirstDose-Vinh-Quick-Rehearsal.mp3), and [timestamped transcript](FirstDose-Vinh-Study-Podcast-Transcript.md). Covers Vinh taking the AI/labels/analytics explanation too, exact demo actions, backend/APIs, public-data visuals and judge answers. The user confirmed **Oracle of the Deep (general), Impiricus and SpaceXAI (sponsors)**; this supersedes the older Aramco-as-general recommendation. MLH selections remain unspecified. Audio uses a disclosed synthetic narrator, not a voice recording of Vinh.
+- [Live demo: step by step — 12 pages](FirstDose-Live-Demo-Step-by-Step.pdf): device setup, exact clicks, expected results, named spoken lines and Minh's one-page operator cue card. **Use this during rehearsal and the live demo.** It puts James after Maria to preserve her watch-alert sequence. [Readable version](live-demo-step-by-step.md).
+- [Master guide — 45 pages](FirstDose-Master-Guide.pdf): pitch, graphs, architecture, feature explanations, ELI5 analogies, evidence, business math and all named scripts.
+- [Vinh — full prep, 61 pages](FirstDose-Vinh-Full-Prep.pdf)
+- [Minh — full prep, 61 pages](FirstDose-Minh-Full-Prep.pdf)
+- [Khadim — full prep, 61 pages](FirstDose-Khadim-Full-Prep.pdf)
+- [Readable live script and questioning guide](live-pitch-and-qa.md)
+
+Each personal PDF includes that speaker's script, 42 detailed questions and the entire master. Use PDF bookmarks to navigate, or GitHub's download button if the preview does not load.
+
+The script corrects polling versus Realtime, James's classified hub reason, proposed partner integration/payment, independent fill evidence and the Tiger metric boundary. Both labels are now verified in merged source. The clips are original recordings, not a final edited submission. Device receipt and deployed Humira acceptance remain separate from recorded branch-local tests.
+
+[Build instructions and editable sources](../../scripts/presentation/README.md) reproduce the four preparation PDFs, live-demo companion and scripts. The two screenshots show a recorded hosted audit. Economic graphs show hypothetical inputs. Representative feedback is attributed as team-reported qualitative evidence.
+
+## Historical planning references
+
+The files below contain older or proposed implementation claims. Use the new live script for rehearsal and the current revision at the top of the claims register. No PLAN task is marked complete or competition submission published by this documentation update.
 
 Read in this order:
 
@@ -15,4 +37,4 @@ Read in this order:
 
 **The one-glance slide (6.10):** DocUpdate's App Store home screen beside our phone view, credited, "Concept · Not affiliated".
 
-Deem owns the presentation and rehearsal. Vinh leads the technical proof, and Minh checks the source, model and metric evidence.
+Deem's presentation-publication ownership remains unchanged. Speaking roles follow the user's new script; affected-owner review remains part of the PR workflow.

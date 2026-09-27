@@ -1,5 +1,23 @@
 # Presentation claims and evidence
 
+## Current rehearsal revision — September 26, main `015c342`
+
+The [new live script](live-pitch-and-qa.md) and [PDF pack](README.md) supersede the historical rehearsal wording below. No application checks were newly run for this documentation update.
+
+| Current claim | Evidence and permitted scope |
+|---|---|
+| Khadim opens/closes; Vinh demos; Minh gives the short AI explanation | User-supplied speaking script. Business questions: Khadim; build/watch: Vinh; AI/labels: Minh, supported by Vinh. |
+| Otezla and Humira verified cached labels | Merged #43, `lib/server/label.ts`, saved artifacts and [Minh sign-off](../minh-signoff-5.1.md). Recorded 728 tests/54 files, local build, endpoints and rendering; deployed Humira recheck remains separate. |
+| Shared screens poll Supabase-backed state | `lib/realtime.ts`: authenticated polling around 1.5 seconds. Do not say Supabase Realtime subscriptions. |
+| James has two distinct pieces of evidence | Pharmacy reject 75 precedes hub failed-contact note; `commands.ts` classifies the latter, expected `UNABLE_TO_REACH`. Null stays unclassified. Prepare ev_14, then ev_16–18 after showing the seeded queue. |
+| Tiger receives reduced metrics | Allowlisted projection in `lib/server/analytics`; not every workflow event. HMAC case identity is pseudonymous. Aggregate display does not establish production buyer authorization. |
+| DocUpdate headline verified; >1 million reach refers to HCPs | Direct article and company-authored job posting linked in [script sources](live-pitch-and-qa.md#evidence-for-the-pitch). Not a FirstDose endorsement or count of doctors/customers. |
+| 27% remains the opening problem statistic | [Surescripts](https://surescripts.com/products/first-fill-abandonment), January 2026 new e-prescriptions to fill-reporting pharmacies. Not FirstDose impact. |
+| Five original recordings merged | [video/README.md](../../video/README.md), #47. Not a final edited submission or fresh physical-device proof. |
+| Staff seat, Ascend integration and payment per qualifying fill are proposed | Demo integration is a stand-in; no actual commercial contract or validated profit/savings. Representative feedback is qualitative and team-reported. |
+
+The remaining register is preserved as dated history. Its Otezla-only, missing-provider and mock-deployment descriptions are superseded where the current evidence above and the new guide say otherwise.
+
 Updated Sat Sep 26, 2026, 13:05 (Deem). This register governs factual wording in the slides, poster, video, README and Devpost. If a claim isn't here with evidence, it doesn't go on a slide. Each new verification records the commit, mode, date and result.
 
 ## What's built and verified (main `4c80650`)

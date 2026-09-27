@@ -1,0 +1,65 @@
+{
+  "provider": "ElevenLabs",
+  "voice": "George (premade synthetic narrator)",
+  "model": "eleven_multilingual_v2",
+  "source_sha": "015c342",
+  "date": "2026-09-27",
+  "duration_seconds": 1434.615,
+  "chapters": [
+    {
+      "title": "The whole project in one mental picture",
+      "start_seconds": 0,
+      "duration_seconds": 115.103
+    },
+    {
+      "title": "Set up the demo and introduce the stack",
+      "start_seconds": 115.103,
+      "duration_seconds": 126.527
+    },
+    {
+      "title": "Sign the order and explain trusted labels",
+      "start_seconds": 241.63,
+      "duration_seconds": 116.635
+    },
+    {
+      "title": "Gemini reads; the rule chooses",
+      "start_seconds": 358.265,
+      "duration_seconds": 134.143
+    },
+    {
+      "title": "Handoff, Grok voice, and your SpaceXAI proof",
+      "start_seconds": 492.409,
+      "duration_seconds": 126.202
+    },
+    {
+      "title": "The patient resource, audio, and independent fill",
+      "start_seconds": 618.611,
+      "duration_seconds": 123.508
+    },
+    {
+      "title": "The backend and watch without jargon",
+      "start_seconds": 742.119,
+      "duration_seconds": 119.05
+    },
+    {
+      "title": "James stays unresolved, and Tiger measures honestly",
+      "start_seconds": 861.169,
+      "duration_seconds": 135.583
+    },
+    {
+      "title": "Public data, tracks, and business questions",
+      "start_seconds": 996.752,
+      "duration_seconds": 143.663
+    },
+    {
+      "title": "Your short demo, rehearsed out loud",
+      "start_seconds": 1140.416,
+      "duration_seconds": 144.732
+    },
+    {
+      "title": "Recall drill and the answers to keep",
+      "start_seconds": 1285.147,
+      "duration_seconds": 149.468
+    }
+  ]
+}

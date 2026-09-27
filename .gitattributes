@@ -1,3 +1,8 @@
 # Preserve the exact fetched SPL bytes on every platform; do not normalize line endings.
 data/labels/**/source.xml -text
 video/*.mov filter=lfs diff=lfs merge=lfs -text
+
+# Generated presentation PDFs must retain their bytes across platforms.
+docs/presentation/*.pdf binary
+docs/presentation/*.mp3 binary
+docs/presentation/*.zip binary
