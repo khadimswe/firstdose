@@ -168,51 +168,78 @@ window.__timelines["{sid}"] = tl;
 
 
 # ================================================================= DEMO STAGE (maria / james)
-DESK = dict(left=760, top=200, w=1100, h=619)
-PHONE = dict(left=1380, top=121, w=400, h=838)
-FOCUS = {
-    "desk":  (dict(x=0, y=-10, scale=1.0, opacity=1, blur=0), dict(x=520, y=0, scale=.9, opacity=0, blur=0)),
-    "phone": (dict(x=-60, y=20, scale=.82, opacity=.3, blur=5), dict(x=-230, y=0, scale=1.08, opacity=1, blur=0)),
-    "both":  (dict(x=-70, y=30, scale=.8, opacity=1, blur=0), dict(x=110, y=30, scale=.86, opacity=1, blur=0)),
-    "wide":  (dict(x=40, y=-10, scale=1.02, opacity=1, blur=0), dict(x=520, y=0, scale=.9, opacity=0, blur=0)),
+# Left column: small face circle, step titles, captions. Right: a big stage with the coordinator's
+# desktop and a phone. Three layouts, never overlapping: "desk" (desktop fills the stage),
+# "both" (side by side), "phone" (phone large, desktop small and dimmed for context).
+# Highlight rings are authored in SOURCE pixels (desktop 1440x810, phones 390x844) and move with zooms.
+DESK = dict(left=560, top=150, w=1320, h=743)
+PHONE = dict(left=1480, top=121, w=400, h=838)   # 12px bezel -> 376x814 screen
+SRC_DESK_W, SRC_PHONE_W = 1440, 390
+FD, FP = DESK["w"] / SRC_DESK_W, (PHONE["w"] - 24) / SRC_PHONE_W
+# target boxes: (left, top, width, opacity)
+LAYOUT = {
+    "desk": (dict(l=560, t=150, w=1320, o=1), dict(l=1920, t=170, w=380, o=0)),
+    "both": (dict(l=560, t=250, w=880, o=1), dict(l=1486, t=110, w=380, o=1)),
+    "phone": (dict(l=560, t=340, w=700, o=.5), dict(l=1340, t=110, w=420, o=1)),
+}
+ROLE = {
+    "desk": ("Coordinator's desktop", "New user: the office staff member who fixes access"),
+    "doctor": ("Doctor's phone", "In DocUpdate, the app they already use"),
+    "patient": ("Patient's phone", "Maria opens her card from a QR code"),
 }
 STAGE_CSS = f"""
-.dslot {{ position: absolute; left:{DESK['left']}px; top:{DESK['top']}px; width:{DESK['w']}px; height:{DESK['h']}px;
-  border-radius: 22px; overflow: hidden; background: #fff; box-shadow: 0 0 0 2px {LINE}, 0 30px 70px rgba(14,17,22,.18); }}
+.dslot {{ position: absolute; left:{DESK['left']}px; top:{DESK['top']}px; width:{DESK['w']}px; height:{DESK['h']}px; transform-origin: 0 0;
+  border-radius: 20px; overflow: hidden; background: #fff; box-shadow: 0 0 0 2px {LINE}, 0 30px 70px rgba(14,17,22,.18); }}
 .dinner {{ position: absolute; left:0; top:0; width:{DESK['w']}px; height:{DESK['h']}px; transform-origin: 0 0; }}
 .dinner video {{ position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }}
-.pslot {{ position: absolute; left:{PHONE['left']}px; top:{PHONE['top']}px; width:{PHONE['w']}px; height:{PHONE['h']}px;
-  border-radius: 58px; background: #101218; padding: 12px; box-shadow: 0 30px 80px rgba(14,17,22,.30); }}
-.pscreen {{ position: absolute; left: 12px; top: 12px; right: 12px; bottom: 12px; border-radius: 46px; overflow: hidden; background: #fff; }}
+.pslot {{ position: absolute; left:{PHONE['left']}px; top:{PHONE['top']}px; width:{PHONE['w']}px; height:{PHONE['h']}px; transform-origin: 0 0;
+  border-radius: 58px; background: #101218; box-shadow: 0 30px 80px rgba(14,17,22,.30); }}
+.pscreen {{ position: absolute; left: 12px; top: 12px; width: {PHONE['w']-24}px; height: {PHONE['h']-24}px; border-radius: 46px; overflow: hidden; background: #fff; }}
 .pscreen video {{ position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }}
-.slabel {{ position: absolute; font: 600 19px "Geist Mono", monospace; letter-spacing: .05em; text-transform: uppercase;
-  color: {MUTED}; background: rgba(255,255,255,.9); border: 2px solid {LINE}; border-radius: 999px; padding: 6px 14px; white-space: nowrap; }}
-.step {{ position: absolute; left: 80px; top: 420px; width: 600px; opacity: 0; }}
-.step .num {{ font: 600 22px "Geist Mono", monospace; color: {BLUE}; letter-spacing: .06em; }}
-.step .t {{ font-size: 58px; font-weight: 820; letter-spacing: -0.035em; line-height: 1.02; margin-top: 14px; }}
-.step .s {{ font-size: 28px; font-weight: 420; color: {MUTED}; line-height: 1.32; margin-top: 18px; }}
+.role {{ position: absolute; left: 0; top: 0; opacity: 0; white-space: nowrap; }}
+.role.ph {{ width: 460px; text-align: right; }}
+.role .k {{ font: 700 20px "Geist Mono", monospace; letter-spacing: .06em; text-transform: uppercase; color: {BLUE}; }}
+.role .d {{ font-size: 22px; font-weight: 500; color: {MUTED}; margin-top: 4px; }}
+.hl {{ position: absolute; border: 4px solid {BLUE}; border-radius: 14px; opacity: 0;
+  box-shadow: 0 0 0 6px rgba(44,91,214,.18), 0 0 30px rgba(44,91,214,.35); }}
+.hl.green {{ border-color: {GREEN}; box-shadow: 0 0 0 6px rgba(23,112,62,.18), 0 0 30px rgba(23,112,62,.35); }}
+.hl.red {{ border-color: {RED}; box-shadow: 0 0 0 6px rgba(200,38,27,.16), 0 0 30px rgba(200,38,27,.30); }}
+.hl .tg {{ position: absolute; left: -4px; bottom: calc(100% + 10px); background: {BLUE}; color: #fff; font-weight: 700;
+  border-radius: 10px; padding: 6px 12px; white-space: nowrap; }}
+.hl.green .tg {{ background: {GREEN}; }} .hl.red .tg {{ background: {RED}; }}
+.hl.below .tg {{ bottom: auto; top: calc(100% + 10px); }}
+.step {{ position: absolute; left: 48px; top: 300px; width: 470px; opacity: 0; }}
+.step .num {{ font: 600 21px "Geist Mono", monospace; color: {BLUE}; letter-spacing: .06em; }}
+.step .t {{ font-size: 50px; font-weight: 820; letter-spacing: -0.035em; line-height: 1.03; margin-top: 12px; }}
+.step .s {{ font-size: 25px; font-weight: 420; color: {MUTED}; line-height: 1.34; margin-top: 16px; }}
 .step .s b {{ color: {INK}; font-weight: 700; }}
-.tag {{ display: inline-block; font: 600 22px "Geist Mono", monospace; padding: 8px 14px; border-radius: 12px; margin: 16px 10px 0 0; }}
+.tag {{ display: inline-block; font: 600 20px "Geist Mono", monospace; padding: 7px 12px; border-radius: 11px; margin: 14px 8px 0 0; }}
 .tag.red {{ background: #fbe6e4; color: {RED}; }} .tag.green {{ background: #e2f3e8; color: {GREEN}; }}
 .tag.blue {{ background: #e5ecfb; color: {BLUE}; }} .tag.ink {{ background: #eceef3; color: {INK}; }}
-.flow {{ display: flex; align-items: center; gap: 12px; margin-top: 22px; flex-wrap: wrap; }}
-.flow .box {{ font-size: 23px; font-weight: 600; padding: 12px 16px; border-radius: 14px; background: #fff; border: 2px solid {LINE}; }}
-.flow .ar {{ font-size: 28px; color: {MUTED}; }}
-.stat {{ display: inline-block; vertical-align: top; margin: 22px 26px 0 0; }}
-.stat .v {{ font-size: 96px; font-weight: 850; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }}
-.stat .l {{ font-size: 22px; color: {MUTED}; margin-top: 8px; max-width: 260px; line-height: 1.25; }}
+.flow {{ display: flex; align-items: center; gap: 10px; margin-top: 18px; flex-wrap: wrap; }}
+.flow .box {{ font-size: 21px; font-weight: 600; padding: 10px 13px; border-radius: 12px; background: #fff; border: 2px solid {LINE}; }}
+.flow .ar {{ font-size: 24px; color: {MUTED}; }}
+.stat {{ display: inline-block; vertical-align: top; margin: 18px 22px 0 0; }}
+.stat .v {{ font-size: 84px; font-weight: 850; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }}
+.stat .l {{ font-size: 20px; color: {MUTED}; margin-top: 8px; max-width: 210px; line-height: 1.25; }}
 """
+
+
+def _xf(box, canon):
+    s = box["w"] / canon["w"]
+    return dict(x=box["l"] - canon["left"], y=box["t"] - canon["top"], scale=round(s, 4), o=box["o"])
 
 
 def demo_scene(sid, dur, clip, person, segs, steps, cues, footer, qr=None):
     body, js = [], []
-    ah, aj = ambient(sid, dur, gx=1400, gy=-200)
+    ah, aj = ambient(sid, dur, gx=1500, gy=-200)
     body.append('<div class="wrap">' + ah)
-    body.append(face_circle(sid, clip, 230, 80, 80, dur))
-    body.append(who(sid, person, 350, 110, live=True))
-    # stage
-    d = ['<div class="dslot" id="%s-desk"><div class="dinner" id="%s-dinner">' % (sid, sid)]
-    p = ['<div class="pslot" id="%s-phone"><div class="pscreen">' % sid]
+    body.append(face_circle(sid, clip, 150, 48, 48, dur))
+    body.append(who(sid, person, 226, 78))
+    body.append(f'<div id="{sid}-live" style="position:absolute;left:48px;top:214px"><span class="pill live"><i></i>LIVE · firstdose.vercel.app</span></div>')
+    d = [f'<div class="dslot" id="{sid}-desk"><div class="dinner" id="{sid}-dinner">']
+    p = [f'<div class="pslot" id="{sid}-phone"><div class="pscreen" id="{sid}-pscreen">']
+    rings_d, rings_p, n = [], [], 0
     for i, g in enumerate(segs):
         t0, t1, T0 = g["t0"], g["t1"], g["T"]
         ln = round(t1 - t0, 3)
@@ -221,14 +248,22 @@ def demo_scene(sid, dur, clip, person, segs, steps, cues, footer, qr=None):
         ph = g.get("phone", "doctor")
         p.append(f'<video id="{sid}-p{i}" class="clip" src="assets/footage/{ph}.mp4" data-start="{t0}" data-duration="{ln}" '
                  f'data-media-start="{round(T0-PAGE_START[ph],3)}" data-track-index="3" muted playsinline></video>')
-    d.append("</div></div>")
-    p.append("</div></div>")
+        for (a, b, dev, x, y, w, h, tag, *opt) in g.get("hl", []):
+            f = FD if dev == "d" else FP
+            cls = " ".join(opt)
+            rid = f"{sid}-hl{n}"; n += 1
+            fs = round(26 / g.get("zoom", (1, 0, 0))[0]) if dev == "d" else 19
+            tg = f'<span class="tg" style="font-size:{fs}px">{esc(tag)}</span>' if tag else ""
+            el = (f'<div class="hl {cls}" id="{rid}" style="left:{x*f-8:.1f}px;top:{y*f-8:.1f}px;'
+                  f'width:{w*f+16:.1f}px;height:{h*f+16:.1f}px">{tg}</div>')
+            (rings_d if dev == "d" else rings_p).append(el)
+            js.append(f'tl.fromTo("#{rid}",{{opacity:0,scale:1.12}},{{opacity:1,scale:1,duration:.35,ease:"back.out(1.8)"}},{a});')
+            js.append(f'tl.to("#{rid}",{{opacity:0,duration:.22,ease:"power1.in"}},{b - .22:.2f});')
+    d += rings_d + ["</div></div>"]
+    p += rings_p + ["</div></div>"]
     body += d + p
-    # stage labels
-    body.append(f'<div class="slabel" id="{sid}-dl" style="left:{DESK["left"]+18}px;top:{DESK["top"]-50}px">Coordinator · desktop</div>')
-    for ph, txt in (("doctor", "Doctor · DocUpdate concept"), ("patient", "Patient · Maria's phone")):
-        body.append(f'<div class="slabel" id="{sid}-pl-{ph}" style="left:{PHONE["left"]+30}px;top:{PHONE["top"]-6}px;opacity:0">{txt}</div>')
-    # steps
+    for key, (k, desc) in ROLE.items():
+        body.append(f'<div class="role{"" if key == "desk" else " ph"}" id="{sid}-role-{key}"><div class="k">{esc(k)}</div><div class="d">{esc(desc)}</div></div>')
     for i, st in enumerate(steps):
         body.append(f'<div class="step" id="{sid}-s{i}"><div class="num">{esc(st["num"])}</div>'
                     f'<div class="t">{rich(st["t"])}</div><div class="s">{st["s"]}</div></div>')
@@ -241,42 +276,43 @@ def demo_scene(sid, dur, clip, person, segs, steps, cues, footer, qr=None):
                       f'tl.fromTo(o,{{v:0}},{{v:{c[1]},duration:1.1,ease:"power2.out",onUpdate:()=>{{el.textContent=Math.round(o.v)+"{c[2]}";}},'
                       f'onComplete:()=>{{el.textContent="{c[1]}{c[2]}";}}}},{st["a"]+.5});'
                       f'tl.fromTo(el,{{scale:.8}},{{scale:1,duration:1.1,ease:"power2.out"}},{st["a"]+.5}); }})();')
-    ch, cj = captions(sid, cues, 80, 820, 620, 190, size=33, clip=clip)
+    ch, cj = captions(sid, cues, 48, 810, 480, 200, size=30, clip=clip)
     body.append(ch); js.append(cj)
     if qr:
         svg = (ROOT / qr["svg"]).read_text().split("?>", 1)[-1].replace('width="31mm" height="31mm"', 'width="250" height="250"')
-        body.append(f'''<div id="{sid}-qr" class="card" style="position:absolute;left:1180px;top:260px;width:360px;padding:34px;text-align:center;opacity:0;z-index:5">
+        body.append(f'''<div id="{sid}-qr" class="card" style="position:absolute;left:1060px;top:260px;width:360px;padding:34px;text-align:center;opacity:0;z-index:5">
             <div class="kicker">{esc(qr["kicker"])}</div><div style="margin-top:18px">{svg}</div>
             <div style="font-size:26px;font-weight:700;margin-top:14px">{esc(qr["label"])}</div></div>''')
         a, z = qr["pop"], qr["zoom"]
         js.append(f'tl.fromTo("#{sid}-qr",{{opacity:0,scale:.4,rotate:-8}},{{opacity:1,scale:1,rotate:0,duration:.6,ease:"back.out(1.9)"}},{a});')
         js.append(f'tl.fromTo("#{sid}-qr svg",{{scale:1}},{{scale:1.06,duration:.35,ease:"sine.inOut",yoyo:true,repeat:1}},{a+.6});')
         js.append(f'tl.to("#{sid}-qr",{{x:{qr["to_x"]},y:{qr["to_y"]},scale:2.4,opacity:0,filter:"blur(10px)",duration:.7,ease:"power3.in"}},{z});')
-        js.append(f'tl.fromTo("#{sid}-phone .pscreen",{{scale:1.18,filter:"blur(8px)"}},{{scale:1,filter:"blur(0px)",duration:.7,ease:"power3.out",immediateRender:false}},{z+.35});')
+        js.append(f'tl.fromTo("#{sid}-pscreen",{{scale:1.18,filter:"blur(8px)"}},{{scale:1,filter:"blur(0px)",duration:.7,ease:"power3.out",immediateRender:false}},{z+.35});')
     body.append(f'<div class="foot">{esc(footer)}</div>')
     body.append("</div>")
-    # focus + zoom + phone labels
-    prev_ph = None
+    # layout + zoom + role labels, per segment
+    prev_role_p = None
     for i, g in enumerate(segs):
-        dd, pp = FOCUS[g["focus"]]
-        t0, du = g["t0"], (0.001 if i == 0 else 0.8)
-        at = max(0, t0 - (0 if i == 0 else 0.25))
-        js.append(f'tl.to("#{sid}-desk",{{x:{dd["x"]},y:{dd["y"]},scale:{dd["scale"]},opacity:{dd["opacity"]},filter:"blur({dd["blur"]}px)",duration:{du},ease:"power3.inOut"}},{at});')
-        js.append(f'tl.to("#{sid}-phone",{{x:{pp["x"]},y:{pp["y"]},scale:{pp["scale"]},opacity:{pp["opacity"]},duration:{du},ease:"power3.inOut"}},{at});')
-        js.append(f'tl.to("#{sid}-dl",{{opacity:{0 if g["focus"] in ("phone","wide") else 1},duration:{du}}},{at});')
+        lay = "desk" if g["focus"] == "wide" else g["focus"]
+        db, pb = LAYOUT[lay]
+        dx, px = _xf(db, DESK), _xf(pb, PHONE)
+        du = 0.001 if i == 0 else 0.8
+        at = 0 if i == 0 else max(0, g["t0"] - 0.3)
+        js.append(f'tl.to("#{sid}-desk",{{x:{dx["x"]},y:{dx["y"]},scale:{dx["scale"]},opacity:{dx["o"]},duration:{du},ease:"power3.inOut"}},{at});')
+        js.append(f'tl.to("#{sid}-phone",{{x:{px["x"]},y:{px["y"]},scale:{px["scale"]},opacity:{px["o"]},duration:{du},ease:"power3.inOut"}},{at});')
+        # role labels sit just above their device
+        js.append(f'tl.to("#{sid}-role-desk",{{x:{db["l"]},y:{db["t"]-66},opacity:{1 if db["o"] >= .9 else 0},duration:{du},ease:"power3.inOut"}},{at});')
+        rp = g.get("phone", "doctor") if pb["o"] > 0 else None
+        for key in ("doctor", "patient"):
+            js.append(f'tl.to("#{sid}-role-{key}",{{x:{pb["l"] + pb["w"] - 460},y:{pb["t"]-66},opacity:{1 if key == rp else 0},duration:{du if rp == prev_role_p else .35},ease:"power3.inOut"}},{at});')
+        prev_role_p = rp
         k, zx, zy = g.get("zoom", (1, 0, 0))
-        js.append(f'tl.to("#{sid}-dinner",{{scale:{k},x:{-(k-1)*zx:.1f},y:{-(k-1)*zy:.1f},duration:{0.001 if i==0 else 1.1},ease:"power2.inOut"}},{max(0,t0+ (0 if i==0 else .15))});')
-        ph = g.get("phone", "doctor") if g["focus"] in ("phone", "both") else None
-        if ph != prev_ph:
-            for name in ("doctor", "patient"):
-                js.append(f'tl.to("#{sid}-pl-{name}",{{opacity:{1 if name==ph else 0},duration:.3}},{at});')
-            prev_ph = ph
-        # the phone label follows the phone transform
-        js.append(f'tl.to(["#{sid}-pl-doctor","#{sid}-pl-patient"],{{x:{pp["x"]},y:{pp["y"]-30*(pp["scale"]-.86)*10},duration:{du},ease:"power3.inOut"}},{at});')
+        zx, zy = zx * FD, zy * FD
+        js.append(f'tl.to("#{sid}-dinner",{{scale:{k},x:{-(k-1)*zx:.1f},y:{-(k-1)*zy:.1f},duration:{0.001 if i==0 else 1.0},ease:"power2.inOut"}},{0 if i == 0 else g["t0"]});')
     js.insert(0, aj)
     js.append(f'tl.fromTo("#{sid}-face",{{scale:.6,opacity:0}},{{scale:1,opacity:1,duration:.7,ease:"back.out(1.5)"}},0.05);')
     js.append(f'tl.fromTo("#{sid}-who",{{x:-20,opacity:0}},{{x:0,opacity:1,duration:.5,ease:"power3.out"}},0.3);')
-    return template(sid, dur, "\n".join(body), "\n".join(js), STAGE_CSS.replace(".", f"#{sid}-root .", 0) and _scope(STAGE_CSS, sid))
+    return template(sid, dur, "\n".join(body), "\n".join(js), _scope(STAGE_CSS, sid) + f"\n#{sid}-root .who .n {{ font-size: 38px; }}")
 
 
 def _scope(css, sid):
@@ -294,27 +330,48 @@ def _scope(css, sid):
 FOOT = "Recorded live on firstdose.vercel.app · Sep 26, 2026 · Synthetic patients & pharmacy events · DocUpdate concept, not affiliated"
 
 # ------------------------------------------------------------------ MARIA (Vinh)
+# hl: (start, end, "d"|"p", x, y, w, h, tag, [class]) in scene seconds + source pixels
 MARIA_SEGS = [
-    dict(t0=0.0, t1=7.3, T=7.5, focus="desk", zoom=(1.28, 420, 170)),
-    dict(t0=7.3, t1=16.3, T=24.1, focus="phone"),
-    dict(t0=16.3, t1=22.5, T=38.5, focus="phone"),
-    dict(t0=22.5, t1=31.4, T=45.5, focus="both", zoom=(1.35, 560, 200)),
-    dict(t0=31.4, t1=33.9, T=55.0, focus="desk", zoom=(1.25, 480, 300)),
-    dict(t0=33.9, t1=36.9, T=62.0, focus="desk", zoom=(1.55, 1100, 230)),
-    dict(t0=36.9, t1=39.4, T=73.5, focus="phone", phone="patient"),
-    dict(t0=39.4, t1=45.2, T=79.3, focus="phone", phone="patient"),
-    dict(t0=45.2, t1=49.2, T=90.4, focus="both", phone="patient", zoom=(1.4, 330, 150)),
-    dict(t0=49.2, t1=53.6, T=98.0, focus="phone", phone="doctor"),
+    dict(t0=0.0, t1=7.3, T=7.5, focus="desk", hl=[
+        (0.6, 3.9, "d", 300, 232, 1085, 113, "Monday morning: 3 stuck · 2 waiting · 8 confirmed"),
+        (4.0, 7.2, "d", 300, 420, 1085, 282, "Each row: who, why it's stuck, the one fix")]),
+    dict(t0=7.3, t1=16.3, T=24.1, focus="phone", hl=[
+        (7.6, 9.2, "p", 32, 170, 326, 60, "Maria · Otezla"),
+        (11.6, 13.0, "p", 16, 745, 358, 55, "Verbatim DailyMed label"),
+        (13.0, 14.5, "p", 18, 683, 354, 44, "Sign and send"),
+        (14.6, 16.2, "p", 16, 705, 358, 95, "Sent → At pharmacy")]),
+    dict(t0=16.3, t1=22.5, T=38.5, focus="phone", hl=[
+        (18.7, 20.7, "p", 16, 170, 358, 182, "New alert: pharmacy status + reason", "red"),
+        (20.8, 22.4, "p", 30, 598, 330, 50, "Stuck · declined at price", "red")]),
+    dict(t0=22.5, t1=31.4, T=45.5, focus="both", zoom=(1.7, 560, 250), hl=[
+        (22.6, 24.1, "p", 33, 294, 324, 42, "One tap"),
+        (24.4, 27.4, "p", 17, 600, 356, 195, "Doctor approves the coordinator", "below"),
+        (29.0, 31.3, "d", 625, 258, 190, 44, "Linked", "green")]),
+    dict(t0=31.4, t1=33.9, T=55.4, focus="desk", zoom=(1.25, 1440, 700), hl=[
+        (31.6, 33.8, "d", 300, 600, 1085, 82, "Maria is in the queue, with the reason")]),
+    dict(t0=33.9, t1=36.9, T=62.0, focus="desk", zoom=(1.8, 1440, 150), hl=[
+        (34.1, 36.8, "d", 1062, 140, 370, 160, "Why it's stuck + the fix, picked by rule")]),
+    dict(t0=36.9, t1=39.4, T=73.5, focus="phone", phone="patient", hl=[
+        (37.5, 39.3, "p", 20, 40, 350, 325, "$410 quoted → as little as $0", "below")]),
+    dict(t0=39.4, t1=45.2, T=79.3, focus="phone", phone="patient", hl=[
+        (39.5, 41.9, "p", 18, 793, 354, 50, "Use at pharmacy"),
+        (42.2, 45.1, "p", 16, 618, 300, 50, "Acknowledged, fill still pending", "red")]),
+    dict(t0=45.2, t1=49.2, T=90.4, focus="both", phone="patient", zoom=(1.6, 1440, 150), hl=[
+        (47.0, 49.1, "p", 16, 660, 330, 56, "Pharmacy confirmed", "green"),
+        (47.0, 49.1, "d", 1030, 132, 353, 113, "Fill confirmed: 9", "green below")]),
+    dict(t0=49.2, t1=53.6, T=98.0, focus="phone", phone="doctor", hl=[
+        (49.6, 53.4, "p", 16, 295, 358, 120, "Doctor's Past Rx: Fill confirmed", "green below")]),
 ]
 MARIA_STEPS = [
-    dict(a=0.3, num="01 · COORDINATOR", t="Monday morning, the queue.", s='<span class="tag red">3 stuck</span><span class="tag ink">2 waiting</span><span class="tag green">8 fills confirmed</span>'),
-    dict(a=7.4, num="02 · DOCTOR", t="Sign and send in DocUpdate.", s='<div>Maria · Otezla 30 mg</div><span class="tag blue">Label verbatim from DailyMed</span>'),
-    dict(a=16.4, num="03 · PHARMACY", t="Not dispensed. Declined at the price.", s='<div>The doctor gets the <b>reason</b>, on the phone and a watch push.</div>'),
-    dict(a=22.6, num="04 · ONE TAP", t="Send to my coordinator.", s='<div>First time only: the doctor <b>approves</b> the coordinator. A staff account, CoverMyMeds-style.</div>'),
-    dict(a=31.5, num="05 · ONE FIX", t="A rule picks the fix.", s='<span class="tag blue">Re-send copay card</span><div style="margin-top:14px">Commercial plan · copay card eligible</div>'),
-    dict(a=37.0, num="06 · PATIENT", t="Acknowledged is not filled.", s='<span class="tag ink">Use at pharmacy</span><span class="tag red">Fill still pending</span>'),
-    dict(a=45.3, num="07 · PHARMACY", t="Only the pharmacy confirms the fill.", s='<span class="tag green">Fill confirmed</span><div style="margin-top:14px">The doctor heard twice: when it broke, and when it was fixed.</div>'),
+    dict(a=0.3, num="01 · COORDINATOR'S QUEUE", t="Monday morning, one list.", s='<span class="tag red">3 stuck</span><span class="tag ink">2 waiting</span><span class="tag green">8 fills confirmed</span>'),
+    dict(a=7.4, num="02 · DOCTOR'S PHONE", t="Sign and send in DocUpdate.", s='<div>Maria · Otezla 30 mg</div><span class="tag blue">Label verbatim from DailyMed</span>'),
+    dict(a=16.4, num="03 · PHARMACY", t="Not dispensed. Declined at the price.", s='<div>The doctor gets the <b>reason</b>: on the phone, and a watch push.</div>'),
+    dict(a=22.6, num="04 · ONE TAP", t="Send to my coordinator.", s='<div>First time only: the doctor <b>approves</b> the coordinator. The desktop flips to <b>Linked</b>.</div>'),
+    dict(a=31.5, num="05 · COORDINATOR", t="A rule picks one fix.", s='<span class="tag blue">Re-send copay card</span><div style="margin-top:12px">Commercial plan · copay card eligible</div>'),
+    dict(a=37.0, num="06 · PATIENT'S PHONE", t="Acknowledged is not filled.", s='<span class="tag ink">Use at pharmacy</span><span class="tag red">Fill still pending</span>'),
+    dict(a=45.3, num="07 · PHARMACY", t="Only the pharmacy confirms the fill.", s='<span class="tag green">Fill confirmed</span><div style="margin-top:12px">Everyone sees it: patient, coordinator, doctor.</div>'),
 ]
+
 MARIA_CUES = [
     (0.0, 2.0, "This is the coordinator's queue."),
     (2.1, 4.95, "She's the person who gets patients onto their medication,"),
@@ -342,13 +399,27 @@ MARIA_CUES = [
 
 # ------------------------------------------------------------------ JAMES (Minh)
 JAMES_SEGS = [
-    dict(t0=0.0, t1=3.5, T=106.0, focus="phone"),
-    dict(t0=3.5, t1=10.9, T=112.0, focus="phone"),
-    dict(t0=10.9, t1=14.9, T=124.0, focus="phone"),
-    dict(t0=14.9, t1=25.8, T=129.5, focus="desk", zoom=(1.55, 1100, 230)),
-    dict(t0=25.8, t1=34.5, T=148.6, focus="wide", zoom=(1.0, 0, 0)),
-    dict(t0=34.5, t1=41.0, T=142.6, focus="wide", zoom=(1.45, 0, 60)),
-    dict(t0=41.0, t1=46.2, T=151.5, focus="wide", zoom=(1.2, 0, 180)),
+    dict(t0=0.0, t1=3.5, T=106.0, focus="phone", hl=[
+        (0.3, 3.4, "p", 32, 218, 326, 62, "James · Humira")]),
+    dict(t0=3.5, t1=10.9, T=112.0, focus="phone", hl=[
+        (5.8, 10.8, "p", 16, 150, 358, 190, "Unable to reach · PA required", "red below")]),
+    dict(t0=10.9, t1=14.9, T=124.0, focus="phone", hl=[
+        (11.0, 11.9, "p", 16, 270, 358, 150, "Concierge: Help my patient start"),
+        (12.0, 14.8, "p", 16, 440, 358, 50, "Sent to the coordinator", "green")]),
+    dict(t0=14.9, t1=25.8, T=129.5, focus="desk", zoom=(1.8, 1440, 150), hl=[
+        (15.8, 19.4, "d", 1062, 140, 370, 100, "Why: pharmacy + hub notes", "red below"),
+        (19.6, 21.9, "d", 1062, 262, 370, 120, "Rule picks: access support", "below"),
+        (22.2, 25.7, "d", 1062, 330, 200, 32, "Sent", "green below")]),
+    dict(t0=25.8, t1=30.4, T=149.3, focus="desk", zoom=(1.5, 720, 700), hl=[
+        (26.0, 30.3, "d", 543, 628, 354, 137, "No AI-written drug claims")]),
+    dict(t0=30.4, t1=36.9, T=142.4, focus="desk", hl=[
+        (30.6, 33.5, "d", 170, 100, 300, 28, "Tiger aggregate counts"),
+        (33.6, 36.8, "d", 176, 157, 636, 263, "Confirmed first fills · time to first fill", "below")]),
+    dict(t0=36.9, t1=42.2, T=143.3, focus="desk", zoom=(1.6, 176, 157), hl=[
+        (37.0, 39.4, "d", 176, 157, 311, 263, "First fills confirmed", "green below"),
+        (39.5, 42.1, "d", 503, 157, 309, 263, "Median time to first fill (demo clock)", "below")]),
+    dict(t0=42.2, t1=46.2, T=153.3, focus="desk", zoom=(1.4, 1005, 560), hl=[
+        (42.4, 46.1, "d", 746, 545, 518, 55, "Pharma never receives patient identity", "red")]),
 ]
 ACC = MARKS.get("access_summary", {}).get("body", {})
 FILLS, TTFF = ACC.get("recovered", 9), ACC.get("median_ttff_seconds", 60)
@@ -650,7 +721,7 @@ if __name__ == "__main__":
         "hook": hook_scene(),
         "pitch": pitch_scene(),
         "maria": demo_scene("maria", 53.6, "vinh-1", "vinh", MARIA_SEGS, MARIA_STEPS, MARIA_CUES, FOOT,
-                             qr=dict(svg="assets/qr-patient.svg", kicker="Sent to Maria", label="Scan → her savings card", pop=35.1, zoom=36.55, to_x=-10, to_y=40)),
+                             qr=dict(svg="assets/qr-patient.svg", kicker="Sent to Maria", label="Scan → her savings card", pop=35.1, zoom=36.55, to_x=320, to_y=60)),
         "james": demo_scene("james", 46.2, "minh-1", "minh", JAMES_SEGS, JAMES_STEPS, JAMES_CUES, FOOT),
         "market": market_scene(),
         "endcard": endcard_scene(),

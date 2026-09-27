@@ -36,61 +36,88 @@
 #james-root .mono { font-family: "Geist Mono", monospace; }
 #james-root .card { background: #fff; border: 2px solid #dadde6; border-radius: 28px; box-shadow: 0 18px 50px rgba(14,17,22,.10); }
 #james-root .kicker { font: 600 22px "Geist Mono", monospace; letter-spacing: .06em; text-transform: uppercase; color: #2c5bd6; }
-#james-root .dslot { position: absolute; left:760px; top:200px; width:1100px; height:619px;
-  border-radius: 22px; overflow: hidden; background: #fff; box-shadow: 0 0 0 2px #dadde6, 0 30px 70px rgba(14,17,22,.18); }
-#james-root .dinner { position: absolute; left:0; top:0; width:1100px; height:619px; transform-origin: 0 0; }
+#james-root .dslot { position: absolute; left:560px; top:150px; width:1320px; height:743px; transform-origin: 0 0;
+  border-radius: 20px; overflow: hidden; background: #fff; box-shadow: 0 0 0 2px #dadde6, 0 30px 70px rgba(14,17,22,.18); }
+#james-root .dinner { position: absolute; left:0; top:0; width:1320px; height:743px; transform-origin: 0 0; }
 #james-root .dinner video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-#james-root .pslot { position: absolute; left:1380px; top:121px; width:400px; height:838px;
-  border-radius: 58px; background: #101218; padding: 12px; box-shadow: 0 30px 80px rgba(14,17,22,.30); }
-#james-root .pscreen { position: absolute; left: 12px; top: 12px; right: 12px; bottom: 12px; border-radius: 46px; overflow: hidden; background: #fff; }
+#james-root .pslot { position: absolute; left:1480px; top:121px; width:400px; height:838px; transform-origin: 0 0;
+  border-radius: 58px; background: #101218; box-shadow: 0 30px 80px rgba(14,17,22,.30); }
+#james-root .pscreen { position: absolute; left: 12px; top: 12px; width: 376px; height: 814px; border-radius: 46px; overflow: hidden; background: #fff; }
 #james-root .pscreen video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-#james-root .slabel { position: absolute; font: 600 19px "Geist Mono", monospace; letter-spacing: .05em; text-transform: uppercase;
-  color: #545b6b; background: rgba(255,255,255,.9); border: 2px solid #dadde6; border-radius: 999px; padding: 6px 14px; white-space: nowrap; }
-#james-root .step { position: absolute; left: 80px; top: 420px; width: 600px; opacity: 0; }
-#james-root .step .num { font: 600 22px "Geist Mono", monospace; color: #2c5bd6; letter-spacing: .06em; }
-#james-root .step .t { font-size: 58px; font-weight: 820; letter-spacing: -0.035em; line-height: 1.02; margin-top: 14px; }
-#james-root .step .s { font-size: 28px; font-weight: 420; color: #545b6b; line-height: 1.32; margin-top: 18px; }
+#james-root .role { position: absolute; left: 0; top: 0; opacity: 0; white-space: nowrap; }
+#james-root .role.ph { width: 460px; text-align: right; }
+#james-root .role .k { font: 700 20px "Geist Mono", monospace; letter-spacing: .06em; text-transform: uppercase; color: #2c5bd6; }
+#james-root .role .d { font-size: 22px; font-weight: 500; color: #545b6b; margin-top: 4px; }
+#james-root .hl { position: absolute; border: 4px solid #2c5bd6; border-radius: 14px; opacity: 0;
+  box-shadow: 0 0 0 6px rgba(44,91,214,.18), 0 0 30px rgba(44,91,214,.35); }
+#james-root .hl.green { border-color: #17703e; box-shadow: 0 0 0 6px rgba(23,112,62,.18), 0 0 30px rgba(23,112,62,.35); }
+#james-root .hl.red { border-color: #c8261b; box-shadow: 0 0 0 6px rgba(200,38,27,.16), 0 0 30px rgba(200,38,27,.30); }
+#james-root .hl .tg { position: absolute; left: -4px; bottom: calc(100% + 10px); background: #2c5bd6; color: #fff; font-weight: 700;
+  border-radius: 10px; padding: 6px 12px; white-space: nowrap; }
+#james-root .hl.green .tg { background: #17703e; } .hl.red .tg { background: #c8261b; }
+#james-root .hl.below .tg { bottom: auto; top: calc(100% + 10px); }
+#james-root .step { position: absolute; left: 48px; top: 300px; width: 470px; opacity: 0; }
+#james-root .step .num { font: 600 21px "Geist Mono", monospace; color: #2c5bd6; letter-spacing: .06em; }
+#james-root .step .t { font-size: 50px; font-weight: 820; letter-spacing: -0.035em; line-height: 1.03; margin-top: 12px; }
+#james-root .step .s { font-size: 25px; font-weight: 420; color: #545b6b; line-height: 1.34; margin-top: 16px; }
 #james-root .step .s b { color: #0e1116; font-weight: 700; }
-#james-root .tag { display: inline-block; font: 600 22px "Geist Mono", monospace; padding: 8px 14px; border-radius: 12px; margin: 16px 10px 0 0; }
+#james-root .tag { display: inline-block; font: 600 20px "Geist Mono", monospace; padding: 7px 12px; border-radius: 11px; margin: 14px 8px 0 0; }
 #james-root .tag.red { background: #fbe6e4; color: #c8261b; } .tag.green { background: #e2f3e8; color: #17703e; }
 #james-root .tag.blue { background: #e5ecfb; color: #2c5bd6; } .tag.ink { background: #eceef3; color: #0e1116; }
-#james-root .flow { display: flex; align-items: center; gap: 12px; margin-top: 22px; flex-wrap: wrap; }
-#james-root .flow .box { font-size: 23px; font-weight: 600; padding: 12px 16px; border-radius: 14px; background: #fff; border: 2px solid #dadde6; }
-#james-root .flow .ar { font-size: 28px; color: #545b6b; }
-#james-root .stat { display: inline-block; vertical-align: top; margin: 22px 26px 0 0; }
-#james-root .stat .v { font-size: 96px; font-weight: 850; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }
-#james-root .stat .l { font-size: 22px; color: #545b6b; margin-top: 8px; max-width: 260px; line-height: 1.25; }</style>
+#james-root .flow { display: flex; align-items: center; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+#james-root .flow .box { font-size: 21px; font-weight: 600; padding: 10px 13px; border-radius: 12px; background: #fff; border: 2px solid #dadde6; }
+#james-root .flow .ar { font-size: 24px; color: #545b6b; }
+#james-root .stat { display: inline-block; vertical-align: top; margin: 18px 22px 0 0; }
+#james-root .stat .v { font-size: 84px; font-weight: 850; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }
+#james-root .stat .l { font-size: 20px; color: #545b6b; margin-top: 8px; max-width: 210px; line-height: 1.25; }
+#james-root .who .n { font-size: 38px; }</style>
 <div id="james-root" data-composition-id="james" data-width="1920" data-height="1080" data-duration="46.2">
-<div class="wrap"><div class="glow" id="james-glow" style="left:700px;top:-200px"></div><div class="glow2" id="james-glow2" style="left:-300px;top:600px"></div><div class="dots"></div>
-<div class="ring" id="james-ring" style="left:62px;top:62px;width:266px;height:266px"></div><div class="face" id="james-face" style="left:80px;top:80px;width:230px;height:230px"><video id="james-facev" class="clip" src="assets/faces/minh-1.mp4" data-start="0" data-duration="46.2" data-media-start="0" data-track-index="6" data-layout-allow-overflow muted playsinline style="left:-96.7px;top:-52.3px;width:423.4px;height:282.3px"></video></div>
-<div class="who" id="james-who" style="left:350px;top:110px"><div class="n">Minh</div><div class="r">Labels, AI & analytics</div><div style="margin-top:18px"><span class="pill live"><i></i>LIVE · firstdose.vercel.app</span></div></div>
+<div class="wrap"><div class="glow" id="james-glow" style="left:800px;top:-200px"></div><div class="glow2" id="james-glow2" style="left:-300px;top:600px"></div><div class="dots"></div>
+<div class="ring" id="james-ring" style="left:30px;top:30px;width:186px;height:186px"></div><div class="face" id="james-face" style="left:48px;top:48px;width:150px;height:150px"><video id="james-facev" class="clip" src="assets/faces/minh-1.mp4" data-start="0" data-duration="46.2" data-media-start="0" data-track-index="6" data-layout-allow-overflow muted playsinline style="left:-63.1px;top:-34.1px;width:276.1px;height:184.1px"></video></div>
+<div class="who" id="james-who" style="left:226px;top:78px"><div class="n">Minh</div><div class="r">Labels, AI & analytics</div></div>
+<div id="james-live" style="position:absolute;left:48px;top:214px"><span class="pill live"><i></i>LIVE · firstdose.vercel.app</span></div>
 <div class="dslot" id="james-desk"><div class="dinner" id="james-dinner">
 <video id="james-d0" class="clip" src="assets/footage/desk.mp4" data-start="0.0" data-duration="3.5" data-media-start="102.05" data-track-index="2" muted playsinline></video>
 <video id="james-d1" class="clip" src="assets/footage/desk.mp4" data-start="3.5" data-duration="7.4" data-media-start="108.05" data-track-index="2" muted playsinline></video>
 <video id="james-d2" class="clip" src="assets/footage/desk.mp4" data-start="10.9" data-duration="4.0" data-media-start="120.05" data-track-index="2" muted playsinline></video>
 <video id="james-d3" class="clip" src="assets/footage/desk.mp4" data-start="14.9" data-duration="10.9" data-media-start="125.55" data-track-index="2" muted playsinline></video>
-<video id="james-d4" class="clip" src="assets/footage/desk.mp4" data-start="25.8" data-duration="8.7" data-media-start="144.65" data-track-index="2" muted playsinline></video>
-<video id="james-d5" class="clip" src="assets/footage/desk.mp4" data-start="34.5" data-duration="6.5" data-media-start="138.65" data-track-index="2" muted playsinline></video>
-<video id="james-d6" class="clip" src="assets/footage/desk.mp4" data-start="41.0" data-duration="5.2" data-media-start="147.55" data-track-index="2" muted playsinline></video>
+<video id="james-d4" class="clip" src="assets/footage/desk.mp4" data-start="25.8" data-duration="4.6" data-media-start="145.35" data-track-index="2" muted playsinline></video>
+<video id="james-d5" class="clip" src="assets/footage/desk.mp4" data-start="30.4" data-duration="6.5" data-media-start="138.45" data-track-index="2" muted playsinline></video>
+<video id="james-d6" class="clip" src="assets/footage/desk.mp4" data-start="36.9" data-duration="5.3" data-media-start="139.35" data-track-index="2" muted playsinline></video>
+<video id="james-d7" class="clip" src="assets/footage/desk.mp4" data-start="42.2" data-duration="4.0" data-media-start="149.35" data-track-index="2" muted playsinline></video>
+<div class="hl red below" id="james-hl4" style="left:965.5px;top:120.3px;width:355.2px;height:107.7px"><span class="tg" style="font-size:14px">Why: pharmacy + hub notes</span></div>
+<div class="hl below" id="james-hl5" style="left:965.5px;top:232.2px;width:355.2px;height:126.0px"><span class="tg" style="font-size:14px">Rule picks: access support</span></div>
+<div class="hl green below" id="james-hl6" style="left:965.5px;top:294.5px;width:199.3px;height:45.3px"><span class="tg" style="font-size:14px">Sent</span></div>
+<div class="hl " id="james-hl7" style="left:489.8px;top:567.7px;width:340.5px;height:141.6px"><span class="tg" style="font-size:17px">No AI-written drug claims</span></div>
+<div class="hl " id="james-hl8" style="left:147.8px;top:83.7px;width:291.0px;height:41.7px"><span class="tg" style="font-size:26px">Tiger aggregate counts</span></div>
+<div class="hl below" id="james-hl9" style="left:153.3px;top:135.9px;width:599.0px;height:257.1px"><span class="tg" style="font-size:26px">Confirmed first fills · time to first fill</span></div>
+<div class="hl green below" id="james-hl10" style="left:153.3px;top:135.9px;width:301.1px;height:257.1px"><span class="tg" style="font-size:16px">First fills confirmed</span></div>
+<div class="hl below" id="james-hl11" style="left:453.1px;top:135.9px;width:299.2px;height:257.1px"><span class="tg" style="font-size:16px">Median time to first fill (demo clock)</span></div>
+<div class="hl red" id="james-hl12" style="left:675.8px;top:491.6px;width:490.8px;height:66.4px"><span class="tg" style="font-size:19px">Pharma never receives patient identity</span></div>
 </div></div>
-<div class="pslot" id="james-phone"><div class="pscreen">
+<div class="pslot" id="james-phone"><div class="pscreen" id="james-pscreen">
 <video id="james-p0" class="clip" src="assets/footage/doctor.mp4" data-start="0.0" data-duration="3.5" data-media-start="101.99" data-track-index="3" muted playsinline></video>
 <video id="james-p1" class="clip" src="assets/footage/doctor.mp4" data-start="3.5" data-duration="7.4" data-media-start="107.99" data-track-index="3" muted playsinline></video>
 <video id="james-p2" class="clip" src="assets/footage/doctor.mp4" data-start="10.9" data-duration="4.0" data-media-start="119.99" data-track-index="3" muted playsinline></video>
 <video id="james-p3" class="clip" src="assets/footage/doctor.mp4" data-start="14.9" data-duration="10.9" data-media-start="125.49" data-track-index="3" muted playsinline></video>
-<video id="james-p4" class="clip" src="assets/footage/doctor.mp4" data-start="25.8" data-duration="8.7" data-media-start="144.59" data-track-index="3" muted playsinline></video>
-<video id="james-p5" class="clip" src="assets/footage/doctor.mp4" data-start="34.5" data-duration="6.5" data-media-start="138.59" data-track-index="3" muted playsinline></video>
-<video id="james-p6" class="clip" src="assets/footage/doctor.mp4" data-start="41.0" data-duration="5.2" data-media-start="147.49" data-track-index="3" muted playsinline></video>
+<video id="james-p4" class="clip" src="assets/footage/doctor.mp4" data-start="25.8" data-duration="4.6" data-media-start="145.29" data-track-index="3" muted playsinline></video>
+<video id="james-p5" class="clip" src="assets/footage/doctor.mp4" data-start="30.4" data-duration="6.5" data-media-start="138.39" data-track-index="3" muted playsinline></video>
+<video id="james-p6" class="clip" src="assets/footage/doctor.mp4" data-start="36.9" data-duration="5.3" data-media-start="139.29" data-track-index="3" muted playsinline></video>
+<video id="james-p7" class="clip" src="assets/footage/doctor.mp4" data-start="42.2" data-duration="4.0" data-media-start="149.29" data-track-index="3" muted playsinline></video>
+<div class="hl " id="james-hl0" style="left:22.9px;top:202.2px;width:330.3px;height:75.8px"><span class="tg" style="font-size:19px">James · Humira</span></div>
+<div class="hl red below" id="james-hl1" style="left:7.4px;top:136.6px;width:361.1px;height:199.2px"><span class="tg" style="font-size:19px">Unable to reach · PA required</span></div>
+<div class="hl " id="james-hl2" style="left:7.4px;top:252.3px;width:361.1px;height:160.6px"><span class="tg" style="font-size:19px">Concierge: Help my patient start</span></div>
+<div class="hl green" id="james-hl3" style="left:7.4px;top:416.2px;width:361.1px;height:64.2px"><span class="tg" style="font-size:19px">Sent to the coordinator</span></div>
 </div></div>
-<div class="slabel" id="james-dl" style="left:778px;top:150px">Coordinator · desktop</div>
-<div class="slabel" id="james-pl-doctor" style="left:1410px;top:115px;opacity:0">Doctor · DocUpdate concept</div>
-<div class="slabel" id="james-pl-patient" style="left:1410px;top:115px;opacity:0">Patient · Maria's phone</div>
+<div class="role" id="james-role-desk"><div class="k">Coordinator&#x27;s desktop</div><div class="d">New user: the office staff member who fixes access</div></div>
+<div class="role ph" id="james-role-doctor"><div class="k">Doctor&#x27;s phone</div><div class="d">In DocUpdate, the app they already use</div></div>
+<div class="role ph" id="james-role-patient"><div class="k">Patient&#x27;s phone</div><div class="d">Maria opens her card from a QR code</div></div>
 <div class="step" id="james-s0"><div class="num">01 · SECOND CASE</div><div class="t">James · Humira.</div><div class="s"><span class="tag red">Prior auth required</span><span class="tag red">Unreachable after 3 calls</span></div></div>
 <div class="step" id="james-s1"><div class="num">02 · GEMINI</div><div class="t">Messy note in, one reason out.</div><div class="s"><div class="flow"><span class="box">Pharmacy note</span><span class="ar">→</span><span class="box" style="border-color:#6d3bd1;color:#6d3bd1">Gemini</span><span class="ar">→</span><span class="box">Reason code</span></div><div style="margin-top:14px">…or <b>unknown</b>, which goes to a person.</div></div></div>
 <div class="step" id="james-s2"><div class="num">03 · RULES, NOT AI</div><div class="t">A rule picks the fix.</div><div class="s"><span class="tag blue">Connect to access support</span><div style="margin-top:14px">No model writes drug or patient text.</div></div></div>
 <div class="step" id="james-s3"><div class="num">04 · TIGER DATA</div><div class="t">Every step is an event.</div><div class="s"><div class="stat"><div class="v" id="james-n1">9</div><div class="l">first fills confirmed</div></div><div class="stat"><div class="v" id="james-n2">60s</div><div class="l">median time to first fill (demo clock)</div></div></div></div>
 <div class="step" id="james-s4"><div class="num">05 · WHO SEES WHAT</div><div class="t">Pharma sees counts. Never a name.</div><div class="s"><span class="tag blue">Practice: names + fill status</span><span class="tag ink">Pharma: aggregate counts</span></div></div>
-<div class="caps" style="left:80px;top:820px;width:620px;height:190px;text-align:left"><p class="cap" id="james-c0" style="font-size:33px"><span class="w" id="james-c0w0">James</span> <span class="w" id="james-c0w1">is</span> <span class="w" id="james-c0w2">on</span> <span class="w e" id="james-c0w3">Humira.</span></p><p class="cap" id="james-c1" style="font-size:33px"><span class="w" id="james-c1w0">His</span> <span class="w" id="james-c1w1">pharmacy</span> <span class="w" id="james-c1w2">note</span> <span class="w" id="james-c1w3">says</span> <span class="w e" id="james-c1w4">prior</span> <span class="w" id="james-c1w5">authorization</span> <span class="w e" id="james-c1w6">required,</span></p><p class="cap" id="james-c2" style="font-size:33px"><span class="w" id="james-c2w0">and</span> <span class="w" id="james-c2w1">he</span> <span class="w" id="james-c2w2">couldn&#x27;t</span> <span class="w" id="james-c2w3">be</span> <span class="w" id="james-c2w4">reached</span> <span class="w" id="james-c2w5">after</span> <span class="w" id="james-c2w6">three</span> <span class="w" id="james-c2w7">calls.</span></p><p class="cap" id="james-c3" style="font-size:33px"><span class="w e" id="james-c3w0">Gemini</span> <span class="w" id="james-c3w1">reads</span> <span class="w" id="james-c3w2">that</span> <span class="w" id="james-c3w3">messy</span> <span class="w" id="james-c3w4">note</span></p><p class="cap" id="james-c4" style="font-size:33px"><span class="w" id="james-c4w0">and</span> <span class="w" id="james-c4w1">returns</span> <span class="w" id="james-c4w2">one</span> <span class="w" id="james-c4w3">reason</span> <span class="w" id="james-c4w4">code,</span> <span class="w" id="james-c4w5">or</span> <span class="w e" id="james-c4w6">unknown,</span></p><p class="cap" id="james-c5" style="font-size:33px"><span class="w" id="james-c5w0">which</span> <span class="w" id="james-c5w1">goes</span> <span class="w" id="james-c5w2">to</span> <span class="w" id="james-c5w3">a</span> <span class="w" id="james-c5w4">person.</span></p><p class="cap" id="james-c6" style="font-size:33px"><span class="w" id="james-c6w0">Then</span> <span class="w" id="james-c6w1">a</span> <span class="w e" id="james-c6w2">rule,</span> <span class="w" id="james-c6w3">not</span> <span class="w e" id="james-c6w4">AI,</span></p><p class="cap" id="james-c7" style="font-size:33px"><span class="w" id="james-c7w0">picks</span> <span class="w" id="james-c7w1">the</span> <span class="w" id="james-c7w2">fix:</span> <span class="w" id="james-c7w3">connect</span> <span class="w" id="james-c7w4">to</span> <span class="w" id="james-c7w5">access</span> <span class="w" id="james-c7w6">support.</span></p><p class="cap" id="james-c8" style="font-size:33px"><span class="w" id="james-c8w0">No</span> <span class="w" id="james-c8w1">model</span> <span class="w" id="james-c8w2">writes</span> <span class="w" id="james-c8w3">drug</span> <span class="w" id="james-c8w4">or</span> <span class="w" id="james-c8w5">patient</span> <span class="w" id="james-c8w6">text.</span></p><p class="cap" id="james-c9" style="font-size:33px"><span class="w" id="james-c9w0">Every</span> <span class="w" id="james-c9w1">step</span> <span class="w" id="james-c9w2">lands</span> <span class="w" id="james-c9w3">in</span> <span class="w" id="james-c9w4">an</span> <span class="w" id="james-c9w5">event</span> <span class="w" id="james-c9w6">history</span> <span class="w" id="james-c9w7">on</span> <span class="w e" id="james-c9w8">Tiger</span> <span class="w e" id="james-c9w9">Data,</span></p><p class="cap" id="james-c10" style="font-size:33px"><span class="w" id="james-c10w0">so</span> <span class="w" id="james-c10w1">the</span> <span class="w" id="james-c10w2">office</span> <span class="w" id="james-c10w3">sees</span> <span class="w" id="james-c10w4">confirmed</span> <span class="w" id="james-c10w5">first</span> <span class="w" id="james-c10w6">fills</span> <span class="w" id="james-c10w7">and</span> <span class="w" id="james-c10w8">time</span> <span class="w" id="james-c10w9">to</span> <span class="w" id="james-c10w10">first</span> <span class="w" id="james-c10w11">fill.</span></p><p class="cap" id="james-c11" style="font-size:33px"><span class="w" id="james-c11w0">Pharma</span> <span class="w" id="james-c11w1">sees</span> <span class="w e" id="james-c11w2">counts</span> <span class="w e" id="james-c11w3">only,</span></p><p class="cap" id="james-c12" style="font-size:33px"><span class="w" id="james-c12w0">never</span> <span class="w" id="james-c12w1">a</span> <span class="w" id="james-c12w2">name.</span></p></div>
+<div class="caps" style="left:48px;top:810px;width:480px;height:200px;text-align:left"><p class="cap" id="james-c0" style="font-size:30px"><span class="w" id="james-c0w0">James</span> <span class="w" id="james-c0w1">is</span> <span class="w" id="james-c0w2">on</span> <span class="w e" id="james-c0w3">Humira.</span></p><p class="cap" id="james-c1" style="font-size:30px"><span class="w" id="james-c1w0">His</span> <span class="w" id="james-c1w1">pharmacy</span> <span class="w" id="james-c1w2">note</span> <span class="w" id="james-c1w3">says</span> <span class="w e" id="james-c1w4">prior</span> <span class="w" id="james-c1w5">authorization</span> <span class="w e" id="james-c1w6">required,</span></p><p class="cap" id="james-c2" style="font-size:30px"><span class="w" id="james-c2w0">and</span> <span class="w" id="james-c2w1">he</span> <span class="w" id="james-c2w2">couldn&#x27;t</span> <span class="w" id="james-c2w3">be</span> <span class="w" id="james-c2w4">reached</span> <span class="w" id="james-c2w5">after</span> <span class="w" id="james-c2w6">three</span> <span class="w" id="james-c2w7">calls.</span></p><p class="cap" id="james-c3" style="font-size:30px"><span class="w e" id="james-c3w0">Gemini</span> <span class="w" id="james-c3w1">reads</span> <span class="w" id="james-c3w2">that</span> <span class="w" id="james-c3w3">messy</span> <span class="w" id="james-c3w4">note</span></p><p class="cap" id="james-c4" style="font-size:30px"><span class="w" id="james-c4w0">and</span> <span class="w" id="james-c4w1">returns</span> <span class="w" id="james-c4w2">one</span> <span class="w" id="james-c4w3">reason</span> <span class="w" id="james-c4w4">code,</span> <span class="w" id="james-c4w5">or</span> <span class="w e" id="james-c4w6">unknown,</span></p><p class="cap" id="james-c5" style="font-size:30px"><span class="w" id="james-c5w0">which</span> <span class="w" id="james-c5w1">goes</span> <span class="w" id="james-c5w2">to</span> <span class="w" id="james-c5w3">a</span> <span class="w" id="james-c5w4">person.</span></p><p class="cap" id="james-c6" style="font-size:30px"><span class="w" id="james-c6w0">Then</span> <span class="w" id="james-c6w1">a</span> <span class="w e" id="james-c6w2">rule,</span> <span class="w" id="james-c6w3">not</span> <span class="w e" id="james-c6w4">AI,</span></p><p class="cap" id="james-c7" style="font-size:30px"><span class="w" id="james-c7w0">picks</span> <span class="w" id="james-c7w1">the</span> <span class="w" id="james-c7w2">fix:</span> <span class="w" id="james-c7w3">connect</span> <span class="w" id="james-c7w4">to</span> <span class="w" id="james-c7w5">access</span> <span class="w" id="james-c7w6">support.</span></p><p class="cap" id="james-c8" style="font-size:30px"><span class="w" id="james-c8w0">No</span> <span class="w" id="james-c8w1">model</span> <span class="w" id="james-c8w2">writes</span> <span class="w" id="james-c8w3">drug</span> <span class="w" id="james-c8w4">or</span> <span class="w" id="james-c8w5">patient</span> <span class="w" id="james-c8w6">text.</span></p><p class="cap" id="james-c9" style="font-size:30px"><span class="w" id="james-c9w0">Every</span> <span class="w" id="james-c9w1">step</span> <span class="w" id="james-c9w2">lands</span> <span class="w" id="james-c9w3">in</span> <span class="w" id="james-c9w4">an</span> <span class="w" id="james-c9w5">event</span> <span class="w" id="james-c9w6">history</span> <span class="w" id="james-c9w7">on</span> <span class="w e" id="james-c9w8">Tiger</span> <span class="w e" id="james-c9w9">Data,</span></p><p class="cap" id="james-c10" style="font-size:30px"><span class="w" id="james-c10w0">so</span> <span class="w" id="james-c10w1">the</span> <span class="w" id="james-c10w2">office</span> <span class="w" id="james-c10w3">sees</span> <span class="w" id="james-c10w4">confirmed</span> <span class="w" id="james-c10w5">first</span> <span class="w" id="james-c10w6">fills</span> <span class="w" id="james-c10w7">and</span> <span class="w" id="james-c10w8">time</span> <span class="w" id="james-c10w9">to</span> <span class="w" id="james-c10w10">first</span> <span class="w" id="james-c10w11">fill.</span></p><p class="cap" id="james-c11" style="font-size:30px"><span class="w" id="james-c11w0">Pharma</span> <span class="w" id="james-c11w1">sees</span> <span class="w e" id="james-c11w2">counts</span> <span class="w e" id="james-c11w3">only,</span></p><p class="cap" id="james-c12" style="font-size:30px"><span class="w" id="james-c12w0">never</span> <span class="w" id="james-c12w1">a</span> <span class="w" id="james-c12w2">name.</span></p></div>
 <div class="foot">Recorded live on firstdose.vercel.app · Sep 26, 2026 · Synthetic patients &amp; pharmacy events · DocUpdate concept, not affiliated</div>
 </div>
 </div>
@@ -98,6 +125,32 @@
 (() => {
 const tl = gsap.timeline({ paused: true });
 tl.fromTo("#james-glow",{scale:.92,opacity:.8},{scale:1.08,opacity:1,duration:3,ease:"sine.inOut",yoyo:true,repeat:7},0);tl.fromTo("#james-glow2",{x:0,y:0},{x:120,y:-60,duration:23.10,ease:"sine.inOut",yoyo:true,repeat:1},0);
+tl.fromTo("#james-hl0",{opacity:0,scale:1.12},{opacity:1,scale:1,duration:.35,ease:"back.out(1.8)"},0.3);
+tl.to("#james-hl0",{opacity:0,duration:.22,ease:"power1.in"},3.18);
+tl.fromTo("#james-hl1",{opacity:0,scale:1.12},{opacity:1,scale:1,duration:.35,ease:"back.out(1.8)"},5.8);
+tl.to("#james-hl1",{opacity:0,duration:.22,ease:"power1.in"},10.58);
+tl.fromTo("#james-hl2",{opacity:0,scale:1.12},{opacity:1,scale:1,duration:.35,ease:"back.out(1.8)"},11.0);
+tl.to("#james-hl2",{opacity:0,duration:.22,ease:"power1.in"},11.68);
+tl.fromTo("#james-hl3",{opacity:0,scale:1.12},{opacity:1,scale:1,duration:.35,ease:"back.out(1.8)"},12.0);
+tl.to("#james-hl3",{opacity:0,duration:.22,ease:"power1.in"},14.58);
+tl.fromTo("#james-hl4",{opacity:0,scale:1.12},{opacity:1,scale:1,duration:.35,ease:"back.out(1.8)"},15.8);
+tl.to("#james-hl4",{opacity:0,duration:.22,ease:"power1.in"},19.18);
+tl.fromTo("#james-hl5",{opacity:0,scale:1.12},{opacity:1,scale:1,duration:.35,ease:"back.out(1.8)"},19.6);
+tl.to("#james-hl5",{opacity:0,duration:.22,ease:"power1.in"},21.68);
+tl.fromTo("#james-hl6",{opacity:0,scale:1.12},{opacity:1,scale:1,duration:.35,ease:"back.out(1.8)"},22.2);
+tl.to("#james-hl6",{opacity:0,duration:.22,ease:"power1.in"},25.48);
+tl.fromTo("#james-hl7",{opacity:0,scale:1.12},{opacity:1,scale:1,duration:.35,ease:"back.out(1.8)"},26.0);
+tl.to("#james-hl7",{opacity:0,duration:.22,ease:"power1.in"},30.08);
+tl.fromTo("#james-hl8",{opacity:0,scale:1.12},{opacity:1,scale:1,duration:.35,ease:"back.out(1.8)"},30.6);
+tl.to("#james-hl8",{opacity:0,duration:.22,ease:"power1.in"},33.28);
+tl.fromTo("#james-hl9",{opacity:0,scale:1.12},{opacity:1,scale:1,duration:.35,ease:"back.out(1.8)"},33.6);
+tl.to("#james-hl9",{opacity:0,duration:.22,ease:"power1.in"},36.58);
+tl.fromTo("#james-hl10",{opacity:0,scale:1.12},{opacity:1,scale:1,duration:.35,ease:"back.out(1.8)"},37.0);
+tl.to("#james-hl10",{opacity:0,duration:.22,ease:"power1.in"},39.18);
+tl.fromTo("#james-hl11",{opacity:0,scale:1.12},{opacity:1,scale:1,duration:.35,ease:"back.out(1.8)"},39.5);
+tl.to("#james-hl11",{opacity:0,duration:.22,ease:"power1.in"},41.88);
+tl.fromTo("#james-hl12",{opacity:0,scale:1.12},{opacity:1,scale:1,duration:.35,ease:"back.out(1.8)"},42.4);
+tl.to("#james-hl12",{opacity:0,duration:.22,ease:"power1.in"},45.88);
 tl.fromTo("#james-s0",{opacity:0,x:-40},{opacity:1,x:0,duration:.55,ease:"power3.out"},0.3);
 tl.fromTo("#james-s0 .s > *",{opacity:0,y:16},{opacity:1,y:0,duration:.4,stagger:.12,ease:"back.out(1.6)"},0.6499999999999999);
 tl.to("#james-s0",{opacity:0,x:30,duration:.3,ease:"power2.in"},10.7);
@@ -224,45 +277,54 @@ tl.fromTo("#james-c12w1",{color:"#6c7383"},{color:"#0e1116",duration:.12,immedia
 tl.fromTo("#james-c12w2",{color:"#6c7383"},{color:"#0e1116",duration:.12,immediateRender:false},45.66);
 tl.fromTo("#james-c12",{opacity:0,y:10},{opacity:1,y:0,duration:.2,ease:"power2.out"},45.06);
 tl.to("#james-c12",{opacity:0,y:-6,duration:.1,ease:"power1.in"},46.10);
-tl.to("#james-desk",{x:-60,y:20,scale:0.82,opacity:0.3,filter:"blur(5px)",duration:0.001,ease:"power3.inOut"},0);
-tl.to("#james-phone",{x:-230,y:0,scale:1.08,opacity:1,duration:0.001,ease:"power3.inOut"},0);
-tl.to("#james-dl",{opacity:0,duration:0.001},0);
+tl.to("#james-desk",{x:0,y:190,scale:0.5303,opacity:0.5,duration:0.001,ease:"power3.inOut"},0);
+tl.to("#james-phone",{x:-140,y:-11,scale:1.05,opacity:1,duration:0.001,ease:"power3.inOut"},0);
+tl.to("#james-role-desk",{x:560,y:274,opacity:0,duration:0.001,ease:"power3.inOut"},0);
+tl.to("#james-role-doctor",{x:1300,y:44,opacity:1,duration:0.35,ease:"power3.inOut"},0);
+tl.to("#james-role-patient",{x:1300,y:44,opacity:0,duration:0.35,ease:"power3.inOut"},0);
 tl.to("#james-dinner",{scale:1,x:0.0,y:0.0,duration:0.001,ease:"power2.inOut"},0);
-tl.to("#james-pl-doctor",{opacity:1,duration:.3},0);
-tl.to("#james-pl-patient",{opacity:0,duration:.3},0);
-tl.to(["#james-pl-doctor","#james-pl-patient"],{x:-230,y:-66.00000000000003,duration:0.001,ease:"power3.inOut"},0);
-tl.to("#james-desk",{x:-60,y:20,scale:0.82,opacity:0.3,filter:"blur(5px)",duration:0.8,ease:"power3.inOut"},3.25);
-tl.to("#james-phone",{x:-230,y:0,scale:1.08,opacity:1,duration:0.8,ease:"power3.inOut"},3.25);
-tl.to("#james-dl",{opacity:0,duration:0.8},3.25);
-tl.to("#james-dinner",{scale:1,x:0.0,y:0.0,duration:1.1,ease:"power2.inOut"},3.65);
-tl.to(["#james-pl-doctor","#james-pl-patient"],{x:-230,y:-66.00000000000003,duration:0.8,ease:"power3.inOut"},3.25);
-tl.to("#james-desk",{x:-60,y:20,scale:0.82,opacity:0.3,filter:"blur(5px)",duration:0.8,ease:"power3.inOut"},10.65);
-tl.to("#james-phone",{x:-230,y:0,scale:1.08,opacity:1,duration:0.8,ease:"power3.inOut"},10.65);
-tl.to("#james-dl",{opacity:0,duration:0.8},10.65);
-tl.to("#james-dinner",{scale:1,x:0.0,y:0.0,duration:1.1,ease:"power2.inOut"},11.05);
-tl.to(["#james-pl-doctor","#james-pl-patient"],{x:-230,y:-66.00000000000003,duration:0.8,ease:"power3.inOut"},10.65);
-tl.to("#james-desk",{x:0,y:-10,scale:1.0,opacity:1,filter:"blur(0px)",duration:0.8,ease:"power3.inOut"},14.65);
-tl.to("#james-phone",{x:520,y:0,scale:0.9,opacity:0,duration:0.8,ease:"power3.inOut"},14.65);
-tl.to("#james-dl",{opacity:1,duration:0.8},14.65);
-tl.to("#james-dinner",{scale:1.55,x:-605.0,y:-126.5,duration:1.1,ease:"power2.inOut"},15.05);
-tl.to("#james-pl-doctor",{opacity:0,duration:.3},14.65);
-tl.to("#james-pl-patient",{opacity:0,duration:.3},14.65);
-tl.to(["#james-pl-doctor","#james-pl-patient"],{x:520,y:-12.00000000000001,duration:0.8,ease:"power3.inOut"},14.65);
-tl.to("#james-desk",{x:40,y:-10,scale:1.02,opacity:1,filter:"blur(0px)",duration:0.8,ease:"power3.inOut"},25.55);
-tl.to("#james-phone",{x:520,y:0,scale:0.9,opacity:0,duration:0.8,ease:"power3.inOut"},25.55);
-tl.to("#james-dl",{opacity:0,duration:0.8},25.55);
-tl.to("#james-dinner",{scale:1.0,x:-0.0,y:-0.0,duration:1.1,ease:"power2.inOut"},25.95);
-tl.to(["#james-pl-doctor","#james-pl-patient"],{x:520,y:-12.00000000000001,duration:0.8,ease:"power3.inOut"},25.55);
-tl.to("#james-desk",{x:40,y:-10,scale:1.02,opacity:1,filter:"blur(0px)",duration:0.8,ease:"power3.inOut"},34.25);
-tl.to("#james-phone",{x:520,y:0,scale:0.9,opacity:0,duration:0.8,ease:"power3.inOut"},34.25);
-tl.to("#james-dl",{opacity:0,duration:0.8},34.25);
-tl.to("#james-dinner",{scale:1.45,x:-0.0,y:-27.0,duration:1.1,ease:"power2.inOut"},34.65);
-tl.to(["#james-pl-doctor","#james-pl-patient"],{x:520,y:-12.00000000000001,duration:0.8,ease:"power3.inOut"},34.25);
-tl.to("#james-desk",{x:40,y:-10,scale:1.02,opacity:1,filter:"blur(0px)",duration:0.8,ease:"power3.inOut"},40.75);
-tl.to("#james-phone",{x:520,y:0,scale:0.9,opacity:0,duration:0.8,ease:"power3.inOut"},40.75);
-tl.to("#james-dl",{opacity:0,duration:0.8},40.75);
-tl.to("#james-dinner",{scale:1.2,x:-0.0,y:-36.0,duration:1.1,ease:"power2.inOut"},41.15);
-tl.to(["#james-pl-doctor","#james-pl-patient"],{x:520,y:-12.00000000000001,duration:0.8,ease:"power3.inOut"},40.75);
+tl.to("#james-desk",{x:0,y:190,scale:0.5303,opacity:0.5,duration:0.8,ease:"power3.inOut"},3.2);
+tl.to("#james-phone",{x:-140,y:-11,scale:1.05,opacity:1,duration:0.8,ease:"power3.inOut"},3.2);
+tl.to("#james-role-desk",{x:560,y:274,opacity:0,duration:0.8,ease:"power3.inOut"},3.2);
+tl.to("#james-role-doctor",{x:1300,y:44,opacity:1,duration:0.8,ease:"power3.inOut"},3.2);
+tl.to("#james-role-patient",{x:1300,y:44,opacity:0,duration:0.8,ease:"power3.inOut"},3.2);
+tl.to("#james-dinner",{scale:1,x:0.0,y:0.0,duration:1.0,ease:"power2.inOut"},3.5);
+tl.to("#james-desk",{x:0,y:190,scale:0.5303,opacity:0.5,duration:0.8,ease:"power3.inOut"},10.6);
+tl.to("#james-phone",{x:-140,y:-11,scale:1.05,opacity:1,duration:0.8,ease:"power3.inOut"},10.6);
+tl.to("#james-role-desk",{x:560,y:274,opacity:0,duration:0.8,ease:"power3.inOut"},10.6);
+tl.to("#james-role-doctor",{x:1300,y:44,opacity:1,duration:0.8,ease:"power3.inOut"},10.6);
+tl.to("#james-role-patient",{x:1300,y:44,opacity:0,duration:0.8,ease:"power3.inOut"},10.6);
+tl.to("#james-dinner",{scale:1,x:0.0,y:0.0,duration:1.0,ease:"power2.inOut"},10.9);
+tl.to("#james-desk",{x:0,y:0,scale:1.0,opacity:1,duration:0.8,ease:"power3.inOut"},14.6);
+tl.to("#james-phone",{x:440,y:49,scale:0.95,opacity:0,duration:0.8,ease:"power3.inOut"},14.6);
+tl.to("#james-role-desk",{x:560,y:84,opacity:1,duration:0.8,ease:"power3.inOut"},14.6);
+tl.to("#james-role-doctor",{x:1840,y:104,opacity:0,duration:0.35,ease:"power3.inOut"},14.6);
+tl.to("#james-role-patient",{x:1840,y:104,opacity:0,duration:0.35,ease:"power3.inOut"},14.6);
+tl.to("#james-dinner",{scale:1.8,x:-1056.0,y:-110.0,duration:1.0,ease:"power2.inOut"},14.9);
+tl.to("#james-desk",{x:0,y:0,scale:1.0,opacity:1,duration:0.8,ease:"power3.inOut"},25.5);
+tl.to("#james-phone",{x:440,y:49,scale:0.95,opacity:0,duration:0.8,ease:"power3.inOut"},25.5);
+tl.to("#james-role-desk",{x:560,y:84,opacity:1,duration:0.8,ease:"power3.inOut"},25.5);
+tl.to("#james-role-doctor",{x:1840,y:104,opacity:0,duration:0.8,ease:"power3.inOut"},25.5);
+tl.to("#james-role-patient",{x:1840,y:104,opacity:0,duration:0.8,ease:"power3.inOut"},25.5);
+tl.to("#james-dinner",{scale:1.5,x:-330.0,y:-320.8,duration:1.0,ease:"power2.inOut"},25.8);
+tl.to("#james-desk",{x:0,y:0,scale:1.0,opacity:1,duration:0.8,ease:"power3.inOut"},30.099999999999998);
+tl.to("#james-phone",{x:440,y:49,scale:0.95,opacity:0,duration:0.8,ease:"power3.inOut"},30.099999999999998);
+tl.to("#james-role-desk",{x:560,y:84,opacity:1,duration:0.8,ease:"power3.inOut"},30.099999999999998);
+tl.to("#james-role-doctor",{x:1840,y:104,opacity:0,duration:0.8,ease:"power3.inOut"},30.099999999999998);
+tl.to("#james-role-patient",{x:1840,y:104,opacity:0,duration:0.8,ease:"power3.inOut"},30.099999999999998);
+tl.to("#james-dinner",{scale:1,x:0.0,y:0.0,duration:1.0,ease:"power2.inOut"},30.4);
+tl.to("#james-desk",{x:0,y:0,scale:1.0,opacity:1,duration:0.8,ease:"power3.inOut"},36.6);
+tl.to("#james-phone",{x:440,y:49,scale:0.95,opacity:0,duration:0.8,ease:"power3.inOut"},36.6);
+tl.to("#james-role-desk",{x:560,y:84,opacity:1,duration:0.8,ease:"power3.inOut"},36.6);
+tl.to("#james-role-doctor",{x:1840,y:104,opacity:0,duration:0.8,ease:"power3.inOut"},36.6);
+tl.to("#james-role-patient",{x:1840,y:104,opacity:0,duration:0.8,ease:"power3.inOut"},36.6);
+tl.to("#james-dinner",{scale:1.6,x:-96.8,y:-86.4,duration:1.0,ease:"power2.inOut"},36.9);
+tl.to("#james-desk",{x:0,y:0,scale:1.0,opacity:1,duration:0.8,ease:"power3.inOut"},41.900000000000006);
+tl.to("#james-phone",{x:440,y:49,scale:0.95,opacity:0,duration:0.8,ease:"power3.inOut"},41.900000000000006);
+tl.to("#james-role-desk",{x:560,y:84,opacity:1,duration:0.8,ease:"power3.inOut"},41.900000000000006);
+tl.to("#james-role-doctor",{x:1840,y:104,opacity:0,duration:0.8,ease:"power3.inOut"},41.900000000000006);
+tl.to("#james-role-patient",{x:1840,y:104,opacity:0,duration:0.8,ease:"power3.inOut"},41.900000000000006);
+tl.to("#james-dinner",{scale:1.4,x:-368.5,y:-205.3,duration:1.0,ease:"power2.inOut"},42.2);
 tl.fromTo("#james-face",{scale:.6,opacity:0},{scale:1,opacity:1,duration:.7,ease:"back.out(1.5)"},0.05);
 tl.fromTo("#james-who",{x:-20,opacity:0},{x:0,opacity:1,duration:.5,ease:"power3.out"},0.3);
 tl.fromTo("#james-root .wrap",{opacity:0,scale:.985,filter:"blur(14px)"},{opacity:1,scale:1,filter:"blur(0px)",duration:.6,ease:"power2.out"},0);
