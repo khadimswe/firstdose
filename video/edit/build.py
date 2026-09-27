@@ -14,6 +14,7 @@ PAGE_START = {"desk": MARKS["desk_start"], "doctor": MARKS["doctor_start"], "pat
 SCENES = [  # id, duration, face clip, face audio duration
     ("hook", 18.2, "khadim-1"),
     ("pitch", 15.6, "khadim-2"),
+    ("tour", 10.0, None),
     ("maria", 53.6, "vinh-1"),
     ("james", 46.2, "minh-1"),
     ("market", 22.6, "khadim-3"),
@@ -168,19 +169,19 @@ window.__timelines["{sid}"] = tl;
 
 
 # ================================================================= DEMO STAGE (maria / james)
-# Left column: small face circle, step titles, captions. Right: a big stage with the coordinator's
-# desktop and a phone. Three layouts, never overlapping: "desk" (desktop fills the stage),
-# "both" (side by side), "phone" (phone large, desktop small and dimmed for context).
-# Highlight rings are authored in SOURCE pixels (desktop 1440x810, phones 390x844) and move with zooms.
-DESK = dict(left=560, top=150, w=1320, h=743)
+# Narrow left column (face, name, step title); captions in a strip under the stage; the stage takes the
+# rest of the frame. Layouts: "desk" (coordinator desktop at native 1440x810), "both" (desktop + phone side
+# by side), "phone" (full phone + a large live magnifier of the part being narrated).
+# Segment "hl" entries are focus regions in SOURCE pixels (desktop 1440x810, phones 390x844):
+#   desktop regions -> the camera zooms to them; phone regions -> the magnifier shows them (phone layout).
+DESK = dict(left=440, top=80, w=1440, h=810)
 PHONE = dict(left=1480, top=121, w=400, h=838)   # 12px bezel -> 376x814 screen
-SRC_DESK_W, SRC_PHONE_W = 1440, 390
-FD, FP = DESK["w"] / SRC_DESK_W, (PHONE["w"] - 24) / SRC_PHONE_W
-# target boxes: (left, top, width, opacity)
-LAYOUT = {
-    "desk": (dict(l=560, t=150, w=1320, o=1), dict(l=1920, t=170, w=380, o=0)),
-    "both": (dict(l=560, t=250, w=880, o=1), dict(l=1486, t=110, w=380, o=1)),
-    "phone": (dict(l=560, t=340, w=700, o=.5), dict(l=1340, t=110, w=420, o=1)),
+SRC_DESK_W, SRC_DESK_H, SRC_PHONE_W, SRC_PHONE_H = 1440, 810, 390, 844
+MAG = dict(left=930, top=150, w=950, h=640)
+LAYOUT = {  # (desk box, phone box): left, top, width, opacity
+    "desk": (dict(l=440, t=80, w=1440, o=1), dict(l=1930, t=120, w=380, o=0)),
+    "both": (dict(l=440, t=170, w=1010, o=1), dict(l=1490, t=95, w=380, o=1)),
+    "phone": (dict(l=200, t=300, w=500, o=0), dict(l=450, t=80, w=400, o=1)),
 }
 ROLE = {
     "desk": ("Coordinator's desktop", "New user: the office staff member who fixes access"),
@@ -189,39 +190,37 @@ ROLE = {
 }
 STAGE_CSS = f"""
 .dslot {{ position: absolute; left:{DESK['left']}px; top:{DESK['top']}px; width:{DESK['w']}px; height:{DESK['h']}px; transform-origin: 0 0;
-  border-radius: 20px; overflow: hidden; background: #fff; box-shadow: 0 0 0 2px {LINE}, 0 30px 70px rgba(14,17,22,.18); }}
+  border-radius: 18px; overflow: hidden; background: #fff; box-shadow: 0 0 0 2px {LINE}, 0 30px 70px rgba(14,17,22,.18); }}
 .dinner {{ position: absolute; left:0; top:0; width:{DESK['w']}px; height:{DESK['h']}px; transform-origin: 0 0; }}
 .dinner video {{ position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }}
 .pslot {{ position: absolute; left:{PHONE['left']}px; top:{PHONE['top']}px; width:{PHONE['w']}px; height:{PHONE['h']}px; transform-origin: 0 0;
   border-radius: 58px; background: #101218; box-shadow: 0 30px 80px rgba(14,17,22,.30); }}
 .pscreen {{ position: absolute; left: 12px; top: 12px; width: {PHONE['w']-24}px; height: {PHONE['h']-24}px; border-radius: 46px; overflow: hidden; background: #fff; }}
 .pscreen video {{ position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }}
+.mag {{ position: absolute; left:{MAG['left']}px; top:{MAG['top']}px; width:{MAG['w']}px; height:{MAG['h']}px; opacity: 0;
+  border-radius: 26px; overflow: hidden; background: #fff; box-shadow: 0 0 0 2px {LINE}, 0 34px 80px rgba(14,17,22,.22); }}
+.maginner {{ position: absolute; left: 0; top: 0; width: {SRC_PHONE_W}px; height: {SRC_PHONE_H}px; transform-origin: 0 0; }}
+.maginner video {{ position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }}
+.maghead {{ position: absolute; left:{MAG['left']}px; top:{MAG['top']-62}px; width:{MAG['w']}px; }}
+.maghead .h {{ position: absolute; left: 0; top: 0; opacity: 0; font-size: 34px; font-weight: 780; letter-spacing: -0.02em; white-space: nowrap; }}
 .role {{ position: absolute; left: 0; top: 0; opacity: 0; white-space: nowrap; }}
-.role.ph {{ width: 460px; text-align: right; }}
-.role .k {{ font: 700 20px "Geist Mono", monospace; letter-spacing: .06em; text-transform: uppercase; color: {BLUE}; }}
-.role .d {{ font-size: 22px; font-weight: 500; color: {MUTED}; margin-top: 4px; }}
-.hl {{ position: absolute; border: 4px solid {BLUE}; border-radius: 14px; opacity: 0;
-  box-shadow: 0 0 0 6px rgba(44,91,214,.18), 0 0 30px rgba(44,91,214,.35); }}
-.hl.green {{ border-color: {GREEN}; box-shadow: 0 0 0 6px rgba(23,112,62,.18), 0 0 30px rgba(23,112,62,.35); }}
-.hl.red {{ border-color: {RED}; box-shadow: 0 0 0 6px rgba(200,38,27,.16), 0 0 30px rgba(200,38,27,.30); }}
-.hl .tg {{ position: absolute; left: -4px; bottom: calc(100% + 10px); background: {BLUE}; color: #fff; font-weight: 700;
-  border-radius: 10px; padding: 6px 12px; white-space: nowrap; }}
-.hl.green .tg {{ background: {GREEN}; }} .hl.red .tg {{ background: {RED}; }}
-.hl.below .tg {{ bottom: auto; top: calc(100% + 10px); }}
-.step {{ position: absolute; left: 48px; top: 300px; width: 470px; opacity: 0; }}
-.step .num {{ font: 600 21px "Geist Mono", monospace; color: {BLUE}; letter-spacing: .06em; }}
-.step .t {{ font-size: 50px; font-weight: 820; letter-spacing: -0.035em; line-height: 1.03; margin-top: 12px; }}
-.step .s {{ font-size: 25px; font-weight: 420; color: {MUTED}; line-height: 1.34; margin-top: 16px; }}
+.role.ph {{ width: 520px; }}
+.role .k {{ font: 700 19px "Geist Mono", monospace; letter-spacing: .06em; text-transform: uppercase; color: {BLUE}; }}
+.role .d {{ font-size: 21px; font-weight: 500; color: {MUTED}; margin-top: 3px; }}
+.step {{ position: absolute; left: 40px; top: 290px; width: 360px; opacity: 0; }}
+.step .num {{ font: 600 19px "Geist Mono", monospace; color: {BLUE}; letter-spacing: .05em; }}
+.step .t {{ font-size: 42px; font-weight: 820; letter-spacing: -0.035em; line-height: 1.04; margin-top: 12px; }}
+.step .s {{ font-size: 23px; font-weight: 430; color: {MUTED}; line-height: 1.34; margin-top: 16px; }}
 .step .s b {{ color: {INK}; font-weight: 700; }}
-.tag {{ display: inline-block; font: 600 20px "Geist Mono", monospace; padding: 7px 12px; border-radius: 11px; margin: 14px 8px 0 0; }}
+.tag {{ display: inline-block; font: 600 19px "Geist Mono", monospace; padding: 7px 11px; border-radius: 10px; margin: 12px 8px 0 0; }}
 .tag.red {{ background: #fbe6e4; color: {RED}; }} .tag.green {{ background: #e2f3e8; color: {GREEN}; }}
 .tag.blue {{ background: #e5ecfb; color: {BLUE}; }} .tag.ink {{ background: #eceef3; color: {INK}; }}
-.flow {{ display: flex; align-items: center; gap: 10px; margin-top: 18px; flex-wrap: wrap; }}
-.flow .box {{ font-size: 21px; font-weight: 600; padding: 10px 13px; border-radius: 12px; background: #fff; border: 2px solid {LINE}; }}
-.flow .ar {{ font-size: 24px; color: {MUTED}; }}
-.stat {{ display: inline-block; vertical-align: top; margin: 18px 22px 0 0; }}
-.stat .v {{ font-size: 84px; font-weight: 850; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }}
-.stat .l {{ font-size: 20px; color: {MUTED}; margin-top: 8px; max-width: 210px; line-height: 1.25; }}
+.flow {{ display: flex; align-items: center; gap: 8px; margin-top: 16px; flex-wrap: wrap; }}
+.flow .box {{ font-size: 19px; font-weight: 600; padding: 9px 11px; border-radius: 11px; background: #fff; border: 2px solid {LINE}; }}
+.flow .ar {{ font-size: 22px; color: {MUTED}; }}
+.stat {{ display: inline-block; vertical-align: top; margin: 16px 20px 0 0; }}
+.stat .v {{ font-size: 72px; font-weight: 850; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }}
+.stat .l {{ font-size: 19px; color: {MUTED}; margin-top: 8px; max-width: 170px; line-height: 1.25; }}
 """
 
 
@@ -230,40 +229,59 @@ def _xf(box, canon):
     return dict(x=box["l"] - canon["left"], y=box["t"] - canon["top"], scale=round(s, 4), o=box["o"])
 
 
+def _cam(x, y, w, h, W, H, kmax, fill=.88):
+    """Scale + translate (origin 0 0) that frames a source region inside a WxH viewport."""
+    k = max(1.0, min(kmax, fill * W / w, fill * H / h))
+    cx, cy = x + w / 2, y + h / 2
+    tx = min(0, max(W - W * k, W / 2 - cx * k))
+    ty = min(0, max(H - H * k, H / 2 - cy * k))
+    return round(k, 3), round(tx, 1), round(ty, 1)
+
+
 def demo_scene(sid, dur, clip, person, segs, steps, cues, footer, qr=None):
     body, js = [], []
     ah, aj = ambient(sid, dur, gx=1500, gy=-200)
     body.append('<div class="wrap">' + ah)
-    body.append(face_circle(sid, clip, 150, 48, 48, dur))
-    body.append(who(sid, person, 226, 78))
-    body.append(f'<div id="{sid}-live" style="position:absolute;left:48px;top:214px"><span class="pill live"><i></i>LIVE · firstdose.vercel.app</span></div>')
-    d = [f'<div class="dslot" id="{sid}-desk"><div class="dinner" id="{sid}-dinner">']
+    body.append(face_circle(sid, clip, 140, 40, 40, dur))
+    body.append(who(sid, person, 204, 62))
+    body.append(f'<div id="{sid}-live" style="position:absolute;left:40px;top:206px"><span class="pill live"><i></i>LIVE · firstdose.vercel.app</span></div>')
+    d = [f'<div class="dslot" id="{sid}-desk"><div class="dinner" id="{sid}-dinner" data-layout-allow-overflow>']
     p = [f'<div class="pslot" id="{sid}-phone"><div class="pscreen" id="{sid}-pscreen">']
-    rings_d, rings_p, n = [], [], 0
+    m = [f'<div class="mag" id="{sid}-mag"><div class="maginner" id="{sid}-maginner" data-layout-allow-overflow>']
+    heads, cam, mag = [], [], []
     for i, g in enumerate(segs):
         t0, t1, T0 = g["t0"], g["t1"], g["T"]
         ln = round(t1 - t0, 3)
+        ph = g.get("phone", "doctor")
         d.append(f'<video id="{sid}-d{i}" class="clip" src="assets/footage/desk.mp4" data-start="{t0}" data-duration="{ln}" '
                  f'data-media-start="{round(T0-PAGE_START["desk"],3)}" data-track-index="2" muted playsinline></video>')
-        ph = g.get("phone", "doctor")
         p.append(f'<video id="{sid}-p{i}" class="clip" src="assets/footage/{ph}.mp4" data-start="{t0}" data-duration="{ln}" '
                  f'data-media-start="{round(T0-PAGE_START[ph],3)}" data-track-index="3" muted playsinline></video>')
-        for (a, b, dev, x, y, w, h, tag, *opt) in g.get("hl", []):
-            f = FD if dev == "d" else FP
-            cls = " ".join(opt)
-            rid = f"{sid}-hl{n}"; n += 1
-            fs = round(26 / g.get("zoom", (1, 0, 0))[0]) if dev == "d" else 19
-            tg = f'<span class="tg" style="font-size:{fs}px">{esc(tag)}</span>' if tag else ""
-            el = (f'<div class="hl {cls}" id="{rid}" style="left:{x*f-8:.1f}px;top:{y*f-8:.1f}px;'
-                  f'width:{w*f+16:.1f}px;height:{h*f+16:.1f}px">{tg}</div>')
-            (rings_d if dev == "d" else rings_p).append(el)
-            js.append(f'tl.fromTo("#{rid}",{{opacity:0,scale:1.12}},{{opacity:1,scale:1,duration:.35,ease:"back.out(1.8)"}},{a});')
-            js.append(f'tl.to("#{rid}",{{opacity:0,duration:.22,ease:"power1.in"}},{b - .22:.2f});')
-    d += rings_d + ["</div></div>"]
-    p += rings_p + ["</div></div>"]
-    body += d + p
-    for key, (k, desc) in ROLE.items():
-        body.append(f'<div class="role{"" if key == "desk" else " ph"}" id="{sid}-role-{key}"><div class="k">{esc(k)}</div><div class="d">{esc(desc)}</div></div>')
+        if g["focus"] == "phone":
+            m.append(f'<video id="{sid}-m{i}" class="clip" src="assets/footage/{ph}.mp4" data-start="{t0}" data-duration="{ln}" '
+                     f'data-media-start="{round(T0-PAGE_START[ph],3)}" data-track-index="4" muted playsinline></video>')
+        # desktop camera: segment default, then each desktop focus region
+        k, zx, zy = g.get("zoom", (1, 0, 0))
+        cam.append((t0, 0.001 if i == 0 else 1.0, k, -(k - 1) * zx, -(k - 1) * zy))
+        regs = []
+        for (a, b, dev, x, y, w, h, tag, *_o) in g.get("hl", []):
+            if dev == "d":
+                cam.append((a, 1.0) + _cam(x, y, w, h, SRC_DESK_W, SRC_DESK_H, 1.9))
+            elif g["focus"] == "phone":
+                regs.append([a, b, _cam(x, y, w, h, MAG["w"], MAG["h"], 3.2, fill=.92), tag])
+        # the magnifier stays up for the whole phone segment, handing off region to region
+        for j, r in enumerate(regs):
+            r[0] = t0 + .35 if j == 0 else r[0]
+            r[1] = regs[j + 1][0] if j + 1 < len(regs) else t1
+        mag += [tuple(r) for r in regs]
+    for n_, (a, b, (k, tx, ty), tag) in enumerate(mag):
+        # centre the region in the panel (the clamp in _cam keeps edges filled)
+        heads.append(f'<div class="h" id="{sid}-mh{n_}">{esc(tag)}</div>')
+    d.append("</div></div>"); p.append("</div></div>"); m.append("</div></div>")
+    body += d + p + m
+    body.append(f'<div class="maghead">{"".join(heads)}</div>')
+    for key, (kk, desc) in ROLE.items():
+        body.append(f'<div class="role{"" if key == "desk" else " ph"}" id="{sid}-role-{key}"><div class="k">{esc(kk)}</div><div class="d">{esc(desc)}</div></div>')
     for i, st in enumerate(steps):
         body.append(f'<div class="step" id="{sid}-s{i}"><div class="num">{esc(st["num"])}</div>'
                     f'<div class="t">{rich(st["t"])}</div><div class="s">{st["s"]}</div></div>')
@@ -276,11 +294,11 @@ def demo_scene(sid, dur, clip, person, segs, steps, cues, footer, qr=None):
                       f'tl.fromTo(o,{{v:0}},{{v:{c[1]},duration:1.1,ease:"power2.out",onUpdate:()=>{{el.textContent=Math.round(o.v)+"{c[2]}";}},'
                       f'onComplete:()=>{{el.textContent="{c[1]}{c[2]}";}}}},{st["a"]+.5});'
                       f'tl.fromTo(el,{{scale:.8}},{{scale:1,duration:1.1,ease:"power2.out"}},{st["a"]+.5}); }})();')
-    ch, cj = captions(sid, cues, 48, 810, 480, 200, size=30, clip=clip)
+    ch, cj = captions(sid, cues, 440, 918, 1440, 100, size=32, align="center", clip=clip)
     body.append(ch); js.append(cj)
     if qr:
         svg = (ROOT / qr["svg"]).read_text().split("?>", 1)[-1].replace('width="31mm" height="31mm"', 'width="250" height="250"')
-        body.append(f'''<div id="{sid}-qr" class="card" style="position:absolute;left:1060px;top:260px;width:360px;padding:34px;text-align:center;opacity:0;z-index:5">
+        body.append(f'''<div id="{sid}-qr" class="card" style="position:absolute;left:980px;top:240px;width:360px;padding:34px;text-align:center;opacity:0;z-index:5">
             <div class="kicker">{esc(qr["kicker"])}</div><div style="margin-top:18px">{svg}</div>
             <div style="font-size:26px;font-weight:700;margin-top:14px">{esc(qr["label"])}</div></div>''')
         a, z = qr["pop"], qr["zoom"]
@@ -290,29 +308,39 @@ def demo_scene(sid, dur, clip, person, segs, steps, cues, footer, qr=None):
         js.append(f'tl.fromTo("#{sid}-pscreen",{{scale:1.18,filter:"blur(8px)"}},{{scale:1,filter:"blur(0px)",duration:.7,ease:"power3.out",immediateRender:false}},{z+.35});')
     body.append(f'<div class="foot">{esc(footer)}</div>')
     body.append("</div>")
-    # layout + zoom + role labels, per segment
-    prev_role_p = None
+    # layouts + role labels
+    prev_rp = None
     for i, g in enumerate(segs):
-        lay = "desk" if g["focus"] == "wide" else g["focus"]
-        db, pb = LAYOUT[lay]
+        db, pb = LAYOUT[g["focus"]]
         dx, px = _xf(db, DESK), _xf(pb, PHONE)
         du = 0.001 if i == 0 else 0.8
         at = 0 if i == 0 else max(0, g["t0"] - 0.3)
         js.append(f'tl.to("#{sid}-desk",{{x:{dx["x"]},y:{dx["y"]},scale:{dx["scale"]},opacity:{dx["o"]},duration:{du},ease:"power3.inOut"}},{at});')
         js.append(f'tl.to("#{sid}-phone",{{x:{px["x"]},y:{px["y"]},scale:{px["scale"]},opacity:{px["o"]},duration:{du},ease:"power3.inOut"}},{at});')
-        # role labels sit just above their device
-        js.append(f'tl.to("#{sid}-role-desk",{{x:{db["l"]},y:{db["t"]-66},opacity:{1 if db["o"] >= .9 else 0},duration:{du},ease:"power3.inOut"}},{at});')
+        js.append(f'tl.to("#{sid}-role-desk",{{x:{db["l"]},y:{db["t"]-60},opacity:{1 if db["o"] >= .9 else 0},duration:{du},ease:"power3.inOut"}},{at});')
         rp = g.get("phone", "doctor") if pb["o"] > 0 else None
+        rx = pb["l"] if g["focus"] == "phone" else pb["l"] + pb["w"] - 520
         for key in ("doctor", "patient"):
-            js.append(f'tl.to("#{sid}-role-{key}",{{x:{pb["l"] + pb["w"] - 460},y:{pb["t"]-66},opacity:{1 if key == rp else 0},duration:{du if rp == prev_role_p else .35},ease:"power3.inOut"}},{at});')
-        prev_role_p = rp
-        k, zx, zy = g.get("zoom", (1, 0, 0))
-        zx, zy = zx * FD, zy * FD
-        js.append(f'tl.to("#{sid}-dinner",{{scale:{k},x:{-(k-1)*zx:.1f},y:{-(k-1)*zy:.1f},duration:{0.001 if i==0 else 1.0},ease:"power2.inOut"}},{0 if i == 0 else g["t0"]});')
+            js.append(f'tl.to("#{sid}-role-{key}",{{x:{rx},y:{pb["t"]-60},opacity:{1 if key == rp else 0},duration:{du if rp == prev_rp else .35},ease:"power3.inOut"}},{at});')
+        prev_rp = rp
+        if g["focus"] != "phone":
+            js.append(f'tl.to("#{sid}-mag",{{opacity:0,x:40,duration:.35}},{at});')
+    for (t, du, k, tx, ty) in sorted(cam):
+        js.append(f'tl.to("#{sid}-dinner",{{scale:{k},x:{tx:.1f},y:{ty:.1f},duration:{du},ease:"power2.inOut"}},{t});')
+    for n_, (a, b, (k, tx, ty), tag) in enumerate(mag):
+        js.append(f'tl.to("#{sid}-mag",{{opacity:1,x:0,duration:.45,ease:"power3.out"}},{a});')
+        js.append(f'tl.to("#{sid}-maginner",{{scale:{k},x:{tx},y:{ty},duration:{0.001 if n_ == 0 or mag[n_-1][1] < a - .5 else .7},ease:"power2.inOut"}},{a});')
+        js.append(f'tl.fromTo("#{sid}-mh{n_}",{{opacity:0,y:12}},{{opacity:1,y:0,duration:.35,ease:"power3.out"}},{a});')
+        js.append(f'tl.to("#{sid}-mh{n_}",{{opacity:0,duration:.2}},{b - .2:.2f});')
+        nxt = mag[n_ + 1][0] if n_ + 1 < len(mag) else None
+        if nxt is None or nxt > b + .5:
+            js.append(f'tl.to("#{sid}-mag",{{opacity:0,x:40,duration:.35,ease:"power2.in"}},{b - .3:.2f});')
     js.insert(0, aj)
     js.append(f'tl.fromTo("#{sid}-face",{{scale:.6,opacity:0}},{{scale:1,opacity:1,duration:.7,ease:"back.out(1.5)"}},0.05);')
     js.append(f'tl.fromTo("#{sid}-who",{{x:-20,opacity:0}},{{x:0,opacity:1,duration:.5,ease:"power3.out"}},0.3);')
-    return template(sid, dur, "\n".join(body), "\n".join(js), _scope(STAGE_CSS, sid) + f"\n#{sid}-root .who .n {{ font-size: 38px; }}")
+    js.append(f'tl.fromTo("#{sid}-live",{{y:10,opacity:0}},{{y:0,opacity:1,duration:.5,ease:"power3.out"}},0.5);')
+    extra = f"\n#{sid}-root .who .n {{ font-size: 34px; }} #{sid}-root .who .r {{ font-size: 20px; }} #{sid}-root .pill {{ font-size: 17px; padding: 6px 12px; }}"
+    return template(sid, dur, "\n".join(body), "\n".join(js), _scope(STAGE_CSS, sid) + extra)
 
 
 def _scope(css, sid):
@@ -336,10 +364,9 @@ MARIA_SEGS = [
         (0.6, 3.9, "d", 300, 232, 1085, 113, "Monday morning: 3 stuck · 2 waiting · 8 confirmed"),
         (4.0, 7.2, "d", 300, 420, 1085, 282, "Each row: who, why it's stuck, the one fix")]),
     dict(t0=7.3, t1=16.3, T=24.1, focus="phone", hl=[
-        (7.6, 9.2, "p", 32, 170, 326, 60, "Maria · Otezla"),
-        (11.6, 13.0, "p", 16, 745, 358, 55, "Verbatim DailyMed label"),
-        (13.0, 14.5, "p", 18, 683, 354, 44, "Sign and send"),
-        (14.6, 16.2, "p", 16, 705, 358, 95, "Sent → At pharmacy")]),
+        (7.6, 12.4, "p", 16, 120, 358, 520, "New prescription: Maria · Otezla"),
+        (12.4, 14.6, "p", 16, 560, 358, 284, "Verbatim DailyMed label · Sign and send"),
+        (14.6, 16.2, "p", 16, 600, 358, 244, "Sent → At pharmacy → Fill confirmed")]),
     dict(t0=16.3, t1=22.5, T=38.5, focus="phone", hl=[
         (18.7, 20.7, "p", 16, 170, 358, 182, "New alert: pharmacy status + reason", "red"),
         (20.8, 22.4, "p", 30, 598, 330, 50, "Stuck · declined at price", "red")]),
@@ -677,6 +704,49 @@ def endcard_scene():
     return template(sid, dur, "\n".join(body), "\n".join(js), f"#endcard-root #end-qr svg path {{ fill: {INK}; }}")
 
 
+
+# ------------------------------------------------------------------ TOUR: the three screens (music only)
+def tour_scene():
+    sid, dur = "tour", 10.0
+    ah, aj = ambient(sid, dur, gx=960, gy=-250)
+    cards = [
+        ("desk", "tour-desk.png", "01 · Coordinator's desktop", "New user · the office staff member",
+         "Their daily work queue: who is stuck, why, and the one fix to send."),
+        ("doctor", "tour-doctor.png", "02 · Doctor's phone", "Inside DocUpdate (concept)",
+         "One alert when a script stalls. One tap hands it to the coordinator."),
+        ("patient", "tour-patient.png", "03 · Patient's phone", "Opened from a QR code",
+         "Their savings card and message. The pharmacy, not the tap, confirms the fill."),
+    ]
+    geo = {"desk": (70, 190, 900, 506), "doctor": (1040, 150, 300, 650), "patient": (1440, 150, 300, 650)}
+    body = ['<div class="wrap">', ah,
+            f'<div id="tour-head" style="position:absolute;left:70px;top:48px"><div class="kicker">One loop, three screens</div>'
+            f'<div style="font-size:54px;font-weight:840;letter-spacing:-0.035em;margin-top:8px">Who uses FirstDose, and why</div></div>']
+    js = [aj, 'tl.fromTo("#tour-head",{opacity:0,y:20},{opacity:1,y:0,duration:.6,ease:"power3.out"},0.1);']
+    for i, (key, img, k, sub, why) in enumerate(cards):
+        x, y, w, h = geo[key]
+        if key == "desk":
+            frame = (f'<div style="width:{w}px;height:{h}px;border-radius:18px;overflow:hidden;background:#fff;'
+                     f'box-shadow:0 0 0 2px {LINE},0 30px 70px rgba(14,17,22,.18)"><img id="tour-img{i}" src="assets/{img}" '
+                     f'style="display:block;width:{w}px;height:{h}px;object-fit:cover" /></div>')
+            ty = y + h + 34
+        else:
+            frame = (f'<div style="width:{w}px;height:{h}px;border-radius:46px;background:#101218;padding:10px;'
+                     f'box-shadow:0 30px 80px rgba(14,17,22,.28)"><div style="width:{w-20}px;height:{h-20}px;border-radius:37px;overflow:hidden">'
+                     f'<img id="tour-img{i}" src="assets/{img}" style="display:block;width:{w-20}px;height:{h-20}px;object-fit:cover;object-position:top" /></div></div>')
+            ty = y + h + 26
+        body.append(f'<div id="tour-dev{i}" style="position:absolute;left:{x}px;top:{y}px">{frame}</div>')
+        tw = w if key == "desk" else 330
+        body.append(f'<div id="tour-txt{i}" style="position:absolute;left:{x}px;top:{ty}px;width:{tw}px">'
+                    f'<div class="kicker">{esc(k)}</div><div style="font-size:22px;font-weight:700;margin-top:6px">{esc(sub)}</div>'
+                    f'<div style="font-size:{27 if key == "desk" else 22}px;color:{MUTED};line-height:1.3;margin-top:8px">{esc(why)}</div></div>')
+        a = 0.5 + i * 1.6
+        js.append(f'tl.fromTo("#tour-dev{i}",{{opacity:0,y:60,scale:.94}},{{opacity:1,y:0,scale:1,duration:.8,ease:"power3.out"}},{a});')
+        js.append(f'tl.fromTo("#tour-txt{i}",{{opacity:0,y:20}},{{opacity:1,y:0,duration:.55,ease:"power3.out"}},{a + .35});')
+        js.append(f'tl.fromTo("#tour-img{i}",{{scale:1}},{{scale:1.05,duration:{dur - a:.1f},ease:"none"}},{a});')
+    body += [f'<div class="foot">Real screens from firstdose.vercel.app · Synthetic patients & pharmacy events · DocUpdate concept, not affiliated</div>', '</div>']
+    return template(sid, dur, "\n".join(body), "\n".join(js))
+
+
 def index():
     t, slots, audios = 0.0, [], []
     for i, (sid, dur, clip) in enumerate(SCENES):
@@ -720,6 +790,7 @@ if __name__ == "__main__":
     files = {
         "hook": hook_scene(),
         "pitch": pitch_scene(),
+        "tour": tour_scene(),
         "maria": demo_scene("maria", 53.6, "vinh-1", "vinh", MARIA_SEGS, MARIA_STEPS, MARIA_CUES, FOOT,
                              qr=dict(svg="assets/qr-patient.svg", kicker="Sent to Maria", label="Scan → her savings card", pop=35.1, zoom=36.55, to_x=320, to_y=60)),
         "james": demo_scene("james", 46.2, "minh-1", "minh", JAMES_SEGS, JAMES_STEPS, JAMES_CUES, FOOT),

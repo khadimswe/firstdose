@@ -1,0 +1,73 @@
+<!doctype html>
+<html><head><meta charset="UTF-8" /></head>
+<body>
+<template id="tour-template">
+<style>
+@font-face { font-family: "Geist"; src: url("assets/fonts/Geist-Variable.woff2") format("woff2"); font-weight: 100 900; }
+@font-face { font-family: "Geist Mono"; src: url("assets/fonts/GeistMono-Variable.woff2") format("woff2"); font-weight: 100 900; }
+
+#tour-root { position: absolute; inset: 0; overflow: hidden; background: #f3f4f8; color: #0e1116;
+  font-family: "Geist", "Helvetica Neue", sans-serif; }
+#tour-root .wrap { position: absolute; inset: 0; }
+#tour-root .glow { position: absolute; width: 1400px; height: 1400px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(44,91,214,.20) 0%, rgba(44,91,214,.07) 38%, rgba(44,91,214,0) 68%); }
+#tour-root .glow2 { position: absolute; width: 1000px; height: 1000px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(109,59,209,.14) 0%, rgba(109,59,209,0) 65%); }
+#tour-root .dots { position: absolute; inset: 0; opacity: .5;
+  background-image: radial-gradient(rgba(14,17,22,.13) 1.4px, transparent 1.6px); background-size: 34px 34px; }
+#tour-root .face { position: absolute; border-radius: 50%; overflow: hidden; background: #d8dbe4;
+  box-shadow: 0 0 0 6px #fff, 0 0 0 9px rgba(44,91,214,.55), 0 24px 60px rgba(14,17,22,.22); }
+#tour-root .face video { position: absolute; object-fit: cover; }
+#tour-root .ring { position: absolute; border-radius: 50%; border: 3px solid rgba(44,91,214,.35); }
+#tour-root .who { position: absolute; }
+#tour-root .who .n { font-size: 44px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.05; }
+#tour-root .who .r { font-size: 24px; font-weight: 450; color: #545b6b; margin-top: 6px; }
+#tour-root .pill { display: inline-flex; align-items: center; gap: 10px; font: 600 20px "Geist Mono", monospace;
+  letter-spacing: .02em; padding: 8px 16px; border-radius: 999px; background: #fff; border: 2px solid #dadde6; color: #0e1116; }
+#tour-root .pill i { width: 12px; height: 12px; border-radius: 50%; background: #c8261b; display: block; }
+#tour-root .pill.live i { background: #e5372b; box-shadow: 0 0 0 5px rgba(229,55,43,.18); }
+#tour-root .caps { position: absolute; }
+#tour-root .cap { position: absolute; left: 0; right: 0; bottom: 0; opacity: 0; font-size: 34px; line-height: 1.3;
+  font-weight: 560; color: #0e1116; letter-spacing: -0.005em; }
+#tour-root .cap .w { color: #6c7383; }
+#tour-root .cap .w.e { font-weight: 760; }
+#tour-root .foot { position: absolute; left: 80px; right: 80px; bottom: 22px; font: 500 19px "Geist Mono", monospace;
+  color: #545b6b; letter-spacing: .01em; }
+#tour-root .mono { font-family: "Geist Mono", monospace; }
+#tour-root .card { background: #fff; border: 2px solid #dadde6; border-radius: 28px; box-shadow: 0 18px 50px rgba(14,17,22,.10); }
+#tour-root .kicker { font: 600 22px "Geist Mono", monospace; letter-spacing: .06em; text-transform: uppercase; color: #2c5bd6; }
+</style>
+<div id="tour-root" data-composition-id="tour" data-width="1920" data-height="1080" data-duration="10.0">
+<div class="wrap">
+<div class="glow" id="tour-glow" style="left:260px;top:-250px"></div><div class="glow2" id="tour-glow2" style="left:-300px;top:600px"></div><div class="dots"></div>
+<div id="tour-head" style="position:absolute;left:70px;top:48px"><div class="kicker">One loop, three screens</div><div style="font-size:54px;font-weight:840;letter-spacing:-0.035em;margin-top:8px">Who uses FirstDose, and why</div></div>
+<div id="tour-dev0" style="position:absolute;left:70px;top:190px"><div style="width:900px;height:506px;border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 0 0 2px #dadde6,0 30px 70px rgba(14,17,22,.18)"><img id="tour-img0" src="assets/tour-desk.png" style="display:block;width:900px;height:506px;object-fit:cover" /></div></div>
+<div id="tour-txt0" style="position:absolute;left:70px;top:730px;width:900px"><div class="kicker">01 · Coordinator&#x27;s desktop</div><div style="font-size:22px;font-weight:700;margin-top:6px">New user · the office staff member</div><div style="font-size:27px;color:#545b6b;line-height:1.3;margin-top:8px">Their daily work queue: who is stuck, why, and the one fix to send.</div></div>
+<div id="tour-dev1" style="position:absolute;left:1040px;top:150px"><div style="width:300px;height:650px;border-radius:46px;background:#101218;padding:10px;box-shadow:0 30px 80px rgba(14,17,22,.28)"><div style="width:280px;height:630px;border-radius:37px;overflow:hidden"><img id="tour-img1" src="assets/tour-doctor.png" style="display:block;width:280px;height:630px;object-fit:cover;object-position:top" /></div></div></div>
+<div id="tour-txt1" style="position:absolute;left:1040px;top:826px;width:330px"><div class="kicker">02 · Doctor&#x27;s phone</div><div style="font-size:22px;font-weight:700;margin-top:6px">Inside DocUpdate (concept)</div><div style="font-size:22px;color:#545b6b;line-height:1.3;margin-top:8px">One alert when a script stalls. One tap hands it to the coordinator.</div></div>
+<div id="tour-dev2" style="position:absolute;left:1440px;top:150px"><div style="width:300px;height:650px;border-radius:46px;background:#101218;padding:10px;box-shadow:0 30px 80px rgba(14,17,22,.28)"><div style="width:280px;height:630px;border-radius:37px;overflow:hidden"><img id="tour-img2" src="assets/tour-patient.png" style="display:block;width:280px;height:630px;object-fit:cover;object-position:top" /></div></div></div>
+<div id="tour-txt2" style="position:absolute;left:1440px;top:826px;width:330px"><div class="kicker">03 · Patient&#x27;s phone</div><div style="font-size:22px;font-weight:700;margin-top:6px">Opened from a QR code</div><div style="font-size:22px;color:#545b6b;line-height:1.3;margin-top:8px">Their savings card and message. The pharmacy, not the tap, confirms the fill.</div></div>
+<div class="foot">Real screens from firstdose.vercel.app · Synthetic patients & pharmacy events · DocUpdate concept, not affiliated</div>
+</div>
+</div>
+<script>
+(() => {
+const tl = gsap.timeline({ paused: true });
+tl.fromTo("#tour-glow",{scale:.92,opacity:.8},{scale:1.08,opacity:1,duration:3,ease:"sine.inOut",yoyo:true,repeat:1},0);tl.fromTo("#tour-glow2",{x:0,y:0},{x:120,y:-60,duration:5.00,ease:"sine.inOut",yoyo:true,repeat:1},0);
+tl.fromTo("#tour-head",{opacity:0,y:20},{opacity:1,y:0,duration:.6,ease:"power3.out"},0.1);
+tl.fromTo("#tour-dev0",{opacity:0,y:60,scale:.94},{opacity:1,y:0,scale:1,duration:.8,ease:"power3.out"},0.5);
+tl.fromTo("#tour-txt0",{opacity:0,y:20},{opacity:1,y:0,duration:.55,ease:"power3.out"},0.85);
+tl.fromTo("#tour-img0",{scale:1},{scale:1.05,duration:9.5,ease:"none"},0.5);
+tl.fromTo("#tour-dev1",{opacity:0,y:60,scale:.94},{opacity:1,y:0,scale:1,duration:.8,ease:"power3.out"},2.1);
+tl.fromTo("#tour-txt1",{opacity:0,y:20},{opacity:1,y:0,duration:.55,ease:"power3.out"},2.45);
+tl.fromTo("#tour-img1",{scale:1},{scale:1.05,duration:7.9,ease:"none"},2.1);
+tl.fromTo("#tour-dev2",{opacity:0,y:60,scale:.94},{opacity:1,y:0,scale:1,duration:.8,ease:"power3.out"},3.7);
+tl.fromTo("#tour-txt2",{opacity:0,y:20},{opacity:1,y:0,duration:.55,ease:"power3.out"},4.05);
+tl.fromTo("#tour-img2",{scale:1},{scale:1.05,duration:6.3,ease:"none"},3.7);
+tl.fromTo("#tour-root .wrap",{opacity:0,scale:.985,filter:"blur(14px)"},{opacity:1,scale:1,filter:"blur(0px)",duration:.6,ease:"power2.out"},0);
+tl.to("#tour-root .wrap",{opacity:0,scale:1.03,filter:"blur(16px)",duration:.45,ease:"power1.in"},9.55);
+window.__timelines["tour"] = tl;
+})();
+</script>
+</template>
+</body></html>
