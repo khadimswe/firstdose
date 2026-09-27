@@ -21,7 +21,7 @@ Updated Sat Sep 26, 2026, 13:05 (Deem). This register governs factual wording in
 
 | Fact (as it may appear) | Source | Notes |
 |---|---|---|
-| DocUpdate's article "Prescription Abandonment: The Prescription Was Sent. The Patient Still Never Started It." (Jul 9, 2026) | [docupdate.io](https://www.docupdate.io/) (article list; Sana Khateeb, PharmD) | Title and teaser only; full text not retrieved |
+| DocUpdate's article "Prescription Abandonment: The Prescription Was Sent. The Patient Still Never Started It." (Jul 9, 2026) | [the article](https://www.docupdate.io/articles/prescription-abandonment-the-prescription-was-sent-the-patient-still-never-started-it/) (Sana Khateeb, PharmD; the date is from docupdate.io's article list) | Headline, byline and date checked on the live pages, Sep 26. The demo video shows a credited screenshot with the headline unaltered |
 | DocUpdate doesn't currently receive fill confirmation | [DocUpdate FAQ](https://www.docupdate.io/faq/) | Paraphrase it: the quote's context is cancellation requests |
 | "Staff accounts and practice-level profiles aren't live yet, but they're on our roadmap." | [DocUpdate FAQ](https://www.docupdate.io/faq/) | Quote exactly |
 | "27% of new prescriptions are never dispensed" | [Surescripts First-Fill Abandonment](https://surescripts.com/what-we-do/first-fill-abandonment) (page updated Sep 14, 2026; Jan 2026 analysis of fill-reporting pharmacies) | Say "Surescripts" on the slide |
@@ -76,3 +76,9 @@ Status: **not recorded yet**.
 - [ ] Deem checks every visible screen and disclosure at phone and desktop size.
 - [ ] Full run twice after reset, plus once with an optional provider unavailable.
 - [ ] Claims frozen at 9 PM. After a material code change, rerun the affected check.
+- [x] **Demo video v1** (`video/demo`, Sep 26):
+  - **Source and length:** built from the offline build on synthetic data, 2:43.
+  - **Numbers and title on screen:** the article title and date, 27% (Surescripts) and about 467,000 (BLS).
+  - **Watch:** shown as a generic wrist alert via ntfy, because the Apple Watch check (C8) is still open.
+  - **Label text:** shown only as the app renders it from DailyMed.
+  - **Sign-off:** Deem reviewed every beat against this register.
