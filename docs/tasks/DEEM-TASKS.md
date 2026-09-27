@@ -55,13 +55,13 @@ Legend: [ ] not started · [-] in progress · [x] done · [!] blocked
   - align the README tagline and the GitHub repo description with W3.
 - [ ] **4.4** QR on a stranger's phone from the HTTPS origin.
 - [ ] **4.7** Two dry runs with strangers, on the live origin, plus one mock fallback run.
-- [ ] 6 PM footage: the desktop queue, the phone's Rx Alerts, the watch close-up, and the judge's phone as Maria.
+- [x] 6 PM footage: covered by app-state stills (desktop queue, Rx Alerts, Maria's phone) from `video/demo/tools/capture`. The watch is a generic wrist-alert graphic (C8 open).
 
 ## 9 PM → Sun 6:30 AM
 
 - [ ] 9 PM claims freeze (5.1 with Vinh).
 - [ ] **5.2** Stills of every judge screen at its size, from the deployed origin. Look at each one.
-- [ ] **5.3** Video, 2–3 min, following the spec's demo. Done by Sun 5 AM.
+- [-] **5.3** Video: v1 rendered from `video/demo` (2:43). Team review, then upload to Devpost/YouTube. Done by Sun 5 AM.
 - [ ] **5.4** Writeup and poster: rewrite `docs/submission.md`.
 - [ ] **5.5** Submit to Devpost and expo.hexlabs.org, then reload and verify both.
 

@@ -201,7 +201,7 @@ Current objective, scope and claim boundaries: [v2 spec](docs/spec-v2-coordinato
 |---|---|---|---|---|---|---|
 | 5.1 | Claims audit: every named product is really called in code; gitleaks full history | `docs/claims-audit.md` | **Vinh** | 🟡 | all | Sep 26 13:55 ET: [audit](docs/claims-audit.md) refreshed to main 22b78f0; 503 tests, lint, live build and full-history Gitleaks pass; prior 20 database checks at 158b5a9. Independent source review found voice proposals lose run identity through approval. Deployed workflow/coordinator APIs still return 503 demo_not_configured; Otezla matches artifact. Freeze awaits voice correction, deployed/device proof, presentation corrections and affected-owner review. |
 | 5.2 | Stills of every judge screen (desktop + phone) from the deployed origin | `docs/stills/` | **Deem** | ⬜ | 2.6 | Look at each one. |
-| 5.3 | Video 2-3 min | `docs/video/` | **Deem** (Vinh edits once backend is frozen) | ⬜ | 5.2 | Done by Sun 5 AM. |
+| 5.3 | Video 2-3 min | `video/demo/` | **Deem** (Vinh edits once backend is frozen) | 🟡 | 5.2 | Sat: v1 rendered (2:43, HyperFrames): the team's clips plus real app stills on synthetic data, captions, -16 LUFS, lip sync checked. Team review, then upload. The Apple Watch shot stays a generic wrist alert until C8. |
 | 5.4 | Devpost writeup + poster | `docs/submission.md` | **Deem** | ⬜ | 5.1 | |
 | 5.5 | Submit to **Devpost AND expo.hexlabs.org**; reload-verify both | n/a | **Deem** | ⬜ | 5.4 | By Sun 6:30 AM. The repo is already public. |
 
