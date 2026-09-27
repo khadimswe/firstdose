@@ -757,7 +757,7 @@ def index():
                           f'data-media-start="0" data-track-index="{10 + i % 2}" data-volume="1"></audio>')
         t += dur
     total = round(t, 2)
-    audios.append(f'<audio id="a-bgm" src="assets/music/bed.mp3" data-start="0" data-duration="{total}" '
+    audios.append(f'<audio id="a-bgm" src="assets/music/bed-long.mp3" data-start="0" data-duration="{total}" '
                   f'data-media-start="0" data-track-index="12" data-volume="0.2"></audio>')
     return total, f"""<!doctype html>
 <html lang="en">
