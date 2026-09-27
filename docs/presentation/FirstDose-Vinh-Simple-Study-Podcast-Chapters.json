@@ -1,0 +1,44 @@
+{
+  "provider": "ElevenLabs",
+  "voice": "George (premade synthetic narrator)",
+  "source_sha": "015c342",
+  "date": "2026-09-27",
+  "duration_seconds": 666.353832,
+  "chapters": [
+    {
+      "title": "The idea, without the jargon",
+      "start_seconds": 0,
+      "duration_seconds": 82.038
+    },
+    {
+      "title": "Walk through your two-minute part",
+      "start_seconds": 82.038,
+      "duration_seconds": 97.92
+    },
+    {
+      "title": "The backend is a shared notebook",
+      "start_seconds": 179.958,
+      "duration_seconds": 91.929
+    },
+    {
+      "title": "AI, rules, labels, and human control",
+      "start_seconds": 271.887,
+      "duration_seconds": 94.855
+    },
+    {
+      "title": "The watch and the scoreboard",
+      "start_seconds": 366.742,
+      "duration_seconds": 96.573
+    },
+    {
+      "title": "Tracks, voice, identity, and what is still a prototype",
+      "start_seconds": 463.315,
+      "duration_seconds": 97.827
+    },
+    {
+      "title": "Judge questions: answer out loud",
+      "start_seconds": 561.143,
+      "duration_seconds": 105.211
+    }
+  ]
+}
