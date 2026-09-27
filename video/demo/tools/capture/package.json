@@ -1,0 +1,7 @@
+{
+  "name": "firstdose-demo-capture",
+  "private": true,
+  "type": "module",
+  "description": "Captures app-state stills for the demo video from the offline-mode build.",
+  "dependencies": { "playwright": "^1.57.0" }
+}
